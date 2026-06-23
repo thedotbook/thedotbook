@@ -8,7 +8,7 @@
   <!-- PWA Meta Tags -->
   <meta name="application-name" content="The Dot Book" />
   <meta name="description" content="Every dot is $1 million. Where do the world's wealthiest people sit?" />
-  <meta name="theme-color" content="#f0d060" />
+  <meta name="theme-color" content="#154360" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -21,13 +21,13 @@
 
     body {
       min-height: 100vh;
-      background: #3d2b10;
+      background: #154360;
       font-family: Georgia, 'Times New Roman', serif;
-      color: #fff4d6;
+      color: #d6eaf8;
     }
 
     header {
-      background: linear-gradient(180deg, #5a3d12 0%, #3d2b10 100%);
+      background: linear-gradient(180deg, #1a5276 0%, #154360 100%);
       border-bottom: none;
       padding: 40px 20px 16px;
       text-align: center;
@@ -37,13 +37,13 @@
     .eyebrow {
       font-size: 11px;
       letter-spacing: 4px;
-      color: #c49a30;
+      color: #7ab3d9;
       margin-bottom: 12px;
       text-transform: uppercase;
     }
     h1 {
       font-size: clamp(28px, 6vw, 52px);
-      color: #f0d060;
+      color: #f9e74a;
       font-weight: normal;
       letter-spacing: 2px;
       text-shadow: 0 2px 20px rgba(240,208,96,0.3);
@@ -63,7 +63,7 @@
     .disclaimer-title {
       font-size: 12px;
       letter-spacing: 2px;
-      color: #f0d060;
+      color: #f9e74a;
       text-transform: uppercase;
       margin-bottom: 6px;
       font-weight: bold;
@@ -73,7 +73,7 @@
       color: #c8a84a;
       line-height: 1.7;
     }
-    .disclaimer-body strong { color: #c4a040; font-style: normal; }
+    .disclaimer-body strong { color: #85c1e9; font-style: normal; }
 
     main {
       max-width: 700px;
@@ -82,8 +82,8 @@
     }
 
     .card {
-      background: rgba(100,72,20,0.92);
-      border: 1.5px solid #d4b030;
+      background: rgba(21,67,96,0.92);
+      border: 1.5px solid #f9e74a;
       border-radius: 8px;
       padding: 18px;
       margin-bottom: 18px;
@@ -92,29 +92,29 @@
     .card-label {
       font-size: 16px;
       letter-spacing: 3px;
-      color: #f0d060;
+      color: #f9e74a;
       text-transform: uppercase;
       margin-bottom: 12px;
       padding-bottom: 8px;
-      border-bottom: 1px solid #a07828;
+      border-bottom: 1px solid #1a6fa3;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
 
     .form-group { display: flex; flex-direction: column; gap: 10px; }
 
     input[type="text"], input[type="number"], select {
-      background: rgba(255,240,200,0.22);
-      border: 1.5px solid #d4b030;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid #f9e74a;
       border-radius: 4px;
       padding: 10px 14px;
-      color: #fff8e8;
+      color: #d6eaf8;
       font-size: 16px;
       font-family: Georgia, serif;
       outline: none;
       width: 100%;
       transition: border-color 0.2s, background 0.2s;
     }
-    input:focus, select:focus { border-color: #f0d060; background: rgba(255,240,180,0.28); }
+    input:focus, select:focus { border-color: #f9e74a; background: rgba(255,255,255,0.12); }
     input::placeholder { color: #c4a456; font-style: italic; font-size: 14px; }
 
     .row { display: flex; gap: 10px; }
@@ -128,16 +128,16 @@
     select {
       width: auto;
       cursor: pointer;
-      background: #5a3d12;
+      background: #1a5276;
     }
-    select option { background: #5a3d12; }
+    select option { background: #1a5276; }
 
     button {
-      background: linear-gradient(135deg, #8b6914, #c4a020);
+      background: linear-gradient(135deg, #1a6fa3, #2e86c1);
       border: none;
       border-radius: 4px;
       padding: 11px;
-      color: #1a1208;
+      color: #0d2e42;
       font-size: 15px;
       font-family: Georgia, serif;
       font-weight: bold;
@@ -152,10 +152,10 @@
     /* Result */
     #result-card {
       display: none;
-      background: rgba(180,135,25,0.2);
-      border: 2px solid #d4b020;
+      background: rgba(133,193,233,0.15);
+      border: 2px solid #2e86c1;
       border-radius: 2px 8px 8px 2px;
-      border-left: 6px solid #c4a020;
+      border-left: 6px solid #2e86c1;
       padding: 28px 28px 28px 36px;
       margin-bottom: 24px;
       text-align: center;
@@ -170,7 +170,7 @@
       display: flex;
       align-items: center;
       padding: 8px 0;
-      border-bottom: 1px solid rgba(90,64,16,0.3);
+      border-bottom: 1px solid rgba(30,90,130,0.3);
       gap: 12px;
       cursor: pointer;
       transition: background 0.2s;
@@ -187,29 +187,29 @@
       font-weight: bold;
       flex-shrink: 0;
     }
-    .club-result-name { flex: 1; font-size: 15px; color: #fff4d6; }
-    .club-result-note { font-size: 11px; color: #c4a040; text-align: right; }
+    .club-result-name { flex: 1; font-size: 15px; color: #d6eaf8; }
+    .club-result-note { font-size: 11px; color: #85c1e9; text-align: right; }
     .result-label {
       font-size: 16px;
       letter-spacing: 3px;
-      color: #f0d060;
+      color: #f9e74a;
       text-transform: uppercase;
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #a07828;
+      border-bottom: 1px solid #1a6fa3;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
     .page-number {
       font-size: clamp(60px, 18vw, 100px);
       font-weight: bold;
-      color: #f0d060;
+      color: #f9e74a;
       line-height: 1;
       text-shadow: 0 0 40px rgba(240,208,96,0.4);
       margin-bottom: 6px;
     }
-    .page-of { font-size: 18px; color: #ddb855; margin-bottom: 6px; }
-    .result-name { font-size: 16px; color: #fff4d6; margin-bottom: 12px; }
-    .result-name strong { color: #f0d060; }
+    .page-of { font-size: 18px; color: #aed6f1; margin-bottom: 6px; }
+    .result-name { font-size: 16px; color: #d6eaf8; margin-bottom: 12px; }
+    .result-name strong { color: #f9e74a; }
 
     .progress-track {
       background: rgba(255,255,255,0.08);
@@ -220,7 +220,7 @@
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #8b6914, #f0d060);
+      background: linear-gradient(90deg, #1a6fa3, #f9e74a);
       border-radius: 100px;
       transition: width 0.8s ease;
       width: 0%;
@@ -229,17 +229,17 @@
       display: flex;
       justify-content: space-between;
       font-size: 11px;
-      color: #b89040;
+      color: #85c1e9;
       margin-bottom: 14px;
     }
-    .result-note { font-size: 13px; color: #e0c060; font-style: italic; }
+    .result-note { font-size: 13px; color: #85c1e9; font-style: italic; }
 
     /* Share button */
     .share-btn {
       margin-top: 16px;
       background: transparent;
-      border: 1.5px solid #d4b030;
-      color: #c4a030;
+      border: 1.5px solid #f9e74a;
+      color: #85c1e9;
       font-size: 12px;
       letter-spacing: 2px;
       padding: 8px 20px;
@@ -250,15 +250,15 @@
 
     /* Table */
     .table-card {
-      background: rgba(95,68,18,0.85);
-      border: 1px solid #c4a020;
+      background: rgba(18,60,88,0.85);
+      border: 1px solid #2e86c1;
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 20px;
     }
     .table-header {
       padding: 14px 16px;
-      border-bottom: 1px solid #a07828;
+      border-bottom: 1px solid #1a6fa3;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -266,20 +266,20 @@
     .table-header-label {
       font-size: 16px;
       letter-spacing: 3px;
-      color: #f0d060;
+      color: #f9e74a;
       text-transform: uppercase;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
-    #entry-count { font-size: 13px; color: #b89040; }
+    #entry-count { font-size: 13px; color: #85c1e9; }
 
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    thead tr { border-bottom: 2px solid #c4a020; }
+    thead tr { border-bottom: 2px solid #2e86c1; }
     th {
       padding: 10px 8px;
       text-align: left;
       font-size: 13px;
       letter-spacing: 1px;
-      color: #f0d060;
+      color: #f9e74a;
       text-transform: uppercase;
       font-weight: bold;
       text-shadow: 0 1px 8px rgba(240,208,96,0.2);
@@ -290,8 +290,8 @@
     th:last-child   { width: 80px; padding-right: 12px; }
     td { padding: 12px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     td:first-child { padding-left: 12px; padding-right: 20px; width: 80px; }
-    td:last-child  { padding-right: 12px; font-size: 13px; color: #b89040; }
-    tbody tr { border-bottom: 1px solid rgba(90,64,16,0.3); transition: background 0.3s; }
+    td:last-child  { padding-right: 12px; font-size: 13px; color: #85c1e9; }
+    tbody tr { border-bottom: 1px solid rgba(30,90,130,0.3); transition: background 0.3s; }
     tbody tr:hover { background: rgba(180,135,25,0.1); }
 
     /* Hide Source column on small screens */
@@ -307,11 +307,11 @@
       padding: 2px 6px;
       font-size: 14px;
       font-weight: bold;
-      color: #1a1208;
+      color: #0d2e42;
     }
-    .name-cell { font-size: 15px; color: #fff4d6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
-    .wealth-cell { text-align: right; font-size: 12px; color: #c4a040; white-space: nowrap; }
-    .you-tag { font-size: 11px; margin-left: 6px; color: #c4a030; letter-spacing: 1px; }
+    .name-cell { font-size: 15px; color: #d6eaf8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    .wealth-cell { text-align: right; font-size: 12px; color: #85c1e9; white-space: nowrap; }
+    .you-tag { font-size: 11px; margin-left: 6px; color: #85c1e9; letter-spacing: 1px; }
 
     /* Mobile card layout */
     @media (max-width: 600px) {
@@ -380,18 +380,18 @@
 
     /* Category accordion */
     tr.group-header td {
-      background: rgba(50,33,6,0.95);
-      border-top: 1px solid #7a5c18;
-      border-bottom: 1px solid #4a3408;
+      background: rgba(21,67,96,0.95);
+      border-top: 1px solid #2e86c1;
+      border-bottom: 1px solid #1a5276;
       padding: 13px 16px;
       font-size: 16px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #f0c830;
+      color: #f9e74a;
       cursor: pointer;
       user-select: none;
     }
-    tr.group-header:hover td { background: rgba(70,48,10,0.98); color: #f0d060; }
+    tr.group-header:hover td { background: rgba(30,90,130,0.98); color: #fff9a0; }
     tr.group-header .g-arrow {
       display: inline-block;
       margin-right: 10px;
@@ -401,7 +401,7 @@
     }
     tr.group-header .g-count {
       float: right;
-      color: #a07828;
+      color: #85c1e9;
       font-size: 10px;
       letter-spacing: 1px;
       margin-top: 2px;
@@ -409,14 +409,14 @@
     }
     tr.group-row.g-hidden { display: none; }
     tr.subgroup-label td {
-      background: rgba(65,44,10,0.9);
+      background: rgba(13,46,66,0.9);
       padding: 6px 16px 6px 20px;
       font-size: 13px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #d4b050;
-      border-top: 1px solid rgba(196,160,32,0.2);
-      border-bottom: 1px solid rgba(196,160,32,0.2);
+      color: #f9e74a;
+      border-top: 1px solid rgba(46,134,193,0.2);
+      border-bottom: 1px solid rgba(46,134,193,0.2);
       pointer-events: none;
       font-style: italic;
     }
@@ -424,7 +424,7 @@
     /* Formula */
     .formula-card {
       background: rgba(100,72,20,0.65);
-      border: 1px solid #6a4e14;
+      border: 1px solid #1a5c8a;
       border-radius: 8px;
       padding: 20px 24px;
       font-size: 12px;
@@ -432,13 +432,13 @@
       line-height: 1.8;
       margin-bottom: 24px;
     }
-    .formula-title { font-size: 16px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; color: #f0d060; padding-bottom: 10px; border-bottom: 1px solid #6a4e14; text-shadow: 0 1px 10px rgba(240,208,96,0.2); }
-    .formula-eq { font-family: monospace; color: #8b6914; }
+    .formula-title { font-size: 16px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; color: #f9e74a; padding-bottom: 10px; border-bottom: 1px solid #1a5c8a; text-shadow: 0 1px 10px rgba(240,208,96,0.2); }
+    .formula-eq { font-family: monospace; color: #1a6fa3; }
 
     footer {
       text-align: center;
       font-size: 11px;
-      color: #a07828;
+      color: #1a6fa3;
       line-height: 1.8;
       padding-bottom: 40px;
     }
@@ -454,8 +454,8 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: #8b6914;
-      color: #1a1208;
+      background: #1a6fa3;
+      color: #0d2e42;
       padding: 10px 24px;
       border-radius: 4px;
       font-size: 13px;
@@ -471,15 +471,15 @@
 
     /* Watchlist */
     .watchlist-card {
-      background: rgba(95,68,18,0.85);
-      border: 1px solid #c4a020;
+      background: rgba(18,60,88,0.85);
+      border: 1px solid #2e86c1;
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 14px;
     }
     .watchlist-header {
       padding: 12px 20px;
-      border-bottom: 1px solid #a07828;
+      border-bottom: 1px solid #1a6fa3;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -487,7 +487,7 @@
     .watchlist-label {
       font-size: 16px;
       letter-spacing: 3px;
-      color: #f0d060;
+      color: #f9e74a;
       text-transform: uppercase;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
@@ -495,14 +495,14 @@
       padding: 14px;
       text-align: center;
       font-size: 13px;
-      color: #8a6820;
+      color: #1a5276;
       font-style: italic;
     }
     .watchlist-item {
       display: flex;
       align-items: center;
       padding: 8px 20px;
-      border-bottom: 1px solid rgba(90,64,16,0.3);
+      border-bottom: 1px solid rgba(30,90,130,0.3);
       gap: 12px;
       transition: background 0.2s;
     }
@@ -516,15 +516,15 @@
       padding: 2px 8px;
       font-size: 13px;
       font-weight: bold;
-      color: #1a1208;
+      color: #0d2e42;
       flex-shrink: 0;
     }
-    .watchlist-name { flex: 1; font-size: 15px; color: #fff4d6; }
-    .watchlist-wealth { font-size: 12px; color: #c4a040; margin-right: 8px; }
+    .watchlist-name { flex: 1; font-size: 15px; color: #d6eaf8; }
+    .watchlist-wealth { font-size: 12px; color: #85c1e9; margin-right: 8px; }
     .watchlist-remove {
       background: none;
-      border: 1px solid #6a4e14;
-      color: #8a6820;
+      border: 1px solid #1a5c8a;
+      color: #1a5276;
       border-radius: 3px;
       padding: 3px 8px;
       font-size: 11px;
@@ -534,12 +534,12 @@
       letter-spacing: 0;
       transition: all 0.2s;
     }
-    .watchlist-remove:hover { border-color: #8b6914; color: #8b6914; opacity: 1; }
+    .watchlist-remove:hover { border-color: #1a6fa3; color: #1a6fa3; opacity: 1; }
     .add-to-list-btn {
       margin-top: 12px;
       background: transparent;
-      border: 1px solid #c4a020;
-      color: #c4a040;
+      border: 1px solid #2e86c1;
+      color: #85c1e9;
       font-size: 12px;
       letter-spacing: 2px;
       padding: 8px 20px;
@@ -547,10 +547,10 @@
       display: inline-block;
       margin-left: 8px;
     }
-    .add-to-list-btn:hover { border-color: #8b6914; color: #f0d060; opacity: 1; }
+    .add-to-list-btn:hover { border-color: #1a6fa3; color: #f9e74a; opacity: 1; }
     .clear-list-btn {
       font-size: 10px;
-      color: #a07828;
+      color: #1a6fa3;
       background: none;
       border: none;
       cursor: pointer;
@@ -560,7 +560,7 @@
       padding: 0;
       width: auto;
     }
-    .clear-list-btn:hover { color: #8b6914; opacity: 1; }
+    .clear-list-btn:hover { color: #1a6fa3; opacity: 1; }
 
 
   </style>
@@ -574,46 +574,46 @@
   <div style="margin-top:10px;font-size:13px;color:#c4a456;font-style:italic">SpaceX IPO · Nasdaq · 12 June 2026 · Ticker: SPCX · $135/share · $1.77 Trillion valuation</div>
 
   <!-- Reveal strip -->
-  <div id="reveal-strip" onclick="revealAnswer()" style="cursor:pointer;margin:18px auto 0;max-width:480px;background:rgba(30,18,4,0.8);border:1.5px solid #c4a020;border-radius:8px;padding:16px 20px;text-align:center">
+  <div id="reveal-strip" onclick="revealAnswer()" style="cursor:pointer;margin:18px auto 0;max-width:480px;background:rgba(30,18,4,0.8);border:1.5px solid #2e86c1;border-radius:8px;padding:16px 20px;text-align:center">
     <div id="reveal-question">
-      <div style="font-size:13px;letter-spacing:1px;color:#f0d060;margin-bottom:4px">💭 Guess which page Elon Musk is on?</div>
-      <div style="font-size:11px;color:#8b6914;letter-spacing:1px">The book goes from $1 Million → $1 Trillion &nbsp;·&nbsp; tap to reveal</div>
+      <div style="font-size:13px;letter-spacing:1px;color:#f9e74a;margin-bottom:4px">💭 Guess which page Elon Musk is on?</div>
+      <div style="font-size:11px;color:#1a6fa3;letter-spacing:1px">The book goes from $1 Million → $1 Trillion &nbsp;·&nbsp; tap to reveal</div>
     </div>
-    <div id="reveal-answer" style="display:none;margin-top:14px;border-top:1px solid #5a4010;padding-top:14px">
-      <div id="reveal-page-number" style="font-size:28px;font-weight:bold;color:#f0d060;letter-spacing:2px;text-shadow:0 0 20px rgba(240,208,96,0.5)"></div>
-      <div id="reveal-page-label" style="font-size:12px;color:#c4a040;margin:6px 0 12px;letter-spacing:1px"></div>
+    <div id="reveal-answer" style="display:none;margin-top:14px;border-top:1px solid #154a72;padding-top:14px">
+      <div id="reveal-page-number" style="font-size:28px;font-weight:bold;color:#f9e74a;letter-spacing:2px;text-shadow:0 0 20px rgba(240,208,96,0.5)"></div>
+      <div id="reveal-page-label" style="font-size:12px;color:#85c1e9;margin:6px 0 12px;letter-spacing:1px"></div>
       <div style="display:flex;justify-content:center;gap:0;flex-wrap:wrap;margin-top:8px" id="reveal-examples"></div>
-      <div style="font-size:10px;color:#5a4010;margin-top:10px;letter-spacing:1px">Most famous people are near page 1 &nbsp;·&nbsp; Musk is near the end of the book</div>
-      <div style="margin-top:12px;font-size:11px;color:#6a4e14;letter-spacing:1px">tap to close ✕</div>
+      <div style="font-size:10px;color:#154a72;margin-top:10px;letter-spacing:1px">Most famous people are near page 1 &nbsp;·&nbsp; Musk is near the end of the book</div>
+      <div style="margin-top:12px;font-size:11px;color:#1a5c8a;letter-spacing:1px">tap to close ✕</div>
     </div>
   </div>
 
   <div class="disclaimer" style="padding:6px 16px;margin-top:10px">
-    <div class="disclaimer-body" style="font-size:11px;color:#8b6914;margin:0">
-      Public estimates only · Not financial advice &nbsp;<span onclick="openDisclaimerPopup()" style="color:#c4a040;text-decoration:underline;cursor:pointer;letter-spacing:1px">more info &amp; DYOR ›</span>
+    <div class="disclaimer-body" style="font-size:11px;color:#1a6fa3;margin:0">
+      Public estimates only · Not financial advice &nbsp;<span onclick="openDisclaimerPopup()" style="color:#85c1e9;text-decoration:underline;cursor:pointer;letter-spacing:1px">more info &amp; DYOR ›</span>
     </div>
   </div>
 
   <!-- Disclaimer popup -->
   <div id="disclaimer-popup" onclick="closeDisclaimerPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center">
-    <div onclick="event.stopPropagation()" style="background:#1a1208;border:1.5px solid #c4a020;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
-      <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#f0d060;text-transform:uppercase;margin-bottom:14px">About these figures</div>
-      <div style="font-size:13px;color:#c4a040;line-height:1.8;margin-bottom:14px">
-        All wealth figures are <strong style="color:#f0d060">publicly sourced estimates</strong> (Forbes, Sunday Times Rich List, press reports) and have <strong style="color:#f0d060">not been independently verified</strong>. Provided purely for <strong style="color:#f0d060">entertainment and perspective</strong>.<br><br>
-        Wealth tied to <strong style="color:#f0d060">stock prices</strong> (tech founders, investors) can fluctuate daily.<br><br>
-        Most others — footballers, musicians, actors, royals — are <strong style="color:#f0d060">annual estimates</strong> updated when Forbes or the Sunday Times Rich List publishes.<br><br>
-        <strong style="color:#f0d060">Historical figures</strong> are inflation-adjusted estimates and do not change.
+    <div onclick="event.stopPropagation()" style="background:#0d2e42;border:1.5px solid #2e86c1;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
+      <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#f9e74a;text-transform:uppercase;margin-bottom:14px">About these figures</div>
+      <div style="font-size:13px;color:#85c1e9;line-height:1.8;margin-bottom:14px">
+        All wealth figures are <strong style="color:#f9e74a">publicly sourced estimates</strong> (Forbes, Sunday Times Rich List, press reports) and have <strong style="color:#f9e74a">not been independently verified</strong>. Provided purely for <strong style="color:#f9e74a">entertainment and perspective</strong>.<br><br>
+        Wealth tied to <strong style="color:#f9e74a">stock prices</strong> (tech founders, investors) can fluctuate daily.<br><br>
+        Most others — footballers, musicians, actors, royals — are <strong style="color:#f9e74a">annual estimates</strong> updated when Forbes or the Sunday Times Rich List publishes.<br><br>
+        <strong style="color:#f9e74a">Historical figures</strong> are inflation-adjusted estimates and do not change.
       </div>
-      <div style="border-top:1px solid #3a2808;padding-top:14px;font-size:12px;color:#8b6914;line-height:1.7">
+      <div style="border-top:1px solid #3a2808;padding-top:14px;font-size:12px;color:#1a6fa3;line-height:1.7">
         Not financial, investment, or legal advice.<br>
-        <strong style="color:#c4a040">Do Your Own Research · DYOR</strong>
+        <strong style="color:#85c1e9">Do Your Own Research · DYOR</strong>
       </div>
-      <div onclick="closeDisclaimerPopup()" style="position:absolute;top:12px;right:16px;color:#6a4e14;font-size:18px;cursor:pointer;line-height:1">✕</div>
+      <div onclick="closeDisclaimerPopup()" style="position:absolute;top:12px;right:16px;color:#1a5c8a;font-size:18px;cursor:pointer;line-height:1">✕</div>
     </div>
   </div>
-  <div id="countdown-banner" style="margin-top:16px;background:rgba(240,208,96,0.18);border:1px solid #d4b020;border-radius:6px;padding:12px 20px;display:inline-block">
-    <span style="font-size:13px;letter-spacing:2px;color:#f0d060;text-transform:uppercase;font-weight:bold;text-shadow:0 0 12px rgba(240,208,96,0.5)">Musk hits page 335 </span>
-    <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#f0d060;letter-spacing:1px">calculating...</span>
+  <div id="countdown-banner" style="margin-top:16px;background:rgba(240,208,96,0.18);border:1px solid #2e86c1;border-radius:6px;padding:12px 20px;display:inline-block">
+    <span style="font-size:13px;letter-spacing:2px;color:#f9e74a;text-transform:uppercase;font-weight:bold;text-shadow:0 0 12px rgba(240,208,96,0.5)">Musk hits page 335 </span>
+    <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#f9e74a;letter-spacing:1px">calculating...</span>
   </div>
 </header>
 
@@ -626,10 +626,10 @@
       <div class="row">
         <div style="flex:1;position:relative;display:flex;align-items:center">
           <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Rod Stewart, Ronaldo" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
-          <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#c4a040;line-height:1;user-select:none" title="Clear">✕</span>
+          <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#85c1e9;line-height:1;user-select:none" title="Clear">✕</span>
         </div>
         <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
-        <button id="mic-btn" onclick="toggleSpeech()" title="Speak a name" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0;background:transparent;border:1.5px solid #6a4e14;border-radius:6px;color:#c4a040;cursor:pointer;transition:all 0.2s">🎤</button>
+        <button id="mic-btn" onclick="toggleSpeech()" title="Speak a name" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0;background:transparent;border:1.5px solid #1a5c8a;border-radius:6px;color:#85c1e9;cursor:pointer;transition:all 0.2s">🎤</button>
       </div>
       <div class="row">
         <select id="currency-select" style="flex:2">
@@ -666,12 +666,13 @@
           <option value="trillions">Trillions</option>
         </select>
       </div>
-      <div id="rate-status" style="font-size:11px;color:#6a5020;text-align:right;margin-top:-6px"></div>
+      <div id="rate-status" style="font-size:11px;color:#1a5c8a;text-align:right;margin-top:-6px"></div>
     </div>
   </div>
 
   <!-- Result -->
   <div id="result-card">
+    <span onclick="clearResult()" style="position:absolute;top:10px;right:12px;cursor:pointer;font-size:20px;color:#f9e74a;line-height:1" title="Clear result">✕</span>
     <div class="page-number" id="result-page">—</div>
     <div class="page-of" id="result-page-of">of 335</div>
     <div class="result-name" id="result-text"></div>
@@ -693,9 +694,9 @@
   <div class="watchlist-card" id="my-entries-card" style="display:none">
     <div class="watchlist-header">
       <span class="watchlist-label">My Own Entries</span>
-      <span style="font-size:11px;color:#c4a040;cursor:pointer" onclick="document.getElementById('my-entries-help').style.display = document.getElementById('my-entries-help').style.display === 'none' ? 'block' : 'none'">ⓘ what's this?</span>
+      <span style="font-size:11px;color:#85c1e9;cursor:pointer" onclick="document.getElementById('my-entries-help').style.display = document.getElementById('my-entries-help').style.display === 'none' ? 'block' : 'none'">ⓘ what's this?</span>
     </div>
-    <div id="my-entries-help" style="display:none;padding:10px 20px;font-size:12px;color:#c4a040;font-style:italic;border-bottom:1px solid rgba(90,64,16,0.3)">
+    <div id="my-entries-help" style="display:none;padding:10px 20px;font-size:12px;color:#85c1e9;font-style:italic;border-bottom:1px solid rgba(30,90,130,0.3)">
       Add anyone you like — a friend, a colleague, yourself — using "Find a Celebrity" with a manual wealth amount, then tap "Save as My Own Entry". They'll appear in the main table below, permanently, only on this device.
     </div>
     <div id="my-entries-list"></div>
@@ -707,8 +708,8 @@
     <div id="club-results-list"></div>
   </div>
 
-  <!-- Watchlist — hidden from main view but JS still works -->
-  <div class="watchlist-card" id="watchlist-card" style="display:none">
+  <!-- Watchlist -->
+  <div class="watchlist-card" id="watchlist-card">
     <div class="watchlist-header">
       <div class="watchlist-label">⭐ My List</div>
       <button class="clear-list-btn" onclick="clearWatchlist()">Clear all</button>
@@ -722,7 +723,7 @@
   <div class="table-card">
     <div class="table-header">
       <div class="table-header-label">The Dot Book</div>
-      <div style="display:flex;gap:16px;align-items:center"><div style="font-size:10px;color:#5a4010;letter-spacing:1px">Source: Forbes public data · Illustrative only</div><div id="entry-count"></div></div>
+      <div style="display:flex;gap:16px;align-items:center"><div style="font-size:10px;color:#154a72;letter-spacing:1px">Source: Forbes public data · Illustrative only</div><div id="entry-count"></div></div>
     </div>
     <table>
       <thead>
@@ -765,13 +766,13 @@
     if (page <= 200) return '#d05830';   // coral-orange
     if (page <= 250) return '#c04040';   // red
     if (page <= 335) return '#a02828';   // dark red
-    if (page <= 460) return '#f0d060';  // gold — Musk tier
+    if (page <= 460) return '#f9e74a';  // gold — Musk tier
     if (page <= 800) return '#cc88ff';  // purple — historical billionaires
     return '#aaddff';                   // platinum — ancient emperors
   }
 
   function getBadgeTextColor(page) {
-    return page > 335 ? '#1a1208' : '#ffffff';
+    return page > 335 ? '#0d2e42' : '#ffffff';
   }
 
 
@@ -1457,23 +1458,23 @@
     const pg = getPage(wealthM);
     const star = pg > 800 ? ' ★★★' : pg > 460 ? ' ★★' : pg > 335 ? ' ★' : '';
 
-    let html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="this.remove()">';
-    html += '<div style="background:#2c1f0e;border:2px solid #c4a020;border-radius:8px;padding:28px;max-width:340px;width:100%;text-align:center;position:relative" onclick="event.stopPropagation()">';
-    html += '<div style="font-size:18px;color:#f0d060;font-weight:bold;margin-bottom:12px">' + escHtml(name) + '</div>';
-    html += '<div style="font-size:13px;color:#8b6914;margin-bottom:16px;letter-spacing:1px">' + escHtml(note) + '</div>';
-    html += '<div style="font-size:32px;font-weight:bold;color:#f0d060;margin-bottom:6px">' + usd + '</div>';
-    if (local) html += '<div style="font-size:16px;color:#c4a040;margin-bottom:6px">' + local + '</div>';
-    html += '<div style="font-size:13px;color:#8b6914;margin-bottom:16px">Page <strong style="color:#f0d060">' + pg + '</strong>' + star + ' of The Dot Book</div>';
-    if (url) html += '<a href="' + url + '" onclick="window.open(\'' + url + '\',\'_blank\');return false;" style="display:inline-block;background:#ffd700;color:#1a1208;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
-    html += '<div style="font-size:10px;color:#5a4010;margin-bottom:16px">⚠ Forbes public estimate · Figures fluctuate daily · DYOR</div>';
-    html += '<button id="dotbook-close-btn" style="background:linear-gradient(135deg,#8b6914,#c4a020);border:none;border-radius:4px;padding:10px 24px;color:#1a1208;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
+    let html = '<div id="wealth-popup-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="document.getElementById(\'wealth-popup-overlay\').remove()">';
+    html += '<div style="background:#0d2e42;border:2px solid #2e86c1;border-radius:8px;padding:28px;max-width:340px;width:100%;text-align:center;position:relative" onclick="event.stopPropagation()">';
+    html += '<div style="font-size:18px;color:#f9e74a;font-weight:bold;margin-bottom:12px">' + escHtml(name) + '</div>';
+    html += '<div style="font-size:13px;color:#1a6fa3;margin-bottom:16px;letter-spacing:1px">' + escHtml(note) + '</div>';
+    html += '<div style="font-size:32px;font-weight:bold;color:#f9e74a;margin-bottom:6px">' + usd + '</div>';
+    if (local) html += '<div style="font-size:16px;color:#85c1e9;margin-bottom:6px">' + local + '</div>';
+    html += '<div style="font-size:13px;color:#1a6fa3;margin-bottom:16px">Page <strong style="color:#f9e74a">' + pg + '</strong>' + star + ' of The Dot Book</div>';
+    if (url) html += '<a href="' + url + '" onclick="window.open(\'' + url + '\',\'_blank\');return false;" style="display:inline-block;background:#f9e74a;color:#0d2e42;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
+    html += '<div style="font-size:10px;color:#154a72;margin-bottom:16px">⚠ Forbes public estimate · Figures fluctuate daily · DYOR</div>';
+    html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:linear-gradient(135deg,#1a6fa3,#2e86c1);border:none;border-radius:4px;padding:10px 24px;color:#0d2e42;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
     html += '</div></div>';
 
+    // Remove any existing popup first
+    const existing = document.getElementById('wealth-popup-overlay');
+    if (existing) existing.remove();
+
     document.body.insertAdjacentHTML('beforeend', html);
-    const closeBtn = document.getElementById('dotbook-close-btn');
-    if (closeBtn) closeBtn.addEventListener('click', function() {
-      this.closest('div[style*="position:fixed"]').remove();
-    });
   }
 
   // ── Category classification ────────────────────────────
@@ -1523,7 +1524,12 @@
         n.includes('rugby') || n.includes('horse racing') || n.includes('motogp') ||
         n.includes('racing') || n.includes('chess') || n.includes('athletics') ||
         n.includes('darts') || n.includes('snooker') || n.includes('wwe') ||
-        n.includes('wrestling'))
+        n.includes('wrestling') || n.includes('nascar') || n.includes('indycar') ||
+        n.includes('wrc') || n.includes('rally') || n.includes('superbike') ||
+        n.includes('motocross') || n.includes('supercross') || n.includes('swimming') ||
+        n.includes('volleyball') || n.includes('badminton') || n.includes('field hockey') ||
+        n.includes('table tennis') || n.includes('baseball') || n.includes('ice hockey') ||
+        n.includes('mlb') || n.includes('nhl'))
       return 'Sport';
     if (n.includes('fashion') || n.includes('designer') || n.includes('luxury') ||
         n.includes('clothing'))
@@ -1544,23 +1550,51 @@
   }
 
   const collapsedGroups = new Set();
+  const collapsedSubgroups = new Set();
 
   function toggleGroup(groupName) {
-    const isOpen = !collapsedGroups.has(groupName);
-    // Close everything first
+    const wasOpen = !collapsedGroups.has(groupName);
     for (const g of GROUP_ORDER) collapsedGroups.add(g);
-    document.querySelectorAll('#table-body tr.group-row').forEach(r => r.classList.add('g-hidden'));
-    document.querySelectorAll('#table-body tr.group-header .g-arrow').forEach(a => a.style.transform = 'rotate(-90deg)');
-    // If it was open, leave it closed (toggle off). If it was closed, open it.
-    if (!isOpen) {
+    document.querySelectorAll('#table-body tr').forEach(r => {
+      if (r.classList.contains('group-row')) r.style.display = 'none';
+    });
+    document.querySelectorAll('#table-body .g-arrow').forEach(a => a.style.transform = 'rotate(-90deg)');
+    collapsedSubgroups.clear();
+    if (wasOpen) {
       collapsedGroups.delete(groupName);
-      document.querySelectorAll('#table-body tr.group-row[data-group="' + groupName + '"]').forEach(r => r.classList.remove('g-hidden'));
-      const header = document.querySelector('#table-body tr.group-header[data-group="' + groupName + '"]');
-      if (header) { const a = header.querySelector('.g-arrow'); if (a) a.style.transform = 'rotate(0deg)'; }
+      let sid = -1;
+      document.querySelectorAll('#table-body tr').forEach(r => {
+        if (!r.classList.contains('group-row')) return;
+        if (r.dataset.group !== groupName) return;
+        if (r.classList.contains('subgroup-label')) {
+          r.style.display = '';
+          sid = parseInt(r.dataset.subid);
+          if (!isNaN(sid)) collapsedSubgroups.add(sid);
+        }
+      });
+      const hdr = document.querySelector('tr.group-header[data-group="' + groupName + '"]');
+      if (hdr) { const a = hdr.querySelector('.g-arrow'); if (a) a.style.transform = 'rotate(0deg)'; }
     }
   }
 
-  // Build ordered list of {type:'sub'|'person', ...} per category from CELEB_DB insertion order
+  function toggleSubgroup(sid) {
+    sid = Number(sid);
+    const nowOpen = collapsedSubgroups.has(sid);
+    const lbl = document.querySelector('tr.subgroup-label[data-subid="' + sid + '"]');
+    document.querySelectorAll('tr.group-row[data-subid="' + sid + '"]').forEach(r => {
+      if (r.classList.contains('subgroup-label')) return;
+      r.style.display = nowOpen ? '' : 'none';
+    });
+    if (nowOpen) {
+      collapsedSubgroups.delete(sid);
+      if (lbl) { const a = lbl.querySelector('.g-arrow'); if (a) a.style.transform = 'rotate(0deg)'; }
+    } else {
+      collapsedSubgroups.add(sid);
+      if (lbl) { const a = lbl.querySelector('.g-arrow'); if (a) a.style.transform = 'rotate(-90deg)'; }
+    }
+  }
+
+    // Build ordered list of {type:'sub'|'person', ...} per category from CELEB_DB insertion order
   function buildOrderedEntries() {
     const allPeople = allEntries(); // sorted by wealth, no sentinels
     // Build a map of name->person for quick lookup
@@ -1644,24 +1678,24 @@
     return subgroupSequence;
   }
 
-  function renderPersonRow(person, hidden, groupName) {
+  function renderPersonRow(person, hidden, groupName, subAttr) {
     const pg = getPage(person.wealth);
     const isUser = person.isUser;
     const isMusk = person.name === 'Elon Musk';
     const isKevin = person.name === 'Kevin Cook' && !isUser;
     const rowBg = isUser ? 'rgba(240,208,96,0.08)' : isMusk ? 'rgba(240,208,96,0.12)' : '';
-    const nameColor = isUser ? '#f0d060' : isKevin ? '#c4a456' : '#fff0c8';
+    const nameColor = isUser ? '#f9e74a' : isKevin ? '#c4a456' : '#fff0c8';
     const nameBold = isUser ? 'bold' : 'normal';
-    const badgeBg = isMusk ? '#f0d060' : getPageColor(pg);
+    const badgeBg = isMusk ? '#f9e74a' : getPageColor(pg);
     const badgeShadow = isMusk ? '0 0 12px rgba(240,208,96,0.8)' : 'none';
-    return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid rgba(90,64,16,0.3);background:' + rowBg + '">'
-      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:' + (isMusk ? '#1a1208' : getBadgeTextColor(pg)) + ';box-shadow:' + badgeShadow + ';font-size:' + (isMusk?'17px':'15px') + '">' + pg + '</span></td>'
+    return '<tr class="group-row" data-group="' + escHtml(groupName) + '"' + (subAttr || '') + ' style="' + (hidden ? 'display:none;' : '') + 'border-bottom:1px solid rgba(30,90,130,0.3);background:' + rowBg + '">'
+      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:' + (isMusk ? '#0d2e42' : getBadgeTextColor(pg)) + ';box-shadow:' + badgeShadow + ';font-size:' + (isMusk?'17px':'15px') + '">' + pg + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
-      + '<span style="font-size:11px;color:#a07828;margin-left:4px">&#9432;</span>'
+      + '<span style="font-size:11px;color:#1a6fa3;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#fff4d6;text-decoration:none;border-bottom:1px dotted #f0d060">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#1a1208;background:#ffd700;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#d6eaf8;text-decoration:none;border-bottom:1px dotted #f9e74a">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#0d2e42;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
       + '</tr>';
   }
 
@@ -1685,6 +1719,7 @@
     }
 
     let html = '';
+    let subIdx = 0; // global subgroup counter — ensures unique data-subid across all categories
     for (const groupName of GROUP_ORDER) {
       const items = ordered[groupName];
       if (!items || items.length === 0) continue;
@@ -1695,7 +1730,7 @@
       // For Top 20 group, make the "20" larger
       const isTop20 = groupName === 'Top 20 Richest People on Earth';
       const displayGroupName = isTop20
-        ? 'Top <span style="font-size:20px;font-weight:bold;color:#f0d060;line-height:1;display:inline;vertical-align:baseline;text-shadow:0 0 10px rgba(240,208,96,0.5)">20</span> Richest People on Earth'
+        ? 'Top <span style="font-size:20px;font-weight:bold;color:#f9e74a;line-height:1;display:inline;vertical-align:baseline;text-shadow:0 0 10px rgba(240,208,96,0.5)">20</span> Richest People on Earth'
         : escHtml(groupName);
       html += '<tr class="group-header" data-group="' + escHtml(groupName) + '" onclick="toggleGroup(\'' + safeGroup + '\')">'
             + '<td colspan="3">'
@@ -1703,12 +1738,15 @@
             + displayGroupName
             + '<span class="g-count">' + peopleCount + ' people</span>'
             + '</td></tr>';
+      let currentSubId = null;
       for (const item of items) {
         if (item.type === 'sub') {
-          html += '<tr class="group-row subgroup-label' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '">'
-                + '<td colspan="3">— ' + escHtml(item.label) + ' —</td></tr>';
+          currentSubId = subIdx++;
+          html += '<tr class="group-row subgroup-label" data-group="' + escHtml(groupName) + '" data-subid="' + currentSubId + '" style="' + (hidden ? 'display:none;' : '') + 'cursor:pointer" onclick="event.stopPropagation();toggleSubgroup(' + currentSubId + ')">'
+                + '<td colspan="3"><span class="g-arrow" style="display:inline-block;margin-right:8px;font-size:9px;transition:transform 0.25s ease;transform:rotate(-90deg)">&#9660;</span>— ' + escHtml(item.label) + ' —</td></tr>';
         } else {
-          html += renderPersonRow(item.person, hidden, groupName);
+          const subAttr = currentSubId !== null ? ' data-subid="' + currentSubId + '"' : '';
+          html += renderPersonRow(item.person, hidden, groupName, subAttr);
         }
       }
     }
@@ -1808,12 +1846,10 @@
     '_sub_swiftwedding':   { _subgroup: "Taylor Swift's Wedding — Rumoured Guests (unconfirmed)" },
     // ── These are media-reported / rumoured guests only — nothing has
     // been officially confirmed by Taylor Swift or Travis Kelce. DYOR.
-    'travis kelce':        { wealth: 90,     note: 'Music · TV · Sport · USA · NFL · Kansas City Chiefs · Groom', url: 'https://en.wikipedia.org/wiki/Travis_Kelce' },
     'zoe kravitz':         { wealth: 30,     note: 'Music · Film · USA · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Zoe_Kravitz' },
     'selena gomez':        { wealth: 1700,   note: 'Music · TV · Business · USA · Rare Beauty · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Selena_Gomez' },
     'cara delevingne':     { wealth: 60,     note: 'Music · TV · Fashion · UK · Model · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Cara_Delevingne' },
     'jason kelce':         { wealth: 30,     note: 'Music · TV · Sport · USA · Former NFL · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Jason_Kelce' },
-    'patrick mahomes':     { wealth: 100,    note: 'Music · Sport · USA · NFL · Kansas City Chiefs · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Patrick_Mahomes' },
     'brittany mahomes':    { wealth: 100,    note: 'Music · TV · USA · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Brittany_Mahomes' },
     'andy reid':           { wealth: 30,     note: 'Music · Sport · USA · NFL Head Coach · Kansas City Chiefs · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Andy_Reid' },
     'sombr':               { wealth: 5,      note: 'Music · USA · Rising artist · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Sombr' },
@@ -2249,25 +2285,77 @@
     'usain bolt':          { wealth: 90,     note: 'Sport · Athletics · Jamaica · 8 Olympic golds', url: 'https://en.wikipedia.org/wiki/Usain_Bolt' },
     'mo farah':            { wealth: 8,      note: 'Sport · Athletics · UK · Sir Mo · 4x Olympic champion', url: 'https://en.wikipedia.org/wiki/Mo_Farah' },
     'jessica ennis':       { wealth: 5,      note: 'Sport · Athletics · UK · Olympic heptathlon', url: 'https://en.wikipedia.org/wiki/Jessica_Ennis' },
-    'jessica ennis-hill':  { wealth: 5,      note: 'Sport · Athletics · UK', url: 'https://en.wikipedia.org/wiki/Jessica_Ennis-hill' },
+    'jessica ennis-hill':  { wealth: 5,      note: 'Sport · Athletics · UK', url: 'https://en.wikipedia.org/wiki/Jessica_Ennis-Hill' },
     'colin jackson':       { wealth: 3,      note: 'Sport · Athletics · Wales · TV', url: 'https://en.wikipedia.org/wiki/Colin_Jackson' },
     'denise lewis':        { wealth: 3,      note: 'Sport · Athletics · UK', url: 'https://en.wikipedia.org/wiki/Denise_Lewis' },
     'kelly holmes':        { wealth: 3,      note: 'Sport · Athletics · UK · Dame Kelly · 2x Olympic gold Athens 2004', url: 'https://en.wikipedia.org/wiki/Kelly_Holmes' },
-    'michael johnson':     { wealth: 10,     note: 'Sport · Athletics · USA · 4x Olympic gold · TV Pundit', url: 'https://en.wikipedia.org/wiki/Michael_Johnson' },
+    'michael johnson':     { wealth: 10,     note: 'Sport · Athletics · USA · 4x Olympic gold · TV Pundit', url: 'https://en.wikipedia.org/wiki/Michael_Johnson_(sprinter)' },
     'carl lewis':          { wealth: 10,     note: 'Sport · Athletics · USA · 9 Olympic golds', url: 'https://en.wikipedia.org/wiki/Carl_Lewis' },
     'florence griffith joyner':{ wealth: 1,  note: 'Sport · Athletics · USA · Historical · Flo-Jo', url: 'https://en.wikipedia.org/wiki/Florence_Griffith_Joyner' },
+    'noah lyles':          { wealth: 8,      note: 'Sport · Athletics · USA · World 100m champion 2023', url: 'https://en.wikipedia.org/wiki/Noah_Lyles' },
+    'faith kipyegon':      { wealth: 5,      note: 'Sport · Athletics · Kenya · 3x Olympic 1500m champion', url: 'https://en.wikipedia.org/wiki/Faith_Kipyegon' },
+    'mondo duplantis':     { wealth: 6,      note: 'Sport · Athletics · Sweden · World record pole vault', url: 'https://en.wikipedia.org/wiki/Mondo_Duplantis' },
+
+    // ── AMERICAN FOOTBALL / NFL ──────────────────────────
+    '_sub_nfl_players':    { _subgroup: 'American Football / NFL' },
+    'tom brady':           { wealth: 350,    note: 'Sport · American Football · NFL · USA · 7x Super Bowl · Fox Sports · Birmingham City owner', url: 'https://en.wikipedia.org/wiki/Tom_Brady' },
+    'peyton manning':      { wealth: 250,    note: 'Sport · American Football · NFL · USA · 2x Super Bowl champion', url: 'https://en.wikipedia.org/wiki/Peyton_Manning' },
+    'patrick mahomes':     { wealth: 180,    note: 'Sport · American Football · NFL · USA · Kansas City Chiefs · 3x Super Bowl', url: 'https://en.wikipedia.org/wiki/Patrick_Mahomes' },
+    'roger staubach':      { wealth: 600,    note: 'Sport · American Football · NFL · USA · Real estate empire', url: 'https://en.wikipedia.org/wiki/Roger_Staubach' },
+    'travis kelce':        { wealth: 90,     note: 'Sport · American Football · NFL · USA · Kansas City Chiefs · Taylor Swift partner', url: 'https://en.wikipedia.org/wiki/Travis_Kelce' },
+    'dak prescott':        { wealth: 90,     note: 'Sport · American Football · NFL · USA · Dallas Cowboys', url: 'https://en.wikipedia.org/wiki/Dak_Prescott' },
+    'joe burrow':          { wealth: 50,     note: 'Sport · American Football · NFL · USA · Cincinnati Bengals', url: 'https://en.wikipedia.org/wiki/Joe_Burrow' },
+    'aaron rodgers':       { wealth: 200,    note: 'Sport · American Football · NFL · USA · New York Jets', url: 'https://en.wikipedia.org/wiki/Aaron_Rodgers' },
+    'russell wilson':      { wealth: 165,    note: 'Sport · American Football · NFL · USA · Pittsburgh Steelers', url: 'https://en.wikipedia.org/wiki/Russell_Wilson' },
+    'lamar jackson':       { wealth: 50,     note: 'Sport · American Football · NFL · USA · Baltimore Ravens · 2x MVP', url: 'https://en.wikipedia.org/wiki/Lamar_Jackson' },
+    'justin jefferson':    { wealth: 40,     note: 'Sport · American Football · NFL · USA · Minnesota Vikings', url: 'https://en.wikipedia.org/wiki/Justin_Jefferson' },
+    'shai gilgeous-alexander': { wealth: 30, note: 'Sport · Basketball · USA · Oklahoma City Thunder · NBA MVP 2025', url: 'https://en.wikipedia.org/wiki/Shai_Gilgeous-Alexander' },
+    'ja morant':           { wealth: 25,     note: 'Sport · Basketball · USA · Memphis Grizzlies', url: 'https://en.wikipedia.org/wiki/Ja_Morant' },
+    'jayson tatum':        { wealth: 50,     note: 'Sport · Basketball · USA · Boston Celtics · NBA champion 2024', url: 'https://en.wikipedia.org/wiki/Jayson_Tatum' },
+
+    // ── BADMINTON ────────────────────────────────────────
+    '_sub_badminton':      { _subgroup: 'Badminton' },
+    'lin dan':             { wealth: 30,     note: 'Sport · Badminton · China · 2x Olympic champion · Super Dan', url: 'https://en.wikipedia.org/wiki/Lin_Dan' },
+    'lee chong wei':       { wealth: 20,     note: 'Sport · Badminton · Malaysia · 3x Olympic silver', url: 'https://en.wikipedia.org/wiki/Lee_Chong_Wei' },
+    'carolina marin':      { wealth: 5,      note: 'Sport · Badminton · Spain · Olympic champion 2016', url: 'https://en.wikipedia.org/wiki/Carolina_Marin' },
+    'viktor axelsen':      { wealth: 8,      note: 'Sport · Badminton · Denmark · 2x Olympic champion', url: 'https://en.wikipedia.org/wiki/Viktor_Axelsen' },
+    'tai tzu ying':        { wealth: 5,      note: 'Sport · Badminton · Taiwan · 8x world number 1', url: 'https://en.wikipedia.org/wiki/Tai_Tzu-ying' },
+    'an se young':         { wealth: 4,      note: 'Sport · Badminton · South Korea · Olympic champion 2024', url: 'https://en.wikipedia.org/wiki/An_Se-young' },
+    'shi yuqi':            { wealth: 4,      note: 'Sport · Badminton · China · World champion', url: 'https://en.wikipedia.org/wiki/Shi_Yuqi' },
+
+    // ── BASEBALL / MLB ────────────────────────────────────
+    '_sub_baseball':       { _subgroup: 'Baseball / MLB' },
+    'shohei ohtani':       { wealth: 150,    note: 'Sport · Baseball · MLB · Japan · Los Angeles Dodgers · $700M record contract', url: 'https://en.wikipedia.org/wiki/Shohei_Ohtani' },
+    'mike trout':          { wealth: 120,    note: 'Sport · Baseball · MLB · USA · Los Angeles Angels · 3x MVP', url: 'https://en.wikipedia.org/wiki/Mike_Trout' },
+    'derek jeter':         { wealth: 200,    note: 'Sport · Baseball · MLB · USA · New York Yankees · 5x World Series', url: 'https://en.wikipedia.org/wiki/Derek_Jeter' },
+    'alex rodriguez':      { wealth: 350,    note: 'Sport · Baseball · MLB · Business · USA · A-Rod · Jennifer Lopez partner', url: 'https://en.wikipedia.org/wiki/Alex_Rodriguez' },
+    'david ortiz':         { wealth: 60,     note: 'Sport · Baseball · MLB · USA · Dominican Republic · Big Papi', url: 'https://en.wikipedia.org/wiki/David_Ortiz' },
+    'juan soto':           { wealth: 50,     note: 'Sport · Baseball · MLB · Dominican Republic · New York Mets', url: 'https://en.wikipedia.org/wiki/Juan_Soto' },
+    'mookie betts':        { wealth: 40,     note: 'Sport · Baseball · MLB · USA · Los Angeles Dodgers', url: 'https://en.wikipedia.org/wiki/Mookie_Betts' },
+    'gerrit cole':         { wealth: 40,     note: 'Sport · Baseball · MLB · USA · New York Yankees', url: 'https://en.wikipedia.org/wiki/Gerrit_Cole' },
+    'freddie freeman':     { wealth: 35,     note: 'Sport · Baseball · MLB · Canada · Los Angeles Dodgers', url: 'https://en.wikipedia.org/wiki/Freddie_Freeman' },
+    'ichiro suzuki':       { wealth: 180,    note: 'Sport · Baseball · MLB · Japan · Seattle Mariners · 10x Gold Glove', url: 'https://en.wikipedia.org/wiki/Ichiro_Suzuki' },
+
     // ── BASKETBALL ───────────────────────────────────────
     '_sub_basketball':     { _subgroup: 'Basketball' },
-    'lebron james':        { wealth: 1400,   note: 'Sport · Basketball · Business · USA · Forbes 2026', url: 'https://en.wikipedia.org/wiki/Lebron_James' },
+    'lebron james':        { wealth: 1400,   note: 'Sport · Basketball · Business · USA · Forbes 2026 · First active NBA billionaire', url: 'https://en.wikipedia.org/wiki/LeBron_James' },
     'michael jordan':      { wealth: 3600,   note: 'Sport · Basketball · Business · USA · 6x NBA champion', url: 'https://en.wikipedia.org/wiki/Michael_Jordan' },
     'magic johnson':       { wealth: 1200,   note: 'Sport · Basketball · Business · USA', url: 'https://en.wikipedia.org/wiki/Magic_Johnson' },
-    'shaquille oneal':     { wealth: 400,    note: 'Sport · Basketball · Business · USA', url: 'https://en.wikipedia.org/wiki/Shaquille_Oneal' },
-    'shaq':                { wealth: 400,    note: 'Sport · Basketball · Business · USA', url: 'https://en.wikipedia.org/wiki/Shaq' },
+    'shaquille oneal':     { wealth: 400,    note: 'Sport · Basketball · Business · USA', url: 'https://en.wikipedia.org/wiki/Shaquille_O%27Neal' },
+    'shaq':                { wealth: 400,    note: 'Sport · Basketball · Business · USA · Shaquille O\'Neal', url: 'https://en.wikipedia.org/wiki/Shaquille_O%27Neal' },
     'kobe bryant':         { wealth: 600,    note: 'Sport · Basketball · USA · Historical · 5x NBA champion', url: 'https://en.wikipedia.org/wiki/Kobe_Bryant' },
-    'stephen curry':       { wealth: 160,    note: 'Sport · Basketball · USA', url: 'https://en.wikipedia.org/wiki/Stephen_Curry' },
-    'kevin durant':        { wealth: 200,    note: 'Sport · Basketball · USA', url: 'https://en.wikipedia.org/wiki/Kevin_Durant' },
+    'stephen curry':       { wealth: 160,    note: 'Sport · Basketball · USA · Golden State Warriors · 4x NBA champion', url: 'https://en.wikipedia.org/wiki/Stephen_Curry' },
+    'kevin durant':        { wealth: 200,    note: 'Sport · Basketball · USA · Houston Rockets', url: 'https://en.wikipedia.org/wiki/Kevin_Durant' },
     'dirk nowitzki':       { wealth: 140,    note: 'Sport · Basketball · Germany', url: 'https://en.wikipedia.org/wiki/Dirk_Nowitzki' },
     'yao ming':            { wealth: 120,    note: 'Sport · Basketball · China', url: 'https://en.wikipedia.org/wiki/Yao_Ming' },
+    'giannis antetokounmpo': { wealth: 70,   note: 'Sport · Basketball · Greece · Milwaukee Bucks · 2x MVP', url: 'https://en.wikipedia.org/wiki/Giannis_Antetokounmpo' },
+    'nikola jokic':        { wealth: 60,     note: 'Sport · Basketball · Serbia · Denver Nuggets · 3x MVP', url: 'https://en.wikipedia.org/wiki/Nikola_Jokic' },
+    'luka doncic':         { wealth: 80,     note: 'Sport · Basketball · Slovenia · Los Angeles Lakers', url: 'https://en.wikipedia.org/wiki/Luka_Doncic' },
+    'james harden':        { wealth: 80,     note: 'Sport · Basketball · USA · Los Angeles Clippers', url: 'https://en.wikipedia.org/wiki/James_Harden' },
+    'joel embiid':         { wealth: 50,     note: 'Sport · Basketball · Cameroon · Philadelphia 76ers', url: 'https://en.wikipedia.org/wiki/Joel_Embiid' },
+    'victor wembanyama':   { wealth: 30,     note: 'Sport · Basketball · France · San Antonio Spurs · Rookie of Year 2024', url: 'https://en.wikipedia.org/wiki/Victor_Wembanyama' },
+    'kawhi leonard':       { wealth: 80,     note: 'Sport · Basketball · USA · Los Angeles Clippers', url: 'https://en.wikipedia.org/wiki/Kawhi_Leonard' },
+    'junior bridgeman':    { wealth: 600,    note: 'Sport · Basketball · Business · USA · Restaurant empire', url: 'https://en.wikipedia.org/wiki/Junior_Bridgeman' },
     // ── BOXING ─────────────────────────────────────────
     '_sub_boxing':         { _subgroup: 'Boxing' },
     'floyd mayweather':    { wealth: 450,    note: 'Sport · Boxing · USA · 50-0 undefeated', url: 'https://en.wikipedia.org/wiki/Floyd_Mayweather' },
@@ -2354,19 +2442,88 @@
     'fallon sherrock':         { wealth: 2,      note: 'Sport · Darts · UK · First woman to beat men at worlds', url: 'https://en.wikipedia.org/wiki/Fallon_Sherrock' },
     // ── F1 & MOTORSPORT ─────────────────────────────────
     '_sub_f1':             { _subgroup: 'F1 & Motorsport' },
-    'lewis hamilton':      { wealth: 350,    note: 'Sport · F1 · UK · 7x World Champion', url: 'https://en.wikipedia.org/wiki/Lewis_Hamilton' },
+    // ── FORMULA 1 ────────────────────────────────────────
+    'lewis hamilton':      { wealth: 550,    note: 'Sport · F1 · UK · 7x World Champion · Ferrari 2025', url: 'https://en.wikipedia.org/wiki/Lewis_Hamilton' },
     'michael schumacher':  { wealth: 600,    note: 'Sport · F1 · Germany · 7x World Champion', url: 'https://en.wikipedia.org/wiki/Michael_Schumacher' },
-    'jenson button':       { wealth: 120,    note: 'Sport · F1 · UK · 2009 World Champion', url: 'https://en.wikipedia.org/wiki/Jenson_Button' },
+    'jenson button':       { wealth: 150,    note: 'Sport · F1 · UK · 2009 World Champion', url: 'https://en.wikipedia.org/wiki/Jenson_Button' },
     'damon hill':          { wealth: 40,     note: 'Sport · F1 · UK · 1996 World Champion', url: 'https://en.wikipedia.org/wiki/Damon_Hill' },
     'nigel mansell':       { wealth: 50,     note: 'Sport · F1 · UK · 1992 World Champion', url: 'https://en.wikipedia.org/wiki/Nigel_Mansell' },
     'niki lauda':          { wealth: 200,    note: 'Sport · F1 · Austria · Historical · 3x champion', url: 'https://en.wikipedia.org/wiki/Niki_Lauda' },
-    'fernando alonso':     { wealth: 240,    note: 'Sport · F1 · Spain · 2x World Champion', url: 'https://en.wikipedia.org/wiki/Fernando_Alonso' },
-    'sebastian vettel':    { wealth: 120,    note: 'Sport · F1 · Germany · 4x World Champion', url: 'https://en.wikipedia.org/wiki/Sebastian_Vettel' },
-    'kimi raikkonen':      { wealth: 200,    note: 'Sport · F1 · Finland · 2007 World Champion', url: 'https://en.wikipedia.org/wiki/Kimi_Raikkonen' },
-    'max verstappen':      { wealth: 100,    note: 'Sport · F1 · Netherlands · 3x World Champion', url: 'https://en.wikipedia.org/wiki/Max_Verstappen' },
+    'fernando alonso':     { wealth: 260,    note: 'Sport · F1 · Spain · 2x World Champion · Aston Martin', url: 'https://en.wikipedia.org/wiki/Fernando_Alonso' },
+    'sebastian vettel':    { wealth: 120,    note: 'Sport · F1 · Germany · 4x World Champion · Retired 2022', url: 'https://en.wikipedia.org/wiki/Sebastian_Vettel' },
+    'kimi raikkonen':      { wealth: 250,    note: 'Sport · F1 · Finland · 2007 World Champion · Retired 2021', url: 'https://en.wikipedia.org/wiki/Kimi_R%C3%A4ikk%C3%B6nen' },
+    'max verstappen':      { wealth: 100,    note: 'Sport · F1 · Netherlands · 4x World Champion · Red Bull', url: 'https://en.wikipedia.org/wiki/Max_Verstappen' },
     'charles leclerc':     { wealth: 30,     note: 'Sport · F1 · Monaco · Ferrari', url: 'https://en.wikipedia.org/wiki/Charles_Leclerc' },
     'lando norris':        { wealth: 50,     note: 'Sport · F1 · UK · McLaren · 2024 breakout season', url: 'https://en.wikipedia.org/wiki/Lando_Norris' },
-    'valentino rossi':     { wealth: 200,    note: 'Sport · MotoGP · Italy · 9x World Champion', url: 'https://en.wikipedia.org/wiki/Valentino_Rossi' },
+    'george russell':      { wealth: 40,     note: 'Sport · F1 · UK · Mercedes · Williams', url: 'https://en.wikipedia.org/wiki/George_Russell_(racing_driver)' },
+    'carlos sainz':        { wealth: 30,     note: 'Sport · F1 · Spain · Williams', url: 'https://en.wikipedia.org/wiki/Carlos_Sainz_Jr.' },
+    'oscar piastri':       { wealth: 15,     note: 'Sport · F1 · Australia · McLaren', url: 'https://en.wikipedia.org/wiki/Oscar_Piastri' },
+    'alain prost':         { wealth: 100,    note: 'Sport · F1 · France · Historical · 4x World Champion · The Professor', url: 'https://en.wikipedia.org/wiki/Alain_Prost' },
+    'ayrton senna':        { wealth: 400,    note: 'Sport · F1 · Brazil · Historical · 3x World Champion · Estate', url: 'https://en.wikipedia.org/wiki/Ayrton_Senna' },
+    'nico rosberg':        { wealth: 60,     note: 'Sport · F1 · Germany · 2016 World Champion · Retired', url: 'https://en.wikipedia.org/wiki/Nico_Rosberg' },
+    'eddie irvine':        { wealth: 120,    note: 'Sport · F1 · UK · Property tycoon', url: 'https://en.wikipedia.org/wiki/Eddie_Irvine' },
+    'mario andretti':      { wealth: 130,    note: 'Sport · F1 · IndyCar · USA · 1978 F1 champion', url: 'https://en.wikipedia.org/wiki/Mario_Andretti' },
+
+    // ── MOTOGP & MOTORCYCLE RACING ───────────────────────
+    '_sub_motogp':         { _subgroup: 'MotoGP & Motorcycle Racing' },
+    'valentino rossi':     { wealth: 200,    note: 'Sport · MotoGP · Italy · 9x World Champion · The Doctor · VR46', url: 'https://en.wikipedia.org/wiki/Valentino_Rossi' },
+    'marc marquez':        { wealth: 80,     note: 'Sport · MotoGP · Spain · 7x World Champion · Ducati · Forbes Spain athlete list', url: 'https://en.wikipedia.org/wiki/Marc_M%C3%A0rquez' },
+    'jorge lorenzo':       { wealth: 40,     note: 'Sport · MotoGP · Spain · 3x World Champion', url: 'https://en.wikipedia.org/wiki/Jorge_Lorenzo' },
+    'casey stoner':        { wealth: 20,     note: 'Sport · MotoGP · Australia · 2x World Champion', url: 'https://en.wikipedia.org/wiki/Casey_Stoner' },
+    'mick doohan':         { wealth: 40,     note: 'Sport · MotoGP · Australia · 5x 500cc World Champion', url: 'https://en.wikipedia.org/wiki/Mick_Doohan' },
+    'jorge martin':        { wealth: 15,     note: 'Sport · MotoGP · Spain · 2024 World Champion · Aprilia', url: 'https://en.wikipedia.org/wiki/Jorge_Mart%C3%ADn_(motorcycle_racer)' },
+    'pecco bagnaia':       { wealth: 12,     note: 'Sport · MotoGP · Italy · 2x World Champion · Ducati', url: 'https://en.wikipedia.org/wiki/Francesco_Bagnaia' },
+    'fabio quartararo':    { wealth: 15,     note: 'Sport · MotoGP · France · 2021 World Champion · Yamaha', url: 'https://en.wikipedia.org/wiki/Fabio_Quartararo' },
+    'barry sheene':        { wealth: 10,     note: 'Sport · MotoGP · UK · Historical · 2x 500cc World Champion · Estate', url: 'https://en.wikipedia.org/wiki/Barry_Sheene' },
+    'john mcguinness':     { wealth: 5,      note: 'Sport · Motorcycle · UK · Isle of Man TT · 23 TT wins', url: 'https://en.wikipedia.org/wiki/John_McGuinness_(motorcycle_racer)' },
+    'carl fogarty':        { wealth: 10,     note: 'Sport · Superbike · UK · 4x WSBK World Champion · Foggy', url: 'https://en.wikipedia.org/wiki/Carl_Fogarty' },
+    'jonathan rea':        { wealth: 8,      note: 'Sport · Superbike · UK · 6x consecutive WSBK World Champion', url: 'https://en.wikipedia.org/wiki/Jonathan_Rea' },
+
+    // ── NASCAR ────────────────────────────────────────────
+    '_sub_nascar':         { _subgroup: 'NASCAR' },
+    'dale earnhardt jr':   { wealth: 300,    note: 'Sport · NASCAR · USA · Team owner · TV broadcaster · Amazon Prime', url: 'https://en.wikipedia.org/wiki/Dale_Earnhardt_Jr.' },
+    'jeff gordon':         { wealth: 200,    note: 'Sport · NASCAR · USA · 4x Cup Series champion · Fox Sports', url: 'https://en.wikipedia.org/wiki/Jeff_Gordon' },
+    'jimmie johnson':      { wealth: 160,    note: 'Sport · NASCAR · USA · 7x Cup Series champion · IndyCar', url: 'https://en.wikipedia.org/wiki/Jimmie_Johnson' },
+    'tony stewart':        { wealth: 80,     note: 'Sport · NASCAR · IndyCar · USA · 3x Cup Series champion · Team owner', url: 'https://en.wikipedia.org/wiki/Tony_Stewart' },
+    'danica patrick':      { wealth: 80,     note: 'Sport · NASCAR · IndyCar · USA · First woman to lead Daytona 500', url: 'https://en.wikipedia.org/wiki/Danica_Patrick' },
+    'kevin harvick':       { wealth: 110,    note: 'Sport · NASCAR · USA · 2014 Cup Series champion', url: 'https://en.wikipedia.org/wiki/Kevin_Harvick' },
+    'kyle busch':          { wealth: 80,     note: 'Sport · NASCAR · USA · 2x Cup Series champion', url: 'https://en.wikipedia.org/wiki/Kyle_Busch' },
+    'richard petty':       { wealth: 65,     note: 'Sport · NASCAR · USA · The King · 7x champion · 200 wins', url: 'https://en.wikipedia.org/wiki/Richard_Petty' },
+    'dale earnhardt':      { wealth: 300,    note: 'Sport · NASCAR · USA · Historical · The Intimidator · 7x champion · Estate', url: 'https://en.wikipedia.org/wiki/Dale_Earnhardt' },
+
+    // ── INDYCAR ───────────────────────────────────────────
+    '_sub_indycar':        { _subgroup: 'IndyCar & Indy 500' },
+    'dario franchitti':    { wealth: 50,     note: 'Sport · IndyCar · Scotland · 3x IndyCar champion · 3x Indy 500 winner', url: 'https://en.wikipedia.org/wiki/Dario_Franchitti' },
+    'helio castroneves':   { wealth: 20,     note: 'Sport · IndyCar · Brazil · 4x Indy 500 winner', url: 'https://en.wikipedia.org/wiki/Helio_Castroneves' },
+    'scott dixon':         { wealth: 30,     note: 'Sport · IndyCar · New Zealand · 6x IndyCar champion', url: 'https://en.wikipedia.org/wiki/Scott_Dixon' },
+    'will power':          { wealth: 15,     note: 'Sport · IndyCar · Australia · 2x IndyCar champion', url: 'https://en.wikipedia.org/wiki/Will_Power_(racing_driver)' },
+    'pato oward':          { wealth: 8,      note: 'Sport · IndyCar · Mexico · Arrow McLaren', url: 'https://en.wikipedia.org/wiki/Pato_O%27Ward' },
+
+    // ── WRC RALLY ─────────────────────────────────────────
+    '_sub_wrc':            { _subgroup: 'WRC Rally' },
+    'sebastien loeb':      { wealth: 55,     note: 'Sport · WRC · France · 9x World Rally champion · Record holder', url: 'https://en.wikipedia.org/wiki/S%C3%A9bastien_Loeb' },
+    'sebastien ogier':     { wealth: 20,     note: 'Sport · WRC · France · 8x World Rally champion', url: 'https://en.wikipedia.org/wiki/S%C3%A9bastien_Ogier' },
+    'carlos sainz sr':     { wealth: 30,     note: 'Sport · WRC · Spain · 2x World Rally champion · El Matador', url: 'https://en.wikipedia.org/wiki/Carlos_Sainz_(rally_driver)' },
+    'colin mcrae':         { wealth: 10,     note: 'Sport · WRC · Scotland · Historical · 1995 World Rally champion · Estate', url: 'https://en.wikipedia.org/wiki/Colin_McRae' },
+    'richard burns':       { wealth: 5,      note: 'Sport · WRC · UK · Historical · 2001 World Rally champion · Estate', url: 'https://en.wikipedia.org/wiki/Richard_Burns' },
+    'marcus gronholm':     { wealth: 10,     note: 'Sport · WRC · Finland · 2x World Rally champion', url: 'https://en.wikipedia.org/wiki/Marcus_Gr%C3%B6nholm' },
+    'kalle rovanpera':     { wealth: 5,      note: 'Sport · WRC · Finland · 2x World Rally champion · Youngest ever champion', url: 'https://en.wikipedia.org/wiki/Kalle_Rovamp%C3%A4r%C3%A4' },
+
+    // ── MOTOCROSS & SUPERCROSS ───────────────────────────
+    '_sub_motocross':      { _subgroup: 'Motocross & Supercross' },
+    'ricky carmichael':    { wealth: 8,      note: 'Sport · Motocross · USA · 15x AMA champion · GOAT', url: 'https://en.wikipedia.org/wiki/Ricky_Carmichael' },
+    'james stewart jr':    { wealth: 6,      note: 'Sport · Motocross · Supercross · USA · Bubba · 2x champion', url: 'https://en.wikipedia.org/wiki/James_Stewart_Jr._(motocross)' },
+    'eli tomac':           { wealth: 5,      note: 'Sport · Motocross · Supercross · USA · 4x champion', url: 'https://en.wikipedia.org/wiki/Eli_Tomac' },
+    'ryan dungey':         { wealth: 6,      note: 'Sport · Motocross · USA · 3x AMA Motocross champion', url: 'https://en.wikipedia.org/wiki/Ryan_Dungey' },
+    'stefan everts':       { wealth: 5,      note: 'Sport · Motocross · Belgium · 10x FIM World Motocross champion · GOAT', url: 'https://en.wikipedia.org/wiki/Stefan_Everts' },
+
+    // ── FIELD HOCKEY ─────────────────────────────────────
+    '_sub_fieldhockey':    { _subgroup: 'Field Hockey' },
+    'dhanraj pillay':      { wealth: 5,      note: 'Sport · Field Hockey · India · 4x Olympic teams', url: 'https://en.wikipedia.org/wiki/Dhanraj_Pillay' },
+    'jamie dwyer':         { wealth: 3,      note: 'Sport · Field Hockey · Australia · 5x World Player of the Year', url: 'https://en.wikipedia.org/wiki/Jamie_Dwyer' },
+    'luciana aymar':       { wealth: 3,      note: 'Sport · Field Hockey · Argentina · 8x World Player of the Year', url: 'https://en.wikipedia.org/wiki/Luciana_Aymar' },
+    'harmanpreet singh':   { wealth: 4,      note: 'Sport · Field Hockey · India · 2x Olympic champion captain', url: 'https://en.wikipedia.org/wiki/Harmanpreet_Singh' },
+
     '_sub_golf':                { _subgroup: 'Golf' },
     // ── GOLF ───────────────────────────────────────────
     'greg norman':             { wealth: 120,    note: 'Sport · Golf · LIV · Australia · The Shark', url: 'https://en.wikipedia.org/wiki/Greg_Norman' },
@@ -2401,15 +2558,20 @@
     // Sport Owners / Executives
     'vince mcmahon':       { wealth: 3000,   note: 'Sport · WWE · Business · USA · WWE founder', url: 'https://en.wikipedia.org/wiki/Vince_Mcmahon' },
     'roman abramovich':    { wealth: 9500,   note: 'Business · Sport · Russia · Ex-Chelsea owner · Sanctioned', url: 'https://en.wikipedia.org/wiki/Roman_Abramovich' },
-    // ── AMERICAN SPORTS ──────────────────────────────────
-    '_sub_american':       { _subgroup: 'NFL / Baseball / Ice Hockey' },
-    'tom brady':           { wealth: 500,    note: 'Sport · NFL · USA · 7x Super Bowl champion', url: 'https://en.wikipedia.org/wiki/Tom_Brady' },
-    'peyton manning':      { wealth: 250,    note: 'Sport · NFL · USA · 2x Super Bowl champion', url: 'https://en.wikipedia.org/wiki/Peyton_Manning' },
-    'derek jeter':         { wealth: 200,    note: 'Sport · Baseball · USA · NY Yankees', url: 'https://en.wikipedia.org/wiki/Derek_Jeter' },
-    'alex rodriguez':      { wealth: 350,    note: 'Sport · Baseball · USA', url: 'https://en.wikipedia.org/wiki/Alex_Rodriguez' },
-    'a-rod':               { wealth: 350,    note: 'Sport · Baseball · USA · See Alex Rodriguez', url: 'https://en.wikipedia.org/wiki/A-rod' },
-    'wayne gretzky':       { wealth: 250,    note: 'Sport · Ice Hockey · Canada · The Great One', url: 'https://en.wikipedia.org/wiki/Wayne_Gretzky' },
-    'the great one':       { wealth: 250,    note: 'Sport · Ice Hockey · Wayne Gretzky · Canada', url: 'https://en.wikipedia.org/wiki/The_Great_One' },
+    // ── ICE HOCKEY / NHL ─────────────────────────────────
+    '_sub_icehockey':      { _subgroup: 'Ice Hockey / NHL' },
+    'wayne gretzky':       { wealth: 250,    note: 'Sport · Ice Hockey · NHL · Canada · The Great One · 4x Stanley Cup', url: 'https://en.wikipedia.org/wiki/Wayne_Gretzky' },
+    'the great one':       { wealth: 250,    note: 'Sport · Ice Hockey · NHL · Wayne Gretzky · Canada', url: 'https://en.wikipedia.org/wiki/Wayne_Gretzky' },
+    'mario lemieux':       { wealth: 100,    note: 'Sport · Ice Hockey · NHL · Canada · Pittsburgh Penguins owner', url: 'https://en.wikipedia.org/wiki/Mario_Lemieux' },
+    'sidney crosby':       { wealth: 75,     note: 'Sport · Ice Hockey · NHL · Canada · Pittsburgh Penguins · 3x Stanley Cup', url: 'https://en.wikipedia.org/wiki/Sidney_Crosby' },
+    'alexander ovechkin':  { wealth: 80,     note: 'Sport · Ice Hockey · NHL · Russia · Washington Capitals · All-time goals record', url: 'https://en.wikipedia.org/wiki/Alexander_Ovechkin' },
+    'connor mcdavid':      { wealth: 70,     note: 'Sport · Ice Hockey · NHL · Canada · Edmonton Oilers · 5x Hart Trophy', url: 'https://en.wikipedia.org/wiki/Connor_McDavid' },
+    'auston matthews':     { wealth: 40,     note: 'Sport · Ice Hockey · NHL · USA · Toronto Maple Leafs', url: 'https://en.wikipedia.org/wiki/Auston_Matthews' },
+    'nathan mackinnon':    { wealth: 50,     note: 'Sport · Ice Hockey · NHL · Canada · Colorado Avalanche · 2x Hart Trophy', url: 'https://en.wikipedia.org/wiki/Nathan_MacKinnon' },
+    'jaromir jagr':        { wealth: 50,     note: 'Sport · Ice Hockey · NHL · Czech Republic · 5x scoring champion', url: 'https://en.wikipedia.org/wiki/Jarom%C3%ADr_Jágr' },
+    'brad marchand':       { wealth: 30,     note: 'Sport · Ice Hockey · NHL · Canada · Boston Celtics captain', url: 'https://en.wikipedia.org/wiki/Brad_Marchand' },
+    'leon draisaitl':      { wealth: 30,     note: 'Sport · Ice Hockey · NHL · Germany · Edmonton Oilers · Hart Trophy 2020', url: 'https://en.wikipedia.org/wiki/Leon_Draisaitl' },
+    'cale makar':          { wealth: 25,     note: 'Sport · Ice Hockey · NHL · Canada · Colorado Avalanche · Norris Trophy', url: 'https://en.wikipedia.org/wiki/Cale_Makar' },
     '_sub_nfl':                 { _subgroup: 'NFL / NBA Owners' },
     // ── NFL / NBA OWNERS ───────────────────────────────
     'jerry jones':             { wealth: 14000,  note: 'Sport · NFL · Business · USA · Dallas Cowboys', url: 'https://en.wikipedia.org/wiki/Jerry_Jones' },
@@ -2477,7 +2639,36 @@
     'hulk hogan':              { wealth: 25,     note: 'Sport · WWE · USA · Terry Bollea', url: 'https://en.wikipedia.org/wiki/Hulk_Hogan' },
     'shawn michaels':          { wealth: 17,     note: 'Sport · WWE · USA', url: 'https://en.wikipedia.org/wiki/Shawn_Michaels' },
     'steve austin':            { wealth: 30,     note: 'Sport · WWE · USA · Stone Cold', url: 'https://en.wikipedia.org/wiki/Steve_Austin' },
-    'stone cold':              { wealth: 30,     note: 'Sport · WWE · Steve Austin · USA', url: 'https://en.wikipedia.org/wiki/Stone_Cold' },
+    'stone cold':              { wealth: 30,     note: 'Sport · WWE · Steve Austin · USA', url: 'https://en.wikipedia.org/wiki/Steve_Austin' },
+
+    // ── SWIMMING ─────────────────────────────────────────
+    '_sub_swimming':       { _subgroup: 'Swimming' },
+    'michael phelps':      { wealth: 100,    note: 'Sport · Swimming · USA · 23 Olympic golds · Most decorated Olympian', url: 'https://en.wikipedia.org/wiki/Michael_Phelps' },
+    'mark spitz':          { wealth: 20,     note: 'Sport · Swimming · USA · Historical · 7 Olympic golds 1972', url: 'https://en.wikipedia.org/wiki/Mark_Spitz' },
+    'ian thorpe':          { wealth: 20,     note: 'Sport · Swimming · Australia · Thorpedo · 5 Olympic golds', url: 'https://en.wikipedia.org/wiki/Ian_Thorpe' },
+    'katie ledecky':       { wealth: 10,     note: 'Sport · Swimming · USA · 10x Olympic medal winner', url: 'https://en.wikipedia.org/wiki/Katie_Ledecky' },
+    'adam peaty':          { wealth: 5,      note: 'Sport · Swimming · UK · 3x Olympic gold breaststroke', url: 'https://en.wikipedia.org/wiki/Adam_Peaty' },
+    'caeleb dressel':      { wealth: 8,      note: 'Sport · Swimming · USA · 7x Olympic gold · 2020 Olympics', url: 'https://en.wikipedia.org/wiki/Caeleb_Dressel' },
+    'sarah sjostrom':      { wealth: 5,      note: 'Sport · Swimming · Sweden · Multiple world records', url: 'https://en.wikipedia.org/wiki/Sarah_Sj%C3%B6str%C3%B6m' },
+    'leon marchand':       { wealth: 4,      note: 'Sport · Swimming · France · 4x Olympic gold Paris 2024', url: 'https://en.wikipedia.org/wiki/L%C3%A9on_Marchand' },
+
+    // ── TABLE TENNIS ─────────────────────────────────────
+    '_sub_tabletennis':    { _subgroup: 'Table Tennis' },
+    'ma long':             { wealth: 30,     note: 'Sport · Table Tennis · China · 5x World champion · GOAT', url: 'https://en.wikipedia.org/wiki/Ma_Long' },
+    'jan ove waldner':     { wealth: 8,      note: 'Sport · Table Tennis · Sweden · Olympic champion 1992', url: 'https://en.wikipedia.org/wiki/Jan-Ove_Waldner' },
+    'zhang jike':          { wealth: 15,     note: 'Sport · Table Tennis · China · 2x Olympic champion', url: 'https://en.wikipedia.org/wiki/Zhang_Jike' },
+    'fan zhendong':        { wealth: 10,     note: 'Sport · Table Tennis · China · 2x World champion', url: 'https://en.wikipedia.org/wiki/Fan_Zhendong' },
+    'ding ning':           { wealth: 10,     note: 'Sport · Table Tennis · China · 3x World champion · Olympic champion 2016', url: 'https://en.wikipedia.org/wiki/Ding_Ning' },
+    'liu shiwen':          { wealth: 8,      note: 'Sport · Table Tennis · China · 5x World champion', url: 'https://en.wikipedia.org/wiki/Liu_Shiwen' },
+
+    // ── VOLLEYBALL ────────────────────────────────────────
+    '_sub_volleyball':     { _subgroup: 'Volleyball' },
+    'giba':                { wealth: 8,      note: 'Sport · Volleyball · Brazil · 3x World champion · Gilberto Amauri de Godoy Filho', url: 'https://en.wikipedia.org/wiki/Giba' },
+    'karch kiraly':        { wealth: 5,      note: 'Sport · Volleyball · USA · 3x Olympic gold · Indoor & Beach', url: 'https://en.wikipedia.org/wiki/Karch_Kiraly' },
+    'misty may-treanor':   { wealth: 8,      note: 'Sport · Volleyball · Beach · USA · 3x Olympic gold', url: 'https://en.wikipedia.org/wiki/Misty_May-Treanor' },
+    'kerri walsh jennings':{ wealth: 8,      note: 'Sport · Volleyball · Beach · USA · 3x Olympic gold', url: 'https://en.wikipedia.org/wiki/Kerri_Walsh_Jennings' },
+    'wilfredo leon':       { wealth: 4,      note: 'Sport · Volleyball · Poland · Highest-paid volleyball player', url: 'https://en.wikipedia.org/wiki/Wilfredo_Le%C3%B3n' },
+    'paola egonu':         { wealth: 4,      note: 'Sport · Volleyball · Italy · World\'s best female player 2022', url: 'https://en.wikipedia.org/wiki/Paola_Egonu' },
 
     '_sub_kpop':                { _subgroup: 'K-pop' },
     // ── K-POP ──────────────────────────────────────────
@@ -2719,7 +2910,6 @@
     'akio toyoda':         { wealth: 2200,   note: 'Business · Japan · Toyota · Car manufacturer', url: 'https://en.wikipedia.org/wiki/Akio_Toyoda' },
     'hiroshi mikitani':    { wealth: 5000,   note: 'Tech · Business · Japan · Rakuten', url: 'https://en.wikipedia.org/wiki/Hiroshi_Mikitani' },
     'nobutada saji':       { wealth: 14000,  note: 'Business · Japan · Suntory · Whisky', url: 'https://en.wikipedia.org/wiki/Nobutada_Saji' },
-    'shohei ohtani':       { wealth: 200,    note: 'Sport · Baseball · Japan · LA Dodgers · $700M contract', url: 'https://en.wikipedia.org/wiki/Shohei_Ohtani' },
     'naomi osaka':         { wealth: 60,     note: 'Japan · Tennis', url: 'https://en.wikipedia.org/wiki/Naomi_Osaka' },
     'hayao miyazaki':      { wealth: 50,     note: 'Film · Director · Japan · Studio Ghibli · Spirited Away', url: 'https://en.wikipedia.org/wiki/Hayao_Miyazaki' },
 
@@ -2762,6 +2952,7 @@
     // ── RUSSIA ─────────────────────────────────────────
 
     // ── FOOTBALL PLAYERS — Current Stars ──────────────
+    '_sub_football_stars': { _subgroup: 'Current Stars' },
     'kylian mbappe':       { wealth: 180,    note: 'Football · France · Real Madrid', url: 'https://en.wikipedia.org/wiki/Kylian_Mbappe' },
     'mbappé':              { wealth: 180,    note: 'Football · France · Real Madrid', url: 'https://en.wikipedia.org/wiki/Mbappé' },
     'erling haaland':      { wealth: 90,     note: 'Football · Norway · Manchester City · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Erling_Haaland' },
@@ -2850,6 +3041,7 @@
     'faiq bolkiah':        { wealth: 20000,  note: 'Football · Brunei · Royal Family', url: 'https://en.wikipedia.org/wiki/Faiq_Bolkiah' },
 
     // ── FOOTBALL MANAGERS ──────────────────────────────
+    '_sub_football_managers': { _subgroup: 'Football Managers' },
     'jose mourinho':       { wealth: 120,    note: 'Football Manager · Portugal · Real Madrid', url: 'https://en.wikipedia.org/wiki/Jose_Mourinho' },
     'mourinho':            { wealth: 120,    note: 'Football Manager · Portugal', url: 'https://en.wikipedia.org/wiki/Mourinho' },
     'pep guardiola':       { wealth: 100,    note: 'Football Manager · Spain · Manchester City', url: 'https://en.wikipedia.org/wiki/Pep_Guardiola' },
@@ -2924,6 +3116,7 @@
     'chris kamara':        { wealth: 8,      note: 'Sport · TV · UK', url: 'https://en.wikipedia.org/wiki/Chris_Kamara' },
 
     // ── 2026 WORLD CUP STARS — BY NATION ──────────────
+    '_sub_worldcup2026': { _subgroup: 'World Cup 2026 — By Nation' },
     // Germany
     'thomas muller':       { wealth: 120,    note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Thomas_Muller' },
     'müller':              { wealth: 120,    note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Müller' },
@@ -3251,6 +3444,7 @@
     'justin bieber':       { wealth: 300,    note: 'Canada · Music', url: 'https://en.wikipedia.org/wiki/Justin_Bieber' },
 
     // ── PREMIER LEAGUE 2025-26 — BY CLUB ──────────────
+    '_sub_premierleague': { _subgroup: 'Premier League 2025-26 — By Club' },
     // Note: squads/wealth shift each transfer window — these are 2025-26 season estimates
     'florian wirtz':       { wealth: 40,     note: 'Football · Germany · Liverpool', url: 'https://en.wikipedia.org/wiki/Florian_Wirtz' },
     'alexander isak':      { wealth: 50,     note: 'Football · Sweden · Liverpool', url: 'https://en.wikipedia.org/wiki/Alexander_Isak' },
@@ -3535,6 +3729,7 @@
     // GDP-share method gives higher figures than simple inflation adjustment
 
     // Ancient & Medieval
+    '_sub_hist_ancient':   { _subgroup: 'Ancient & Medieval Rulers' },
     'mansa musa':          { wealth: 400000, note: 'Historical · Mali Empire · Gold', url: 'https://en.wikipedia.org/wiki/Mansa_Musa' },
     'cleopatra':           { wealth: 95000,  note: 'Historical · Egypt', url: 'https://en.wikipedia.org/wiki/Cleopatra' },
     'genghis khan':        { wealth: 100000, note: 'Historical · Mongol Empire', url: 'https://en.wikipedia.org/wiki/Genghis_Khan' },
@@ -3542,6 +3737,7 @@
     'charlemagne':         { wealth: 80000,  note: 'Historical · Holy Roman Empire', url: 'https://en.wikipedia.org/wiki/Charlemagne' },
 
     // Royals & Emperors
+    '_sub_hist_royals':    { _subgroup: 'Royals & Emperors' },
     'tsar nicholas ii':    { wealth: 348000, note: 'Historical · Russian Empire', url: 'https://en.wikipedia.org/wiki/Tsar_Nicholas_Ii' },
     'nicholas romanov':    { wealth: 348000, note: 'Historical · Russian Empire', url: 'https://en.wikipedia.org/wiki/Nicholas_Romanov' },
     'queen victoria':      { wealth: 62000,  note: 'Historical · British Empire', url: 'https://en.wikipedia.org/wiki/Queen_Victoria' },
@@ -3555,6 +3751,7 @@
     'shah jahan':          { wealth: 500000, note: 'Historical · Mughal · India · Built the Taj Mahal', url: 'https://en.wikipedia.org/wiki/Shah_Jahan' },
 
     // American Industrialists
+    '_sub_hist_industrial': { _subgroup: 'American Industrialists' },
     'john d rockefeller':  { wealth: 631000, note: 'Historical · Standard Oil', url: 'https://en.wikipedia.org/wiki/John_D_Rockefeller' },
     'j paul getty':         { wealth: 26000,  note: 'Historical · Business · Oil · USA/UK · Getty Oil · Richest man alive 1960s', url: 'https://en.wikipedia.org/wiki/J_Paul_Getty' },
     'jean paul getty':      { wealth: 26000,  note: 'Historical · Business · Oil · USA/UK · J Paul Getty alias', url: 'https://en.wikipedia.org/wiki/Jean_Paul_Getty' },
@@ -3570,6 +3767,7 @@
     'sam walton':          { wealth: 100000, note: 'Historical · Walmart Founder', url: 'https://en.wikipedia.org/wiki/Sam_Walton' },
 
     // British & European Historical
+    '_sub_hist_british':   { _subgroup: 'British & European Historical' },
     'winston churchill':   { wealth: 20,     note: 'Historical · Politics · UK · Sir Winston · Prime Minister · WWII', url: 'https://en.wikipedia.org/wiki/Winston_Churchill' },
     'duke of wellington':  { wealth: 15000,  note: 'Historical · Military · UK', url: 'https://en.wikipedia.org/wiki/Duke_Of_Wellington' },
     'duke of marlborough': { wealth: 25000,  note: 'Historical · Military · UK', url: 'https://en.wikipedia.org/wiki/Duke_Of_Marlborough' },
@@ -3584,10 +3782,10 @@
     'william shakespeare': { wealth: 3,      note: 'Historical · Playwright', url: 'https://en.wikipedia.org/wiki/William_Shakespeare' },
 
     // Entertainment & Sport Historical
+    '_sub_hist_entertainment': { _subgroup: 'Entertainment & Sport — Historical' },
     'frank sinatra':       { wealth: 200,    note: 'Historical · Music', url: 'https://en.wikipedia.org/wiki/Frank_Sinatra' },
     'michael jackson':     { wealth: 500,    note: 'Historical · Music · Estate', url: 'https://en.wikipedia.org/wiki/Michael_Jackson' },
     'muhammad ali':        { wealth: 80,     note: 'Historical · Boxing', url: 'https://en.wikipedia.org/wiki/Muhammad_Ali' },
-    'ayrton senna':        { wealth: 400,    note: 'Historical · F1 · Brazil', url: 'https://en.wikipedia.org/wiki/Ayrton_Senna' },
     'george best':         { wealth: 1,      note: 'Historical · Football', url: 'https://en.wikipedia.org/wiki/George_Best' },
     'bobby charlton':      { wealth: 15,     note: 'Historical · Football · UK · Sir Bobby · Man Utd · 1966 World Cup', url: 'https://en.wikipedia.org/wiki/Bobby_Charlton' },
     'pele':                { wealth: 100,    note: 'See Pelé · Football · Brazil · Alias', url: 'https://en.wikipedia.org/wiki/Pele' },
@@ -3595,11 +3793,13 @@
     'maradona':            { wealth: 10,     note: 'Historical · Football · Argentina', url: 'https://en.wikipedia.org/wiki/Maradona' },
 
     // Scientists & Inventors
+    '_sub_hist_scientists': { _subgroup: 'Scientists & Inventors' },
     'albert einstein':     { wealth: 1,      note: 'Historical · Physics', url: 'https://en.wikipedia.org/wiki/Albert_Einstein' },
     'nikola tesla':        { wealth: 1,      note: 'Historical · Inventor', url: 'https://en.wikipedia.org/wiki/Nikola_Tesla' },
     'alexander graham bell':{ wealth: 5000,  note: 'Historical · Telephone', url: 'https://en.wikipedia.org/wiki/Alexander_Graham_Bell' },
 
     // Music Legends (Estate values)
+    '_sub_hist_musiclegends': { _subgroup: 'Music Legends — Estate Values' },
     'john lennon':         { wealth: 800,    note: 'Historical · Beatles · Estate · Liverpool', url: 'https://en.wikipedia.org/wiki/John_Lennon' },
     'george harrison':     { wealth: 900,    note: 'Historical · Beatles · Estate · Liverpool', url: 'https://en.wikipedia.org/wiki/George_Harrison' },
     'ringo starr':         { wealth: 380,    note: 'Music · Beatles · Liverpool', url: 'https://en.wikipedia.org/wiki/Ringo_Starr' },
@@ -3643,13 +3843,15 @@
   }
 
   async function lookupCelebrity() {
-    const name = document.getElementById('name-input').value.trim();
-    if (!name) { alert('Please enter a name to find.'); return; }
+    const raw = document.getElementById('name-input').value.trim();
+    if (!raw) { alert('Please enter a name to find.'); return; }
 
-    const key = name.toLowerCase().trim();
+    const key = raw.toLowerCase().trim();
     const match = CELEB_DB[key];
 
     if (match) {
+      // Use the properly capitalised name from the database key, not raw user input
+      const name = key.replace(/\b\w/g, c => c.toUpperCase());
       document.getElementById('club-results-card').style.display = 'none';
       const isHistorical = match.note && match.note.includes('Historical');
       const msg = isHistorical
@@ -3662,7 +3864,7 @@
       // Not a direct name match — try searching as a team / club / group instead
       const clubMatches = searchByClub(key);
       if (clubMatches.length > 0) {
-        showClubResults(name, clubMatches);
+        showClubResults(raw, clubMatches);
       } else {
         document.getElementById('club-results-card').style.display = 'none';
         document.getElementById('rate-status').textContent = '✗ Not found. Try a different spelling or check Forbes.com';
@@ -3751,13 +3953,13 @@
     document.getElementById('result-page').textContent = page;
     const pageOfText = page > 335 ? 'beyond page 335' : 'of 335';
     document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#f0d060">&#9733; Beyond Musk!</span>' : ' of 335';
+    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#f9e74a">&#9733; Beyond Musk!</span>' : ' of 335';
     const hc = getHomeCurrency(match.note, name);
     const hcDisplay = hc ? formatInHomeCurrency(wm, hc) : formatWealth(wm);
     document.getElementById('result-text').innerHTML =
       '<strong>' + escHtml(name) + '</strong> appears on page ' + page
       + beyondTag
-      + '<br><span style="font-size:13px;color:#c4a040">' + hcDisplay + '</span>';
+      + '<br><span style="font-size:13px;color:#85c1e9">' + hcDisplay + '</span>';
 
     document.getElementById('progress-fill').style.width = pct + '%';
 
@@ -3792,7 +3994,7 @@
           }
           row.style.transition = 'background 0.3s';
           row.style.background = 'rgba(240,208,96,0.25)';
-          row.style.outline = '2px solid #f0d060';
+          row.style.outline = '2px solid #f9e74a';
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
           setTimeout(() => {
             row.style.background = '';
@@ -3828,8 +4030,8 @@
       else                         display = c.sym + (localWM * 1000).toFixed(0) + ' Thousand';
       return '<span style="margin-right:10px;white-space:nowrap">' + c.name + ': <strong>' + display + '</strong></span>';
     }).join('');
-    return '<div style="margin-top:12px;padding:10px 14px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:11px;color:#c4a040;text-align:left;line-height:2">'
-      + '<div style="font-size:10px;letter-spacing:2px;color:#8b6914;text-transform:uppercase;margin-bottom:6px">In other currencies</div>'
+    return '<div style="margin-top:12px;padding:10px 14px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:11px;color:#85c1e9;text-align:left;line-height:2">'
+      + '<div style="font-size:10px;letter-spacing:2px;color:#1a6fa3;text-transform:uppercase;margin-bottom:6px">In other currencies</div>'
       + lines + '</div>';
   }
 
@@ -3932,12 +4134,12 @@
     document.getElementById('result-page').textContent = page;
     const pageOfText = page > 335 ? 'beyond page 335' : 'of 335';
     document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#f0d060">&#9733; Beyond Musk!</span>' : ' of 335';
+    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#f9e74a">&#9733; Beyond Musk!</span>' : ' of 335';
     const hcDisplay = (() => { const hc = getHomeCurrency(match.note, name); return hc ? formatInHomeCurrency(match.wealth, hc) : formatWealth(match.wealth); })();
     document.getElementById('result-text').innerHTML =
       '<strong>' + escHtml(name) + '</strong> appears on page ' + page
       + beyondTag
-      + '<br><span style="font-size:13px;color:#c4a040">' + hcDisplay + '</span>';
+      + '<br><span style="font-size:13px;color:#85c1e9">' + hcDisplay + '</span>';
     let note = "";
     if (page === 1 && wm < 1) note = "Your wealth is below $1 million — you are at the very start of page 1!";
     else if (page === 1) note = "You share page 1 with the book starting point — alongside several billionaires!";
@@ -4048,7 +4250,7 @@
       const textColor = getBadgeTextColor(page);
       return '<div class="watchlist-item">'
         + '<span class="club-result-badge" style="background:' + color + ';color:' + textColor + '">p.' + page + '</span>'
-        + '<span style="flex:1;font-size:14px;color:#fff4d6">' + escHtml(e.name) + '</span>'
+        + '<span style="flex:1;font-size:14px;color:#d6eaf8">' + escHtml(e.name) + '</span>'
         + '<span class="my-entry-remove" data-entry-name="' + escHtml(e.name) + '" style="cursor:pointer;color:#c4604a;font-size:18px;padding:0 4px" title="Remove">✕</span>'
         + '</div>';
     }).join('');
@@ -4083,6 +4285,13 @@
     renderWatchlist();
   }
 
+  function clearResult() {
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('club-results-card').style.display = 'none';
+    userEntry = null;
+    renderTable();
+  }
+
   function clearWatchlist() {
     showConfirmModal('Clear your list and your last search result?', () => {
       saveWatchlist([]);
@@ -4100,11 +4309,11 @@
   // silently inside installed PWAs (home-screen apps) on Android.
   function showConfirmModal(message, onConfirm) {
     const html = '<div id="confirm-modal-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">'
-      + '<div style="background:#2c1f0e;border:2px solid #c4a020;border-radius:8px;padding:24px;max-width:320px;width:100%;text-align:center">'
-      + '<div style="font-size:15px;color:#fff4d6;margin-bottom:20px">' + escHtml(message) + '</div>'
+      + '<div style="background:#0d2e42;border:2px solid #2e86c1;border-radius:8px;padding:24px;max-width:320px;width:100%;text-align:center">'
+      + '<div style="font-size:15px;color:#d6eaf8;margin-bottom:20px">' + escHtml(message) + '</div>'
       + '<div style="display:flex;gap:10px">'
       + '<button id="confirm-modal-yes" style="flex:1">Yes, clear it</button>'
-      + '<button id="confirm-modal-no" style="flex:1;background:transparent;border:1.5px solid #6a4e14;color:#c4a040">Cancel</button>'
+      + '<button id="confirm-modal-no" style="flex:1;background:transparent;border:1.5px solid #1a5c8a;color:#85c1e9">Cancel</button>'
       + '</div></div></div>';
     document.body.insertAdjacentHTML('beforeend', html);
     const overlay = document.getElementById('confirm-modal-overlay');
@@ -4159,13 +4368,13 @@
 
     if (diff <= 0) {
       el.textContent = '🚀 SpaceX NOW trading on Nasdaq!';
-      el.style.color = '#f0d060';
+      el.style.color = '#f9e74a';
       el.style.fontWeight = 'bold';
       el.style.fontSize = '15px';
       el.style.letterSpacing = '2px';
       el.style.textShadow = '0 0 12px rgba(240,208,96,0.6)';
       banner.style.background = 'rgba(240,208,96,0.28)';
-      banner.style.border = '1.5px solid #f0d060';
+      banner.style.border = '1.5px solid #f9e74a';
       return;
     }
 
@@ -4191,7 +4400,7 @@
     if (revealed) {
       answer.style.display = 'none';
       question.style.display = 'block';
-      document.getElementById('reveal-strip').style.borderColor = '#c4a020';
+      document.getElementById('reveal-strip').style.borderColor = '#2e86c1';
       revealed = false;
       return;
     }
@@ -4199,7 +4408,7 @@
     revealed = true;
     question.style.display = 'none';
     answer.style.display = 'block';
-    document.getElementById('reveal-strip').style.borderColor = '#f0d060';
+    document.getElementById('reveal-strip').style.borderColor = '#f9e74a';
 
     // Calculate Musk's page dynamically from real data
     const allPpl = allEntries();
@@ -4224,9 +4433,9 @@
       const p = byKey[ex.key] || CELEB_DB[ex.key];
       const pg = p ? getPage(p.wealth) : '?';
       const isMusk = ex.key === 'elon musk';
-      return '<div style="flex:1;min-width:100px;padding:8px 10px;margin:4px;background:rgba(0,0,0,0.25);border-radius:6px;border:1px solid ' + (isMusk ? '#f0d060' : '#4a3408') + '">'
-        + '<div style="font-size:' + (isMusk ? '22px' : '18px') + ';font-weight:bold;color:' + (isMusk ? '#f0d060' : '#c4a040') + '">p.' + pg + '</div>'
-        + '<div style="font-size:10px;color:#8b6914;margin-top:2px">' + ex.name + '</div>'
+      return '<div style="flex:1;min-width:100px;padding:8px 10px;margin:4px;background:rgba(0,0,0,0.25);border-radius:6px;border:1px solid ' + (isMusk ? '#f9e74a' : '#4a3408') + '">'
+        + '<div style="font-size:' + (isMusk ? '22px' : '18px') + ';font-weight:bold;color:' + (isMusk ? '#f9e74a' : '#85c1e9') + '">p.' + pg + '</div>'
+        + '<div style="font-size:10px;color:#1a6fa3;margin-top:2px">' + ex.name + '</div>'
         + '</div>';
     });
     container.innerHTML = frags.join('');
