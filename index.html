@@ -28,18 +28,11 @@
 
     header {
       background: linear-gradient(180deg, #5a3d12 0%, #3d2b10 100%);
-      border-bottom: 2px solid #c4a020;
-      padding: 40px 20px 30px;
+      border-bottom: none;
+      padding: 40px 20px 16px;
       text-align: center;
       position: relative;
       overflow: hidden;
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(139,105,20,0.15) 0%, transparent 70%);
-      pointer-events: none;
     }
     .eyebrow {
       font-size: 11px;
@@ -64,15 +57,8 @@
     }
     .disclaimer {
       display: block;
-      background: rgba(55,36,8,0.85);
-      border: 1.5px solid #a07828;
-      border-radius: 8px;
-      padding: 14px 20px;
-      margin-top: 16px;
-      max-width: 560px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
+      margin-top: 10px;
+      text-align: center;
     }
     .disclaimer-title {
       font-size: 12px;
@@ -92,7 +78,7 @@
     main {
       max-width: 700px;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 18px 20px;
     }
 
     .card {
@@ -134,8 +120,6 @@
     .row { display: flex; gap: 10px; }
     .row input { flex: 1; min-width: 0; }
 
-    /* On narrow screens, let the search row wrap so the name input
-       always has room to be seen and used */
     @media (max-width: 600px) {
       .row { flex-wrap: wrap; }
       .row > div:first-child { flex: 1 1 100%; }
@@ -223,8 +207,8 @@
       text-shadow: 0 0 40px rgba(240,208,96,0.4);
       margin-bottom: 6px;
     }
-    .page-of { font-size: 18px; color: #ddb855; margin-bottom: 14px; }
-    .result-name { font-size: 16px; color: #fff4d6; margin-bottom: 20px; }
+    .page-of { font-size: 18px; color: #ddb855; margin-bottom: 6px; }
+    .result-name { font-size: 16px; color: #fff4d6; margin-bottom: 12px; }
     .result-name strong { color: #f0d060; }
 
     .progress-track {
@@ -301,11 +285,11 @@
       text-shadow: 0 1px 8px rgba(240,208,96,0.2);
       overflow: hidden;
     }
-    th:first-child  { padding-left: 12px; width: 56px; }
-    th:nth-child(2) { width: auto; }
+    th:first-child  { padding-left: 12px; width: 80px; padding-right: 20px; }
+    th:nth-child(2) { width: auto; text-align: center; }
     th:last-child   { width: 80px; padding-right: 12px; }
     td { padding: 12px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    td:first-child { padding-left: 12px; }
+    td:first-child { padding-left: 12px; padding-right: 20px; width: 80px; }
     td:last-child  { padding-right: 12px; font-size: 13px; color: #b89040; }
     tbody tr { border-bottom: 1px solid rgba(90,64,16,0.3); transition: background 0.3s; }
     tbody tr:hover { background: rgba(180,135,25,0.1); }
@@ -586,7 +570,7 @@
 <header>
   <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
   <h1>The Dot Book</h1>
-  <div class="subtitle">Every dot is $1 Million &middot; Every page holds 1,000 dots &middot; Page 1 to Page 335</div>
+  <div class="subtitle">Every dot is $1 Million &middot; Every page holds 1,000 dots &middot; Page 1 to Page 335 = $1 Trillion</div>
   <div style="margin-top:10px;font-size:13px;color:#c4a456;font-style:italic">SpaceX IPO · Nasdaq · 12 June 2026 · Ticker: SPCX · $135/share · $1.77 Trillion valuation</div>
 
   <!-- Reveal strip -->
@@ -604,12 +588,9 @@
     </div>
   </div>
 
-  <div class="disclaimer">
-    <div class="disclaimer-title">Not financial data</div>
-    <div class="disclaimer-body">
-      All wealth figures are <strong>publicly sourced estimates</strong> (Forbes, Sunday Times Rich List, press reports)
-      and have <strong>not been independently verified</strong>. Provided purely for <strong>entertainment and perspective</strong>.
-      &nbsp;<span onclick="openDisclaimerPopup()" style="color:#c4a040;text-decoration:underline;cursor:pointer;letter-spacing:1px;font-size:11px">more info &amp; DYOR ›</span>
+  <div class="disclaimer" style="padding:6px 16px;margin-top:10px">
+    <div class="disclaimer-body" style="font-size:11px;color:#8b6914;margin:0">
+      Public estimates only · Not financial advice &nbsp;<span onclick="openDisclaimerPopup()" style="color:#c4a040;text-decoration:underline;cursor:pointer;letter-spacing:1px">more info &amp; DYOR ›</span>
     </div>
   </div>
 
@@ -618,6 +599,7 @@
     <div onclick="event.stopPropagation()" style="background:#1a1208;border:1.5px solid #c4a020;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
       <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#f0d060;text-transform:uppercase;margin-bottom:14px">About these figures</div>
       <div style="font-size:13px;color:#c4a040;line-height:1.8;margin-bottom:14px">
+        All wealth figures are <strong style="color:#f0d060">publicly sourced estimates</strong> (Forbes, Sunday Times Rich List, press reports) and have <strong style="color:#f0d060">not been independently verified</strong>. Provided purely for <strong style="color:#f0d060">entertainment and perspective</strong>.<br><br>
         Wealth tied to <strong style="color:#f0d060">stock prices</strong> (tech founders, investors) can fluctuate daily.<br><br>
         Most others — footballers, musicians, actors, royals — are <strong style="color:#f0d060">annual estimates</strong> updated when Forbes or the Sunday Times Rich List publishes.<br><br>
         <strong style="color:#f0d060">Historical figures</strong> are inflation-adjusted estimates and do not change.
@@ -630,7 +612,7 @@
     </div>
   </div>
   <div id="countdown-banner" style="margin-top:16px;background:rgba(240,208,96,0.18);border:1px solid #d4b020;border-radius:6px;padding:12px 20px;display:inline-block">
-    <span style="font-size:11px;letter-spacing:2px;color:#8b6914;text-transform:uppercase">Musk hits page 335 in </span>
+    <span style="font-size:13px;letter-spacing:2px;color:#f0d060;text-transform:uppercase;font-weight:bold;text-shadow:0 0 12px rgba(240,208,96,0.5)">Musk hits page 335 </span>
     <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#f0d060;letter-spacing:1px">calculating...</span>
   </div>
 </header>
@@ -641,61 +623,57 @@
   <div class="card">
     <div class="card-label">Find a Celebrity</div>
     <div class="form-group">
-      <div>
-        <div style="font-size:11px;letter-spacing:2px;color:#f0c840;text-transform:uppercase;margin-bottom:6px">Type or speak a name to find their page</div>
-        <div class="row">
-          <div style="flex:1;position:relative;display:flex;align-items:center">
-            <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Rod Stewart, Ronaldo" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
-            <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#c4a040;line-height:1;user-select:none" title="Clear">✕</span>
-          </div>
-          <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
-          <button id="mic-btn" onclick="toggleSpeech()" title="Speak a name" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0;background:transparent;border:1.5px solid #6a4e14;border-radius:6px;color:#c4a040;cursor:pointer;transition:all 0.2s">🎤</button>
-        <select id="unit-select">
+      <div class="row">
+        <div style="flex:1;position:relative;display:flex;align-items:center">
+          <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Rod Stewart, Ronaldo" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
+          <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#c4a040;line-height:1;user-select:none" title="Clear">✕</span>
+        </div>
+        <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
+        <button id="mic-btn" onclick="toggleSpeech()" title="Speak a name" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0;background:transparent;border:1.5px solid #6a4e14;border-radius:6px;color:#c4a040;cursor:pointer;transition:all 0.2s">🎤</button>
+      </div>
+      <div class="row">
+        <select id="currency-select" style="flex:2">
+          <option value="USD">🇺🇸 USD — US Dollar</option>
+          <option value="BTC">₿ BTC — Bitcoin</option>
+          <option value="ETH">Ξ ETH — Ethereum</option>
+          <option value="GBP">🇬🇧 GBP — British Pound</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+          <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+          <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+          <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+          <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+          <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
+          <option value="INR">🇮🇳 INR — Indian Rupee</option>
+          <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
+          <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
+          <option value="KRW">🇰🇷 KRW — South Korean Won</option>
+          <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+          <option value="HKD">🇭🇰 HKD — Hong Kong Dollar</option>
+          <option value="NOK">🇳🇴 NOK — Norwegian Krone</option>
+          <option value="SEK">🇸🇪 SEK — Swedish Krona</option>
+          <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
+          <option value="ZAR">🇿🇦 ZAR — South African Rand</option>
+          <option value="AED">🇦🇪 AED — UAE Dirham</option>
+          <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
+          <option value="TRY">🇹🇷 TRY — Turkish Lira</option>
+          <option value="THB">🇹🇭 THB — Thai Baht</option>
+          <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
+          <option value="IDR">🇮🇩 IDR — Indonesian Rupiah</option>
+        </select>
+        <select id="unit-select" style="flex:1">
           <option value="millions">Millions</option>
           <option value="billions">Billions</option>
           <option value="trillions">Trillions</option>
         </select>
       </div>
-      <select id="currency-select">
-        <option value="USD">🇺🇸 USD — US Dollar</option>
-        <option value="BTC">₿ BTC — Bitcoin</option>
-        <option value="ETH">Ξ ETH — Ethereum</option>
-        <option value="GBP">🇬🇧 GBP — British Pound</option>
-        <option value="EUR">🇪🇺 EUR — Euro</option>
-        <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
-        <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
-        <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
-        <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
-        <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
-        <option value="INR">🇮🇳 INR — Indian Rupee</option>
-        <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
-        <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
-        <option value="KRW">🇰🇷 KRW — South Korean Won</option>
-        <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
-        <option value="HKD">🇭🇰 HKD — Hong Kong Dollar</option>
-        <option value="NOK">🇳🇴 NOK — Norwegian Krone</option>
-        <option value="SEK">🇸🇪 SEK — Swedish Krona</option>
-        <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
-        <option value="ZAR">🇿🇦 ZAR — South African Rand</option>
-        <option value="AED">🇦🇪 AED — UAE Dirham</option>
-        <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
-        <option value="TRY">🇹🇷 TRY — Turkish Lira</option>
-        <option value="THB">🇹🇭 THB — Thai Baht</option>
-        <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
-        <option value="IDR">🇮🇩 IDR — Indonesian Rupiah</option>
-      </select>
-      <div id="rate-status" style="font-size:11px;color:#6a5020;min-height:16px;text-align:right;margin-top:-6px"></div>
-
-      <button onclick="handleSubmit()">Find My Page →</button>
+      <div id="rate-status" style="font-size:11px;color:#6a5020;text-align:right;margin-top:-6px"></div>
     </div>
   </div>
 
   <!-- Result -->
   <div id="result-card">
-    <div class="result-label">Your position in the book</div>
     <div class="page-number" id="result-page">—</div>
     <div class="page-of" id="result-page-of">of 335</div>
-    <div style="font-size:11px;letter-spacing:2px;color:#8b6010;text-transform:uppercase;margin-bottom:8px">── page in the dot book ──</div>
     <div class="result-name" id="result-text"></div>
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
@@ -711,8 +689,8 @@
     <button id="save-my-entry-btn" class="add-to-list-btn" onclick="saveCurrentResultAsMyEntry()" style="display:none;margin-top:8px">📖 Save as My Own Entry (permanent)</button>
   </div>
 
-  <!-- My Own Entries — personal additions, saved on this device -->
-  <div class="watchlist-card" id="my-entries-card">
+  <!-- My Own Entries — hidden from main view but JS still works -->
+  <div class="watchlist-card" id="my-entries-card" style="display:none">
     <div class="watchlist-header">
       <span class="watchlist-label">My Own Entries</span>
       <span style="font-size:11px;color:#c4a040;cursor:pointer" onclick="document.getElementById('my-entries-help').style.display = document.getElementById('my-entries-help').style.display === 'none' ? 'block' : 'none'">ⓘ what's this?</span>
@@ -729,8 +707,8 @@
     <div id="club-results-list"></div>
   </div>
 
-  <!-- Watchlist -->
-  <div class="watchlist-card" id="watchlist-card">
+  <!-- Watchlist — hidden from main view but JS still works -->
+  <div class="watchlist-card" id="watchlist-card" style="display:none">
     <div class="watchlist-header">
       <div class="watchlist-label">⭐ My List</div>
       <button class="clear-list-btn" onclick="clearWatchlist()">Clear all</button>
@@ -743,14 +721,14 @@
   <!-- Table -->
   <div class="table-card">
     <div class="table-header">
-      <div class="table-header-label">The Book</div>
+      <div class="table-header-label">The Dot Book</div>
       <div style="display:flex;gap:16px;align-items:center"><div style="font-size:10px;color:#5a4010;letter-spacing:1px">Source: Forbes public data · Illustrative only</div><div id="entry-count"></div></div>
     </div>
     <table>
       <thead>
         <tr>
-          <th>Page</th>
-          <th>Name</th>
+          <th>Page#</th>
+          <th>NAME</th>
           <th>Source</th>
         </tr>
       </thead>
@@ -761,10 +739,10 @@
 
   <!-- Formula -->
   <footer>
-    The Dot Book &middot; thedotbook.com<br>
+    The Dot Book<br>
     Wealth figures sourced from Forbes public data for illustrative purposes only.<br>
     Not financial advice. Figures fluctuate constantly. DYOR.<br>
-    The Dot Book concept &copy; Kevin Cook 2026
+    The Dot Book concept © Kevin Cook 2026
   </footer>
 
 </main>
@@ -1486,7 +1464,7 @@
     html += '<div style="font-size:32px;font-weight:bold;color:#f0d060;margin-bottom:6px">' + usd + '</div>';
     if (local) html += '<div style="font-size:16px;color:#c4a040;margin-bottom:6px">' + local + '</div>';
     html += '<div style="font-size:13px;color:#8b6914;margin-bottom:16px">Page <strong style="color:#f0d060">' + pg + '</strong>' + star + ' of The Dot Book</div>';
-    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#ffd700;color:#1a1208;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
+    if (url) html += '<a href="' + url + '" onclick="window.open(\'' + url + '\',\'_blank\');return false;" style="display:inline-block;background:#ffd700;color:#1a1208;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
     html += '<div style="font-size:10px;color:#5a4010;margin-bottom:16px">⚠ Forbes public estimate · Figures fluctuate daily · DYOR</div>';
     html += '<button id="dotbook-close-btn" style="background:linear-gradient(135deg,#8b6914,#c4a020);border:none;border-radius:4px;padding:10px 24px;color:#1a1208;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
     html += '</div></div>';
@@ -1792,7 +1770,7 @@
     // ── WORLD LEADERS ────────────────────────────────────
     '_sub_worldleaders':   { _subgroup: 'World Leaders' },
     'vladimir putin':      { wealth: 200000, note: 'Politics · Russia · President · Estimated only · undisclosed', url: 'https://en.wikipedia.org/wiki/Vladimir_Putin' },
-    'xi jinping':          { wealth: 1,      note: 'Politics · China · President · Declared modest', url: 'https://en.wikipedia.org/wiki/Xi_Jinping' },
+    'xi jinping':          { wealth: 1000,   note: 'Politics · China · President · Estimated via family assets', url: 'https://en.wikipedia.org/wiki/Xi_Jinping' },
     'narendra modi':       { wealth: 2,      note: 'Politics · India · Prime Minister', url: 'https://en.wikipedia.org/wiki/Narendra_Modi' },
     'angela merkel':       { wealth: 11,     note: 'Politics · Germany · Former Chancellor', url: 'https://en.wikipedia.org/wiki/Angela_Merkel' },
     'olaf scholz':         { wealth: 5,      note: 'Politics · Germany · Chancellor', url: 'https://en.wikipedia.org/wiki/Olaf_Scholz' },
@@ -3991,7 +3969,7 @@
     const name = card.dataset.name;
     const page = card.dataset.page;
     const wealth = card.dataset.wealth;
-    const text = `I found my place in The Dot Book 📖\n\n${name} (${wealth}) is on page ${page}${page > 335 ? ' — BEYOND Elon Musk!' : ' of 335'}.\n\nElon Musk becomes the worlds first Trillionaire on 12 June 2026 (SpaceX IPO · Nasdaq · SPCX)\n\nPage 1 = $1 Million · Page 335 = $1 Trillion\nOne full stop per million dollars.\n\nWhere are you in the book? thedotbook.com\n\n⚠ For illustration only · Not financial advice · DYOR`;
+    const text = `I found my place in The Dot Book 📖\n\n${name} (${wealth}) is on page ${page}${page > 335 ? ' — BEYOND Elon Musk!' : ' of 335'}.\n\nElon Musk becomes the worlds first Trillionaire on 12 June 2026 (SpaceX IPO · Nasdaq · SPCX)\n\nPage 1 = $1 Million · Page 335 = $1 Trillion\nOne full stop per million dollars.\n\nWhere are you in the book? https://thedotbook.github.io/thedotbook/\n\n⚠ For illustration only · Not financial advice · DYOR`;
 
     navigator.clipboard.writeText(text).then(() => {
       showToast('Copied to clipboard!');
@@ -4180,8 +4158,14 @@
     if (!el) return;
 
     if (diff <= 0) {
-      el.textContent = '🚀 SpaceX is NOW trading on Nasdaq!';
-      banner.style.background = 'rgba(240,208,96,0.2)';
+      el.textContent = '🚀 SpaceX NOW trading on Nasdaq!';
+      el.style.color = '#f0d060';
+      el.style.fontWeight = 'bold';
+      el.style.fontSize = '15px';
+      el.style.letterSpacing = '2px';
+      el.style.textShadow = '0 0 12px rgba(240,208,96,0.6)';
+      banner.style.background = 'rgba(240,208,96,0.28)';
+      banner.style.border = '1.5px solid #f0d060';
       return;
     }
 
