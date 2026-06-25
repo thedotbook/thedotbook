@@ -8,7 +8,7 @@
   <!-- PWA Meta Tags -->
   <meta name="application-name" content="The Dot Book" />
   <meta name="description" content="Every dot is $1 million. Where do the world's wealthiest people sit?" />
-  <meta name="theme-color" content="#154360" />
+  <meta name="theme-color" content="#000000" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -19,15 +19,15 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    body { color: #111111;
       min-height: 100vh;
-      background: #154360;
+      background: #000000;
       font-family: Georgia, 'Times New Roman', serif;
-      color: #d6eaf8;
+      color: #222222;
     }
 
     header {
-      background: linear-gradient(180deg, #1a5276 0%, #154360 100%);
+      background: #000000;
       border-bottom: none;
       padding: 40px 20px 16px;
       text-align: center;
@@ -37,7 +37,7 @@
     .eyebrow {
       font-size: 11px;
       letter-spacing: 4px;
-      color: #7ab3d9;
+      color: #444444;
       margin-bottom: 12px;
       text-transform: uppercase;
     }
@@ -68,12 +68,12 @@
       margin-bottom: 6px;
       font-weight: bold;
     }
-    .disclaimer-body {
+    .disclaimer-body { color: #111111;
       font-size: 12px;
       color: #c8a84a;
       line-height: 1.7;
     }
-    .disclaimer-body strong { color: #85c1e9; font-style: normal; }
+    .disclaimer-body strong { color: #555555; font-style: normal; }
 
     main {
       max-width: 700px;
@@ -82,8 +82,8 @@
     }
 
     .card {
-      background: rgba(21,67,96,0.92);
-      border: 1.5px solid #f9e74a;
+      background: rgba(0,0,0,0.92);
+      border: 1.5px solid #ffffff;
       border-radius: 8px;
       padding: 18px;
       margin-bottom: 18px;
@@ -96,7 +96,7 @@
       text-transform: uppercase;
       margin-bottom: 12px;
       padding-bottom: 8px;
-      border-bottom: 1px solid #1a6fa3;
+      border-bottom: 1px solid #333333;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
 
@@ -104,10 +104,10 @@
 
     input[type="text"], input[type="number"], select {
       background: rgba(255,255,255,0.07);
-      border: 1.5px solid #f9e74a;
+      border: 1.5px solid #ffffff;
       border-radius: 4px;
       padding: 10px 14px;
-      color: #d6eaf8;
+      color: #222222;
       font-size: 16px;
       font-family: Georgia, serif;
       outline: none;
@@ -128,16 +128,16 @@
     select {
       width: auto;
       cursor: pointer;
-      background: #1a5276;
+      background: #111111;
     }
-    select option { background: #1a5276; }
+    select option { background: #111111; }
 
     button {
-      background: linear-gradient(135deg, #1a6fa3, #2e86c1);
+      background: #000000;
       border: none;
       border-radius: 4px;
       padding: 11px;
-      color: #0d2e42;
+      color: #000000;
       font-size: 15px;
       font-family: Georgia, serif;
       font-weight: bold;
@@ -153,9 +153,9 @@
     #result-card {
       display: none;
       background: rgba(133,193,233,0.15);
-      border: 2px solid #2e86c1;
+      border: 2px solid #333333;
       border-radius: 2px 8px 8px 2px;
-      border-left: 6px solid #2e86c1;
+      border-left: 6px solid #333333;
       padding: 28px 28px 28px 36px;
       margin-bottom: 24px;
       text-align: center;
@@ -187,8 +187,8 @@
       font-weight: bold;
       flex-shrink: 0;
     }
-    .club-result-name { flex: 1; font-size: 15px; color: #d6eaf8; }
-    .club-result-note { font-size: 11px; color: #85c1e9; text-align: right; }
+    .club-result-name { flex: 1; font-size: 15px; color: #222222; }
+    .club-result-note { font-size: 11px; color: #555555; text-align: right; }
     .result-label {
       font-size: 16px;
       letter-spacing: 3px;
@@ -196,7 +196,7 @@
       text-transform: uppercase;
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #1a6fa3;
+      border-bottom: 1px solid #333333;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
     .page-number {
@@ -207,8 +207,8 @@
       text-shadow: 0 0 40px rgba(240,208,96,0.4);
       margin-bottom: 6px;
     }
-    .page-of { font-size: 18px; color: #aed6f1; margin-bottom: 6px; }
-    .result-name { font-size: 16px; color: #d6eaf8; margin-bottom: 12px; }
+    .page-of { font-size: 18px; color: #333333; margin-bottom: 6px; }
+    .result-name { font-size: 16px; color: #222222; margin-bottom: 12px; }
     .result-name strong { color: #ffffff; }
 
     .progress-track {
@@ -220,7 +220,7 @@
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #1a6fa3, #f9e74a);
+      background: #000000;
       border-radius: 100px;
       transition: width 0.8s ease;
       width: 0%;
@@ -229,17 +229,17 @@
       display: flex;
       justify-content: space-between;
       font-size: 11px;
-      color: #85c1e9;
+      color: #555555;
       margin-bottom: 14px;
     }
-    .result-note { font-size: 13px; color: #85c1e9; font-style: italic; }
+    .result-note { font-size: 13px; color: #555555; font-style: italic; }
 
     /* Share button */
     .share-btn {
       margin-top: 16px;
       background: transparent;
-      border: 1.5px solid #f9e74a;
-      color: #85c1e9;
+      border: 1.5px solid #ffffff;
+      color: #555555;
       font-size: 12px;
       letter-spacing: 2px;
       padding: 8px 20px;
@@ -251,14 +251,14 @@
     /* Table */
     .table-card {
       background: rgba(18,60,88,0.85);
-      border: 1px solid #2e86c1;
+      border: 1px solid #cccccc;
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 20px;
     }
     .table-header {
       padding: 14px 16px;
-      border-bottom: 1px solid #1a6fa3;
+      border-bottom: 1px solid #333333;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -270,10 +270,10 @@
       text-transform: uppercase;
       text-shadow: 0 1px 10px rgba(240,208,96,0.25);
     }
-    #entry-count { font-size: 13px; color: #85c1e9; }
+    #entry-count { font-size: 13px; color: #555555; }
 
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    thead tr { border-bottom: 2px solid #2e86c1; }
+    thead tr { border-bottom: 2px solid #333333; }
     th {
       padding: 10px 8px;
       text-align: left;
@@ -290,7 +290,7 @@
     th:last-child   { width: 80px; padding-right: 12px; }
     td { padding: 12px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     td:first-child { padding-left: 12px; padding-right: 20px; width: 80px; }
-    td:last-child  { padding-right: 12px; font-size: 13px; color: #85c1e9; }
+    td:last-child  { padding-right: 12px; font-size: 13px; color: #555555; }
     tbody tr { border-bottom: 1px solid rgba(30,90,130,0.3); transition: background 0.3s; }
     tbody tr:hover { background: rgba(180,135,25,0.1); }
 
@@ -307,11 +307,11 @@
       padding: 2px 6px;
       font-size: 14px;
       font-weight: bold;
-      color: #0d2e42;
+      color: #000000;
     }
-    .name-cell { font-size: 15px; color: #d6eaf8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
-    .wealth-cell { text-align: right; font-size: 12px; color: #85c1e9; white-space: nowrap; }
-    .you-tag { font-size: 11px; margin-left: 6px; color: #85c1e9; letter-spacing: 1px; }
+    .name-cell { font-size: 15px; color: #222222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    .wealth-cell { text-align: right; font-size: 12px; color: #555555; white-space: nowrap; }
+    .you-tag { font-size: 11px; margin-left: 6px; color: #555555; letter-spacing: 1px; }
 
     /* Mobile card layout */
     @media (max-width: 600px) {
@@ -380,19 +380,19 @@
 
     /* Category accordion */
     tr.group-header td {
-      background: rgba(10,40,70,0.98);
-      border-top: 2px solid #f9e74a;
-      border-bottom: 1px solid #1a5276;
+      background: #000000;
+      border-top: 2px solid #ffffff;
+      border-bottom: 1px solid #333333;
       padding: 13px 16px;
       font-size: 16px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #f9e74a;
+      color: #ffffff;
       font-weight: bold;
       cursor: pointer;
       user-select: none;
     }
-    tr.group-header:hover td { background: rgba(30,90,130,0.98); color: #ffffff; }
+    tr.group-header:hover td { background: #222222; color: #ffffff; }
     tr.group-header .g-arrow {
       display: inline-block;
       margin-right: 10px;
@@ -401,7 +401,7 @@
     }
     tr.group-header .g-count {
       float: right;
-      color: #85c1e9;
+      color: #555555;
       font-size: 10px;
       letter-spacing: 1px;
       margin-top: 2px;
@@ -409,14 +409,14 @@
     }
     tr.group-row.g-hidden { display: none; }
     tr.subgroup-label td {
-      background: rgba(13,46,66,0.9);
+      background: #f8f8f8;
       padding: 8px 16px 8px 24px;
       font-size: 13px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #f9e74a;
-      border-top: 1px solid rgba(249,231,74,0.2);
-      border-bottom: 1px solid rgba(249,231,74,0.2);
+      color: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
       cursor: pointer;
       font-style: italic;
     }
@@ -433,12 +433,12 @@
       margin-bottom: 24px;
     }
     .formula-title { font-size: 16px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; color: #ffffff; padding-bottom: 10px; border-bottom: 1px solid #1a5c8a; text-shadow: 0 1px 10px rgba(240,208,96,0.2); }
-    .formula-eq { font-family: monospace; color: #1a6fa3; }
+    .formula-eq { font-family: monospace; color: #333333; }
 
     footer {
       text-align: center;
       font-size: 11px;
-      color: #1a6fa3;
+      color: #333333;
       line-height: 1.8;
       padding-bottom: 40px;
     }
@@ -454,8 +454,8 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: #1a6fa3;
-      color: #0d2e42;
+      background: #333333;
+      color: #000000;
       padding: 10px 24px;
       border-radius: 4px;
       font-size: 13px;
@@ -472,14 +472,14 @@
     /* Watchlist */
     .watchlist-card {
       background: rgba(18,60,88,0.85);
-      border: 1px solid #2e86c1;
+      border: 1px solid #cccccc;
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 14px;
     }
     .watchlist-header {
       padding: 12px 20px;
-      border-bottom: 1px solid #1a6fa3;
+      border-bottom: 1px solid #333333;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -495,7 +495,7 @@
       padding: 14px;
       text-align: center;
       font-size: 13px;
-      color: #1a5276;
+      color: #111111;
       font-style: italic;
     }
     .watchlist-item {
@@ -516,15 +516,15 @@
       padding: 2px 8px;
       font-size: 13px;
       font-weight: bold;
-      color: #0d2e42;
+      color: #000000;
       flex-shrink: 0;
     }
-    .watchlist-name { flex: 1; font-size: 15px; color: #d6eaf8; }
-    .watchlist-wealth { font-size: 12px; color: #85c1e9; margin-right: 8px; }
+    .watchlist-name { flex: 1; font-size: 15px; color: #222222; }
+    .watchlist-wealth { font-size: 12px; color: #555555; margin-right: 8px; }
     .watchlist-remove {
       background: none;
       border: 1px solid #1a5c8a;
-      color: #1a5276;
+      color: #111111;
       border-radius: 3px;
       padding: 3px 8px;
       font-size: 11px;
@@ -534,12 +534,12 @@
       letter-spacing: 0;
       transition: all 0.2s;
     }
-    .watchlist-remove:hover { border-color: #1a6fa3; color: #1a6fa3; opacity: 1; }
+    .watchlist-remove:hover { border-color: #333333; color: #333333; opacity: 1; }
     .add-to-list-btn {
       margin-top: 12px;
       background: transparent;
-      border: 1px solid #2e86c1;
-      color: #85c1e9;
+      border: 1px solid #cccccc;
+      color: #555555;
       font-size: 12px;
       letter-spacing: 2px;
       padding: 8px 20px;
@@ -547,10 +547,10 @@
       display: inline-block;
       margin-left: 8px;
     }
-    .add-to-list-btn:hover { border-color: #1a6fa3; color: #ffffff; opacity: 1; }
+    .add-to-list-btn:hover { border-color: #333333; color: #ffffff; opacity: 1; }
     .clear-list-btn {
       font-size: 10px;
-      color: #1a6fa3;
+      color: #333333;
       background: none;
       border: none;
       cursor: pointer;
@@ -560,7 +560,7 @@
       padding: 0;
       width: auto;
     }
-    .clear-list-btn:hover { color: #1a6fa3; opacity: 1; }
+    .clear-list-btn:hover { color: #333333; opacity: 1; }
 
 
   </style>
@@ -574,13 +574,13 @@
   <div style="margin-top:10px;font-size:13px;color:#c4a456;font-style:italic">SpaceX IPO · Nasdaq · 12 June 2026 · Ticker: SPCX · $135/share · $1.77 Trillion valuation</div>
 
   <!-- Reveal strip -->
-  <div id="reveal-strip" onclick="revealAnswer()" style="cursor:pointer;margin:18px auto 0;max-width:480px;background:rgba(30,18,4,0.8);border:1.5px solid #2e86c1;border-radius:8px;padding:16px 20px;text-align:center">
+  <div id="reveal-strip" onclick="revealAnswer()" style="cursor:pointer;margin:18px auto 0;max-width:480px;background:rgba(0,0,0,0.85);border:1.5px solid #333333;border-radius:8px;padding:16px 20px;text-align:center">
     <div id="reveal-question">
-      <div style="font-size:13px;letter-spacing:1px;color:#f9e74a;margin-bottom:4px">💭 Guess which page Elon Musk is on?</div>
-      <div style="font-size:11px;color:#1a6fa3;letter-spacing:1px">The book goes from $1 Million → $1 Trillion &nbsp;·&nbsp; tap to reveal</div>
+      <div style="font-size:13px;letter-spacing:1px;color:#ffffff;margin-bottom:4px">💭 Guess which page Elon Musk is on?</div>
+      <div style="font-size:11px;color:#333333;letter-spacing:1px">The book goes from $1 Million → $1 Trillion &nbsp;·&nbsp; tap to reveal</div>
     </div>
     <div id="reveal-answer" style="display:none;margin-top:14px;border-top:1px solid #154a72;padding-top:14px">
-      <div id="reveal-page-number" style="font-size:28px;font-weight:bold;color:#f9e74a;letter-spacing:2px;text-shadow:0 0 20px rgba(240,208,96,0.5)"></div>
+      <div id="reveal-page-number" style="font-size:28px;font-weight:bold;color:#ffffff;letter-spacing:2px;text-shadow:0 0 20px rgba(240,208,96,0.5)"></div>
       <div id="reveal-page-label" style="font-size:12px;color:#85c1e9;margin:6px 0 12px;letter-spacing:1px"></div>
       <div style="display:flex;justify-content:center;gap:0;flex-wrap:wrap;margin-top:8px" id="reveal-examples"></div>
       <div style="font-size:10px;color:#154a72;margin-top:10px;letter-spacing:1px">Most famous people are near page 1 &nbsp;·&nbsp; Musk is near the end of the book</div>
@@ -589,31 +589,31 @@
   </div>
 
   <div class="disclaimer" style="padding:6px 16px;margin-top:10px">
-    <div class="disclaimer-body" style="font-size:11px;color:#1a6fa3;margin:0">
+    <div class="disclaimer-body" style="font-size:11px;color:#333333;margin:0">
       Public estimates only · Not financial advice &nbsp;<span onclick="openDisclaimerPopup()" style="color:#85c1e9;text-decoration:underline;cursor:pointer;letter-spacing:1px">more info &amp; DYOR ›</span>
     </div>
   </div>
 
   <!-- Disclaimer popup -->
   <div id="disclaimer-popup" onclick="closeDisclaimerPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center">
-    <div onclick="event.stopPropagation()" style="background:#0d2e42;border:1.5px solid #2e86c1;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
-      <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#f9e74a;text-transform:uppercase;margin-bottom:14px">About these figures</div>
+    <div onclick="event.stopPropagation()" style="background:#000000;border:1.5px solid #333333;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
+      <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#ffffff;text-transform:uppercase;margin-bottom:14px">About these figures</div>
       <div style="font-size:13px;color:#85c1e9;line-height:1.8;margin-bottom:14px">
         All wealth figures are <strong style="color:#ffffff">publicly sourced estimates</strong> (Forbes, Sunday Times Rich List, press reports) and have <strong style="color:#ffffff">not been independently verified</strong>. Provided purely for <strong style="color:#ffffff">entertainment and perspective</strong>.<br><br>
         Wealth tied to <strong style="color:#ffffff">stock prices</strong> (tech founders, investors) can fluctuate daily.<br><br>
         Most others — footballers, musicians, actors, royals — are <strong style="color:#ffffff">annual estimates</strong> updated when Forbes or the Sunday Times Rich List publishes.<br><br>
         <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and do not change.
       </div>
-      <div style="border-top:1px solid #3a2808;padding-top:14px;font-size:12px;color:#1a6fa3;line-height:1.7">
+      <div style="border-top:1px solid #3a2808;padding-top:14px;font-size:12px;color:#333333;line-height:1.7">
         Not financial, investment, or legal advice.<br>
         <strong style="color:#85c1e9">Do Your Own Research · DYOR</strong>
       </div>
       <div onclick="closeDisclaimerPopup()" style="position:absolute;top:12px;right:16px;color:#1a5c8a;font-size:18px;cursor:pointer;line-height:1">✕</div>
     </div>
   </div>
-  <div id="countdown-banner" style="margin-top:16px;background:rgba(240,208,96,0.18);border:1px solid #2e86c1;border-radius:6px;padding:12px 20px;display:inline-block">
-    <span style="font-size:13px;letter-spacing:2px;color:#f9e74a;text-transform:uppercase;font-weight:bold;text-shadow:0 0 12px rgba(240,208,96,0.5)">Musk hits page 335 </span>
-    <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#f9e74a;letter-spacing:1px">calculating...</span>
+  <div id="countdown-banner" style="margin-top:16px;background:rgba(240,208,96,0.18);border:1px solid #333333;border-radius:6px;padding:12px 20px;display:inline-block">
+    <span style="font-size:13px;letter-spacing:2px;color:#ffffff;text-transform:uppercase;font-weight:bold;text-shadow:0 0 12px rgba(240,208,96,0.5)">Musk hits page 335 </span>
+    <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#ffffff;letter-spacing:1px">calculating...</span>
   </div>
 </header>
 
@@ -672,7 +672,7 @@
 
   <!-- Result -->
   <div id="result-card">
-    <span onclick="clearResult()" style="position:absolute;top:10px;right:12px;cursor:pointer;font-size:20px;color:#f9e74a;line-height:1" title="Clear result">✕</span>
+    <span onclick="clearResult()" style="position:absolute;top:10px;right:12px;cursor:pointer;font-size:20px;color:#ffffff;line-height:1" title="Clear result">✕</span>
     <div class="page-number" id="result-page">—</div>
     <div class="page-of" id="result-page-of">of 335</div>
     <div class="result-name" id="result-text"></div>
@@ -696,7 +696,7 @@
       <span class="watchlist-label">My Own Entries</span>
       <span style="font-size:11px;color:#85c1e9;cursor:pointer" onclick="document.getElementById('my-entries-help').style.display = document.getElementById('my-entries-help').style.display === 'none' ? 'block' : 'none'">ⓘ what's this?</span>
     </div>
-    <div id="my-entries-help" style="display:none;padding:10px 20px;font-size:12px;color:#85c1e9;font-style:italic;border-bottom:1px solid rgba(30,90,130,0.3)">
+    <div id="my-entries-help" style="display:none;padding:10px 20px;font-size:12px;color:#85c1e9;font-style:italic;border-bottom:1px solid #e8e8e8">
       Add anyone you like — a friend, a colleague, yourself — using "Find a Celebrity" with a manual wealth amount, then tap "Save as My Own Entry". They'll appear in the main table below, permanently, only on this device.
     </div>
     <div id="my-entries-list"></div>
@@ -766,13 +766,13 @@
     if (page <= 200) return '#d05830';   // coral-orange
     if (page <= 250) return '#c04040';   // red
     if (page <= 335) return '#a02828';   // dark red
-    if (page <= 460) return '#f9e74a';  // gold — Musk tier
+    if (page <= 460) return '#ffffff';  // gold — Musk tier
     if (page <= 800) return '#cc88ff';  // purple — historical billionaires
     return '#aaddff';                   // platinum — ancient emperors
   }
 
   function getBadgeTextColor(page) {
-    return page > 335 ? '#0d2e42' : '#ffffff';
+    return page > 335 ? '#000000' : '#ffffff';
   }
 
 
@@ -1459,15 +1459,15 @@
     const star = pg > 800 ? ' ★★★' : pg > 460 ? ' ★★' : pg > 335 ? ' ★' : '';
 
     let html = '<div id="wealth-popup-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="document.getElementById(\'wealth-popup-overlay\').remove()">';
-    html += '<div style="background:#0d2e42;border:2px solid #2e86c1;border-radius:8px;padding:28px;max-width:340px;width:100%;text-align:center;position:relative" onclick="event.stopPropagation()">';
-    html += '<div style="font-size:18px;color:#f9e74a;font-weight:bold;margin-bottom:12px">' + escHtml(name) + '</div>';
-    html += '<div style="font-size:13px;color:#1a6fa3;margin-bottom:16px;letter-spacing:1px">' + escHtml(note) + '</div>';
-    html += '<div style="font-size:32px;font-weight:bold;color:#f9e74a;margin-bottom:6px">' + usd + '</div>';
+    html += '<div style="background:#000000;border:2px solid #333333;border-radius:8px;padding:28px;max-width:340px;width:100%;text-align:center;position:relative" onclick="event.stopPropagation()">';
+    html += '<div style="font-size:18px;color:#ffffff;font-weight:bold;margin-bottom:12px">' + escHtml(name) + '</div>';
+    html += '<div style="font-size:13px;color:#333333;margin-bottom:16px;letter-spacing:1px">' + escHtml(note) + '</div>';
+    html += '<div style="font-size:32px;font-weight:bold;color:#ffffff;margin-bottom:6px">' + usd + '</div>';
     if (local) html += '<div style="font-size:16px;color:#85c1e9;margin-bottom:6px">' + local + '</div>';
-    html += '<div style="font-size:13px;color:#1a6fa3;margin-bottom:16px">Page <strong style="color:#ffffff">' + pg + '</strong>' + star + ' of The Dot Book</div>';
-    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#0d2e42;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
+    html += '<div style="font-size:13px;color:#333333;margin-bottom:16px">Page <strong style="color:#ffffff">' + pg + '</strong>' + star + ' of The Dot Book</div>';
+    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#ffffff;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
     html += '<div style="font-size:10px;color:#154a72;margin-bottom:16px">⚠ Forbes public estimate · Figures fluctuate daily · DYOR</div>';
-    html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:linear-gradient(135deg,#1a6fa3,#2e86c1);border:none;border-radius:4px;padding:10px 24px;color:#0d2e42;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
+    html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:linear-gradient(135deg,#333333,#333333);border:none;border-radius:4px;padding:10px 24px;color:#000000;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
     html += '</div></div>';
 
     // Remove any existing popup first
@@ -1517,7 +1517,7 @@
       return 'Music';
     if (n.includes('author') || n.includes('novelist') || n.includes('fiction') ||
         n.includes('thriller') || n.includes('estate') && n.includes('author'))
-      return 'Film & TV';
+      return 'Tech & Business';
     if (n.includes('sport') || n.includes('tennis') || n.includes('golf') ||
         n.includes('boxing') || n.includes('basketball') || n.includes('cricket') ||
         n.includes('f1') || n.includes('mma') || n.includes('nfl') || n.includes('nba') ||
@@ -1667,18 +1667,18 @@
     const isMusk = person.name === 'Elon Musk';
     const isKevin = person.name === 'Kevin Cook' && !isUser;
     const rowBg = isUser ? 'rgba(240,208,96,0.08)' : isMusk ? 'rgba(240,208,96,0.12)' : '';
-    const nameColor = isUser ? '#f9e74a' : isKevin ? '#c4a456' : '#fff0c8';
+    const nameColor = isUser ? '#ffffff' : isKevin ? '#c4a456' : '#222222';
     const nameBold = isUser ? 'bold' : 'normal';
-    const badgeBg = isMusk ? '#f9e74a' : getPageColor(pg);
+    const badgeBg = isMusk ? '#ffffff' : getPageColor(pg);
     const badgeShadow = isMusk ? '0 0 12px rgba(240,208,96,0.8)' : 'none';
-    return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid rgba(30,90,130,0.3);background:' + rowBg + '">'
+    return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #e8e8e8;background:' + rowBg + '">'
       + '<td><span class="page-badge" style="background:' + badgeBg + ';color:' + (isMusk ? '#0d2e42' : getBadgeTextColor(pg)) + ';box-shadow:' + badgeShadow + ';font-size:' + (isMusk?'17px':'15px') + '">' + pg + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
-      + '<span style="font-size:11px;color:#1a6fa3;margin-left:4px">&#9432;</span>'
+      + '<span style="font-size:11px;color:#333333;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#d6eaf8;text-decoration:none;border-bottom:1px dotted #f9e74a">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#0d2e42;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#555555;text-decoration:none;border-bottom:1px dotted #999999">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#ffffff;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
       + '</tr>';
   }
 
@@ -1728,7 +1728,7 @@
           html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
                 + '<td colspan="3" style="padding-left:20px"><span class="sub-arrow">&#9658;</span> — ' + escHtml(item.label) + ' —</td></tr>';
         } else if (thisSid >= 0) {
-          html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid rgba(30,90,130,0.3)">'
+          html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #e8e8e8">'
                 + renderPersonRow(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
         } else {
           html += renderPersonRow(item.person, hidden, groupName);
@@ -2069,7 +2069,7 @@
 
 
     // Authors
-    'jk rowling':          { wealth: 1000,   note: 'Author · Harry Potter', url: 'https://en.wikipedia.org/wiki/Jk_Rowling' },
+    'jk rowling':          { wealth: 1000,   note: 'Author · UK · Harry Potter · Wizarding World', url: 'https://en.wikipedia.org/wiki/J._K._Rowling' },
     'dan brown':           { wealth: 160,    note: 'Author · USA · Da Vinci Code · Angels and Demons', url: 'https://en.wikipedia.org/wiki/Dan_Brown' },
     'lee child':           { wealth: 40,     note: 'Author · UK · Jack Reacher series', url: 'https://en.wikipedia.org/wiki/Lee_Child' },
     'jeffrey archer':      { wealth: 30,     note: 'Author · UK · Lord Archer · Kane and Abel · Imprisoned 2001', url: 'https://en.wikipedia.org/wiki/Jeffrey_Archer' },
@@ -2686,7 +2686,6 @@
     'danielle steel':          { wealth: 310,    note: 'Author · USA · Romance', url: 'https://en.wikipedia.org/wiki/Danielle_Steel' },
     'nora roberts':            { wealth: 400,    note: 'Author · USA · Romance · JD Robb', url: 'https://en.wikipedia.org/wiki/Nora_Roberts' },
     'stephen king':            { wealth: 500,    note: 'Author · USA · Horror', url: 'https://en.wikipedia.org/wiki/Stephen_King' },
-    'george rr martin':        { wealth: 120,    note: 'Author · USA · Game of Thrones', url: 'https://en.wikipedia.org/wiki/George_Rr_Martin' },
     'george r r martin':       { wealth: 120,    note: 'Author · USA · Game of Thrones', url: 'https://en.wikipedia.org/wiki/George_R_R_Martin' },
     'john grisham':            { wealth: 400,    note: 'Author · USA · Legal thrillers', url: 'https://en.wikipedia.org/wiki/John_Grisham' },
     'ken follett':             { wealth: 160,    note: 'Author · UK · Historical fiction', url: 'https://en.wikipedia.org/wiki/Ken_Follett' },
@@ -3764,7 +3763,7 @@
     document.getElementById('result-page').textContent = page;
     const pageOfText = page > 335 ? 'beyond page 335' : 'of 335';
     document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#f9e74a">&#9733; Beyond Musk!</span>' : ' of 335';
+    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 335';
     const hc = getHomeCurrency(match.note, name);
     const hcDisplay = hc ? formatInHomeCurrency(wm, hc) : formatWealth(wm);
     document.getElementById('result-text').innerHTML =
@@ -3805,7 +3804,7 @@
           }
           row.style.transition = 'background 0.3s';
           row.style.background = 'rgba(240,208,96,0.25)';
-          row.style.outline = '2px solid #f9e74a';
+          row.style.outline = '2px solid #ffffff';
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
           setTimeout(() => {
             row.style.background = '';
@@ -3842,7 +3841,7 @@
       return '<span style="margin-right:10px;white-space:nowrap">' + c.name + ': <strong>' + display + '</strong></span>';
     }).join('');
     return '<div style="margin-top:12px;padding:10px 14px;background:rgba(0,0,0,0.2);border-radius:4px;font-size:11px;color:#85c1e9;text-align:left;line-height:2">'
-      + '<div style="font-size:10px;letter-spacing:2px;color:#1a6fa3;text-transform:uppercase;margin-bottom:6px">In other currencies</div>'
+      + '<div style="font-size:10px;letter-spacing:2px;color:#333333;text-transform:uppercase;margin-bottom:6px">In other currencies</div>'
       + lines + '</div>';
   }
 
@@ -3945,7 +3944,7 @@
     document.getElementById('result-page').textContent = page;
     const pageOfText = page > 335 ? 'beyond page 335' : 'of 335';
     document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#f9e74a">&#9733; Beyond Musk!</span>' : ' of 335';
+    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 335';
     const hcDisplay = (() => { const hc = getHomeCurrency(match.note, name); return hc ? formatInHomeCurrency(match.wealth, hc) : formatWealth(match.wealth); })();
     document.getElementById('result-text').innerHTML =
       '<strong>' + escHtml(name) + '</strong> appears on page ' + page
@@ -4120,7 +4119,7 @@
   // silently inside installed PWAs (home-screen apps) on Android.
   function showConfirmModal(message, onConfirm) {
     const html = '<div id="confirm-modal-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">'
-      + '<div style="background:#0d2e42;border:2px solid #2e86c1;border-radius:8px;padding:24px;max-width:320px;width:100%;text-align:center">'
+      + '<div style="background:#000000;border:2px solid #333333;border-radius:8px;padding:24px;max-width:320px;width:100%;text-align:center">'
       + '<div style="font-size:15px;color:#d6eaf8;margin-bottom:20px">' + escHtml(message) + '</div>'
       + '<div style="display:flex;gap:10px">'
       + '<button id="confirm-modal-yes" style="flex:1">Yes, clear it</button>'
@@ -4179,13 +4178,13 @@
 
     if (diff <= 0) {
       el.textContent = '🚀 SpaceX NOW trading on Nasdaq!';
-      el.style.color = '#f9e74a';
+      el.style.color = '#ffffff';
       el.style.fontWeight = 'bold';
       el.style.fontSize = '15px';
       el.style.letterSpacing = '2px';
       el.style.textShadow = '0 0 12px rgba(240,208,96,0.6)';
       banner.style.background = 'rgba(240,208,96,0.28)';
-      banner.style.border = '1.5px solid #f9e74a';
+      banner.style.border = '1.5px solid #ffffff';
       return;
     }
 
@@ -4211,7 +4210,7 @@
     if (revealed) {
       answer.style.display = 'none';
       question.style.display = 'block';
-      document.getElementById('reveal-strip').style.borderColor = '#2e86c1';
+      document.getElementById('reveal-strip').style.borderColor = '#333333';
       revealed = false;
       return;
     }
@@ -4219,7 +4218,7 @@
     revealed = true;
     question.style.display = 'none';
     answer.style.display = 'block';
-    document.getElementById('reveal-strip').style.borderColor = '#f9e74a';
+    document.getElementById('reveal-strip').style.borderColor = '#ffffff';
 
     // Calculate Musk's page dynamically from real data
     const allPpl = allEntries();
@@ -4244,9 +4243,9 @@
       const p = byKey[ex.key] || CELEB_DB[ex.key];
       const pg = p ? getPage(p.wealth) : '?';
       const isMusk = ex.key === 'elon musk';
-      return '<div style="flex:1;min-width:100px;padding:8px 10px;margin:4px;background:rgba(0,0,0,0.25);border-radius:6px;border:1px solid ' + (isMusk ? '#f9e74a' : '#4a3408') + '">'
-        + '<div style="font-size:' + (isMusk ? '22px' : '18px') + ';font-weight:bold;color:' + (isMusk ? '#f9e74a' : '#85c1e9') + '">p.' + pg + '</div>'
-        + '<div style="font-size:10px;color:#1a6fa3;margin-top:2px">' + ex.name + '</div>'
+      return '<div style="flex:1;min-width:100px;padding:8px 10px;margin:4px;background:rgba(0,0,0,0.25);border-radius:6px;border:1px solid ' + (isMusk ? '#ffffff' : '#4a3408') + '">'
+        + '<div style="font-size:' + (isMusk ? '22px' : '18px') + ';font-weight:bold;color:' + (isMusk ? '#ffffff' : '#85c1e9') + '">p.' + pg + '</div>'
+        + '<div style="font-size:10px;color:#333333;margin-top:2px">' + ex.name + '</div>'
         + '</div>';
     });
     container.innerHTML = frags.join('');
@@ -4355,4 +4354,3 @@
 </script>
 </body>
 </html>
-
