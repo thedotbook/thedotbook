@@ -1,5 +1,11 @@
 {
-  "adds": {},
+  "adds": {
+    "jackie steward": {
+      "wealth": 50,
+      "note": "Sport",
+      "url": ""
+    }
+  },
   "removes": [
     "jackie stewart"
   ],
