@@ -793,7 +793,7 @@
           <input id="add-wealth" type="number" placeholder="e.g. 5" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
 
           <div style="font-size:12px;color:#888;margin-bottom:4px">Category</div>
-          <select id="add-category" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
+          <select id="add-category" onchange="updateSubgroups()" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
             <option value="">-- Select --</option>
             <option value="Film & TV">Film &amp; TV</option>
             <option value="Football">Football</option>
@@ -805,8 +805,18 @@
             <option value="YouTube & Streaming">YouTube &amp; Streaming</option>
           </select>
 
+          <div id="subgroup-row" style="display:none">
+            <div style="font-size:12px;color:#888;margin-bottom:4px">Sub-section (optional)</div>
+            <select id="add-subgroup" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
+              <option value="">-- Select sub-section --</option>
+            </select>
+          </div>
+
           <div style="font-size:12px;color:#888;margin-bottom:4px">Wikipedia URL (optional)</div>
-          <input id="add-url" type="text" placeholder="https://en.wikipedia.org/wiki/..." style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:13px;border-radius:4px;box-sizing:border-box;margin-bottom:12px">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="add-url" type="text" placeholder="https://en.wikipedia.org/wiki/..." style="flex:1;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:13px;border-radius:4px;box-sizing:border-box">
+            <button onclick="findWiki()" style="background:#f9e74a;color:#000;border:none;padding:12px 14px;cursor:pointer;border-radius:4px;font-size:13px;font-weight:bold;white-space:nowrap">🔍 Find</button>
+          </div>
 
           <button onclick="addCeleb()" style="width:100%;background:#ffffff;color:#000000;border:none;padding:14px;font-weight:bold;cursor:pointer;border-radius:4px;font-size:15px">+ CONFIRM ADD</button>
         </div>
@@ -4496,6 +4506,43 @@
     }
   }
 
+  const SUBGROUPS = {
+    'Film & TV': ['Hollywood','UK Actors','Directors & Producers','US TV & Comedy','UK TV & Comedy','UK Presenters & Reality TV','Authors'],
+    'Football': ['Ex-Footballers and Personalities','Current Stars','Football Managers','World Cup 2026 — By Nation','Premier League 2025-26 — By Club'],
+    'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values'],
+    'Music': ['Pop','Hip-Hop & R&B','Rock','Country','Classical & Crossover','K-pop'],
+    'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
+    'Sport': ['Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
+    'Tech & Business': ['Tech Founders','Dragons & Entrepreneurs','Female Founders','News & Media','Fashion','Automotive','UK Rich List — Top Families 2026','Authors'],
+    'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
+  };
+
+  function findWiki() {
+    const name = document.getElementById('admin-search').value.trim();
+    if (!name) { alert('Please enter a name first'); return; }
+    const wikiName = name.replace(/ /g, '_');
+    const url = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(wikiName);
+    // Auto-fill the URL field
+    document.getElementById('add-url').value = url;
+    // Open Wikipedia to verify
+    window.open(url, '_blank');
+  }
+
+  function updateSubgroups() {
+    const cat = document.getElementById('add-category').value;
+    const row = document.getElementById('subgroup-row');
+    const sel = document.getElementById('add-subgroup');
+    if (!cat || !SUBGROUPS[cat]) { row.style.display = 'none'; return; }
+    sel.innerHTML = '<option value="">-- Select sub-section --</option>';
+    SUBGROUPS[cat].forEach(sub => {
+      const opt = document.createElement('option');
+      opt.value = sub;
+      opt.textContent = sub;
+      sel.appendChild(opt);
+    });
+    row.style.display = 'block';
+  }
+
   function adminSearch() {
     const q = document.getElementById('admin-search').value.trim();
     const result = document.getElementById('admin-search-result');
@@ -4553,7 +4600,7 @@
       return;
     }
 
-    const note = category || 'General';
+    const note = (category || 'General') + (document.getElementById('add-subgroup') && document.getElementById('add-subgroup').value ? ' · ' + document.getElementById('add-subgroup').value : '');
     const key = name.toLowerCase();
     pendingAdds[key] = { wealth, note, url };
     document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
@@ -4564,6 +4611,8 @@
     document.getElementById('admin-search').value = '';
     document.getElementById('add-wealth').value = '';
     document.getElementById('add-category').value = '';
+    if (document.getElementById('add-subgroup')) document.getElementById('add-subgroup').value = '';
+    document.getElementById('subgroup-row').style.display = 'none';
     document.getElementById('add-url').value = '';
     document.getElementById('add-form').style.display = 'none';
     document.getElementById('admin-search-result').textContent = '';
@@ -4612,8 +4661,8 @@
     const results = document.getElementById('edit-results');
     if (!q || q.length < 2) { results.innerHTML = ''; return; }
 
-    const allKeys = { ...CELEB_DB, ...CUSTOM_DATA.adds };
-    const matches = Object.entries(allKeys)
+    const allDB = { ...CELEB_DB, ...(CUSTOM_DATA.adds || {}) };
+    const matches = Object.entries(allDB)
       .filter(([k, v]) => !v._subgroup && k.includes(q))
       .slice(0, 8);
 
@@ -4624,16 +4673,26 @@
 
     results.innerHTML = matches.map(([k, v]) => {
       const sk = k.replace(/[^a-z0-9]/g, '');
-      return '<div style="padding:8px 4px;border-bottom:1px solid #333">'
-      + '<div style="color:#ffffff;font-size:13px;margin-bottom:6px">' + escHtml(k) + ' <span style="color:#888;font-size:11px">$' + v.wealth + 'M</span></div>'
-      + '<div style="display:flex;gap:6px;flex-wrap:wrap">'
-      + '<input id="edit-wealth-' + sk + '" type="number" placeholder="New wealth $M" value="' + v.wealth + '" style="flex:1;min-width:80px;background:#000;border:1px solid #555;color:#fff;padding:6px;border-radius:3px;font-size:12px">'
-      + '<input id="edit-url-' + sk + '" type="text" placeholder="Wikipedia URL" value="' + escHtml(v.url || '') + '" style="flex:2;min-width:150px;background:#000;border:1px solid #555;color:#fff;padding:6px;border-radius:3px;font-size:11px">'
-      + '<button class="edit-save-btn" data-key="' + escHtml(k) + '" data-safekey="' + sk + '" style="background:#ffffff;color:#000;border:none;padding:6px 12px;cursor:pointer;border-radius:3px;font-size:11px;font-weight:bold">Save</button>'
-      + '</div></div>';
+      const catOptions = ['Film & TV','Football','Historical','Music','Royalty & Politics','Sport','Tech & Business','YouTube & Streaming']
+        .map(c => '<option value="' + c + '">' + c + '</option>').join('');
+      return '<div style="padding:10px 4px;border-bottom:1px solid #333">'
+        + '<div style="color:#ffffff;font-size:14px;font-weight:bold;margin-bottom:8px">' + escHtml(k) + ' <span style="color:#888;font-size:11px;font-weight:normal">$' + v.wealth + 'M</span></div>'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Wealth $M</div>'
+        + '<input id="ew-' + sk + '" type="number" value="' + v.wealth + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px">'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Category</div>'
+        + '<select id="ec-' + sk + '" onchange="updateEditSubgroups(\'' + sk + '\')" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px">'
+        + '<option value="">-- unchanged --</option>' + catOptions
+        + '</select>'
+        + '<div id="es-row-' + sk + '" style="display:none">'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Sub-section</div>'
+        + '<select id="es-' + sk + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px"><option value="">-- select --</option></select>'
+        + '</div>'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Wikipedia URL</div>'
+        + '<input id="eu-' + sk + '" type="text" value="' + escHtml(v.url || '') + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:12px;box-sizing:border-box;margin-bottom:8px">'
+        + '<button class="edit-save-btn" data-key="' + escHtml(k) + '" data-safekey="' + sk + '" style="width:100%;background:#ffffff;color:#000;border:none;padding:10px;cursor:pointer;border-radius:3px;font-size:13px;font-weight:bold">Save Changes</button>'
+        + '</div>';
     }).join('');
 
-    // Add click handlers to save buttons
     results.querySelectorAll('.edit-save-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         editCeleb(this.dataset.key, this.dataset.safekey);
@@ -4641,18 +4700,36 @@
     });
   }
 
+  function updateEditSubgroups(sk) {
+    const cat = document.getElementById('ec-' + sk).value;
+    const row = document.getElementById('es-row-' + sk);
+    const sel = document.getElementById('es-' + sk);
+    if (!cat || !SUBGROUPS[cat]) { row.style.display = 'none'; return; }
+    sel.innerHTML = '<option value="">-- select sub-section --</option>';
+    SUBGROUPS[cat].forEach(sub => {
+      const opt = document.createElement('option');
+      opt.value = sub;
+      opt.textContent = sub;
+      sel.appendChild(opt);
+    });
+    row.style.display = 'block';
+  }
+
   function editCeleb(key, safeKey) {
-    const newWealth = parseFloat(document.getElementById('edit-wealth-' + safeKey).value);
-    const newUrl = document.getElementById('edit-url-' + safeKey).value.trim();
-    if (!newWealth) {
-      document.getElementById('edit-status').textContent = '⚠ Please enter a wealth value';
-      return;
-    }
+    const newWealth = parseFloat(document.getElementById('ew-' + safeKey).value);
+    const newUrl = document.getElementById('eu-' + safeKey).value.trim();
+    const newCat = document.getElementById('ec-' + safeKey).value;
+    const newSub = document.getElementById('es-' + safeKey) ? document.getElementById('es-' + safeKey).value : '';
+
     if (!pendingEdits[key]) pendingEdits[key] = {};
-    pendingEdits[key].wealth = newWealth;
+    if (newWealth) pendingEdits[key].wealth = newWealth;
     if (newUrl) pendingEdits[key].url = newUrl;
+    if (newCat) {
+      const note = newCat + (newSub ? ' · ' + newSub : '');
+      pendingEdits[key].note = note;
+    }
     document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
-    document.getElementById('edit-status').textContent = '✓ ' + key + ' edit queued';
+    document.getElementById('edit-status').textContent = '✓ ' + key + ' changes queued';
     document.getElementById('edit-status').style.color = '#88ff88';
   }
 
