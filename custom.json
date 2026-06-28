@@ -4,17 +4,13 @@
       "wealth": 3,
       "note": "Film & TV",
       "url": ""
-    },
-    "again prost": {
-      "wealth": 30,
-      "note": "Sport",
-      "url": ""
     }
   },
   "removes": [
     "jackie stewart",
     "huw edwards",
-    "jackie steward"
+    "jackie steward",
+    "again prost"
   ],
   "edits": {}
 }
