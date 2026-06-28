@@ -10,6 +10,12 @@
       "note": "Sport · F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Kimi_Antonelli",
       "subgroup": "F1 & Motorsport"
+    },
+    "oliver bearman": {
+      "wealth": 3,
+      "note": "Sport · F1 & Motorsport",
+      "url": "https://en.wikipedia.org/wiki/Oliver_Bearman",
+      "subgroup": "F1 & Motorsport"
     }
   },
   "removes": [
@@ -17,7 +23,6 @@
     "huw edwards",
     "jackie steward",
     "again prost",
-    "oliver bearman",
     "carlos sainz jr"
   ],
   "edits": {}
