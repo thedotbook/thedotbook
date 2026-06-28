@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Black background -->
+  <rect width="512" height="512" fill="#000000" rx="80"/>
+  
+  <!-- Grid of white dots representing the concept -->
+  <!-- Row 1 -->
+  <circle cx="96"  cy="96"  r="28" fill="#ffffff"/>
+  <circle cx="176" cy="96"  r="28" fill="#ffffff"/>
+  <circle cx="256" cy="96"  r="28" fill="#ffffff"/>
+  <circle cx="336" cy="96"  r="28" fill="#ffffff"/>
+  <circle cx="416" cy="96"  r="28" fill="#ffffff"/>
+  <!-- Row 2 -->
+  <circle cx="96"  cy="176" r="28" fill="#ffffff"/>
+  <circle cx="176" cy="176" r="28" fill="#ffffff"/>
+  <circle cx="256" cy="176" r="28" fill="#ffffff"/>
+  <circle cx="336" cy="176" r="28" fill="#ffffff"/>
+  <circle cx="416" cy="176" r="28" fill="#ffffff"/>
+  <!-- Row 3 -->
+  <circle cx="96"  cy="256" r="28" fill="#ffffff"/>
+  <circle cx="176" cy="256" r="28" fill="#ffffff"/>
+  <circle cx="256" cy="256" r="28" fill="#ffffff"/>
+  <circle cx="336" cy="256" r="28" fill="#ffffff"/>
+  <circle cx="416" cy="256" r="28" fill="#ffffff"/>
+  <!-- Row 4 -->
+  <circle cx="96"  cy="336" r="28" fill="#ffffff"/>
+  <circle cx="176" cy="336" r="28" fill="#ffffff"/>
+  <circle cx="256" cy="336" r="28" fill="#ffffff"/>
+  <circle cx="336" cy="336" r="28" fill="#ffffff"/>
+  <circle cx="416" cy="336" r="28" fill="#ffffff"/>
+  <!-- Row 5 -->
+  <circle cx="96"  cy="416" r="28" fill="#ffffff"/>
+  <circle cx="176" cy="416" r="28" fill="#ffffff"/>
+  <circle cx="256" cy="416" r="28" fill="#ffffff"/>
+  <circle cx="336" cy="416" r="28" fill="#ffffff"/>
+  <circle cx="416" cy="416" r="28" fill="#ffffff"/>
+</svg>
