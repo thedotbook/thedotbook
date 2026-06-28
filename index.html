@@ -4773,9 +4773,9 @@
       currentData.removes = [...new Set([...(currentData.removes || []), ...pendingRemovals])];
       currentData.edits = { ...currentData.edits, ...pendingEdits };
 
-      // Remove from adds if also in removes
-      for (const key of currentData.removes) {
-        delete currentData.adds[key];
+      // If something is being re-added, remove it from the removes list
+      for (const key of Object.keys(pendingAdds)) {
+        currentData.removes = currentData.removes.filter(r => r !== key);
       }
 
       // Encode
