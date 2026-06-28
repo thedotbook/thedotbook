@@ -4397,9 +4397,26 @@
   let adminLoggedIn = false;
   let adminTapCount = 0;
   let adminTapTimer = null;
-  let pendingAdds = {};
-  let pendingRemovals = [];
-  let pendingEdits = {};
+
+  // Load pending changes from localStorage so they survive panel resets
+  let pendingAdds = JSON.parse(localStorage.getItem('dotbook_pendingAdds') || '{}');
+  let pendingRemovals = JSON.parse(localStorage.getItem('dotbook_pendingRemovals') || '[]');
+  let pendingEdits = JSON.parse(localStorage.getItem('dotbook_pendingEdits') || '{}');
+
+  function savePending() {
+    localStorage.setItem('dotbook_pendingAdds', JSON.stringify(pendingAdds));
+    localStorage.setItem('dotbook_pendingRemovals', JSON.stringify(pendingRemovals));
+    localStorage.setItem('dotbook_pendingEdits', JSON.stringify(pendingEdits));
+  }
+
+  function clearPending() {
+    pendingAdds = {};
+    pendingRemovals = [];
+    pendingEdits = {};
+    localStorage.removeItem('dotbook_pendingAdds');
+    localStorage.removeItem('dotbook_pendingRemovals');
+    localStorage.removeItem('dotbook_pendingEdits');
+  }
 
   function adminTap() {
     adminTapCount++;
@@ -4604,6 +4621,7 @@
     const subgroup = document.getElementById('add-subgroup') ? document.getElementById('add-subgroup').value : '';
     const key = name.toLowerCase();
     pendingAdds[key] = { wealth, note, url, subgroup };
+    savePending();
     document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
     status.textContent = '✓ ' + name + ' queued — tap Publish when ready';
     status.style.color = '#88ff88';
@@ -4651,6 +4669,7 @@
 
   function removeCeleb(key) {
     pendingRemovals.push(key);
+    savePending();
     document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
     document.getElementById('remove-status').textContent = '✓ ' + key + ' queued for removal';
     document.getElementById('remove-status').style.color = '#88ff88';
@@ -4814,9 +4833,7 @@
 
       status.textContent = '✅ Published! Live in ~2 minutes.';
       status.style.color = '#88ff88';
-      pendingAdds = {};
-      pendingRemovals = [];
-      pendingEdits = {};
+      clearPending();
       document.getElementById('pending-count').textContent = '0';
       renderTable();
 
