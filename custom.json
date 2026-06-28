@@ -22,6 +22,12 @@
       "note": "Sport · F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Carlos_Sainz_Jr",
       "subgroup": "F1 & Motorsport"
+    },
+    "rory mcilroy": {
+      "wealth": 300,
+      "note": "Sport · Golf",
+      "url": "https://en.wikipedia.org/wiki/Rory_Mcilroy",
+      "subgroup": "Golf"
     }
   },
   "removes": [
