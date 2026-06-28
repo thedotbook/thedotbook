@@ -28,6 +28,12 @@
       "note": "Sport · Golf",
       "url": "https://en.wikipedia.org/wiki/Rory_Mcilroy",
       "subgroup": "Golf"
+    },
+    "phil mickelson": {
+      "wealth": 400,
+      "note": "Sport · Golf",
+      "url": "https://en.wikipedia.org/wiki/Phil_Mickelson",
+      "subgroup": "Golf"
     }
   },
   "removes": [
