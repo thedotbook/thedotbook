@@ -4601,8 +4601,9 @@
     }
 
     const note = (category || 'General') + (document.getElementById('add-subgroup') && document.getElementById('add-subgroup').value ? ' · ' + document.getElementById('add-subgroup').value : '');
+    const subgroup = document.getElementById('add-subgroup') ? document.getElementById('add-subgroup').value : '';
     const key = name.toLowerCase();
-    pendingAdds[key] = { wealth, note, url };
+    pendingAdds[key] = { wealth, note, url, subgroup };
     document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
     status.textContent = '✓ ' + name + ' queued — tap Publish when ready';
     status.style.color = '#88ff88';
