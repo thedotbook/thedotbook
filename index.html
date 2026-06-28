@@ -4604,7 +4604,7 @@
     document.getElementById('add-wealth').focus();
   }
 
-  function addCeleb() {
+  async function addCeleb() {
     const name = document.getElementById('admin-search').value.trim();
     const wealth = parseFloat(document.getElementById('add-wealth').value) || 1;
     const category = document.getElementById('add-category').value;
@@ -4620,21 +4620,75 @@
     const note = (category || 'General') + (document.getElementById('add-subgroup') && document.getElementById('add-subgroup').value ? ' · ' + document.getElementById('add-subgroup').value : '');
     const subgroup = document.getElementById('add-subgroup') ? document.getElementById('add-subgroup').value : '';
     const key = name.toLowerCase();
-    pendingAdds[key] = { wealth, note, url, subgroup };
-    savePending();
-    document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
-    status.textContent = '✓ ' + name + ' queued — tap Publish when ready';
-    status.style.color = '#88ff88';
 
-    // Reset
-    document.getElementById('admin-search').value = '';
-    document.getElementById('add-wealth').value = '';
-    document.getElementById('add-category').value = '';
-    if (document.getElementById('add-subgroup')) document.getElementById('add-subgroup').value = '';
-    document.getElementById('subgroup-row').style.display = 'none';
-    document.getElementById('add-url').value = '';
-    document.getElementById('add-form').style.display = 'none';
-    document.getElementById('admin-search-result').textContent = '';
+    status.textContent = '⏳ Saving ' + name + '...';
+    status.style.color = '#aaaaaa';
+
+    const token = localStorage.getItem('dotbook_token');
+    if (!token) {
+      status.textContent = '⚠ No token — save your token first';
+      status.style.color = '#ff6666';
+      return;
+    }
+
+    try {
+      // Fetch current custom.json
+      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!getResp.ok) throw new Error('Could not fetch custom.json: ' + getResp.status);
+      const fileData = await getResp.json();
+      const sha = fileData.sha;
+      const bytes = Uint8Array.from(atob(fileData.content.split('\n').join('')), c => c.charCodeAt(0));
+      const currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+      // Add the new entry
+      currentData.adds[key] = { wealth, note, url, subgroup };
+      // Remove from removes list if previously removed
+      currentData.removes = (currentData.removes || []).filter(r => r !== key);
+
+      // Encode and push
+      const json = JSON.stringify(currentData, null, 2);
+      const encoder = new TextEncoder();
+      const encBytes = encoder.encode(json);
+      let binary = '';
+      for (let i = 0; i < encBytes.length; i += 8192) {
+        binary += String.fromCharCode(...encBytes.subarray(i, i + 8192));
+      }
+      const encoded = btoa(binary);
+
+      const pushResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Admin: add ' + name, content: encoded, sha: sha })
+      });
+
+      if (!pushResp.ok) {
+        const err = await pushResp.json();
+        throw new Error(err.message || pushResp.status);
+      }
+
+      // Update local CELEB_DB immediately
+      CELEB_DB[key] = { wealth, note, url, subgroup };
+      CUSTOM_DATA.adds[key] = { wealth, note, url, subgroup };
+
+      status.textContent = '✅ ' + name + ' saved! Live in ~2 mins';
+      status.style.color = '#88ff88';
+
+      // Reset form
+      document.getElementById('admin-search').value = '';
+      document.getElementById('add-wealth').value = '';
+      document.getElementById('add-category').value = '';
+      if (document.getElementById('add-subgroup')) document.getElementById('add-subgroup').value = '';
+      document.getElementById('subgroup-row').style.display = 'none';
+      document.getElementById('add-url').value = '';
+      document.getElementById('add-form').style.display = 'none';
+      document.getElementById('admin-search-result').textContent = '';
+
+    } catch(err) {
+      status.textContent = '❌ Error: ' + err.message;
+      status.style.color = '#ff6666';
+    }
   }
 
   function searchToRemove() {
@@ -4667,13 +4721,49 @@
     });
   }
 
-  function removeCeleb(key) {
-    pendingRemovals.push(key);
-    savePending();
-    document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
-    document.getElementById('remove-status').textContent = '✓ ' + key + ' queued for removal';
-    document.getElementById('remove-status').style.color = '#88ff88';
-    searchToRemove();
+  async function removeCeleb(key) {
+    const token = localStorage.getItem('dotbook_token');
+    const status = document.getElementById('remove-status');
+    if (!token) { status.textContent = '⚠ No token saved'; return; }
+
+    status.textContent = '⏳ Removing ' + key + '...';
+    try {
+      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!getResp.ok) throw new Error('Could not fetch: ' + getResp.status);
+      const fileData = await getResp.json();
+      const sha = fileData.sha;
+      const bytes = Uint8Array.from(atob(fileData.content.split('\n').join('')), c => c.charCodeAt(0));
+      const currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+      currentData.removes = [...new Set([...(currentData.removes || []), key])];
+      delete currentData.adds[key];
+
+      const json = JSON.stringify(currentData, null, 2);
+      const encoder = new TextEncoder();
+      const encBytes = encoder.encode(json);
+      let binary = '';
+      for (let i = 0; i < encBytes.length; i += 8192) binary += String.fromCharCode(...encBytes.subarray(i, i + 8192));
+      const encoded = btoa(binary);
+
+      const pushResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Admin: remove ' + key, content: encoded, sha: sha })
+      });
+      if (!pushResp.ok) throw new Error((await pushResp.json()).message);
+
+      delete CELEB_DB[key];
+      status.textContent = '✅ ' + key + ' removed! Live in ~2 mins';
+      status.style.color = '#88ff88';
+      document.getElementById('remove-search').value = '';
+      document.getElementById('remove-results').innerHTML = '';
+      renderTable();
+    } catch(err) {
+      status.textContent = '❌ Error: ' + err.message;
+      status.style.color = '#ff6666';
+    }
   }
 
   function searchToEdit() {
