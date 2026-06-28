@@ -16,14 +16,19 @@
       "note": "Sport · F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Oliver_Bearman",
       "subgroup": "F1 & Motorsport"
+    },
+    "carlos sainz jr": {
+      "wealth": 5,
+      "note": "Sport · F1 & Motorsport",
+      "url": "https://en.wikipedia.org/wiki/Carlos_Sainz_Jr",
+      "subgroup": "F1 & Motorsport"
     }
   },
   "removes": [
     "jackie stewart",
     "huw edwards",
     "jackie steward",
-    "again prost",
-    "carlos sainz jr"
+    "again prost"
   ],
   "edits": {}
 }
