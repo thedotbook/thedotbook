@@ -4,18 +4,14 @@
       "wealth": 3,
       "note": "Film & TV",
       "url": ""
-    },
-    "kimi antonelli": {
-      "wealth": 20,
-      "note": "Sport",
-      "url": ""
     }
   },
   "removes": [
     "jackie stewart",
     "huw edwards",
     "jackie steward",
-    "again prost"
+    "again prost",
+    "kimi antonelli"
   ],
   "edits": {}
 }
