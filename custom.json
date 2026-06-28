@@ -4,6 +4,11 @@
       "wealth": 50,
       "note": "Sport",
       "url": ""
+    },
+    "clive myrie": {
+      "wealth": 3,
+      "note": "Film & TV",
+      "url": ""
     }
   },
   "removes": [
