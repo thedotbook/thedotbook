@@ -4,12 +4,6 @@
       "wealth": 3,
       "note": "Film & TV",
       "url": ""
-    },
-    "oliver bearman": {
-      "wealth": 5,
-      "note": "Sport · F1 & Motorsport",
-      "url": "https://en.wikipedia.org/wiki/Oliver_Bearman",
-      "subgroup": "F1 & Motorsport"
     }
   },
   "removes": [
@@ -17,7 +11,8 @@
     "huw edwards",
     "jackie steward",
     "again prost",
-    "kimi antonelli"
+    "kimi antonelli",
+    "oliver bearman"
   ],
   "edits": {}
 }
