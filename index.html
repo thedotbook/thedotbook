@@ -4847,31 +4847,26 @@
           if (CELEB_DB[key]) Object.assign(CELEB_DB[key], edits);
         }
 
-        // Apply adds — find the right subgroup marker and insert after it
+        // Apply adds — insert after exact matching subgroup marker
         for (const [key, val] of Object.entries(CUSTOM_DATA.adds || {})) {
-          // Find subgroup marker that matches the note
-          const note = (val.note || '').toLowerCase();
+          const targetSub = (val.subgroup || '').trim();
           let inserted = false;
+          const normalize = s => s.replace(/\s*&\s*/g, ' & ').toLowerCase().trim();
 
-          // Look for a matching _sub_ entry to insert after
-          const entries = Object.entries(CELEB_DB);
-          for (let i = 0; i < entries.length; i++) {
-            const [k, v] = entries[i];
-            if (v._subgroup) {
-              const subName = v._subgroup.toLowerCase();
-              // Check if this subgroup matches our note
-              if (note.includes(subName.toLowerCase()) || subName.toLowerCase().split(' ').some(w => w.length > 3 && note.includes(w))) {
-                // Insert after this subgroup marker — rebuild CELEB_DB with entry after this key
+          if (targetSub) {
+            const entries = Object.entries(CELEB_DB);
+            for (let i = 0; i < entries.length; i++) {
+              const existingSub = (entries[i][1]._subgroup || '').trim();
+              if (existingSub && normalize(existingSub) === normalize(targetSub)) {
                 const newDB = {};
                 for (const [ek, ev] of entries) {
                   newDB[ek] = ev;
-                  if (ek === k && !newDB[key]) {
+                  if (ek === entries[i][0] && !newDB[key]) {
                     newDB[key] = val;
                     inserted = true;
                   }
                 }
                 if (inserted) {
-                  // Replace CELEB_DB contents
                   Object.keys(CELEB_DB).forEach(k2 => delete CELEB_DB[k2]);
                   Object.assign(CELEB_DB, newDB);
                   break;
