@@ -4,6 +4,12 @@
       "wealth": 3,
       "note": "Film & TV",
       "url": ""
+    },
+    "carlos sainz jr": {
+      "wealth": 5,
+      "note": "Sport · F1 & Motorsport",
+      "url": "",
+      "subgroup": "F1 & Motorsport"
     }
   },
   "removes": [
