@@ -4835,17 +4835,52 @@
       const resp = await fetch('custom.json?t=' + Date.now());
       if (resp.ok) {
         CUSTOM_DATA = await resp.json();
-        // Apply adds
-        for (const [key, val] of Object.entries(CUSTOM_DATA.adds || {})) {
-          CELEB_DB[key] = val;
-        }
-        // Apply removes
+
+        // Apply removes first
         for (const key of (CUSTOM_DATA.removes || [])) {
           delete CELEB_DB[key];
         }
+
         // Apply edits
         for (const [key, edits] of Object.entries(CUSTOM_DATA.edits || {})) {
           if (CELEB_DB[key]) Object.assign(CELEB_DB[key], edits);
+        }
+
+        // Apply adds — find the right subgroup marker and insert after it
+        for (const [key, val] of Object.entries(CUSTOM_DATA.adds || {})) {
+          // Find subgroup marker that matches the note
+          const note = (val.note || '').toLowerCase();
+          let inserted = false;
+
+          // Look for a matching _sub_ entry to insert after
+          const entries = Object.entries(CELEB_DB);
+          for (let i = 0; i < entries.length; i++) {
+            const [k, v] = entries[i];
+            if (v._subgroup) {
+              const subName = v._subgroup.toLowerCase();
+              // Check if this subgroup matches our note
+              if (note.includes(subName.toLowerCase()) || subName.toLowerCase().split(' ').some(w => w.length > 3 && note.includes(w))) {
+                // Insert after this subgroup marker — rebuild CELEB_DB with entry after this key
+                const newDB = {};
+                for (const [ek, ev] of entries) {
+                  newDB[ek] = ev;
+                  if (ek === k && !newDB[key]) {
+                    newDB[key] = val;
+                    inserted = true;
+                  }
+                }
+                if (inserted) {
+                  // Replace CELEB_DB contents
+                  Object.keys(CELEB_DB).forEach(k2 => delete CELEB_DB[k2]);
+                  Object.assign(CELEB_DB, newDB);
+                  break;
+                }
+              }
+            }
+          }
+
+          // If no matching subgroup found, just add at end
+          if (!inserted) CELEB_DB[key] = val;
         }
       }
     } catch(e) {
