@@ -1546,7 +1546,7 @@
     html += '<div style="font-size:32px;font-weight:bold;color:#ffffff;margin-bottom:6px">' + usd + '</div>';
     if (local) html += '<div style="font-size:16px;color:#aaaaaa;margin-bottom:6px">' + local + '</div>';
     html += '<div style="font-size:13px;color:#aaaaaa;margin-bottom:16px">Page <strong style="color:#ffffff">' + pg + '</strong>' + star + ' of The Dot Book</div>';
-    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
+    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
     html += '<div style="font-size:10px;color:#888888;margin-bottom:16px">&#9888; Forbes public estimate · Figures fluctuate daily · DYOR</div>';
     html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:#ffffff;border:none;border-radius:4px;padding:10px 24px;color:#000000;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
     html += '</div></div>';
@@ -1764,7 +1764,7 @@
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555" onclick="event.stopPropagation()">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle" onclick="event.stopPropagation()">&#8599;</a>' : escHtml(person.note)) + '</td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
       + '</tr>';
   }
 
@@ -4718,76 +4718,4 @@
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: 'Admin: add ' + name, content: encoded, sha: sha })
-      });
-
-      if (!pushResp.ok) {
-        const err = await pushResp.json();
-        throw new Error(err.message || pushResp.status);
-      }
-
-      // Update local CELEB_DB immediately
-      CELEB_DB[key] = { wealth, note, url, subgroup };
-      CUSTOM_DATA.adds[key] = { wealth, note, url, subgroup };
-
-      status.textContent = '✅ ' + name + ' saved! Live in ~2 mins';
-      status.style.color = '#88ff88';
-
-      // Reset form
-      document.getElementById('admin-search').value = '';
-      document.getElementById('add-wealth').value = '';
-      document.getElementById('add-category').value = '';
-      if (document.getElementById('add-subgroup')) document.getElementById('add-subgroup').value = '';
-      document.getElementById('subgroup-row').style.display = 'none';
-      document.getElementById('add-url').value = '';
-      document.getElementById('add-form').style.display = 'none';
-      document.getElementById('admin-search-result').textContent = '';
-
-    } catch(err) {
-      status.textContent = '❌ Error: ' + err.message;
-      status.style.color = '#ff6666';
-    }
-  }
-
-  function searchToRemove() {
-    const q = document.getElementById('remove-search').value.toLowerCase().trim();
-    const results = document.getElementById('remove-results');
-    if (!q || q.length < 2) { results.innerHTML = ''; return; }
-
-    const allKeys = { ...CELEB_DB, ...CUSTOM_DATA.adds };
-    const matches = Object.entries(allKeys)
-      .filter(([k, v]) => !v._subgroup && k.includes(q) && !pendingRemovals.includes(k))
-      .slice(0, 10);
-
-    if (matches.length === 0) {
-      results.innerHTML = '<div style="color:#888;font-size:12px;padding:8px">No matches found</div>';
-      return;
-    }
-
-    results.innerHTML = matches.map(([k, v]) =>
-      '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid #333">'
-      + '<span style="color:#ffffff;font-size:13px">' + escHtml(k) + ' <span style="color:#888;font-size:11px">$' + v.wealth + 'M</span></span>'
-      + '<button class="remove-btn" data-key="' + escHtml(k) + '" style="background:#ff4444;color:#fff;border:none;padding:4px 10px;cursor:pointer;border-radius:3px;font-size:11px">Remove</button>'
-      + '</div>'
-    ).join('');
-
-    // Add click handlers
-    results.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        removeCeleb(this.dataset.key);
-      });
-    });
-  }
-
-  async function removeCeleb(key) {
-    const token = localStorage.getItem('dotbook_token');
-    const status = document.getElementById('remove-status');
-    if (!token) { status.textContent = '⚠ No token saved'; return; }
-
-    status.textContent = '⏳ Removing ' + key + '...';
-    try {
-      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
-        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-      });
-      if (!getResp.ok) throw new Error('Could not fetch: ' + getResp.status);
-      const fileData = await getResp.json();
-      const sha = fileData.
+   
