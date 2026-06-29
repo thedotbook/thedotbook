@@ -1764,7 +1764,7 @@
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
       + '</tr>';
   }
 
@@ -4230,4 +4230,836 @@
       const textColor = getBadgeTextColor(page);
       return '<div class="watchlist-item">'
         + '<span class="club-result-badge" style="background:' + color + ';color:' + textColor + '">p.' + page + '</span>'
-        + '<span style="flex:1;font-size:14px;color:#33333
+        + '<span style="flex:1;font-size:14px;color:#333333">' + escHtml(e.name) + '</span>'
+        + '<span class="my-entry-remove" data-entry-name="' + escHtml(e.name) + '" style="cursor:pointer;color:#c4604a;font-size:18px;padding:0 4px" title="Remove">✕</span>'
+        + '</div>';
+    }).join('');
+    container.querySelectorAll('.my-entry-remove').forEach(el => {
+      el.addEventListener('click', () => removeMyEntry(el.dataset.entryName));
+    });
+  }
+
+  function addToWatchlist() {
+    const card = document.getElementById('result-card');
+    const name = card.dataset.name;
+    const page = parseInt(card.dataset.page);
+    const wealth = card.dataset.wealth;
+    const wealthM = parseFloat(card.dataset.wealthM || 0);
+
+    if (!name) return;
+
+    const list = loadWatchlist();
+    if (list.find(e => e.name.toLowerCase() === name.toLowerCase())) {
+      showToast('Already in your list!');
+      return;
+    }
+    const url = card.dataset.url || '';
+    list.push({ name, page, wealth, wealthM, url, added: new Date().toLocaleDateString('en-GB') });
+    saveWatchlist(list);
+    renderWatchlist();
+    showToast('Added to your list ★');
+  }
+
+  function removeFromWatchlist(name) {
+    const list = loadWatchlist().filter(e => e.name !== name);
+    saveWatchlist(list);
+    renderWatchlist();
+  }
+
+  function clearResult() {
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('club-results-card').style.display = 'none';
+    userEntry = null;
+    renderTable();
+  }
+
+  function clearWatchlist() {
+    showConfirmModal('Clear your list and your last search result?', () => {
+      saveWatchlist([]);
+      // Also clear "Your Entry" (the last person you looked up) and hide
+      // the result card, so nothing from a previous search lingers on screen.
+      userEntry = null;
+      const resultCard = document.getElementById('result-card');
+      if (resultCard) resultCard.style.display = 'none';
+      renderWatchlist();
+      renderTable();
+    });
+  }
+
+  // Custom confirm modal — replaces window.confirm(), which can fail
+  // silently inside installed PWAs (home-screen apps) on Android.
+  function showConfirmModal(message, onConfirm) {
+    const html = '<div id="confirm-modal-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">'
+      + '<div style="background:#000000;border:2px solid #333333;border-radius:8px;padding:24px;max-width:320px;width:100%;text-align:center">'
+      + '<div style="font-size:15px;color:#333333;margin-bottom:20px">' + escHtml(message) + '</div>'
+      + '<div style="display:flex;gap:10px">'
+      + '<button id="confirm-modal-yes" style="flex:1">Yes, clear it</button>'
+      + '<button id="confirm-modal-no" style="flex:1;background:transparent;border:1.5px solid #333333;color:#555555">Cancel</button>'
+      + '</div></div></div>';
+    document.body.insertAdjacentHTML('beforeend', html);
+    const overlay = document.getElementById('confirm-modal-overlay');
+    document.getElementById('confirm-modal-yes').addEventListener('click', () => {
+      overlay.remove();
+      onConfirm();
+    });
+    document.getElementById('confirm-modal-no').addEventListener('click', () => {
+      overlay.remove();
+    });
+  }
+
+  function renderWatchlist() {
+    const list = loadWatchlist().sort((a, b) => a.page - b.page);
+    const card = document.getElementById('watchlist-card');
+    const body = document.getElementById('watchlist-body');
+    if (list.length === 0) {
+      card.style.display = 'none';
+      body.innerHTML = '';
+      return;
+    }
+    card.style.display = 'block';
+    body.innerHTML = list.map(e => {
+      const wikiBtn = e.url ? '<a href="' + escHtml(e.url) + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;flex-shrink:0">&#8599;</a>' : '';
+      const safeName = escHtml(e.name).replace(/'/g, "\\'");
+      return '<div class="watchlist-item">'
+        + '<span class="watchlist-badge" style="background:#ffffff;color:#000000">p.' + e.page + '</span>'
+        + '<span class="watchlist-name">' + escHtml(e.name) + '</span>'
+        + '<span class="watchlist-wealth">' + escHtml(e.wealth) + '</span>'
+        + wikiBtn
+        + '<button class="watchlist-remove" onclick="removeFromWatchlist(\'' + safeName + '\')">&#10005;</button>'
+        + '</div>';
+    }).join('');
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function clearResult() {
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('club-results-card').style.display = 'none';
+    renderTable();
+  }
+
+  function clearWatchlist() {
+    showConfirmModal('Clear all items from My List?', () => {
+      saveWatchlist([]);
+      renderWatchlist();
+      renderTable();
+    });
+  }
+
+  function showConfirmModal(message, onConfirm) {
+    const existing = document.getElementById('confirm-modal-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'confirm-modal-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center';
+    overlay.innerHTML = '<div style="background:#1a1a1a;border:1px solid #555555;border-radius:8px;padding:24px;max-width:320px;width:90%;text-align:center">'
+      + '<div style="font-size:15px;color:#ffffff;margin-bottom:20px">' + message + '</div>'
+      + '<div style="display:flex;gap:12px;justify-content:center">'
+      + '<button id="confirm-modal-yes" style="background:#ffffff;color:#000000;border:none;border-radius:4px;padding:10px 24px;font-weight:bold;cursor:pointer">Yes</button>'
+      + '<button id="confirm-modal-no" style="background:transparent;color:#ffffff;border:1px solid #555555;border-radius:4px;padding:10px 24px;cursor:pointer">Cancel</button>'
+      + '</div></div>';
+    document.body.appendChild(overlay);
+    document.getElementById('confirm-modal-yes').addEventListener('click', () => { overlay.remove(); onConfirm(); });
+    document.getElementById('confirm-modal-no').addEventListener('click', () => { overlay.remove(); });
+  }
+
+  function openDisclaimerPopup() {
+    const p = document.getElementById('disclaimer-popup');
+    if (p) { p.style.display = 'flex'; }
+  }
+
+  function closeDisclaimerPopup() {
+    document.getElementById('disclaimer-popup').style.display = 'none';
+  }
+
+  function copyShareText() {
+    const card = document.getElementById('result-card');
+    const name = card.dataset.name;
+    const page = card.dataset.page;
+    const wealth = card.dataset.wealth;
+    if (!name) return;
+    const text = name + ' is on page ' + page + ' of The Dot Book (' + wealth + ') — thedotbook.github.io/thedotbook/';
+    navigator.clipboard.writeText(text).then(() => showToast('Copied!')).catch(() => showToast('Could not copy'));
+  }
+
+  function revealAnswer() {
+    const question = document.getElementById('reveal-question');
+    const answer = document.getElementById('reveal-answer');
+    if (!question || !answer) return;
+    if (answer.style.display === 'none' || !answer.style.display) {
+      question.style.display = 'none';
+      answer.style.display = 'block';
+      const page = getPage(963000);
+      document.getElementById('reveal-page-number').textContent = 'Page ' + page;
+      document.getElementById('reveal-page-label').textContent = 'Elon Musk · ~$963B · World\'s first Trillionaire';
+    } else {
+      question.style.display = 'block';
+      answer.style.display = 'none';
+    }
+  }
+
+  let recognition = null;
+  let isListening = false;
+
+  function toggleSpeech() {
+    if (isListening) { stopSpeech(); return; }
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      showToast('Speech not supported on this browser');
+      return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = 'en-GB';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onresult = (e) => {
+      const text = e.results[0][0].transcript;
+      document.getElementById('name-input').value = text;
+      stopSpeech();
+      lookupCelebrity();
+    };
+    recognition.onerror = () => stopSpeech();
+    recognition.onend = () => stopSpeech();
+    recognition.start();
+    isListening = true;
+    const btn = document.getElementById('mic-btn');
+    if (btn) { btn.classList.add('listening'); btn.title = 'Listening...'; }
+    document.getElementById('name-input').placeholder = 'Listening...';
+  }
+
+  function stopSpeech() {
+    isListening = false;
+    const btn = document.getElementById('mic-btn');
+    if (btn) { btn.classList.remove('listening'); btn.title = 'Speak a name'; }
+    document.getElementById('name-input').placeholder = 'e.g. Taylor Swift, Rod Stewart, Ronaldo';
+    if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+  }
+
+  // Initial render
+  renderTable();
+  renderWatchlist();
+  renderMyEntries();
+
+  // ── ADMIN PANEL ──────────────────────────────────────────
+  const ADMIN_PASSWORD = 'Finley21.';
+  const GITHUB_OWNER = 'thedotbook';
+  const GITHUB_REPO = 'thedotbook';
+  const GITHUB_FILE = 'custom.json';
+  let adminLoggedIn = false;
+  let adminTapCount = 0;
+  let adminTapTimer = null;
+
+  // Load pending changes from localStorage so they survive panel resets
+  let pendingAdds = JSON.parse(localStorage.getItem('dotbook_pendingAdds') || '{}');
+  let pendingRemovals = JSON.parse(localStorage.getItem('dotbook_pendingRemovals') || '[]');
+  let pendingEdits = JSON.parse(localStorage.getItem('dotbook_pendingEdits') || '{}');
+
+  function savePending() {
+    localStorage.setItem('dotbook_pendingAdds', JSON.stringify(pendingAdds));
+    localStorage.setItem('dotbook_pendingRemovals', JSON.stringify(pendingRemovals));
+    localStorage.setItem('dotbook_pendingEdits', JSON.stringify(pendingEdits));
+  }
+
+  function clearPending() {
+    pendingAdds = {};
+    pendingRemovals = [];
+    pendingEdits = {};
+    localStorage.removeItem('dotbook_pendingAdds');
+    localStorage.removeItem('dotbook_pendingRemovals');
+    localStorage.removeItem('dotbook_pendingEdits');
+  }
+
+  function adminTap() {
+    adminTapCount++;
+    clearTimeout(adminTapTimer);
+    adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 2000);
+    if (adminTapCount >= 5) {
+      adminTapCount = 0;
+      document.getElementById('admin-overlay').style.display = 'block';
+      // Load saved token if exists
+      const saved = localStorage.getItem('dotbook_token');
+      if (saved) {
+        document.getElementById('admin-token').value = saved;
+        document.getElementById('token-status').textContent = '✓ Token loaded';
+      }
+    }
+  }
+
+  function adminLogin() {
+    const pw = document.getElementById('admin-password').value;
+    if (pw === ADMIN_PASSWORD) {
+      adminLoggedIn = true;
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
+    } else {
+      document.getElementById('admin-login-error').style.display = 'block';
+      document.getElementById('admin-password').value = '';
+    }
+  }
+
+  function closeAdmin() {
+    document.getElementById('admin-overlay').style.display = 'none';
+    document.getElementById('admin-password').value = '';
+    if (!adminLoggedIn) return;
+    adminLoggedIn = false;
+    document.getElementById('admin-login').style.display = 'block';
+    document.getElementById('admin-panel').style.display = 'none';
+  }
+
+  function saveToken() {
+    const token = document.getElementById('admin-token').value.trim();
+    if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+      document.getElementById('token-status').textContent = '⚠ Should start with ghp_ or github_pat_';
+      return;
+    }
+    localStorage.setItem('dotbook_token', token);
+    document.getElementById('token-status').textContent = '✓ Saved!';
+    document.getElementById('token-status').style.color = '#88ff88';
+  }
+
+  async function verifyToken() {
+    const token = localStorage.getItem('dotbook_token') || document.getElementById('admin-token').value.trim();
+    const status = document.getElementById('token-status');
+    status.textContent = '⏳ Testing...';
+    status.style.color = '#aaaaaa';
+    try {
+      const resp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO, {
+        headers: { 'Authorization': 'token ' + token }
+      });
+      if (resp.ok) {
+        status.textContent = '✅ Token works!';
+        status.style.color = '#88ff88';
+      } else {
+        status.textContent = '❌ Error ' + resp.status + ' - regenerate token with repo scope';
+        status.style.color = '#ff6666';
+      }
+    } catch(e) {
+      status.textContent = '❌ Network error: ' + e.message;
+      status.style.color = '#ff6666';
+    }
+  }
+
+  async function checkWealth() {
+    const name = document.getElementById('add-name').value.trim();
+    if (!name) { 
+      document.getElementById('wealth-hint').textContent = '⚠ Enter a name first';
+      return;
+    }
+    document.getElementById('wealth-hint').textContent = '⏳ Searching...';
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 100,
+          messages: [{ role: 'user', content: 'What is ' + name + ' estimated net worth in millions of USD? Reply with ONLY a number, no text, no $ sign, no commas. If unknown say 0.' }]
+        })
+      });
+      const data = await resp.json();
+      const text = data.content[0].text.trim().replace(/[^0-9.]/g,'');
+      const val = parseFloat(text);
+      if (val > 0) {
+        document.getElementById('add-wealth').value = val;
+        document.getElementById('wealth-hint').textContent = '✓ Suggested: $' + val + 'M — check and adjust if needed';
+        document.getElementById('wealth-hint').style.color = '#88ff88';
+      } else {
+        document.getElementById('wealth-hint').textContent = '⚠ Could not find wealth — please enter manually';
+        document.getElementById('wealth-hint').style.color = '#ff6666';
+      }
+    } catch(e) {
+      document.getElementById('wealth-hint').textContent = '⚠ Search failed — enter manually';
+      document.getElementById('wealth-hint').style.color = '#ff6666';
+    }
+  }
+
+  const SUBGROUPS = {
+    'Film & TV': ['Hollywood','UK Actors','Directors & Producers','US TV & Comedy','UK TV & Comedy','UK Presenters & Reality TV','Authors'],
+    'Football': ['Ex-Footballers and Personalities','Current Stars','Football Managers','World Cup 2026 — By Nation','Premier League 2025-26 — By Club'],
+    'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values'],
+    'Music': ['Pop','Hip-Hop & R&B','Rock','Country','Classical & Crossover','K-pop'],
+    'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
+    'Sport': ['Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
+    'Tech & Business': ['Tech Founders','Dragons & Entrepreneurs','Female Founders','News & Media','Fashion','Automotive','UK Rich List — Top Families 2026','Authors'],
+    'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
+  };
+
+  function findWiki() {
+    const name = document.getElementById('admin-search').value.trim();
+    if (!name) { alert('Please enter a name first'); return; }
+    const wikiName = name.replace(/ /g, '_');
+    const url = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(wikiName);
+    // Auto-fill the URL field
+    document.getElementById('add-url').value = url;
+    // Open Wikipedia to verify
+    window.open(url, '_blank');
+  }
+
+  function updateSubgroups() {
+    const cat = document.getElementById('add-category').value;
+    const row = document.getElementById('subgroup-row');
+    const sel = document.getElementById('add-subgroup');
+    if (!cat || !SUBGROUPS[cat]) { row.style.display = 'none'; return; }
+    sel.innerHTML = '<option value="">-- Select sub-section --</option>';
+    SUBGROUPS[cat].forEach(sub => {
+      const opt = document.createElement('option');
+      opt.value = sub;
+      opt.textContent = sub;
+      sel.appendChild(opt);
+    });
+    row.style.display = 'block';
+  }
+
+  function adminSearch() {
+    const q = document.getElementById('admin-search').value.trim();
+    const result = document.getElementById('admin-search-result');
+    const addForm = document.getElementById('add-form');
+    const removeResults = document.getElementById('remove-results');
+
+    if (!q || q.length < 2) {
+      result.textContent = '';
+      addForm.style.display = 'none';
+      removeResults.innerHTML = '';
+      return;
+    }
+
+    const key = q.toLowerCase();
+    const allDB = { ...CELEB_DB, ...(CUSTOM_DATA.adds || {}) };
+    const removed = CUSTOM_DATA.removes || [];
+
+    // Check exact match first
+    if (allDB[key] && !allDB[key]._subgroup && !removed.includes(key)) {
+      const v = allDB[key];
+      result.innerHTML = '✓ <strong style="color:#ffffff">' + escHtml(q) + '</strong> is in the database — $' + v.wealth + 'M';
+      result.style.color = '#88ff88';
+      addForm.style.display = 'none';
+      removeResults.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">'
+        + '<span style="color:#ffffff">' + escHtml(key) + '</span>'
+        + '<button class="remove-btn" data-key="' + escHtml(key) + '" style="background:#ff4444;color:#fff;border:none;padding:8px 16px;cursor:pointer;border-radius:4px;font-size:13px;font-weight:bold">Remove</button>'
+        + '</div>';
+      removeResults.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() { removeCeleb(this.dataset.key); });
+      });
+    } else {
+      // Not found — show Add option
+      result.innerHTML = '<strong style="color:#ffffff">' + escHtml(q) + '</strong> is not in the database — <button onclick="showAddForm()" style="background:#ffffff;color:#000;border:none;padding:6px 14px;cursor:pointer;border-radius:4px;font-weight:bold;font-size:13px">+ Add</button>';
+      result.style.color = '#aaaaaa';
+      addForm.style.display = 'none';
+      removeResults.innerHTML = '';
+    }
+  }
+
+  function showAddForm() {
+    document.getElementById('add-form').style.display = 'block';
+    document.getElementById('add-wealth').focus();
+  }
+
+  async function addCeleb() {
+    const name = document.getElementById('admin-search').value.trim();
+    const wealth = parseFloat(document.getElementById('add-wealth').value) || 1;
+    const category = document.getElementById('add-category').value;
+    const url = document.getElementById('add-url').value.trim();
+    const status = document.getElementById('add-status');
+
+    if (!name) {
+      status.textContent = '⚠ Please enter a name';
+      status.style.color = '#ff6666';
+      return;
+    }
+
+    const note = (category || 'General') + (document.getElementById('add-subgroup') && document.getElementById('add-subgroup').value ? ' · ' + document.getElementById('add-subgroup').value : '');
+    const subgroup = document.getElementById('add-subgroup') ? document.getElementById('add-subgroup').value : '';
+    const key = name.toLowerCase();
+
+    status.textContent = '⏳ Saving ' + name + '...';
+    status.style.color = '#aaaaaa';
+
+    const token = localStorage.getItem('dotbook_token');
+    if (!token) {
+      status.textContent = '⚠ No token — save your token first';
+      status.style.color = '#ff6666';
+      return;
+    }
+
+    try {
+      // Fetch current custom.json
+      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!getResp.ok) throw new Error('Could not fetch custom.json: ' + getResp.status);
+      const fileData = await getResp.json();
+      const sha = fileData.sha;
+      const bytes = Uint8Array.from(atob(fileData.content.split('\n').join('')), c => c.charCodeAt(0));
+      const currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+      // Add the new entry
+      currentData.adds[key] = { wealth, note, url, subgroup };
+      // Remove from removes list if previously removed
+      currentData.removes = (currentData.removes || []).filter(r => r !== key);
+
+      // Encode and push
+      const json = JSON.stringify(currentData, null, 2);
+      const encoder = new TextEncoder();
+      const encBytes = encoder.encode(json);
+      let binary = '';
+      for (let i = 0; i < encBytes.length; i += 8192) {
+        binary += String.fromCharCode(...encBytes.subarray(i, i + 8192));
+      }
+      const encoded = btoa(binary);
+
+      const pushResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Admin: add ' + name, content: encoded, sha: sha })
+      });
+
+      if (!pushResp.ok) {
+        const err = await pushResp.json();
+        throw new Error(err.message || pushResp.status);
+      }
+
+      // Update local CELEB_DB immediately
+      CELEB_DB[key] = { wealth, note, url, subgroup };
+      CUSTOM_DATA.adds[key] = { wealth, note, url, subgroup };
+
+      status.textContent = '✅ ' + name + ' saved! Live in ~2 mins';
+      status.style.color = '#88ff88';
+
+      // Reset form
+      document.getElementById('admin-search').value = '';
+      document.getElementById('add-wealth').value = '';
+      document.getElementById('add-category').value = '';
+      if (document.getElementById('add-subgroup')) document.getElementById('add-subgroup').value = '';
+      document.getElementById('subgroup-row').style.display = 'none';
+      document.getElementById('add-url').value = '';
+      document.getElementById('add-form').style.display = 'none';
+      document.getElementById('admin-search-result').textContent = '';
+
+    } catch(err) {
+      status.textContent = '❌ Error: ' + err.message;
+      status.style.color = '#ff6666';
+    }
+  }
+
+  function searchToRemove() {
+    const q = document.getElementById('remove-search').value.toLowerCase().trim();
+    const results = document.getElementById('remove-results');
+    if (!q || q.length < 2) { results.innerHTML = ''; return; }
+
+    const allKeys = { ...CELEB_DB, ...CUSTOM_DATA.adds };
+    const matches = Object.entries(allKeys)
+      .filter(([k, v]) => !v._subgroup && k.includes(q) && !pendingRemovals.includes(k))
+      .slice(0, 10);
+
+    if (matches.length === 0) {
+      results.innerHTML = '<div style="color:#888;font-size:12px;padding:8px">No matches found</div>';
+      return;
+    }
+
+    results.innerHTML = matches.map(([k, v]) =>
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid #333">'
+      + '<span style="color:#ffffff;font-size:13px">' + escHtml(k) + ' <span style="color:#888;font-size:11px">$' + v.wealth + 'M</span></span>'
+      + '<button class="remove-btn" data-key="' + escHtml(k) + '" style="background:#ff4444;color:#fff;border:none;padding:4px 10px;cursor:pointer;border-radius:3px;font-size:11px">Remove</button>'
+      + '</div>'
+    ).join('');
+
+    // Add click handlers
+    results.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        removeCeleb(this.dataset.key);
+      });
+    });
+  }
+
+  async function removeCeleb(key) {
+    const token = localStorage.getItem('dotbook_token');
+    const status = document.getElementById('remove-status');
+    if (!token) { status.textContent = '⚠ No token saved'; return; }
+
+    status.textContent = '⏳ Removing ' + key + '...';
+    try {
+      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!getResp.ok) throw new Error('Could not fetch: ' + getResp.status);
+      const fileData = await getResp.json();
+      const sha = fileData.sha;
+      const bytes = Uint8Array.from(atob(fileData.content.split('\n').join('')), c => c.charCodeAt(0));
+      const currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+      currentData.removes = [...new Set([...(currentData.removes || []), key])];
+      delete currentData.adds[key];
+
+      const json = JSON.stringify(currentData, null, 2);
+      const encoder = new TextEncoder();
+      const encBytes = encoder.encode(json);
+      let binary = '';
+      for (let i = 0; i < encBytes.length; i += 8192) binary += String.fromCharCode(...encBytes.subarray(i, i + 8192));
+      const encoded = btoa(binary);
+
+      const pushResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Admin: remove ' + key, content: encoded, sha: sha })
+      });
+      if (!pushResp.ok) throw new Error((await pushResp.json()).message);
+
+      delete CELEB_DB[key];
+      status.textContent = '✅ ' + key + ' removed! Live in ~2 mins';
+      status.style.color = '#88ff88';
+      document.getElementById('remove-search').value = '';
+      document.getElementById('remove-results').innerHTML = '';
+      renderTable();
+    } catch(err) {
+      status.textContent = '❌ Error: ' + err.message;
+      status.style.color = '#ff6666';
+    }
+  }
+
+  function searchToEdit() {
+    const q = document.getElementById('edit-search').value.toLowerCase().trim();
+    const results = document.getElementById('edit-results');
+    if (!q || q.length < 2) { results.innerHTML = ''; return; }
+
+    const allDB = { ...CELEB_DB, ...(CUSTOM_DATA.adds || {}) };
+    const matches = Object.entries(allDB)
+      .filter(([k, v]) => !v._subgroup && k.includes(q))
+      .slice(0, 8);
+
+    if (matches.length === 0) {
+      results.innerHTML = '<div style="color:#888;font-size:12px;padding:8px">No matches found</div>';
+      return;
+    }
+
+    results.innerHTML = matches.map(([k, v]) => {
+      const sk = k.replace(/[^a-z0-9]/g, '');
+      const catOptions = ['Film & TV','Football','Historical','Music','Royalty & Politics','Sport','Tech & Business','YouTube & Streaming']
+        .map(c => '<option value="' + c + '">' + c + '</option>').join('');
+      return '<div style="padding:10px 4px;border-bottom:1px solid #333">'
+        + '<div style="color:#ffffff;font-size:14px;font-weight:bold;margin-bottom:8px">' + escHtml(k) + ' <span style="color:#888;font-size:11px;font-weight:normal">$' + v.wealth + 'M</span></div>'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Wealth $M</div>'
+        + '<input id="ew-' + sk + '" type="number" value="' + v.wealth + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px">'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Category</div>'
+        + '<select id="ec-' + sk + '" onchange="updateEditSubgroups(\'' + sk + '\')" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px">'
+        + '<option value="">-- unchanged --</option>' + catOptions
+        + '</select>'
+        + '<div id="es-row-' + sk + '" style="display:none">'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Sub-section</div>'
+        + '<select id="es-' + sk + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px"><option value="">-- select --</option></select>'
+        + '</div>'
+        + '<div style="font-size:11px;color:#888;margin-bottom:4px">Wikipedia URL</div>'
+        + '<input id="eu-' + sk + '" type="text" value="' + escHtml(v.url || '') + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:12px;box-sizing:border-box;margin-bottom:8px">'
+        + '<button class="edit-save-btn" data-key="' + escHtml(k) + '" data-safekey="' + sk + '" style="width:100%;background:#ffffff;color:#000;border:none;padding:10px;cursor:pointer;border-radius:3px;font-size:13px;font-weight:bold">Save Changes</button>'
+        + '</div>';
+    }).join('');
+
+    results.querySelectorAll('.edit-save-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        editCeleb(this.dataset.key, this.dataset.safekey);
+      });
+    });
+  }
+
+  function updateEditSubgroups(sk) {
+    const cat = document.getElementById('ec-' + sk).value;
+    const row = document.getElementById('es-row-' + sk);
+    const sel = document.getElementById('es-' + sk);
+    if (!cat || !SUBGROUPS[cat]) { row.style.display = 'none'; return; }
+    sel.innerHTML = '<option value="">-- select sub-section --</option>';
+    SUBGROUPS[cat].forEach(sub => {
+      const opt = document.createElement('option');
+      opt.value = sub;
+      opt.textContent = sub;
+      sel.appendChild(opt);
+    });
+    row.style.display = 'block';
+  }
+
+  function editCeleb(key, safeKey) {
+    const newWealth = parseFloat(document.getElementById('ew-' + safeKey).value);
+    const newUrl = document.getElementById('eu-' + safeKey).value.trim();
+    const newCat = document.getElementById('ec-' + safeKey).value;
+    const newSub = document.getElementById('es-' + safeKey) ? document.getElementById('es-' + safeKey).value : '';
+
+    if (!pendingEdits[key]) pendingEdits[key] = {};
+    if (newWealth) pendingEdits[key].wealth = newWealth;
+    if (newUrl) pendingEdits[key].url = newUrl;
+    if (newCat) {
+      const note = newCat + (newSub ? ' · ' + newSub : '');
+      pendingEdits[key].note = note;
+    }
+    document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
+    document.getElementById('edit-status').textContent = '✓ ' + key + ' changes queued';
+    document.getElementById('edit-status').style.color = '#88ff88';
+  }
+
+  async function publishChanges() {
+    const token = localStorage.getItem('dotbook_token');
+    const status = document.getElementById('publish-status');
+
+    if (!token) {
+      status.textContent = '⚠ No token saved';
+      status.style.color = '#ff6666';
+      return;
+    }
+    if (Object.keys(pendingAdds).length === 0 && pendingRemovals.length === 0 && Object.keys(pendingEdits).length === 0) {
+      status.textContent = '⚠ No pending changes';
+      return;
+    }
+
+    status.textContent = '⏳ Fetching custom.json...';
+    status.style.color = '#aaaaaa';
+
+    try {
+      // Fetch current custom.json
+      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+
+      let sha = null;
+      let currentData = { adds: {}, removes: [], edits: {} };
+
+      if (getResp.ok) {
+        const fileData = await getResp.json();
+        sha = fileData.sha;
+        const bytes = Uint8Array.from(atob(fileData.content.split('\n').join('')), c => c.charCodeAt(0));
+        const text = new TextDecoder('utf-8').decode(bytes);
+        currentData = JSON.parse(text);
+      }
+
+      // Merge changes
+      currentData.adds = { ...currentData.adds, ...pendingAdds };
+      currentData.removes = [...new Set([...(currentData.removes || []), ...pendingRemovals])];
+      currentData.edits = { ...currentData.edits, ...pendingEdits };
+
+      // If something is being re-added, remove it from the removes list
+      for (const key of Object.keys(pendingAdds)) {
+        currentData.removes = currentData.removes.filter(r => r !== key);
+      }
+
+      // Encode
+      const json = JSON.stringify(currentData, null, 2);
+      const encoder = new TextEncoder();
+      const encBytes = encoder.encode(json);
+      let binary = '';
+      for (let i = 0; i < encBytes.length; i += 8192) {
+        binary += String.fromCharCode(...encBytes.subarray(i, i + 8192));
+      }
+      const encoded = btoa(binary);
+
+      // Push
+      status.textContent = '⏳ Publishing...';
+      const body = {
+        message: 'Admin: +' + Object.keys(pendingAdds).length + ' edits:' + Object.keys(pendingEdits).length + ' removes:' + pendingRemovals.length,
+        content: encoded
+      };
+      if (sha) body.sha = sha;
+
+      const pushResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!pushResp.ok) {
+        const err = await pushResp.json();
+        throw new Error(err.message || pushResp.status);
+      }
+
+      // Apply changes locally immediately
+      for (const [key, val] of Object.entries(pendingAdds)) CELEB_DB[key] = val;
+      for (const key of pendingRemovals) delete CELEB_DB[key];
+      for (const [key, edits] of Object.entries(pendingEdits)) if (CELEB_DB[key]) Object.assign(CELEB_DB[key], edits);
+
+      status.textContent = '✅ Published! Live in ~2 minutes.';
+      status.style.color = '#88ff88';
+      clearPending();
+      document.getElementById('pending-count').textContent = '0';
+      renderTable();
+
+    } catch(err) {
+      status.textContent = '❌ Error: ' + err.message;
+      status.style.color = '#ff6666';
+    }
+  }
+
+    // ── END ADMIN PANEL ───────────────────────────────────────
+
+  // ── CUSTOM.JSON LOADER ──────────────────────────────────
+  let CUSTOM_DATA = { adds: {}, removes: [], edits: {} };
+
+  async function loadCustomData() {
+    try {
+      const resp = await fetch('custom.json?t=' + Date.now());
+      if (resp.ok) {
+        CUSTOM_DATA = await resp.json();
+
+        // Apply removes first
+        for (const key of (CUSTOM_DATA.removes || [])) {
+          delete CELEB_DB[key];
+        }
+
+        // Apply edits
+        for (const [key, edits] of Object.entries(CUSTOM_DATA.edits || {})) {
+          if (CELEB_DB[key]) Object.assign(CELEB_DB[key], edits);
+        }
+
+        // Apply adds — insert after exact matching subgroup marker
+        for (const [key, val] of Object.entries(CUSTOM_DATA.adds || {})) {
+          const targetSub = (val.subgroup || '').trim();
+          let inserted = false;
+          const normalize = s => s.replace(/\s*&\s*/g, ' & ').toLowerCase().trim();
+
+          if (targetSub) {
+            const entries = Object.entries(CELEB_DB);
+            for (let i = 0; i < entries.length; i++) {
+              const existingSub = (entries[i][1]._subgroup || '').trim();
+              if (existingSub && normalize(existingSub) === normalize(targetSub)) {
+                const newDB = {};
+                for (const [ek, ev] of entries) {
+                  newDB[ek] = ev;
+                  if (ek === entries[i][0] && !newDB[key]) {
+                    newDB[key] = val;
+                    inserted = true;
+                  }
+                }
+                if (inserted) {
+                  Object.keys(CELEB_DB).forEach(k2 => delete CELEB_DB[k2]);
+                  Object.assign(CELEB_DB, newDB);
+                  break;
+                }
+              }
+            }
+          }
+
+          // If no matching subgroup found, just add at end
+          if (!inserted) CELEB_DB[key] = val;
+        }
+      }
+    } catch(e) {
+      console.log('custom.json not found — using default database');
+    }
+    renderTable();
+    renderWatchlist();
+    renderMyEntries();
+  }
+
+  loadCustomData();
+  // ── END CUSTOM.JSON LOADER ───────────────────────────────
+
+  // Register Service Worker for PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
