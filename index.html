@@ -1570,13 +1570,13 @@
     if (person._top20) return 'The Twenty Wealthiest People on Earth';
     const n = (person.note || '').toLowerCase();
     const nm = (person.name || '').toLowerCase();
+    if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
     if (n.includes('institution') || n.includes('central bank') || n.includes('federal reserve') ||
-        n.includes('world bank') || n.includes('imf') || n.includes('fort knox') ||
+        n.includes('world bank') || (n.includes('imf') && !n.includes('nation')) || n.includes('fort knox') ||
         nm === 'apple' || nm === 'microsoft' || nm === 'nvidia' || nm === 'amazon' ||
         nm === 'google' || nm === 'spacex' || nm === 'tesla' || nm === 'meta' ||
         n.includes('saudi aramco'))
       return 'Institutions';
-    if (n.includes('natural wealth') || n.includes('gdp') || n.includes('mineral wealth') || n.includes('nation ·')) return 'Nations & Natural Wealth';
     if (n.includes('historical')) return 'Historical';
     if (n.includes('royalt') || n.includes('emir') || n.includes('sultan') ||
         n.includes('politics') || n.includes('tsar') || n.includes('crown prince') ||
@@ -1758,7 +1758,7 @@
     const badgeBg = '#ffffff';
     const badgeShadow = 'none';
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #e8e8e8;background:' + rowBg + '">'
-      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:#000000;box-shadow:none;font-size:15px" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" ontouchcancel="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + pg + '</span></td>'
+      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:#000000;box-shadow:none;font-size:15px" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + pg + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
@@ -4453,14 +4453,17 @@
   const GITHUB_FILE = 'custom.json';
   let adminLoggedIn = false;
   let adminHoldTimer = null;
+  let adminHoldStarted = false;
 
   function startAdminHold(e) {
+    adminHoldStarted = true;
     adminHoldTimer = setTimeout(() => {
-      openAdminPrompt();
+      if (adminHoldStarted) openAdminPrompt();
     }, 3000);
   }
 
   function cancelAdminHold() {
+    adminHoldStarted = false;
     clearTimeout(adminHoldTimer);
     adminHoldTimer = null;
   }
