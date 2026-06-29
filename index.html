@@ -570,6 +570,8 @@
 <body>
 
 <header>
+  <!-- Secret admin tap zone - top right corner -->
+  <div onclick="adminTap()" style="position:absolute;top:0;right:0;width:60px;height:60px;z-index:100;cursor:default;-webkit-tap-highlight-color:transparent"></div>
   <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
   <h1>The Dot Book</h1>
   <div class="subtitle">Every dot is $1 Million &middot; Every page holds 3,000 dots &middot; Page 1 to Page 335 = $1 Trillion</div>
@@ -4478,14 +4480,14 @@
     }
   }
 
-  // Keep old adminTap for copyright text (backup trigger)
+  // Keep old adminTap for copyright text and corner zone (3 taps)
   let adminTapCount = 0;
   let adminTapTimer = null;
   function adminTap() {
     adminTapCount++;
     clearTimeout(adminTapTimer);
     adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 2000);
-    if (adminTapCount >= 5) { adminTapCount = 0; openAdminPrompt(); }
+    if (adminTapCount >= 3) { adminTapCount = 0; openAdminPrompt(); }
   }
   let pendingAdds = JSON.parse(localStorage.getItem('dotbook_pendingAdds') || '{}');
   let pendingRemovals = JSON.parse(localStorage.getItem('dotbook_pendingRemovals') || '[]');
