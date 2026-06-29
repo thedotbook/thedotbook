@@ -1560,7 +1560,7 @@
 
   // ── Category classification ────────────────────────────
   const GROUP_ORDER = [
-    'My Own Entries', 'The Twenty Wealthiest People on Earth', 'Film & TV', 'Football', 'Historical', 'Institutions', 'Music', 'Royalty & Politics',
+    'My Own Entries', 'The Twenty Wealthiest People on Earth', 'Nations & Natural Wealth', 'Film & TV', 'Football', 'Historical', 'Institutions', 'Music', 'Royalty & Politics',
     'Sport', 'Tech & Business', 'YouTube & Streaming'
   ];
 
@@ -1576,6 +1576,7 @@
         nm === 'google' || nm === 'spacex' || nm === 'tesla' || nm === 'meta' ||
         n.includes('saudi aramco'))
       return 'Institutions';
+    if (n.includes('natural wealth') || n.includes('gdp') || n.includes('mineral wealth') || n.includes('nation ·')) return 'Nations & Natural Wealth';
     if (n.includes('historical')) return 'Historical';
     if (n.includes('royalt') || n.includes('emir') || n.includes('sultan') ||
         n.includes('politics') || n.includes('tsar') || n.includes('crown prince') ||
@@ -2059,6 +2060,52 @@
     'jamie foxx':          { wealth: 150,    note: 'Film · Comedy · Music · USA', url: 'https://en.wikipedia.org/wiki/Jamie_Foxx' },
 
     // ── UK TV & COMEDY ───────────────────────────────────
+
+    // ── NATIONS & NATURAL WEALTH ──────────────────────────
+
+    // ── GDP — Top Economies 2025 (IMF) ──────────────────
+    '_sub_gdp':              { _subgroup: 'GDP — Top Economies 2025' },
+    'usa gdp':               { wealth: 30620000, note: 'Nation · GDP · North America · $30.6 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_States' },
+    'china gdp':             { wealth: 19400000, note: 'Nation · GDP · Asia · $19.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_China' },
+    'germany gdp':           { wealth: 4920000,  note: 'Nation · GDP · Europe · $4.9 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Germany' },
+    'japan gdp':             { wealth: 4390000,  note: 'Nation · GDP · Asia · $4.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Japan' },
+    'india gdp':             { wealth: 4130000,  note: 'Nation · GDP · Asia · $4.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_India' },
+    'uk gdp':                { wealth: 3500000,  note: 'Nation · GDP · Europe · $3.5 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_Kingdom' },
+    'france gdp':            { wealth: 3130000,  note: 'Nation · GDP · Europe · $3.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_France' },
+    'canada gdp':            { wealth: 2240000,  note: 'Nation · GDP · North America · $2.2 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Canada' },
+    'italy gdp':             { wealth: 2190000,  note: 'Nation · GDP · Europe · $2.2 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Italy' },
+    'brazil gdp':            { wealth: 2130000,  note: 'Nation · GDP · South America · $2.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Brazil' },
+    'south korea gdp':       { wealth: 1870000,  note: 'Nation · GDP · Asia · $1.9 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_South_Korea' },
+    'australia gdp':         { wealth: 1720000,  note: 'Nation · GDP · Oceania · $1.7 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Australia' },
+    'russia gdp':            { wealth: 1990000,  note: 'Nation · GDP · Europe/Asia · $2.0 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Russia' },
+    'mexico gdp':            { wealth: 1420000,  note: 'Nation · GDP · North America · $1.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mexico' },
+    'spain gdp':             { wealth: 1640000,  note: 'Nation · GDP · Europe · $1.6 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Spain' },
+    'indonesia gdp':         { wealth: 1420000,  note: 'Nation · GDP · Asia · $1.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Indonesia' },
+    'saudi arabia gdp':      { wealth: 1070000,  note: 'Nation · GDP · Middle East · $1.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
+    'netherlands gdp':       { wealth: 1050000,  note: 'Nation · GDP · Europe · $1.05 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Netherlands' },
+    'switzerland gdp':       { wealth: 1040000,  note: 'Nation · GDP · Europe · $1.04 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Switzerland' },
+
+    // ── Mineral & Natural Resource Wealth ───────────────
+    '_sub_mineral':          { _subgroup: 'Mineral & Natural Resource Wealth' },
+    'russia mineral':        { wealth: 75000000, note: 'Nation · Natural Wealth · $75 Trillion · Oil · Gas · Coal · Rare Earth Metals', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Russia' },
+    'usa mineral':           { wealth: 45000000, note: 'Nation · Natural Wealth · $45 Trillion · Oil · Gas · Coal · Gold · Timber', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
+    'saudi arabia mineral':  { wealth: 34000000, note: 'Nation · Natural Wealth · $34 Trillion · World largest oil reserves', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
+    'canada mineral':        { wealth: 33000000, note: 'Nation · Natural Wealth · $33 Trillion · Oil sands · Timber · Minerals', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Canada' },
+    'iran mineral':          { wealth: 27000000, note: 'Nation · Natural Wealth · $27 Trillion · Oil · Gas · Minerals', url: 'https://en.wikipedia.org/wiki/Economy_of_Iran' },
+    'congo mineral':         { wealth: 24000000, note: 'Nation · Natural Wealth · $24 Trillion · 70% world coltan · Cobalt · Diamonds · The Saudi Arabia of the EV Age', url: 'https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo' },
+    'china mineral':         { wealth: 23000000, note: 'Nation · Natural Wealth · $23 Trillion · Rare earth metals · Coal · Gold', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_China' },
+    'brazil mineral':        { wealth: 21000000, note: 'Nation · Natural Wealth · $21 Trillion · Iron ore · Oil · Gold · Timber', url: 'https://en.wikipedia.org/wiki/Economy_of_Brazil' },
+    'australia mineral':     { wealth: 20000000, note: 'Nation · Natural Wealth · $20 Trillion · Iron ore · Coal · Gold · Gas', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Australia' },
+    'iraq mineral':          { wealth: 16000000, note: 'Nation · Natural Wealth · $16 Trillion · Oil dominant economy', url: 'https://en.wikipedia.org/wiki/Economy_of_Iraq' },
+    'venezuela mineral':     { wealth: 14000000, note: 'Nation · Natural Wealth · $14 Trillion · Largest oil reserves in world', url: 'https://en.wikipedia.org/wiki/Economy_of_Venezuela' },
+
+    // ── G7 vs Mineral M7 ────────────────────────────────
+    '_sub_g7':               { _subgroup: 'G7 vs Mineral M7' },
+    'g7 combined gdp':       { wealth: 46000000, note: 'Nation · GDP · G7 Nations Combined · USA UK Canada France Germany Italy Japan', url: 'https://en.wikipedia.org/wiki/G7' },
+    'mineral m7 combined':   { wealth: 279000000, note: 'Nation · Natural Wealth · Mineral M7 Combined · Russia USA Saudi Arabia Canada Iran Congo China · $279 Trillion', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
+    'africa mineral total':  { wealth: 60000000, note: 'Nation · Natural Wealth · Africa total estimated · Gold · Diamonds · Cobalt · Oil · Coltan', url: 'https://en.wikipedia.org/wiki/Africa' },
+    'world gdp total':       { wealth: 123580000, note: 'Nation · GDP · World Total 2025 · IMF estimate', url: 'https://en.wikipedia.org/wiki/Gross_world_product' },
+
     '_sub_uktv':           { _subgroup: 'UK TV & Comedy' },
     'ricky gervais':       { wealth: 130,    note: 'Comedy · TV · UK · The Office', url: 'https://en.wikipedia.org/wiki/Ricky_Gervais' },
     'peter kay':           { wealth: 50,     note: 'Comedy · TV · UK', url: 'https://en.wikipedia.org/wiki/Peter_Kay' },
