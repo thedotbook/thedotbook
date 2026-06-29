@@ -40,19 +40,14 @@
       "note": "Historical · Royals & Emperors",
       "url": "https://en.wikipedia.org/wiki/Augustus_Caesar",
       "subgroup": "Royals & Emperors"
-    },
-    "augustus": {
-      "wealth": 46000000000000,
-      "note": "Historical · Ancient & Medieval Rulers",
-      "url": "https://en.wikipedia.org/wiki/Augustus",
-      "subgroup": "Ancient & Medieval Rulers"
     }
   },
   "removes": [
     "jackie stewart",
     "huw edwards",
     "jackie steward",
-    "again prost"
+    "again prost",
+    "augustus"
   ],
   "edits": {
     "augustus caesar": {
