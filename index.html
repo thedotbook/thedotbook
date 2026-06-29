@@ -1758,7 +1758,7 @@
     const badgeBg = '#ffffff';
     const badgeShadow = 'none';
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #e8e8e8;background:' + rowBg + '">'
-      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:#000000;box-shadow:none;font-size:15px">' + pg + '</span></td>'
+      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:#000000;box-shadow:none;font-size:15px" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" ontouchcancel="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + pg + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
@@ -3763,7 +3763,7 @@
     'bob marley':          { wealth: 250,    note: 'Music · Reggae · Jamaica · Historical · Estate · $23M/yr earner', url: 'https://en.wikipedia.org/wiki/Bob_Marley' },
     'jimi hendrix':        { wealth: 175,    note: 'Music · Rock · USA · Historical · Estate · $80M/yr earner', url: 'https://en.wikipedia.org/wiki/Jimi_Hendrix' },
     'prince':              { wealth: 300,    note: 'Historical · Music · Estate', url: 'https://en.wikipedia.org/wiki/Prince' },
-    'amy winehouse':       { wealth: 6,      note: 'Historical · Music · Estate', url: 'https://en.wikipedia.org/wiki/Amy_Winehouse' },
+    'amy winehouse':       { wealth: 36,     note: 'Historical · Music · Estate · Back to Black · Estate value growing', url: 'https://en.wikipedia.org/wiki/Amy_Winehouse' },
 
     'steven spielberg':    { wealth: 4800,   note: 'Film · Director', url: 'https://en.wikipedia.org/wiki/Steven_Spielberg' },
     'george lucas':        { wealth: 5500,   note: 'Film · Star Wars', url: 'https://en.wikipedia.org/wiki/George_Lucas' },
@@ -4452,10 +4452,38 @@
   const GITHUB_REPO = 'thedotbook';
   const GITHUB_FILE = 'custom.json';
   let adminLoggedIn = false;
+  let adminHoldTimer = null;
+
+  function startAdminHold(e) {
+    adminHoldTimer = setTimeout(() => {
+      openAdminPrompt();
+    }, 3000);
+  }
+
+  function cancelAdminHold() {
+    clearTimeout(adminHoldTimer);
+    adminHoldTimer = null;
+  }
+
+  function openAdminPrompt() {
+    cancelAdminHold();
+    document.getElementById('admin-overlay').style.display = 'block';
+    const saved = localStorage.getItem('dotbook_token');
+    if (saved) {
+      document.getElementById('admin-token').value = saved;
+      document.getElementById('token-status').textContent = '✓ Token loaded';
+    }
+  }
+
+  // Keep old adminTap for copyright text (backup trigger)
   let adminTapCount = 0;
   let adminTapTimer = null;
-
-  // Load pending changes from localStorage so they survive panel resets
+  function adminTap() {
+    adminTapCount++;
+    clearTimeout(adminTapTimer);
+    adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 2000);
+    if (adminTapCount >= 5) { adminTapCount = 0; openAdminPrompt(); }
+  }
   let pendingAdds = JSON.parse(localStorage.getItem('dotbook_pendingAdds') || '{}');
   let pendingRemovals = JSON.parse(localStorage.getItem('dotbook_pendingRemovals') || '[]');
   let pendingEdits = JSON.parse(localStorage.getItem('dotbook_pendingEdits') || '{}');
@@ -4473,22 +4501,6 @@
     localStorage.removeItem('dotbook_pendingAdds');
     localStorage.removeItem('dotbook_pendingRemovals');
     localStorage.removeItem('dotbook_pendingEdits');
-  }
-
-  function adminTap() {
-    adminTapCount++;
-    clearTimeout(adminTapTimer);
-    adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 2000);
-    if (adminTapCount >= 5) {
-      adminTapCount = 0;
-      document.getElementById('admin-overlay').style.display = 'block';
-      // Load saved token if exists
-      const saved = localStorage.getItem('dotbook_token');
-      if (saved) {
-        document.getElementById('admin-token').value = saved;
-        document.getElementById('token-status').textContent = '✓ Token loaded';
-      }
-    }
   }
 
   function adminLogin() {
@@ -4882,22 +4894,80 @@
     row.style.display = 'block';
   }
 
-  function editCeleb(key, safeKey) {
-    const newWealth = parseFloat(document.getElementById('ew-' + safeKey).value);
-    const newUrl = document.getElementById('eu-' + safeKey).value.trim();
-    const newCat = document.getElementById('ec-' + safeKey).value;
-    const newSub = document.getElementById('es-' + safeKey) ? document.getElementById('es-' + safeKey).value : '';
+  async function editCeleb(key, safeKey) {
+    const wealthEl = document.getElementById('ew-' + safeKey);
+    const urlEl = document.getElementById('eu-' + safeKey);
+    const catEl = document.getElementById('ec-' + safeKey);
+    const subEl = document.getElementById('es-' + safeKey);
+    const status = document.getElementById('edit-status');
 
-    if (!pendingEdits[key]) pendingEdits[key] = {};
-    if (newWealth) pendingEdits[key].wealth = newWealth;
-    if (newUrl) pendingEdits[key].url = newUrl;
-    if (newCat) {
-      const note = newCat + (newSub ? ' · ' + newSub : '');
-      pendingEdits[key].note = note;
+    if (!wealthEl) {
+      status.textContent = '⚠ Could not find fields — try searching again';
+      status.style.color = '#ff6666';
+      return;
     }
-    document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
-    document.getElementById('edit-status').textContent = '✓ ' + key + ' changes queued';
-    document.getElementById('edit-status').style.color = '#88ff88';
+
+    const newWealth = parseFloat(wealthEl.value);
+    const newUrl = urlEl ? urlEl.value.trim() : '';
+    const newCat = catEl ? catEl.value : '';
+    const newSub = subEl ? subEl.value : '';
+
+    const token = localStorage.getItem('dotbook_token');
+    if (!token) {
+      status.textContent = '⚠ No token saved';
+      status.style.color = '#ff6666';
+      return;
+    }
+
+    status.textContent = '⏳ Saving changes for ' + key + '...';
+    status.style.color = '#aaaaaa';
+
+    try {
+      const getResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!getResp.ok) throw new Error('Could not fetch: ' + getResp.status);
+      const fileData = await getResp.json();
+      const sha = fileData.sha;
+      const bytes = Uint8Array.from(atob(fileData.content.split('\n').join('')), c => c.charCodeAt(0));
+      const currentData = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+
+      if (!currentData.edits) currentData.edits = {};
+      if (!currentData.edits[key]) currentData.edits[key] = {};
+      if (newWealth) currentData.edits[key].wealth = newWealth;
+      if (newUrl) currentData.edits[key].url = newUrl;
+      if (newCat) currentData.edits[key].note = newCat + (newSub ? ' · ' + newSub : '');
+
+      const json = JSON.stringify(currentData, null, 2);
+      const encoder = new TextEncoder();
+      const encBytes = encoder.encode(json);
+      let binary = '';
+      for (let i = 0; i < encBytes.length; i += 8192) binary += String.fromCharCode(...encBytes.subarray(i, i + 8192));
+      const encoded = btoa(binary);
+
+      const pushResp = await fetch('https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Admin: edit ' + key, content: encoded, sha: sha })
+      });
+      if (!pushResp.ok) throw new Error((await pushResp.json()).message);
+
+      // Update locally
+      if (CELEB_DB[key]) {
+        if (newWealth) CELEB_DB[key].wealth = newWealth;
+        if (newUrl) CELEB_DB[key].url = newUrl;
+        if (newCat) CELEB_DB[key].note = newCat + (newSub ? ' · ' + newSub : '');
+      }
+
+      status.textContent = '✅ ' + key + ' updated! Live in ~2 mins';
+      status.style.color = '#88ff88';
+      document.getElementById('edit-search').value = '';
+      document.getElementById('edit-results').innerHTML = '';
+
+    } catch(err) {
+      status.textContent = '❌ Error: ' + err.message;
+      status.style.color = '#ff6666';
+    }
   }
 
   async function publishChanges() {
