@@ -34,6 +34,12 @@
       "note": "Sport · Golf",
       "url": "https://en.wikipedia.org/wiki/Phil_Mickelson",
       "subgroup": "Golf"
+    },
+    "augustus caesar": {
+      "wealth": 1,
+      "note": "Historical · Royals & Emperors",
+      "url": "https://en.wikipedia.org/wiki/Augustus_Caesar",
+      "subgroup": "Royals & Emperors"
     }
   },
   "removes": [
