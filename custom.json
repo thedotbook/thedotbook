@@ -67,6 +67,11 @@
       "wealth": 9500,
       "url": "https://en.wikipedia.org/wiki/Roman_Abramovich",
       "note": "Tech & Business · Dragons & Entrepreneurs"
+    },
+    "jk rowling": {
+      "wealth": 1000,
+      "url": "https://en.wikipedia.org/wiki/J._K._Rowling",
+      "note": "Film & TV · Authors"
     }
   }
 }
