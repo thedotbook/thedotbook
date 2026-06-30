@@ -72,6 +72,11 @@
       "wealth": 1000,
       "url": "https://en.wikipedia.org/wiki/J._K._Rowling",
       "note": "Film & TV · Authors"
+    },
+    "dan brown": {
+      "wealth": 160,
+      "url": "https://en.wikipedia.org/wiki/Dan_Brown",
+      "note": "Film & TV · Authors"
     }
   }
 }
