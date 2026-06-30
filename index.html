@@ -570,8 +570,8 @@
 <body>
 
 <header>
-  <!-- Secret admin tap zone - top right corner -->
-  <div onclick="adminTap()" style="position:absolute;top:0;right:0;width:60px;height:60px;z-index:100;cursor:default;-webkit-tap-highlight-color:transparent"></div>
+  <!-- Admin access - small subtle dot, top right -->
+  <div onclick="adminTap()" style="position:absolute;top:14px;right:14px;width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:1px solid #333333;z-index:100;cursor:pointer"></div>
   <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
   <h1>The Dot Book</h1>
   <div class="subtitle">Every dot is $1 Million &middot; Every page holds 3,000 dots &middot; Page 1 to Page 335 = $1 Trillion</div>
@@ -801,17 +801,30 @@
             <option value="Football">Football</option>
             <option value="Historical">Historical</option>
             <option value="Music">Music</option>
+            <option value="Nations & Natural Wealth">Nations &amp; Natural Wealth</option>
             <option value="Royalty & Politics">Royalty &amp; Politics</option>
             <option value="Sport">Sport</option>
             <option value="Tech & Business">Tech &amp; Business</option>
             <option value="YouTube & Streaming">YouTube &amp; Streaming</option>
+            <option value="__new__">+ New Category...</option>
           </select>
+
+          <div id="new-category-row" style="display:none;margin-bottom:10px">
+            <div style="font-size:12px;color:#888;margin-bottom:4px">New category name</div>
+            <input id="new-category-name" type="text" placeholder="e.g. Sport" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box">
+          </div>
 
           <div id="subgroup-row" style="display:none">
             <div style="font-size:12px;color:#888;margin-bottom:4px">Sub-section (optional)</div>
-            <select id="add-subgroup" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
+            <select id="add-subgroup" onchange="checkNewSubgroup()" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
               <option value="">-- Select sub-section --</option>
             </select>
+          </div>
+
+          <div id="new-subgroup-row" style="display:none;margin-bottom:10px">
+            <div style="font-size:12px;color:#888;margin-bottom:4px">New sub-section name</div>
+            <input id="new-subgroup-name" type="text" placeholder="e.g. Darts" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box">
+            <div style="font-size:11px;color:#888888;margin-top:6px">⚠ A brand new sub-section will appear at the end of the category until it has at least one entry.</div>
           </div>
 
           <div style="font-size:12px;color:#888;margin-bottom:4px">Wikipedia URL (optional)</div>
@@ -1491,6 +1504,25 @@
     { name: "Changpeng Zhao",      wealth: 82800,   note: "Crypto · Binance",                 url: "" },
   ];
 
+  // Fix acronyms that get mangled by title-case (USA, UK, UAE, DR Congo etc.)
+  const ACRONYM_FIX = {
+    'Usa Gdp': 'USA GDP', 'Usa Mineral': 'USA Mineral', 'Uk Gdp': 'UK GDP',
+    'Uae Gdp': 'UAE GDP', 'Dr Congo Gdp': 'DR Congo GDP', 'Dr Congo Mineral': 'DR Congo Mineral',
+    'World Gdp Total': 'World GDP Total', 'World Mineral Total': 'World Mineral Total',
+    'G7 Usa': 'G7 — USA GDP', 'G7 Uk': 'G7 — UK GDP', 'G7 Japan': 'G7 — Japan GDP', 'G7 Germany': 'G7 — Germany GDP',
+    'G7 France': 'G7 — France GDP', 'G7 Italy': 'G7 — Italy GDP', 'G7 Canada': 'G7 — Canada GDP',
+    'G7 Combined Total': 'G7 — Combined Total GDP',
+    'M7 Usa': 'M7 — USA Minerals', 'M7 Russia': 'M7 — Russia Minerals', 'M7 Saudi Arabia': 'M7 — Saudi Arabia Minerals',
+    'M7 Canada': 'M7 — Canada Minerals', 'M7 Iran': 'M7 — Iran Minerals', 'M7 China': 'M7 — China Minerals',
+    'M7 Dr Congo': 'M7 — DR Congo Minerals', 'M7 Combined Total': 'M7 — Combined Total Minerals',
+    'Antarctica Minerals': 'Antarctica — Minerals', 'Antarctica Gdp': 'Antarctica — GDP',
+    'Antarctica Estimated Minerals': 'Antarctica — Estimated Mineral Wealth',
+    'Sao Tome And Principe Gdp': 'São Tomé and Príncipe GDP', 'Congo Republic Gdp': 'Congo Republic GDP',
+  };
+  function fixAcronyms(name) {
+    return ACRONYM_FIX[name] || name;
+  }
+
   let userEntry = null;
   let showAll = false;
 
@@ -1509,10 +1541,10 @@
         seen.set(key, { name: key, _subgroup: val._subgroup, wealth: -Infinity, _isSentinel: true });
       } else if (val._top20) {
         // Top20 entries always get their own slot — use key as-is, strip ' top20' for display only
-        const displayName = key.slice(0, -6).replace(/\b\w/g, c => c.toUpperCase());
+        const displayName = fixAcronyms(key.slice(0, -6).replace(/\b\w/g, c => c.toUpperCase()));
         seen.set(key, { name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: true, _top20Key: key });
       } else {
-        const displayName = key.replace(/\b\w/g, c => c.toUpperCase());
+        const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
         seen.set(key, { name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: false });
       }
     }
@@ -1561,7 +1593,7 @@
   }
 
   // ── Category classification ────────────────────────────
-  const GROUP_ORDER = [
+  let GROUP_ORDER = [
     'My Own Entries', 'The Twenty Wealthiest People on Earth', 'Nations & Natural Wealth', 'Film & TV', 'Football', 'Historical', 'Institutions', 'Music', 'Royalty & Politics',
     'Sport', 'Tech & Business', 'YouTube & Streaming'
   ];
@@ -1630,6 +1662,9 @@
         n.includes('steel') || n.includes('mining') || n.includes('telecom') ||
         n.includes('biotech'))
       return 'Tech & Business';
+    // Fallback — use first segment of note as the category (for brand new custom categories)
+    const firstSegment = (person.note || '').split('·')[0].trim();
+    if (firstSegment) return firstSegment;
     return 'Other';
   }
 
@@ -1692,7 +1727,7 @@
         }
       } else {
         const person = byName.get(key) || (() => {
-          const displayName = key.replace(/\b\w/g, c => c.toUpperCase());
+          const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
           return byName.get(displayName.toLowerCase());
         })();
         if (person) {
@@ -1781,6 +1816,11 @@
     }
     document.getElementById('entry-count').textContent = total + ' entries';
     document.getElementById('show-more-btn').style.display = 'none';
+
+    // Dynamically add any new categories not already in GROUP_ORDER (e.g. admin-created)
+    for (const cat of Object.keys(ordered)) {
+      if (!GROUP_ORDER.includes(cat)) GROUP_ORDER.push(cat);
+    }
 
     // On first render, collapse all groups except Your Entry
     if (collapsedGroups.size === 0) {
@@ -2063,58 +2103,189 @@
 
     // ── UK TV & COMEDY ───────────────────────────────────
 
-    // ── NATIONS & NATURAL WEALTH ──────────────────────────
+    // ── NATIONS & NATURAL WEALTH — by Continent (GDP) ──
 
-    // ── GDP — Top Economies 2025 (IMF) ──────────────────
-    '_sub_gdp':              { _subgroup: 'GDP — Top Economies 2025' },
-    'usa gdp':               { wealth: 30620000, note: 'Nation · GDP · North America · $30.6 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_States' },
+    // ── Asia — Top Economies ────────────────────────────
+    '_sub_asia_gdp':         { _subgroup: 'Asia — GDP $42.3 Trillion' },
     'china gdp':             { wealth: 19400000, note: 'Nation · GDP · Asia · $19.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_China' },
-    'germany gdp':           { wealth: 4920000,  note: 'Nation · GDP · Europe · $4.9 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Germany' },
-    'japan gdp':             { wealth: 4390000,  note: 'Nation · GDP · Asia · $4.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Japan' },
+    'japan gdp':             { wealth: 4390000,  note: 'Nation · GDP · Asia · $4.4 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_Japan' },
     'india gdp':             { wealth: 4130000,  note: 'Nation · GDP · Asia · $4.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_India' },
-    'uk gdp':                { wealth: 3500000,  note: 'Nation · GDP · Europe · $3.5 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_Kingdom' },
-    'france gdp':            { wealth: 3130000,  note: 'Nation · GDP · Europe · $3.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_France' },
-    'canada gdp':            { wealth: 2240000,  note: 'Nation · GDP · North America · $2.2 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Canada' },
-    'italy gdp':             { wealth: 2190000,  note: 'Nation · GDP · Europe · $2.2 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Italy' },
-    'brazil gdp':            { wealth: 2130000,  note: 'Nation · GDP · South America · $2.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Brazil' },
     'south korea gdp':       { wealth: 1870000,  note: 'Nation · GDP · Asia · $1.9 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_South_Korea' },
-    'australia gdp':         { wealth: 1720000,  note: 'Nation · GDP · Oceania · $1.7 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Australia' },
-    'russia gdp':            { wealth: 1990000,  note: 'Nation · GDP · Europe/Asia · $2.0 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Russia' },
-    'mexico gdp':            { wealth: 1420000,  note: 'Nation · GDP · North America · $1.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mexico' },
-    'spain gdp':             { wealth: 1640000,  note: 'Nation · GDP · Europe · $1.6 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Spain' },
     'indonesia gdp':         { wealth: 1420000,  note: 'Nation · GDP · Asia · $1.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Indonesia' },
-    'saudi arabia gdp':      { wealth: 1070000,  note: 'Nation · GDP · Middle East · $1.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
+    'saudi arabia gdp':      { wealth: 1070000,  note: 'Nation · GDP · Asia · $1.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
+    'turkey gdp':            { wealth: 1340000,  note: 'Nation · GDP · Asia · $1.3 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Turkey' },
+    'taiwan gdp':            { wealth: 850000,   note: 'Nation · GDP · Asia · $850 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Taiwan' },
+    'israel gdp':            { wealth: 590000,   note: 'Nation · GDP · Asia · $590 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Israel' },
+    'thailand gdp':          { wealth: 550000,   note: 'Nation · GDP · Asia · $550 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Thailand' },
+    'uae gdp':               { wealth: 530000,   note: 'Nation · GDP · Asia · $530 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_Arab_Emirates' },
+    'singapore gdp':         { wealth: 530000,   note: 'Nation · GDP · Asia · $530 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Singapore' },
+    'philippines gdp':       { wealth: 480000,   note: 'Nation · GDP · Asia · $480 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Philippines' },
+    'vietnam gdp':           { wealth: 470000,   note: 'Nation · GDP · Asia · $470 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Vietnam' },
+    'iraq gdp':              { wealth: 280000,   note: 'Nation · GDP · Asia · $280 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Iraq' },
+    'qatar gdp':             { wealth: 240000,   note: 'Nation · GDP · Asia · $240 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Qatar' },
+    'kazakhstan gdp':        { wealth: 280000,   note: 'Nation · GDP · Asia · $280 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Kazakhstan' },
+    'pakistan gdp':          { wealth: 375000,   note: 'Nation · GDP · Asia · $375 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Pakistan' },
+    'kuwait gdp':            { wealth: 160000,   note: 'Nation · GDP · Asia · $160 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Kuwait' },
+    'iran gdp':              { wealth: 430000,   note: 'Nation · GDP · Asia · $430 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Iran' },
+    'malaysia gdp':          { wealth: 440000,   note: 'Nation · GDP · Asia · $440 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Malaysia' },
+
+    // ── North America — Top Economies ───────────────────
+    '_sub_namerica_gdp':     { _subgroup: 'North America — GDP $32-38 Trillion' },
+    'usa gdp':               { wealth: 30620000, note: 'Nation · GDP · North America · $30.6 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_States' },
+    'canada gdp':            { wealth: 2240000,  note: 'Nation · GDP · North America · $2.2 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_Canada' },
+    'mexico gdp':            { wealth: 1420000,  note: 'Nation · GDP · North America · $1.4 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mexico' },
+    'panama gdp':            { wealth: 90000,    note: 'Nation · GDP · North America · $90 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Panama' },
+    'guatemala gdp':         { wealth: 110000,   note: 'Nation · GDP · North America · $110 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Guatemala' },
+    'costa rica gdp':        { wealth: 90000,    note: 'Nation · GDP · North America · $90 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Costa_Rica' },
+    'dominican republic gdp':{ wealth: 130000,   note: 'Nation · GDP · North America · $130 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Dominican_Republic' },
+    'cuba gdp':              { wealth: 107000,   note: 'Nation · GDP · North America · $107 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Cuba' },
+
+    // ── Europe — Top Economies ──────────────────────────
+    '_sub_europe_gdp':       { _subgroup: 'Europe — GDP $24-32 Trillion' },
+    'germany gdp':           { wealth: 4920000,  note: 'Nation · GDP · Europe · $4.9 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_Germany' },
+    'uk gdp':                { wealth: 3500000,  note: 'Nation · GDP · Europe · $3.5 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_Kingdom' },
+    'france gdp':            { wealth: 3130000,  note: 'Nation · GDP · Europe · $3.1 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_France' },
+    'italy gdp':             { wealth: 2190000,  note: 'Nation · GDP · Europe · $2.2 Trillion · IMF 2025 · G7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_Italy' },
+    'russia gdp':            { wealth: 1990000,  note: 'Nation · GDP · Europe · $2.0 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Russia' },
+    'spain gdp':             { wealth: 1640000,  note: 'Nation · GDP · Europe · $1.6 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Spain' },
     'netherlands gdp':       { wealth: 1050000,  note: 'Nation · GDP · Europe · $1.05 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Netherlands' },
     'switzerland gdp':       { wealth: 1040000,  note: 'Nation · GDP · Europe · $1.04 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Switzerland' },
+    'poland gdp':            { wealth: 880000,   note: 'Nation · GDP · Europe · $880 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Poland' },
+    'sweden gdp':            { wealth: 620000,   note: 'Nation · GDP · Europe · $620 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Sweden' },
+    'belgium gdp':           { wealth: 660000,   note: 'Nation · GDP · Europe · $660 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Belgium' },
+    'ireland gdp':           { wealth: 590000,   note: 'Nation · GDP · Europe · $590 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Republic_of_Ireland' },
+    'norway gdp':            { wealth: 530000,   note: 'Nation · GDP · Europe · $530 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Norway' },
+    'austria gdp':           { wealth: 520000,   note: 'Nation · GDP · Europe · $520 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Austria' },
+    'denmark gdp':           { wealth: 420000,   note: 'Nation · GDP · Europe · $420 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Denmark' },
+
+    // ── South America — Top Economies ───────────────────
+    '_sub_samerica_gdp':     { _subgroup: 'South America — GDP $5.1 Trillion' },
+    'brazil gdp':            { wealth: 2130000,  note: 'Nation · GDP · South America · $2.1 Trillion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Brazil' },
+    'argentina gdp':         { wealth: 640000,   note: 'Nation · GDP · South America · $640 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Argentina' },
+    'colombia gdp':          { wealth: 410000,   note: 'Nation · GDP · South America · $410 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Colombia' },
+    'chile gdp':             { wealth: 350000,   note: 'Nation · GDP · South America · $350 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Chile' },
+    'peru gdp':              { wealth: 280000,   note: 'Nation · GDP · South America · $280 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Peru' },
+    'venezuela gdp':         { wealth: 100000,   note: 'Nation · GDP · South America · $100 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Venezuela' },
+    'ecuador gdp':           { wealth: 130000,   note: 'Nation · GDP · South America · $130 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Ecuador' },
+
+    // ── Africa — All 54 Nations ─────────────────────────
+    '_sub_africa_gdp':       { _subgroup: 'Africa — GDP $3.6 Trillion — All 54 Nations' },
+    'south africa gdp':      { wealth: 410000,   note: 'Nation · GDP · Africa · $410 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_South_Africa' },
+    'egypt gdp':             { wealth: 380000,   note: 'Nation · GDP · Africa · $380 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Egypt' },
+    'algeria gdp':           { wealth: 260000,   note: 'Nation · GDP · Africa · $260 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Algeria' },
+    'nigeria gdp':           { wealth: 250000,   note: 'Nation · GDP · Africa · $250 Billion · IMF 2025 · Africa largest population', url: 'https://en.wikipedia.org/wiki/Economy_of_Nigeria' },
+    'ethiopia gdp':          { wealth: 165000,   note: 'Nation · GDP · Africa · $165 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Ethiopia' },
+    'morocco gdp':           { wealth: 160000,   note: 'Nation · GDP · Africa · $160 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Morocco' },
+    'kenya gdp':             { wealth: 120000,   note: 'Nation · GDP · Africa · $120 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Kenya' },
+    'ghana gdp':             { wealth: 95000,    note: 'Nation · GDP · Africa · $95 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Ghana' },
+    'tanzania gdp':          { wealth: 90000,    note: 'Nation · GDP · Africa · $90 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Tanzania' },
+    'ivory coast gdp':       { wealth: 92000,    note: 'Nation · GDP · Africa · $92 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Ivory_Coast' },
+    'angola gdp':            { wealth: 88000,    note: 'Nation · GDP · Africa · $88 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Angola' },
+    'dr congo gdp':          { wealth: 75000,    note: 'Nation · GDP · Africa · $75 Billion · IMF 2025 · Despite vast mineral wealth', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Democratic_Republic_of_the_Congo' },
+    'uganda gdp':            { wealth: 62000,    note: 'Nation · GDP · Africa · $62 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Uganda' },
+    'tunisia gdp':           { wealth: 53000,    note: 'Nation · GDP · Africa · $53 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Tunisia' },
+    'cameroon gdp':          { wealth: 50000,    note: 'Nation · GDP · Africa · $50 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Cameroon' },
+    'libya gdp':             { wealth: 45000,    note: 'Nation · GDP · Africa · $45 Billion · IMF 2025 · Largest oil reserves in Africa', url: 'https://en.wikipedia.org/wiki/Economy_of_Libya' },
+    'senegal gdp':           { wealth: 35000,    note: 'Nation · GDP · Africa · $35 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Senegal' },
+    'zambia gdp':            { wealth: 31000,    note: 'Nation · GDP · Africa · $31 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Zambia' },
+    'mali gdp':              { wealth: 22000,    note: 'Nation · GDP · Africa · $22 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mali' },
+    'zimbabwe gdp':          { wealth: 35000,    note: 'Nation · GDP · Africa · $35 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Zimbabwe' },
+    'gabon gdp':             { wealth: 21000,    note: 'Nation · GDP · Africa · $21 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Gabon' },
+    'botswana gdp':          { wealth: 21000,    note: 'Nation · GDP · Africa · $21 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Botswana' },
+    'burkina faso gdp':      { wealth: 21000,    note: 'Nation · GDP · Africa · $21 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Burkina_Faso' },
+    'guinea gdp':            { wealth: 21000,    note: 'Nation · GDP · Africa · $21 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Guinea' },
+    'benin gdp':             { wealth: 20000,    note: 'Nation · GDP · Africa · $20 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Benin' },
+    'mozambique gdp':        { wealth: 21000,    note: 'Nation · GDP · Africa · $21 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mozambique' },
+    'mauritius gdp':         { wealth: 16000,    note: 'Nation · GDP · Africa · $16 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mauritius' },
+    'chad gdp':              { wealth: 14000,    note: 'Nation · GDP · Africa · $14 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Chad' },
+    'niger gdp':             { wealth: 17000,    note: 'Nation · GDP · Africa · $17 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Niger' },
+    'rwanda gdp':            { wealth: 15000,    note: 'Nation · GDP · Africa · $15 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Rwanda' },
+    'malawi gdp':            { wealth: 13000,    note: 'Nation · GDP · Africa · $13 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Malawi' },
+    'madagascar gdp':        { wealth: 16000,    note: 'Nation · GDP · Africa · $16 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Madagascar' },
+    'mauritania gdp':        { wealth: 11000,    note: 'Nation · GDP · Africa · $11 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Mauritania' },
+    'namibia gdp':           { wealth: 13000,    note: 'Nation · GDP · Africa · $13 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Namibia' },
+    'togo gdp':              { wealth: 9000,     note: 'Nation · GDP · Africa · $9 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Togo' },
+    'south sudan gdp':       { wealth: 9000,     note: 'Nation · GDP · Africa · $9 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_South_Sudan' },
+    'sierra leone gdp':      { wealth: 6000,     note: 'Nation · GDP · Africa · $6 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Sierra_Leone' },
+    'eswatini gdp':          { wealth: 5000,     note: 'Nation · GDP · Africa · $5 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Eswatini' },
+    'liberia gdp':           { wealth: 5000,     note: 'Nation · GDP · Africa · $5 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Liberia' },
+    'somalia gdp':           { wealth: 11000,    note: 'Nation · GDP · Africa · $11 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Somalia' },
+    'sudan gdp':             { wealth: 35000,    note: 'Nation · GDP · Africa · $35 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Sudan' },
+    'burundi gdp':           { wealth: 3500,     note: 'Nation · GDP · Africa · $3.5 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Burundi' },
+    'central african republic gdp': { wealth: 2700, note: 'Nation · GDP · Africa · $2.7 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Central_African_Republic' },
+    'eritrea gdp':           { wealth: 2100,     note: 'Nation · GDP · Africa · $2.1 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Eritrea' },
+    'gambia gdp':            { wealth: 2400,     note: 'Nation · GDP · Africa · $2.4 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Gambia' },
+    'guinea-bissau gdp':     { wealth: 1900,     note: 'Nation · GDP · Africa · $1.9 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Guinea-Bissau' },
+    'lesotho gdp':           { wealth: 2200,     note: 'Nation · GDP · Africa · $2.2 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Lesotho' },
+    'cape verde gdp':        { wealth: 2400,     note: 'Nation · GDP · Africa · $2.4 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Cape_Verde' },
+    'djibouti gdp':          { wealth: 4300,     note: 'Nation · GDP · Africa · $4.3 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Djibouti' },
+    'comoros gdp':           { wealth: 1500,     note: 'Nation · GDP · Africa · $1.5 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Comoros' },
+    'equatorial guinea gdp': { wealth: 12000,    note: 'Nation · GDP · Africa · $12 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Equatorial_Guinea' },
+    'seychelles gdp':        { wealth: 2200,     note: 'Nation · GDP · Africa · $2.2 Billion · IMF 2025 · Richest African nation per capita', url: 'https://en.wikipedia.org/wiki/Economy_of_Seychelles' },
+    'sao tome and principe gdp': { wealth: 800,  note: 'Nation · GDP · Africa · $800 Million · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_São_Tomé_and_Príncipe' },
+    'congo republic gdp':    { wealth: 14000,    note: 'Nation · GDP · Africa · $14 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Republic_of_the_Congo' },
+
+    // ── Oceania — All 14 Nations ────────────────────────
+    '_sub_oceania_gdp':      { _subgroup: 'Oceania — GDP $2.4 Trillion — All 14 Nations' },
+    'australia gdp':         { wealth: 1830000,  note: 'Nation · GDP · Oceania · $1.83 Trillion · IMF 2025 · 85% of Oceania total', url: 'https://en.wikipedia.org/wiki/Economy_of_Australia' },
+    'new zealand gdp':       { wealth: 263000,   note: 'Nation · GDP · Oceania · $263 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_New_Zealand' },
+    'papua new guinea gdp':  { wealth: 33000,    note: 'Nation · GDP · Oceania · $33 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Papua_New_Guinea' },
+    'fiji gdp':              { wealth: 6300,     note: 'Nation · GDP · Oceania · $6.3 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Fiji' },
+    'solomon islands gdp':   { wealth: 1900,     note: 'Nation · GDP · Oceania · $1.9 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Solomon_Islands' },
+    'vanuatu gdp':           { wealth: 1100,     note: 'Nation · GDP · Oceania · $1.1 Billion · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Vanuatu' },
+    'samoa gdp':             { wealth: 950,      note: 'Nation · GDP · Oceania · $950 Million · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Samoa' },
+    'tonga gdp':             { wealth: 530,      note: 'Nation · GDP · Oceania · $530 Million · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Tonga' },
+    'kiribati gdp':          { wealth: 280,      note: 'Nation · GDP · Oceania · $280 Million · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Kiribati' },
+    'micronesia gdp':        { wealth: 460,      note: 'Nation · GDP · Oceania · $460 Million · IMF 2025 · Federated States of Micronesia', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Federated_States_of_Micronesia' },
+    'marshall islands gdp':  { wealth: 280,      note: 'Nation · GDP · Oceania · $280 Million · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_the_Marshall_Islands' },
+    'palau gdp':             { wealth: 280,      note: 'Nation · GDP · Oceania · $280 Million · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_Palau' },
+    'nauru gdp':             { wealth: 150,      note: 'Nation · GDP · Oceania · $150 Million · IMF 2025 · Third smallest economy in the world', url: 'https://en.wikipedia.org/wiki/Economy_of_Nauru' },
+    'tuvalu gdp':            { wealth: 65,       note: 'Nation · GDP · Oceania · $65 Million · IMF 2025 · Smallest economy in Oceania', url: 'https://en.wikipedia.org/wiki/Economy_of_Tuvalu' },
+
+    // ── Antarctica ───────────────────────────────────────
+    '_sub_antarctica':       { _subgroup: 'Antarctica — No Permanent Population' },
+    'antarctica minerals':   { wealth: 0,        note: 'Nation · Antarctica · No sovereign nation · Protected by Antarctic Treaty · Mineral extraction banned since 1991', url: 'https://en.wikipedia.org/wiki/Antarctica' },
+    'antarctica gdp':        { wealth: 0,        note: 'Nation · Antarctica · No permanent residents · No economy · Research stations only', url: 'https://en.wikipedia.org/wiki/Antarctica' },
+    'antarctica estimated minerals': { wealth: 50000000, note: 'Nation · Antarctica · Estimated untapped mineral wealth · Coal Iron Ore Oil Gas · Locked away by international treaty', url: 'https://en.wikipedia.org/wiki/Mineral_resources_of_Antarctica' },
 
     // ── Mineral & Natural Resource Wealth — by Country ──
     '_sub_mineral':          { _subgroup: 'Mineral & Natural Resource Wealth — by Country' },
-    'russia mineral':        { wealth: 75000000, note: 'Nation · Natural Wealth · $75 Trillion · Oil · Gas · Coal · Rare Earth Metals', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Russia' },
-    'usa mineral':           { wealth: 45000000, note: 'Nation · Natural Wealth · $45 Trillion · Oil · Gas · Coal · Gold · Timber', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
-    'saudi arabia mineral':  { wealth: 34000000, note: 'Nation · Natural Wealth · $34 Trillion · Largest oil reserves in the world', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
-    'canada mineral':        { wealth: 33000000, note: 'Nation · Natural Wealth · $33 Trillion · Oil sands · Timber · Minerals', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Canada' },
-    'iran mineral':          { wealth: 27000000, note: 'Nation · Natural Wealth · $27 Trillion · Oil · Gas · Minerals', url: 'https://en.wikipedia.org/wiki/Economy_of_Iran' },
-    'china mineral':         { wealth: 23000000, note: 'Nation · Natural Wealth · $23 Trillion · Rare earth metals · Coal · Gold', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_China' },
+    'russia mineral':        { wealth: 75000000, note: 'Nation · Natural Wealth · $75 Trillion · Oil · Gas · Coal · Rare Earth Metals · M7 Member', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Russia' },
+    'usa mineral':           { wealth: 45000000, note: 'Nation · Natural Wealth · $45 Trillion · Oil · Gas · Coal · Gold · Timber · M7 Member', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
+    'saudi arabia mineral':  { wealth: 34000000, note: 'Nation · Natural Wealth · $34 Trillion · Largest oil reserves in the world · M7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
+    'canada mineral':        { wealth: 33000000, note: 'Nation · Natural Wealth · $33 Trillion · Oil sands · Timber · Minerals · M7 Member', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Canada' },
+    'iran mineral':          { wealth: 27000000, note: 'Nation · Natural Wealth · $27 Trillion · Oil · Gas · Minerals · M7 Member', url: 'https://en.wikipedia.org/wiki/Economy_of_Iran' },
+    'china mineral':         { wealth: 23000000, note: 'Nation · Natural Wealth · $23 Trillion · Rare earth metals · Coal · Gold · M7 Member', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_China' },
+    'dr congo mineral':      { wealth: 24000000, note: 'Nation · Natural Wealth · $24 Trillion · 70% world coltan · Cobalt · Diamonds · M7 Member · The Saudi Arabia of the EV Age', url: 'https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo' },
     'brazil mineral':        { wealth: 21000000, note: 'Nation · Natural Wealth · $21 Trillion · Iron ore · Oil · Gold · Timber', url: 'https://en.wikipedia.org/wiki/Economy_of_Brazil' },
     'australia mineral':     { wealth: 20000000, note: 'Nation · Natural Wealth · $20 Trillion · Iron ore · Coal · Gold · Gas', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Australia' },
     'iraq mineral':          { wealth: 16000000, note: 'Nation · Natural Wealth · $16 Trillion · Oil dominant economy', url: 'https://en.wikipedia.org/wiki/Economy_of_Iraq' },
     'venezuela mineral':     { wealth: 14000000, note: 'Nation · Natural Wealth · $14 Trillion · Largest oil reserves in world', url: 'https://en.wikipedia.org/wiki/Economy_of_Venezuela' },
 
-    // ── Africa — Mineral Wealth by Nation ───────────────
-    '_sub_africa':           { _subgroup: 'Africa — Mineral Wealth by Nation' },
-    'africa total mineral':  { wealth: 60000000, note: 'Nation · Natural Wealth · Africa Combined Total · $60 Trillion estimated · All 54 nations', url: 'https://en.wikipedia.org/wiki/Africa' },
-    'dr congo mineral':      { wealth: 24000000, note: 'Nation · Natural Wealth · DR Congo · $24 Trillion · 70% world coltan · Cobalt · Diamonds · Called the Saudi Arabia of the EV Age', url: 'https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo' },
-    'south africa mineral':  { wealth: 2500000,  note: 'Nation · Natural Wealth · South Africa · $2.5 Trillion · Gold · Platinum · Diamonds · Chrome', url: 'https://en.wikipedia.org/wiki/Economy_of_South_Africa' },
-    'nigeria mineral':       { wealth: 700000,   note: 'Nation · Natural Wealth · Nigeria · $700 Billion · Oil · Gas · Africa largest oil producer', url: 'https://en.wikipedia.org/wiki/Economy_of_Nigeria' },
-    'libya mineral':         { wealth: 1000000,  note: 'Nation · Natural Wealth · Libya · $1 Trillion · Largest oil reserves in Africa', url: 'https://en.wikipedia.org/wiki/Economy_of_Libya' },
-    'ghana mineral':         { wealth: 300000,   note: 'Nation · Natural Wealth · Ghana · $300 Billion · Gold · Bauxite · Manganese · Oil', url: 'https://en.wikipedia.org/wiki/Economy_of_Ghana' },
-    'zambia mineral':        { wealth: 400000,   note: 'Nation · Natural Wealth · Zambia · $400 Billion · World largest cobalt · Copper', url: 'https://en.wikipedia.org/wiki/Economy_of_Zambia' },
-    'zimbabwe mineral':      { wealth: 300000,   note: 'Nation · Natural Wealth · Zimbabwe · $300 Billion · Platinum · Chrome · Gold · Diamonds', url: 'https://en.wikipedia.org/wiki/Economy_of_Zimbabwe' },
+    // ── G7 Nations — by GDP ─────────────────────────────
+    '_sub_g7':               { _subgroup: 'G7 Nations — Combined $46 Trillion' },
+    'g7 usa':                { wealth: 30620000, note: 'Nation · G7 · GDP · $30.6 Trillion · Largest economy on Earth', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_States' },
+    'g7 japan':              { wealth: 4390000,  note: 'Nation · G7 · GDP · $4.4 Trillion', url: 'https://en.wikipedia.org/wiki/Economy_of_Japan' },
+    'g7 germany':            { wealth: 4920000,  note: 'Nation · G7 · GDP · $4.9 Trillion · Europe largest economy', url: 'https://en.wikipedia.org/wiki/Economy_of_Germany' },
+    'g7 uk':                 { wealth: 3500000,  note: 'Nation · G7 · GDP · $3.5 Trillion', url: 'https://en.wikipedia.org/wiki/Economy_of_the_United_Kingdom' },
+    'g7 france':             { wealth: 3130000,  note: 'Nation · G7 · GDP · $3.1 Trillion', url: 'https://en.wikipedia.org/wiki/Economy_of_France' },
+    'g7 italy':              { wealth: 2190000,  note: 'Nation · G7 · GDP · $2.2 Trillion', url: 'https://en.wikipedia.org/wiki/Economy_of_Italy' },
+    'g7 canada':             { wealth: 2240000,  note: 'Nation · G7 · GDP · $2.2 Trillion', url: 'https://en.wikipedia.org/wiki/Economy_of_Canada' },
+    'g7 combined total':     { wealth: 46000000, note: 'Nation · G7 · GDP Combined · All 7 nations together · The economic powerhouses', url: 'https://en.wikipedia.org/wiki/G7' },
 
-    // ── G7 vs Mineral M7 — The Big Picture ──────────────
-    '_sub_g7':               { _subgroup: 'G7 vs Mineral M7 — The Big Picture' },
-    'g7 combined gdp':       { wealth: 46000000, note: 'Nation · GDP · G7 Combined · USA UK Canada France Germany Italy Japan · The economic powerhouses', url: 'https://en.wikipedia.org/wiki/G7' },
-    'mineral m7 combined':   { wealth: 279000000, note: 'Nation · Natural Wealth · Mineral M7 Combined · Russia USA Saudi Arabia Canada Iran Congo China · $279 Trillion in the ground', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
+    // ── M7 Nations — by Mineral Wealth ──────────────────
+    '_sub_m7':               { _subgroup: 'M7 Nations — Combined $279 Trillion' },
+    'm7 russia':             { wealth: 75000000, note: 'Nation · M7 · Natural Wealth · $75 Trillion · Oil Gas Coal Rare Earths', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Russia' },
+    'm7 usa':                { wealth: 45000000, note: 'Nation · M7 · Natural Wealth · $45 Trillion · Oil Gas Coal Gold Timber', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
+    'm7 saudi arabia':       { wealth: 34000000, note: 'Nation · M7 · Natural Wealth · $34 Trillion · Largest oil reserves in world', url: 'https://en.wikipedia.org/wiki/Economy_of_Saudi_Arabia' },
+    'm7 canada':             { wealth: 33000000, note: 'Nation · M7 · Natural Wealth · $33 Trillion · Oil sands Timber Minerals', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_Canada' },
+    'm7 iran':               { wealth: 27000000, note: 'Nation · M7 · Natural Wealth · $27 Trillion · Oil Gas Minerals', url: 'https://en.wikipedia.org/wiki/Economy_of_Iran' },
+    'm7 china':              { wealth: 23000000, note: 'Nation · M7 · Natural Wealth · $23 Trillion · Rare earth metals Coal Gold', url: 'https://en.wikipedia.org/wiki/Natural_resources_of_China' },
+    'm7 dr congo':           { wealth: 24000000, note: 'Nation · M7 · Natural Wealth · $24 Trillion · 70% world coltan Cobalt Diamonds · The Saudi Arabia of the EV Age', url: 'https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo' },
+    'm7 combined total':     { wealth: 279000000, note: 'Nation · M7 · Natural Wealth Combined · All 7 nations together · The resource powerhouses', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
+
+    // ── World Totals ─────────────────────────────────────
+    '_sub_world':            { _subgroup: 'World Totals — The Big Picture' },
     'world gdp total':       { wealth: 123580000, note: 'Nation · GDP · World Total 2025 · IMF · $123.6 Trillion', url: 'https://en.wikipedia.org/wiki/Gross_world_product' },
     'world mineral total':   { wealth: 500000000, note: 'Nation · Natural Wealth · Estimated total global mineral wealth · $500 Trillion · All nations combined', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
 
@@ -3840,7 +4011,7 @@
       // The Beatles' hometown rather than the football club
       if (!noteLower.includes('football')) continue;
       if (noteLower.includes(query)) {
-        const displayName = key.replace(/\b\w/g, c => c.toUpperCase());
+        const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
         const dedupeKey = displayName.toLowerCase() + '|' + val.wealth;
         if (seenNames.has(dedupeKey)) continue;
         seenNames.add(dedupeKey);
@@ -3884,7 +4055,7 @@
     const match = CELEB_DB[key];
     if (!match) return;
     document.getElementById('club-results-card').style.display = 'none';
-    const displayName = key.replace(/\b\w/g, c => c.toUpperCase());
+    const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
     await calculateFromCeleb(displayName, match);
     document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -4623,15 +4794,38 @@
     const cat = document.getElementById('add-category').value;
     const row = document.getElementById('subgroup-row');
     const sel = document.getElementById('add-subgroup');
-    if (!cat || !SUBGROUPS[cat]) { row.style.display = 'none'; return; }
+    const newCatRow = document.getElementById('new-category-row');
+
+    if (cat === '__new__') {
+      newCatRow.style.display = 'block';
+      row.style.display = 'none';
+      return;
+    } else {
+      newCatRow.style.display = 'none';
+    }
+
+    if (!cat) { row.style.display = 'none'; return; }
+
     sel.innerHTML = '<option value="">-- Select sub-section --</option>';
-    SUBGROUPS[cat].forEach(sub => {
-      const opt = document.createElement('option');
-      opt.value = sub;
-      opt.textContent = sub;
-      sel.appendChild(opt);
-    });
+    if (SUBGROUPS[cat]) {
+      SUBGROUPS[cat].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        sel.appendChild(opt);
+      });
+    }
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '+ New Sub-section...';
+    sel.appendChild(newOpt);
     row.style.display = 'block';
+    document.getElementById('new-subgroup-row').style.display = 'none';
+  }
+
+  function checkNewSubgroup() {
+    const val = document.getElementById('add-subgroup').value;
+    document.getElementById('new-subgroup-row').style.display = (val === '__new__') ? 'block' : 'none';
   }
 
   function adminSearch() {
@@ -4681,7 +4875,7 @@
   async function addCeleb() {
     const name = document.getElementById('admin-search').value.trim();
     const wealth = parseFloat(document.getElementById('add-wealth').value) || 1;
-    const category = document.getElementById('add-category').value;
+    let category = document.getElementById('add-category').value;
     const url = document.getElementById('add-url').value.trim();
     const status = document.getElementById('add-status');
 
@@ -4691,8 +4885,28 @@
       return;
     }
 
-    const note = (category || 'General') + (document.getElementById('add-subgroup') && document.getElementById('add-subgroup').value ? ' · ' + document.getElementById('add-subgroup').value : '');
-    const subgroup = document.getElementById('add-subgroup') ? document.getElementById('add-subgroup').value : '';
+    // Handle new category
+    if (category === '__new__') {
+      category = document.getElementById('new-category-name').value.trim();
+      if (!category) {
+        status.textContent = '⚠ Please enter a name for the new category';
+        status.style.color = '#ff6666';
+        return;
+      }
+    }
+
+    // Handle new subgroup
+    let subgroup = document.getElementById('add-subgroup') ? document.getElementById('add-subgroup').value : '';
+    if (subgroup === '__new__') {
+      subgroup = document.getElementById('new-subgroup-name').value.trim();
+      if (!subgroup) {
+        status.textContent = '⚠ Please enter a name for the new sub-section';
+        status.style.color = '#ff6666';
+        return;
+      }
+    }
+
+    const note = (category || 'General') + (subgroup ? ' · ' + subgroup : '');
     const key = name.toLowerCase();
 
     status.textContent = '⏳ Saving ' + name + '...';
