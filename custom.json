@@ -62,6 +62,11 @@
     },
     "usa mineral": {
       "url": "https://en.wikipedia.org/wiki/Natural_resources"
+    },
+    "roman abramovich": {
+      "wealth": 9500,
+      "url": "https://en.wikipedia.org/wiki/Roman_Abramovich",
+      "note": "Tech & Business · Dragons & Entrepreneurs"
     }
   }
 }
