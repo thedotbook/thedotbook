@@ -59,7 +59,8 @@
   "edits": {
     "augustus caesar": {
       "wealth": 4.6,
-      "url": "https://en.wikipedia.org/wiki/Augustus_Caesar"
+      "url": "https://en.wikipedia.org/wiki/Augustus_Caesar",
+      "note": "Historical · Ancient & Medieval Rulers"
     },
     "usa mineral": {
       "url": "https://en.wikipedia.org/wiki/Natural_resources"
