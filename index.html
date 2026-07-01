@@ -792,7 +792,14 @@
         <!-- Add form — hidden until name not found -->
         <div id="add-form" style="display:none">
           <div style="font-size:12px;color:#888;margin-bottom:4px">Wealth in $M (optional — leave blank if unknown)</div>
-          <input id="add-wealth" type="number" placeholder="e.g. 5" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <input id="add-wealth" type="number" placeholder="e.g. 5" style="flex:2;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box">
+            <select id="add-wealth-unit" style="flex:1;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:13px;border-radius:4px;box-sizing:border-box">
+              <option value="1">$ Millions</option>
+              <option value="1000">$ Billions</option>
+              <option value="1000000">$ Trillions</option>
+            </select>
+          </div>
 
           <div style="font-size:12px;color:#888;margin-bottom:4px">Category</div>
           <select id="add-category" onchange="updateSubgroups()" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
@@ -1653,7 +1660,7 @@
     if (n.includes('film') || n.includes('actor') || n.includes('actress') ||
         n.includes('director') || n.includes(' tv ') || n.includes('tv ·') ||
         n.includes('· tv') || n.includes('comedy') || n.includes('presenter') ||
-        n.includes('author') || n.includes('media'))
+        n.includes('media'))
       return 'Film & TV';
     if (n.includes('tech') || n.includes('crypto') || n.includes('business') ||
         n.includes('invest') || n.includes('finance') || n.includes('bank') ||
@@ -4874,7 +4881,9 @@
 
   async function addCeleb() {
     const name = document.getElementById('admin-search').value.trim();
-    const wealth = parseFloat(document.getElementById('add-wealth').value) || 1;
+    const wealthRaw = parseFloat(document.getElementById('add-wealth').value) || 1;
+    const wealthUnit = parseFloat(document.getElementById('add-wealth-unit').value) || 1;
+    const wealth = wealthRaw * wealthUnit;
     let category = document.getElementById('add-category').value;
     const url = document.getElementById('add-url').value.trim();
     const status = document.getElementById('add-status');
@@ -4966,6 +4975,7 @@
       // Reset form
       document.getElementById('admin-search').value = '';
       document.getElementById('add-wealth').value = '';
+      document.getElementById('add-wealth-unit').value = '1';
       document.getElementById('add-category').value = '';
       if (document.getElementById('add-subgroup')) document.getElementById('add-subgroup').value = '';
       document.getElementById('subgroup-row').style.display = 'none';
@@ -5076,7 +5086,14 @@
       return '<div style="padding:10px 4px;border-bottom:1px solid #333">'
         + '<div style="color:#ffffff;font-size:14px;font-weight:bold;margin-bottom:8px">' + escHtml(k) + ' <span style="color:#888;font-size:11px;font-weight:normal">$' + v.wealth + 'M</span></div>'
         + '<div style="font-size:11px;color:#888;margin-bottom:4px">Wealth $M</div>'
-        + '<input id="ew-' + sk + '" type="number" value="' + v.wealth + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px">'
+        + '<div style="display:flex;gap:6px;margin-bottom:8px">'
+        + '<input id="ew-' + sk + '" type="number" placeholder="Amount" value="' + v.wealth + '" style="flex:2;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box">'
+        + '<select id="eu-unit-' + sk + '" style="flex:1;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:13px">'
+        + '<option value="1">$ Millions</option>'
+        + '<option value="1000">$ Billions</option>'
+        + '<option value="1000000">$ Trillions</option>'
+        + '</select>'
+        + '</div>'
         + '<div style="font-size:11px;color:#888;margin-bottom:4px">Category</div>'
         + '<select id="ec-' + sk + '" onchange="updateEditSubgroups(\'' + sk + '\')" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px">'
         + '<option value="">-- unchanged --</option>' + catOptions
@@ -5115,6 +5132,7 @@
 
   async function editCeleb(key, safeKey) {
     const wealthEl = document.getElementById('ew-' + safeKey);
+    const wealthUnitEl = document.getElementById('eu-unit-' + safeKey);
     const urlEl = document.getElementById('eu-' + safeKey);
     const catEl = document.getElementById('ec-' + safeKey);
     const subEl = document.getElementById('es-' + safeKey);
@@ -5126,7 +5144,9 @@
       return;
     }
 
-    const newWealth = parseFloat(wealthEl.value);
+    const wealthRaw = parseFloat(wealthEl.value);
+    const wealthUnit = wealthUnitEl ? parseFloat(wealthUnitEl.value) : 1;
+    const newWealth = wealthRaw * wealthUnit;
     const newUrl = urlEl ? urlEl.value.trim() : '';
     const newCat = catEl ? catEl.value : '';
     const newSub = subEl ? subEl.value : '';
