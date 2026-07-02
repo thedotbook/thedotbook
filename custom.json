@@ -46,6 +46,12 @@
       "note": "Sport · Horse Racing",
       "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
       "subgroup": "Horse Racing"
+    },
+    "pelé": {
+      "wealth": 160,
+      "note": "Historical · Entertainment & Sport — Historical",
+      "url": "",
+      "subgroup": "Entertainment & Sport — Historical"
     }
   },
   "removes": [
