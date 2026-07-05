@@ -17,7 +17,12 @@
   <link rel="icon" type="image/png" href="icon-192.png" />
   <link rel="manifest" href="manifest.json" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+    tr.group-header td, tr.subgroup-label td {
+      -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+      tap-highlight-color: rgba(0,0,0,0) !important;
+      outline: none !important;
+    }
 
     body { color: #ffffff;
       min-height: 100vh;
@@ -1850,7 +1855,7 @@
       const peopleCount = items.filter(i => i.type === 'person').length;
       // Display group name — plain text, no special styling
       const displayGroupName = escHtml(groupName);
-      html += '<tr class="group-header" data-group="' + escHtml(groupName) + '" onclick="toggleGroup(\'' + safeGroup + '\')">'
+      html += '<tr class="group-header" data-group="' + escHtml(groupName) + '" onclick="toggleGroup(\'' + safeGroup + '\')" style="-webkit-tap-highlight-color:transparent">'
             + '<td colspan="3">'
             + '<span class="g-arrow" style="display:inline-block;margin-right:10px;font-size:10px;transition:transform 0.25s ease;opacity:0.9;transform:' + arrowRot + '">&#9660;</span>'
             + displayGroupName
