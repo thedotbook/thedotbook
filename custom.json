@@ -46,6 +46,12 @@
       "note": "Sport · Horse Racing",
       "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
       "subgroup": "Horse Racing"
+    },
+    "ishowspeed": {
+      "wealth": 35,
+      "note": "YouTube & Streaming · Comedy",
+      "url": "https://en.wikipedia.org/wiki/Ishowspeed",
+      "subgroup": "Comedy"
     }
   },
   "removes": [
