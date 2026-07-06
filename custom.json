@@ -48,10 +48,10 @@
       "subgroup": "Horse Racing"
     },
     "ishowspeed": {
-      "wealth": 35,
-      "note": "YouTube & Streaming · Comedy",
-      "url": "https://en.wikipedia.org/wiki/Ishowspeed",
-      "subgroup": "Comedy"
+      "wealth": 1,
+      "note": "General",
+      "url": "",
+      "subgroup": ""
     }
   },
   "removes": [
