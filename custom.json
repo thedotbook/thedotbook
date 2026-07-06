@@ -1,5 +1,69 @@
 {
-  "adds": {},
-  "removes": [],
-  "edits": {}
+  "adds": {
+    "clive myrie": {
+      "wealth": 3,
+      "note": "Film & TV",
+      "url": ""
+    },
+    "kimi antonelli": {
+      "wealth": 3,
+      "note": "Sport · F1 & Motorsport",
+      "url": "https://en.wikipedia.org/wiki/Kimi_Antonelli",
+      "subgroup": "F1 & Motorsport"
+    },
+    "oliver bearman": {
+      "wealth": 3,
+      "note": "Sport · F1 & Motorsport",
+      "url": "https://en.wikipedia.org/wiki/Oliver_Bearman",
+      "subgroup": "F1 & Motorsport"
+    },
+    "carlos sainz jr": {
+      "wealth": 5,
+      "note": "Sport · F1 & Motorsport",
+      "url": "https://en.wikipedia.org/wiki/Carlos_Sainz_Jr",
+      "subgroup": "F1 & Motorsport"
+    },
+    "rory mcilroy": {
+      "wealth": 300,
+      "note": "Sport · Golf",
+      "url": "https://en.wikipedia.org/wiki/Rory_McIlroy",
+      "subgroup": "Golf"
+    },
+    "phil mickelson": {
+      "wealth": 400,
+      "note": "Sport · Golf",
+      "url": "https://en.wikipedia.org/wiki/Phil_Mickelson",
+      "subgroup": "Golf"
+    },
+    "augustus caesar": {
+      "wealth": 4600000,
+      "note": "Historical · Royals & Emperors",
+      "url": "https://en.wikipedia.org/wiki/Augustus",
+      "subgroup": "Royals & Emperors"
+    },
+    "jamie moore": {
+      "wealth": 3,
+      "note": "Sport · Horse Racing",
+      "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
+      "subgroup": "Horse Racing"
+    }
+  },
+  "removes": [
+    "jackie stewart",
+    "huw edwards",
+    "jackie steward",
+    "again prost",
+    "augustus",
+    "lord archer"
+  ],
+  "edits": {
+    "roman abramovich": {
+      "wealth": 9500,
+      "url": "https://en.wikipedia.org/wiki/Roman_Abramovich",
+      "note": "Tech & Business · Dragons & Entrepreneurs"
+    },
+    "usa mineral": {
+      "url": "https://en.wikipedia.org/wiki/Natural_resources"
+    }
+  }
 }
