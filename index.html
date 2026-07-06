@@ -1609,7 +1609,7 @@
 
   // ── Category classification ────────────────────────────
   let GROUP_ORDER = [
-    'My Own Entries', 'The Twenty Wealthiest People on Earth', 'Nations & Natural Wealth', 'Film & TV', 'Football', 'Historical', 'Institutions', 'Music', 'Royalty & Politics',
+    'My Own Entries', 'The Twenty Wealthiest People on Earth', 'Nations & Natural Wealth', 'Science & Innovation', 'Film & TV', 'Football', 'Historical', 'Institutions', 'Music', 'Royalty & Politics',
     'Sport', 'Tech & Business', 'YouTube & Streaming'
   ];
 
@@ -1620,6 +1620,7 @@
     const n = (person.note || '').toLowerCase();
     const nm = (person.name || '').toLowerCase();
     if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
+    if (n.includes('science') || n.includes('pharma') || n.includes('space ·') || n.includes('· space') || n.includes('biotech') || n.includes('climate ·') || n.includes('quantum') || n.includes('· ai ·') || n.includes('scientific')) return 'Science & Innovation';
     if (n.includes('institution') || n.includes('central bank') || n.includes('federal reserve') ||
         n.includes('world bank') || (n.includes('imf') && !n.includes('nation')) || n.includes('fort knox') ||
         nm === 'apple' || nm === 'microsoft' || nm === 'nvidia' || nm === 'amazon' ||
@@ -2111,6 +2112,74 @@
     'jamie foxx':          { wealth: 150,    note: 'Film · Comedy · Music · USA', url: 'https://en.wikipedia.org/wiki/Jamie_Foxx' },
 
     // ── UK TV & COMEDY ───────────────────────────────────
+
+    // ── SCIENCE & INNOVATION ─────────────────────────────
+
+    // ── Space & Exploration ──────────────────────────────
+    '_sub_space':            { _subgroup: 'Space & Exploration' },
+    'spacex':                { wealth: 2300000, note: 'Science · Space · USA · SpaceX · IPO June 2026 · $2.3T valuation · Elon Musk · Starlink · Falcon 9 · Starship', url: 'https://en.wikipedia.org/wiki/SpaceX' },
+    'nasa budget':           { wealth: 24400,   note: 'Science · Space · USA · NASA Annual Budget 2026 · $24.4B · Moon · Mars · Artemis · 0.35% of US spending', url: 'https://en.wikipedia.org/wiki/NASA' },
+    'nasa total spend':      { wealth: 1900000, note: 'Science · Space · USA · NASA Total Spend Since 1958 · $1.9 Trillion · Inflation adjusted 2025', url: 'https://en.wikipedia.org/wiki/Budget_of_NASA' },
+    'blue origin':           { wealth: 100000,  note: 'Science · Space · USA · Blue Origin · Jeff Bezos · $100B valuation · New Shepard · New Glenn', url: 'https://en.wikipedia.org/wiki/Blue_Origin' },
+    'esa budget':            { wealth: 10000,   note: 'Science · Space · Europe · ESA Annual Budget 2025 · $10B · European Space Agency', url: 'https://en.wikipedia.org/wiki/European_Space_Agency' },
+    'iss total cost':        { wealth: 150000,  note: 'Science · Space · International Space Station · Total build cost · 16 nations · 1998-2024', url: 'https://en.wikipedia.org/wiki/International_Space_Station' },
+    'artemis programme':     { wealth: 93000,   note: 'Science · Space · USA · NASA Artemis · Return to Moon · Budget through 2025 · $93B allocated', url: 'https://en.wikipedia.org/wiki/Artemis_program' },
+    'virgin galactic':       { wealth: 1000,    note: 'Science · Space · USA/UK · Richard Branson · Space tourism · $1B valuation', url: 'https://en.wikipedia.org/wiki/Virgin_Galactic' },
+    'rocket lab':            { wealth: 5000,    note: 'Science · Space · USA/NZ · Rocket Lab · Small satellite launch · $5B valuation', url: 'https://en.wikipedia.org/wiki/Rocket_Lab' },
+
+    // ── Pharmaceuticals & Biotech ────────────────────────
+    '_sub_pharma':           { _subgroup: 'Pharmaceuticals & Biotech' },
+    'eli lilly pharma':      { wealth: 700000,  note: 'Science · Pharma · USA · Eli Lilly · $700B market cap · Ozempic competitor · Weight loss drugs', url: 'https://en.wikipedia.org/wiki/Eli_Lilly_and_Company' },
+    'johnson johnson pharma': { wealth: 390000, note: 'Science · Pharma · USA · Johnson & Johnson · $390B market cap · Vaccines · Oncology', url: 'https://en.wikipedia.org/wiki/Johnson_%26_Johnson' },
+    'abbvie pharma':         { wealth: 320000,  note: 'Science · Pharma · USA · AbbVie · $320B market cap · Humira · Immunology', url: 'https://en.wikipedia.org/wiki/AbbVie' },
+    'astrazeneca pharma':    { wealth: 290000,  note: 'Science · Pharma · UK · AstraZeneca · $290B market cap · COVID vaccine · Oncology', url: 'https://en.wikipedia.org/wiki/AstraZeneca' },
+    'novo nordisk pharma':   { wealth: 280000,  note: 'Science · Pharma · Denmark · Novo Nordisk · $280B market cap · Ozempic · Wegovy · Weight loss revolution', url: 'https://en.wikipedia.org/wiki/Novo_Nordisk' },
+    'roche pharma':          { wealth: 250000,  note: 'Science · Pharma · Switzerland · Roche · $250B market cap · Cancer diagnostics', url: 'https://en.wikipedia.org/wiki/Roche' },
+    'novartis pharma':       { wealth: 240000,  note: 'Science · Pharma · Switzerland · Novartis · $240B market cap · Gene therapy', url: 'https://en.wikipedia.org/wiki/Novartis' },
+    'merck pharma':          { wealth: 230000,  note: 'Science · Pharma · USA · Merck · $230B market cap · Keytruda · Cancer immunotherapy', url: 'https://en.wikipedia.org/wiki/Merck_%26_Co.' },
+    'pfizer pharma':         { wealth: 138000,  note: 'Science · Pharma · USA · Pfizer · $138B market cap · COVID vaccine · Post-pandemic decline', url: 'https://en.wikipedia.org/wiki/Pfizer' },
+    'moderna pharma':        { wealth: 20000,   note: 'Science · Pharma · USA · Moderna · $20B market cap · mRNA technology · COVID vaccine', url: 'https://en.wikipedia.org/wiki/Moderna' },
+    'gsk pharma':            { wealth: 75000,   note: 'Science · Pharma · UK · GSK · $75B market cap · GlaxoSmithKline · Vaccines', url: 'https://en.wikipedia.org/wiki/GSK_plc' },
+    'wellcome trust':        { wealth: 38000,   note: 'Science · Biotech · UK · Wellcome Trust · $38B endowment · Largest medical research charity', url: 'https://en.wikipedia.org/wiki/Wellcome_Trust' },
+
+    // ── Climate & Energy ─────────────────────────────────
+    '_sub_climate':          { _subgroup: 'Climate & Energy' },
+    'global climate fund':   { wealth: 13000,   note: 'Science · Climate · Global · Green Climate Fund · $13B pledged · Paris Agreement', url: 'https://en.wikipedia.org/wiki/Green_Climate_Fund' },
+    'tesla energy':          { wealth: 1000000, note: 'Science · Climate · USA · Tesla · $1T market cap · EVs · Solar · Powerwall · Elon Musk', url: 'https://en.wikipedia.org/wiki/Tesla,_Inc.' },
+    'nextera energy':        { wealth: 170000,  note: 'Science · Climate · USA · NextEra Energy · $170B · World largest wind & solar company', url: 'https://en.wikipedia.org/wiki/NextEra_Energy' },
+    'orsted energy':         { wealth: 20000,   note: 'Science · Climate · Denmark · Ørsted · $20B · World leading offshore wind', url: 'https://en.wikipedia.org/wiki/%C3%98rsted_A/S' },
+    'vestas wind':           { wealth: 25000,   note: 'Science · Climate · Denmark · Vestas · $25B · World largest wind turbine manufacturer', url: 'https://en.wikipedia.org/wiki/Vestas' },
+    'first solar':           { wealth: 15000,   note: 'Science · Climate · USA · First Solar · $15B · Solar panels · Clean energy', url: 'https://en.wikipedia.org/wiki/First_Solar' },
+    'exxonmobil climate':    { wealth: 510000,  note: 'Science · Climate · USA · ExxonMobil · $510B market cap · Largest oil company · CO2 emissions vs clean energy budgets', url: 'https://en.wikipedia.org/wiki/ExxonMobil' },
+
+    // ── AI & Quantum Computing ───────────────────────────
+    '_sub_ai':               { _subgroup: 'AI & Quantum Computing' },
+    'openai':                { wealth: 300000,  note: 'Science · AI · USA · OpenAI · $300B valuation · ChatGPT · GPT-4 · Sam Altman', url: 'https://en.wikipedia.org/wiki/OpenAI' },
+    'anthropic':             { wealth: 61000,   note: 'Science · AI · USA · Anthropic · $61B valuation · Claude · Constitutional AI · Safety focused', url: 'https://en.wikipedia.org/wiki/Anthropic' },
+    'deepmind':              { wealth: 50000,   note: 'Science · AI · UK/USA · DeepMind · Google · AlphaFold · Protein folding · AlphaGo', url: 'https://en.wikipedia.org/wiki/Google_DeepMind' },
+    'nvidia ai':             { wealth: 3300000, note: 'Science · AI · USA · Nvidia · $3.3T market cap · AI chips · H100 GPU · Jensen Huang', url: 'https://en.wikipedia.org/wiki/Nvidia' },
+    'ibm quantum':           { wealth: 230000,  note: 'Science · AI · Quantum · USA · IBM · $230B · IBM Quantum · Watson AI', url: 'https://en.wikipedia.org/wiki/IBM' },
+    'google deepmind ai':    { wealth: 2300000, note: 'Science · AI · USA · Google/Alphabet · $2.3T · Gemini AI · Search · DeepMind', url: 'https://en.wikipedia.org/wiki/Google' },
+    'microsoft ai':          { wealth: 3500000, note: 'Science · AI · USA · Microsoft · $3.5T · Copilot · OpenAI investor · Azure AI', url: 'https://en.wikipedia.org/wiki/Microsoft' },
+
+    // ── Scientific Institutions ──────────────────────────
+    '_sub_sciinstitutions':  { _subgroup: 'Scientific Institutions & Funding' },
+    'cern':                  { wealth: 17500,   note: 'Science · Scientific · Switzerland · CERN · $17.5B total investment · Large Hadron Collider · Higgs Boson', url: 'https://en.wikipedia.org/wiki/CERN' },
+    'gates foundation science': { wealth: 77000, note: 'Science · Scientific · USA · Bill & Melinda Gates Foundation · $77B endowment · Global health · Vaccines', url: 'https://en.wikipedia.org/wiki/Bill_%26_Melinda_Gates_Foundation' },
+    'who budget':            { wealth: 6800,    note: 'Science · Scientific · Global · WHO Annual Budget · $6.8B · World Health Organization', url: 'https://en.wikipedia.org/wiki/World_Health_Organization' },
+    'global rd spend':       { wealth: 2400000, note: 'Science · Scientific · Global · World R&D Spending 2025 · $2.4 Trillion annually · All nations combined', url: 'https://en.wikipedia.org/wiki/Research_and_development' },
+    'us defense research':   { wealth: 140000,  note: 'Science · Scientific · USA · DARPA & Defense R&D · $140B annually · Military technology development', url: 'https://en.wikipedia.org/wiki/DARPA' },
+
+    // ── Greatest Scientists — Historical ─────────────────
+    '_sub_scientists_hist':  { _subgroup: 'Greatest Scientists — What We Paid Them' },
+    'albert einstein':       { wealth: 1,       note: 'Science · Physicist · Germany/USA · Theory of Relativity · Nobel Prize 1921 · Salary-based wealth · Died 1955', url: 'https://en.wikipedia.org/wiki/Albert_Einstein' },
+    'marie curie':           { wealth: 1,       note: 'Science · Physicist/Chemist · Poland/France · Two Nobel Prizes · Radioactivity · Died 1934', url: 'https://en.wikipedia.org/wiki/Marie_Curie' },
+    'stephen hawking':       { wealth: 20,      note: 'Science · Physicist · UK · A Brief History of Time · Black holes · Motor neurone disease · Died 2018', url: 'https://en.wikipedia.org/wiki/Stephen_Hawking' },
+    'alan turing science':   { wealth: 1,       note: 'Science · Mathematician · UK · Father of Computing · Cracked Enigma · Persecuted · Died 1954', url: 'https://en.wikipedia.org/wiki/Alan_Turing' },
+    'tim berners-lee':       { wealth: 10,      note: 'Science · UK · Inventor of the World Wide Web · Gave it away free · Sir Tim Berners-Lee', url: 'https://en.wikipedia.org/wiki/Tim_Berners-Lee' },
+    'rosalind franklin':     { wealth: 1,       note: 'Science · Chemist · UK · Discovered DNA structure · Credit denied · Died 1958', url: 'https://en.wikipedia.org/wiki/Rosalind_Franklin' },
+    'charles darwin':        { wealth: 1500,    note: 'Science · Naturalist · UK · On the Origin of Species · Evolution · Died 1882 · Inflation adjusted', url: 'https://en.wikipedia.org/wiki/Charles_Darwin' },
+    'nikola tesla science':  { wealth: 1,       note: 'Science · Inventor · Serbia/USA · AC electricity · Died in poverty 1943 · Tesla the car named after him', url: 'https://en.wikipedia.org/wiki/Nikola_Tesla' },
 
     // ── NATIONS & NATURAL WEALTH — by Continent (GDP) ──
 
@@ -3907,7 +3976,6 @@
     'william waldorf astor':{ wealth: 100000,note: 'Historical · Property · US/UK', url: 'https://en.wikipedia.org/wiki/William_Waldorf_Astor' },
     'alan turing':         { wealth: 1,      note: 'Historical · Computing Pioneer', url: 'https://en.wikipedia.org/wiki/Alan_Turing' },
     'isaac newton':        { wealth: 1,      note: 'Historical · Science', url: 'https://en.wikipedia.org/wiki/Isaac_Newton' },
-    'charles darwin':      { wealth: 2,      note: 'Historical · Science', url: 'https://en.wikipedia.org/wiki/Charles_Darwin' },
     'charles dickens':     { wealth: 10,     note: 'Historical · Author', url: 'https://en.wikipedia.org/wiki/Charles_Dickens' },
     'william shakespeare': { wealth: 3,      note: 'Historical · Playwright', url: 'https://en.wikipedia.org/wiki/William_Shakespeare' },
 
@@ -3966,7 +4034,6 @@
     '_sub_hist_scientists': { _subgroup: 'Scientists & Inventors' },
     'agatha christie':         { wealth: 2000,   note: 'Author · UK · Historical · Estate · Worlds best-selling fiction', url: 'https://en.wikipedia.org/wiki/Agatha_Christie' },
     'arthur conan doyle':      { wealth: 500,    note: 'Author · UK · Historical · Estate · Sherlock Holmes', url: 'https://en.wikipedia.org/wiki/Arthur_Conan_Doyle' },
-    'albert einstein':     { wealth: 1,      note: 'Historical · Physics', url: 'https://en.wikipedia.org/wiki/Albert_Einstein' },
     'nikola tesla':        { wealth: 1,      note: 'Historical · Inventor', url: 'https://en.wikipedia.org/wiki/Nikola_Tesla' },
     'alexander graham bell':{ wealth: 5000,  note: 'Historical · Telephone', url: 'https://en.wikipedia.org/wiki/Alexander_Graham_Bell' },
 
