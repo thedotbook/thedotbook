@@ -46,12 +46,6 @@
       "note": "Sport · Horse Racing",
       "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
       "subgroup": "Horse Racing"
-    },
-    "ishowspeed": {
-      "wealth": 1,
-      "note": "General",
-      "url": "",
-      "subgroup": ""
     }
   },
   "removes": [
@@ -61,7 +55,8 @@
     "again prost",
     "augustus",
     "lord archer",
-    "thomas muller"
+    "thomas muller",
+    "ishowspeed"
   ],
   "edits": {
     "roman abramovich": {
