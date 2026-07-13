@@ -46,6 +46,12 @@
       "note": "Sport · Horse Racing",
       "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
       "subgroup": "Horse Racing"
+    },
+    "ray manzarek": {
+      "wealth": 1,
+      "note": "Music · Rock",
+      "url": "https://en.wikipedia.org/wiki/Ray_manzarek",
+      "subgroup": "Rock"
     }
   },
   "removes": [
