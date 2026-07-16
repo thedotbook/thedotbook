@@ -52,6 +52,12 @@
       "note": "Music · Rock",
       "url": "https://en.wikipedia.org/wiki/Ray_manzarek",
       "subgroup": "Rock"
+    },
+    "jordan speith": {
+      "wealth": 10,
+      "note": "Sport · Golf",
+      "url": "",
+      "subgroup": "Golf"
     }
   },
   "removes": [
