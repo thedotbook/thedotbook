@@ -967,8 +967,7 @@
           <select id="add-category" onchange="updateSubgroups()" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
             <option value="">-- Select --</option>
             <option value="Film & TV">Film &amp; TV</option>
-            <option value="Football">Football</option>
-            <option value="Historical">Historical</option>
+                        <option value="Historical">Historical</option>
             <option value="Music">Music</option>
             <option value="Nations & Natural Wealth">Nations &amp; Natural Wealth</option>
             <option value="Royalty & Politics">Royalty &amp; Politics</option>
@@ -1764,11 +1763,13 @@
   // ── Category classification ────────────────────────────
   let GROUP_ORDER = [
     'My Own Entries',
-    '── INDIVIDUAL WEALTH ──',
-    'The Twenty Wealthiest People on Earth', 'Film & TV', 'Football', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming',
-    '── GLOBAL PERSPECTIVE ──',
+    'Individual Wealth',
+    'The Twenty Wealthiest People on Earth', 'Film & TV', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming',
+    'Global Perspective',
     'Nations & Natural Wealth', 'Science & Innovation', 'National Debt', 'Institutions', 'Royalty & Politics'
   ];
+
+  const SECTION_DIVIDERS = new Set(['Individual Wealth', 'Global Perspective']);
 
   function getCategory(person) {
     if (person.isUser) return 'Your Entry';
@@ -1795,7 +1796,7 @@
         n.includes('influencer') || n.includes('streamer') || n.includes('streaming'))
       return 'YouTube & Streaming';
     if (n.includes('football') || n.includes('soccer'))
-      return 'Football';
+      return 'Sport';
     if (n.includes('music') || n.includes('rapper') || n.includes('singer') ||
         n.includes('k-pop') || n.includes('country') || n.includes('classical') ||
         n.includes('opera') || n.includes('crossover') || n.includes('jazz') ||
@@ -1999,7 +2000,7 @@
     // On first render, collapse all groups except Your Entry
     if (collapsedGroups.size === 0) {
       for (const g of GROUP_ORDER) {
-        if (!g.startsWith('──')) collapsedGroups.add(g);
+        if (!SECTION_DIVIDERS.has(g)) collapsedGroups.add(g);
       }
     }
 
@@ -2007,8 +2008,8 @@
     let subIdx = 0;
     for (const groupName of GROUP_ORDER) {
       // Section dividers are always shown, not collapsible
-      if (groupName.startsWith('──')) {
-        html += '<tr><td colspan="3" style="background:#111111;color:#ffffff;padding:10px 16px;font-size:10px;letter-spacing:4px;text-transform:uppercase;text-align:center;border-top:2px solid #ffffff;border-bottom:1px solid #333333">' + escHtml(groupName.replace(/──/g,'').trim()) + '</td></tr>';
+      if (SECTION_DIVIDERS.has(groupName)) {
+        html += '<tr><td colspan="3" style="background:#111111;color:#ffffff;padding:12px 16px;font-size:11px;letter-spacing:5px;text-transform:uppercase;text-align:center;border-top:2px solid #ffffff;border-bottom:1px solid #333333">' + escHtml(groupName) + '</td></tr>';
         continue;
       }
       const items = ordered[groupName];
@@ -3684,78 +3685,78 @@
 
     // Argentina (defending champions)
     'julián álvarez':      { wealth: 20,     note: 'Football · Argentina · World Cup 2026 · Atlético Madrid', url: 'https://en.wikipedia.org/wiki/Julián_Álvarez' },
-    'julian alvarez':      { wealth: 20,     note: 'Football · Argentina · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Julián_Álvarez' },
+    'julian alvarez':      { wealth: 20,     note: 'Football · Argentina · World Cup 2026 · Roma', url: 'https://en.wikipedia.org/wiki/Julián_Álvarez' },
     'rodrigo de paul':     { wealth: 20,     note: 'Football · Argentina · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Rodrigo_De_Paul' },
     'paulo dybala':        { wealth: 35,     note: 'Football · Argentina · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Paulo_Dybala' },
 
     // Australia
-    'mathew leckie':       { wealth: 8,      note: 'Football · Australia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mathew_Leckie' },
-    'mitchell duke':       { wealth: 5,      note: 'Football · Australia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mitchell_Duke' },
-    'aaron mooy':          { wealth: 8,      note: 'Football · Australia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Aaron_Mooy' },
+    'mathew leckie':       { wealth: 8,      note: 'Football · Australia · World Cup 2026 · Melbourne City', url: 'https://en.wikipedia.org/wiki/Mathew_Leckie' },
+    'mitchell duke':       { wealth: 5,      note: 'Football · Australia · World Cup 2026 · FC Fagiano Okayama', url: 'https://en.wikipedia.org/wiki/Mitchell_Duke' },
+    'aaron mooy':          { wealth: 8,      note: 'Football · Australia · World Cup 2026 · Celtic', url: 'https://en.wikipedia.org/wiki/Aaron_Mooy' },
 
     // Austria
     'david alaba':         { wealth: 40,     note: 'Football · Austria · World Cup 2026 · Real Madrid', url: 'https://en.wikipedia.org/wiki/David_Alaba' },
-    'marko arnautovic':    { wealth: 20,     note: 'Football · Austria · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Marko_Arnautovic' },
+    'marko arnautovic':    { wealth: 20,     note: 'Football · Austria · World Cup 2026 · Inter Milan', url: 'https://en.wikipedia.org/wiki/Marko_Arnautovic' },
 
     // Belgium
-    'romelu lukaku':       { wealth: 70,     note: 'Football · Belgium · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Romelu_Lukaku' },
-    'amadou onana':        { wealth: 20,     note: 'Football · Belgium · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Amadou_Onana' },
+    'romelu lukaku':       { wealth: 70,     note: 'Football · Belgium · World Cup 2026 · Napoli', url: 'https://en.wikipedia.org/wiki/Romelu_Lukaku' },
+    'amadou onana':        { wealth: 20,     note: 'Football · Belgium · World Cup 2026 · Aston Villa', url: 'https://en.wikipedia.org/wiki/Amadou_Onana' },
 
     // Bosnia and Herzegovina
-    'edin dzeko':          { wealth: 25,     note: 'Football · Bosnia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Edin_Džeko' },
-    'sead kolasinac':      { wealth: 15,     note: 'Football · Bosnia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Sead_Kolašinac' },
+    'edin dzeko':          { wealth: 25,     note: 'Football · Bosnia · World Cup 2026 · Fenerbahce', url: 'https://en.wikipedia.org/wiki/Edin_Džeko' },
+    'sead kolasinac':      { wealth: 15,     note: 'Football · Bosnia · World Cup 2026 · Marseille', url: 'https://en.wikipedia.org/wiki/Sead_Kolašinac' },
 
     // Brazil
     'vinicius junior':     { wealth: 80,     note: 'Football · Brazil · World Cup 2026 · Real Madrid', url: 'https://en.wikipedia.org/wiki/Vinicius_Junior' },
-    'alisson becker':      { wealth: 25,     note: 'Football · Brazil · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Alisson_Becker' },
+    'alisson becker':      { wealth: 25,     note: 'Football · Brazil · World Cup 2026 · Liverpool', url: 'https://en.wikipedia.org/wiki/Alisson_Becker' },
 
     // Canada
-    'alphonso davies':     { wealth: 20,     note: 'Football · Canada · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Alphonso_Davies' },
-    'jonathan david':      { wealth: 15,     note: 'Football · Canada · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jonathan_David' },
-    'tajon buchanan':      { wealth: 8,      note: 'Football · Canada · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Tajon_Buchanan' },
+    'alphonso davies':     { wealth: 20,     note: 'Football · Canada · World Cup 2026 · Bayern Munich', url: 'https://en.wikipedia.org/wiki/Alphonso_Davies' },
+    'jonathan david':      { wealth: 15,     note: 'Football · Canada · World Cup 2026 · Lille', url: 'https://en.wikipedia.org/wiki/Jonathan_David' },
+    'tajon buchanan':      { wealth: 8,      note: 'Football · Canada · World Cup 2026 · Club Brugge', url: 'https://en.wikipedia.org/wiki/Tajon_Buchanan' },
 
     // Cabo Verde (debut)
     'ryan mendes':         { wealth: 3,      note: 'Football · Cabo Verde · World Cup 2026 · Debut', url: 'https://en.wikipedia.org/wiki/Ryan_Mendes' },
 
     // Colombia
-    'james rodriguez':     { wealth: 50,     note: 'Football · Colombia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/James_Rodríguez' },
-    'luis diaz':           { wealth: 15,     note: 'Football · Colombia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Luis_Díaz' },
+    'james rodriguez':     { wealth: 50,     note: 'Football · Colombia · World Cup 2026 · Rayo Vallecano', url: 'https://en.wikipedia.org/wiki/James_Rodríguez' },
+    'luis diaz':           { wealth: 15,     note: 'Football · Colombia · World Cup 2026 · Liverpool', url: 'https://en.wikipedia.org/wiki/Luis_Díaz' },
 
     // Croatia
-    'ivan perisic':        { wealth: 20,     note: 'Football · Croatia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ivan_Perišić' },
-    'dominik livakovic':   { wealth: 10,     note: 'Football · Croatia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Dominik_Livaković' },
+    'ivan perisic':        { wealth: 20,     note: 'Football · Croatia · World Cup 2026 · Hajduk Split', url: 'https://en.wikipedia.org/wiki/Ivan_Perišić' },
+    'dominik livakovic':   { wealth: 10,     note: 'Football · Croatia · World Cup 2026 · Fenerbahce', url: 'https://en.wikipedia.org/wiki/Dominik_Livaković' },
 
     // Curaçao (debut)
     'leandro bacuna':      { wealth: 3,      note: 'Football · Curaçao · World Cup 2026 · Debut', url: 'https://en.wikipedia.org/wiki/Leandro_Bacuna' },
 
     // Czechia
-    'patrik schick':       { wealth: 20,     note: 'Football · Czechia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Patrik_Schick' },
-    'tomas soucek':        { wealth: 10,     note: 'Football · Czechia · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Tomáš_Souček' },
+    'patrik schick':       { wealth: 20,     note: 'Football · Czechia · World Cup 2026 · Bayer Leverkusen', url: 'https://en.wikipedia.org/wiki/Patrik_Schick' },
+    'tomas soucek':        { wealth: 10,     note: 'Football · Czechia · World Cup 2026 · West Ham', url: 'https://en.wikipedia.org/wiki/Tomáš_Souček' },
 
     // Denmark
-    'christian eriksen':   { wealth: 30,     note: 'Football · Denmark · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Christian_Eriksen' },
-    'kasper schmeichel':   { wealth: 15,     note: 'Football · Denmark · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Kasper_Schmeichel' },
+    'christian eriksen':   { wealth: 30,     note: 'Football · Denmark · World Cup 2026 · Manchester United', url: 'https://en.wikipedia.org/wiki/Christian_Eriksen' },
+    'kasper schmeichel':   { wealth: 15,     note: 'Football · Denmark · World Cup 2026 · Anderlecht', url: 'https://en.wikipedia.org/wiki/Kasper_Schmeichel' },
 
     // Ecuador
-    'enner valencia':      { wealth: 10,     note: 'Football · Ecuador · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Enner_Valencia' },
+    'enner valencia':      { wealth: 10,     note: 'Football · Ecuador · World Cup 2026 · Independiente del Valle', url: 'https://en.wikipedia.org/wiki/Enner_Valencia' },
 
     // Egypt
-    'ahmed el-shenawy':    { wealth: 5,      note: 'Football · Egypt · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ahmed_El-Shenawy' },
+    'ahmed el-shenawy':    { wealth: 5,      note: 'Football · Egypt · World Cup 2026 · Al-Ahly', url: 'https://en.wikipedia.org/wiki/Ahmed_El-Shenawy' },
     'omar marmoush':       { wealth: 8,      note: 'Football · Egypt · World Cup 2026 · Man City', url: 'https://en.wikipedia.org/wiki/Omar_Marmoush' },
 
     // England
     'declan rice':         { wealth: 30,     note: 'Football · England · Arsenal · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Declan_Rice' },
-    'trent alexander-arnold':{ wealth: 35,  note: 'Football · England · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Trent_Alexander-Arnold' },
+    'trent alexander-arnold':{ wealth: 35,  note: 'Football · England · Real Madrid · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Trent_Alexander-Arnold' },
 
     // France
-    'ousmane dembele':     { wealth: 40,     note: 'Football · France · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ousmane_Dembélé' },
-    'aurelien tchouameni': { wealth: 15,     note: 'Football · France · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Aurélien_Tchouaméni' },
-    'mike maignan':        { wealth: 15,     note: 'Football · France · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mike_Maignan' },
+    'ousmane dembele':     { wealth: 40,     note: 'Football · France · PSG · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ousmane_Dembélé' },
+    'aurelien tchouameni': { wealth: 15,     note: 'Football · France · Real Madrid · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Aurélien_Tchouaméni' },
+    'mike maignan':        { wealth: 15,     note: 'Football · France · AC Milan · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mike_Maignan' },
     'marcus thuram':       { wealth: 20,     note: 'Football · France · World Cup 2026 · Inter Milan', url: 'https://en.wikipedia.org/wiki/Marcus_Thuram' },
 
     // Germany
-    'joshua kimmich':      { wealth: 60,     note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Joshua_Kimmich' },
-    'leroy sane':          { wealth: 40,     note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Leroy_Sané' },
+    'joshua kimmich':      { wealth: 60,     note: 'Football · Germany · Bayern Munich · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Joshua_Kimmich' },
+    'leroy sane':          { wealth: 40,     note: 'Football · Germany · Bayern Munich · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Leroy_Sané' },
     'serge gnabry':        { wealth: 35,     note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Serge_Gnabry' },
     'jamal musiala':       { wealth: 30,     note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jamal_Musiala' },
     'manuel neuer':        { wealth: 80,     note: 'Football · Germany · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Manuel_Neuer' },
@@ -5111,11 +5112,10 @@
 
   const SUBGROUPS = {
     'Film & TV': ['Hollywood','UK Actors','Directors & Producers','US TV & Comedy','UK TV & Comedy','UK Presenters & Reality TV','Authors'],
-    'Football': ['Ex-Footballers and Personalities','Current Stars','Football Managers','World Cup 2026 — By Nation','Premier League 2025-26 — By Club'],
     'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values'],
     'Music': ['Pop','Hip-Hop & R&B','Rock','Country','Classical & Crossover','K-pop'],
     'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
-    'Sport': ['Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
+    'Sport': ['Current Stars','Ex-Footballers and Personalities','Football Managers','World Cup 2026 — By Nation','Premier League 2025-26 — By Club','Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
     'Tech & Business': ['Tech Founders','Dragons & Entrepreneurs','Female Founders','News & Media','Fashion','Automotive','UK Rich List — Top Families 2026','Authors'],
     'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
   };
