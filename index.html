@@ -765,10 +765,9 @@
     <div onclick="event.stopPropagation()" style="background:#1a1a1a;border:1.5px solid #ffffff;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
       <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#ffffff;text-transform:uppercase;margin-bottom:14px">⚠ About these figures</div>
       <div style="font-size:13px;color:#cccccc;line-height:1.8;margin-bottom:14px">
-        All wealth figures are <strong style="color:#ffffff">publicly sourced estimates</strong> (Forbes, Sunday Times Rich List, press reports) and have <strong style="color:#ffffff">not been independently verified</strong>. Provided purely for <strong style="color:#ffffff">entertainment and perspective</strong>.<br><br>
-        Wealth tied to <strong style="color:#ffffff">stock prices</strong> (tech founders, investors) can fluctuate daily.<br><br>
-        Most others — footballers, musicians, actors, royals — are <strong style="color:#ffffff">annual estimates</strong> updated when Forbes or the Sunday Times Rich List publishes.<br><br>
-        <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and do not change.
+        All wealth figures are <strong style="color:#ffffff">estimates based on public information</strong> (Forbes, Sunday Times Rich List, press reports) at the time of publication. They have <strong style="color:#ffffff">not been independently verified</strong> and are provided purely for <strong style="color:#ffffff">entertainment and perspective</strong>.<br><br>
+        These figures are <strong style="color:#ffffff">manually updated periodically</strong> and do <strong style="color:#ffffff">not update automatically</strong>. Actual wealth may differ significantly — particularly for those whose wealth is tied to share prices, which can change daily.<br><br>
+        <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and are not intended to be precise.
       </div>
       <div style="border-top:1px solid #555555;padding-top:14px;font-size:12px;color:#aaaaaa;line-height:1.7">
         Not financial, investment, or legal advice.<br>
@@ -890,7 +889,11 @@
   <div class="table-card">
     <div class="table-header">
       <div class="table-header-label">The Dot Book</div>
-      <div style="display:flex;gap:16px;align-items:center"><div style="font-size:10px;color:#888888;letter-spacing:1px">Source: Forbes public data · Illustrative only</div><div id="entry-count"></div></div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button id="sort-toggle" onclick="toggleSort()" style="background:#333333;color:#ffffff;border:1px solid #555555;padding:5px 12px;border-radius:4px;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">A-Z</button>
+        <div style="font-size:10px;color:#888888;letter-spacing:1px">Source: Forbes public data · Illustrative only</div>
+        <div id="entry-count"></div>
+      </div>
     </div>
     <table>
       <thead>
@@ -1770,6 +1773,28 @@
   ];
 
   const SECTION_DIVIDERS = new Set(['Individual Wealth', 'Global Perspective']);
+  let sortAlpha = false;
+
+  function toggleSort() {
+    sortAlpha = !sortAlpha;
+    const btn = document.getElementById('sort-toggle');
+    if (btn) {
+      btn.textContent = sortAlpha ? '$ Wealth' : 'A-Z';
+      btn.style.background = sortAlpha ? '#ffffff' : '#333333';
+      btn.style.color = sortAlpha ? '#000000' : '#ffffff';
+    }
+    renderTable();
+  }
+  const collapsedSections = new Set(['Individual Wealth', 'Global Perspective']); // start both collapsed
+
+  function toggleSection(sectionName) {
+    if (collapsedSections.has(sectionName)) {
+      collapsedSections.delete(sectionName);
+    } else {
+      collapsedSections.add(sectionName);
+    }
+    renderTable();
+  }
 
   function getCategory(person) {
     if (person.isUser) return 'Your Entry';
@@ -1946,7 +1971,7 @@
       }
       blocks.push(block);
       // Sort people within each block by wealth — wealthiest first
-      for (const b of blocks) b.people.sort((a,b) => b.wealth - a.wealth);
+      for (const b of blocks) b.people.sort((a,b) => sortAlpha ? a.name.localeCompare(b.name) : b.wealth - a.wealth);
       // Flatten back
       const sorted = [];
       for (const b of blocks) {
@@ -2006,14 +2031,25 @@
 
     let html = '';
     let subIdx = 0;
+    let currentSection = null;
     for (const groupName of GROUP_ORDER) {
-      // Section dividers are always shown, not collapsible
+      // Track which section we're in
       if (SECTION_DIVIDERS.has(groupName)) {
-        html += '<tr><td colspan="3" style="background:#111111;color:#ffffff;padding:12px 16px;font-size:11px;letter-spacing:5px;text-transform:uppercase;text-align:center;border-top:2px solid #ffffff;border-bottom:1px solid #333333">' + escHtml(groupName) + '</td></tr>';
+        currentSection = groupName;
+        const secCollapsed = collapsedSections.has(groupName);
+        const secArrow = secCollapsed ? '&#9660;' : '&#9650;';
+        const safeSec = groupName.replace(/'/g, "\'");
+        html += '<tr onclick="toggleSection(\'' + safeSec + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent"><td colspan="3" style="background:#000000;color:#ffffff;padding:14px 16px;font-size:12px;letter-spacing:5px;text-transform:uppercase;text-align:center;border-top:2px solid #ffffff;border-bottom:2px solid #ffffff;user-select:none">'
+              + '<span style="margin-right:10px;font-size:10px;opacity:0.7">' + secArrow + '</span>'
+              + escHtml(groupName)
+              + '<span style="margin-left:10px;font-size:10px;opacity:0.7">' + secArrow + '</span>'
+              + '</td></tr>';
         continue;
       }
       const items = ordered[groupName];
       if (!items || items.length === 0) continue;
+      // Hide group if its parent section is collapsed
+      if (currentSection && collapsedSections.has(currentSection)) continue;
       const hidden = collapsedGroups.has(groupName);
       const arrowRot = hidden ? 'rotate(-90deg)' : 'rotate(0deg)';
       const safeGroup = groupName.replace(/'/g, "\'");
@@ -5120,6 +5156,14 @@
     'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
   };
 
+  function findWikiForEdit(name, safeKey) {
+    const wikiName = name.replace(/ /g, '_');
+    const url = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(wikiName);
+    const field = document.getElementById('eu-' + safeKey);
+    if (field) field.value = url;
+    window.open(url, '_blank');
+  }
+
   function findWiki() {
     const name = document.getElementById('admin-search').value.trim();
     if (!name) { alert('Please enter a name first'); return; }
@@ -5437,7 +5481,10 @@
         + '<select id="es-' + sk + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:14px;box-sizing:border-box;margin-bottom:8px"><option value="">-- select --</option></select>'
         + '</div>'
         + '<div style="font-size:11px;color:#888;margin-bottom:4px">Wikipedia URL</div>'
-        + '<input id="eu-' + sk + '" type="text" value="' + escHtml(v.url || '') + '" style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:12px;box-sizing:border-box;margin-bottom:8px">'
+        + '<div style="display:flex;gap:6px;margin-bottom:8px">'
+        + '<input id="eu-' + sk + '" type="text" value="' + escHtml(v.url || '') + '" placeholder="https://en.wikipedia.org/wiki/..." style="flex:1;background:#000;border:1px solid #555;color:#fff;padding:8px;border-radius:3px;font-size:12px;box-sizing:border-box">'
+        + '<button onclick="findWikiForEdit(\'' + escHtml(k) + '\',\'' + sk + '\')" style="background:#f9e74a;color:#000;border:none;padding:8px 10px;cursor:pointer;border-radius:3px;font-size:12px;font-weight:bold;white-space:nowrap">🔍 Find</button>'
+        + '</div>'
         + '<button class="edit-save-btn" data-key="' + escHtml(k) + '" data-safekey="' + sk + '" style="width:100%;background:#ffffff;color:#000;border:none;padding:10px;cursor:pointer;border-radius:3px;font-size:13px;font-weight:bold">Save Changes</button>'
         + '</div>';
     }).join('');
