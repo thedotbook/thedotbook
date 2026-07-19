@@ -1733,12 +1733,14 @@
 
 
   function searchFromRow(name) {
-    const searchBox = document.getElementById('search-input');
+    const searchBox = document.getElementById('name-input');
     if (searchBox) {
       searchBox.value = name;
-      searchBox.dispatchEvent(new Event('input'));
+      toggleClearBtn();
       searchBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       searchBox.focus();
+      // Trigger the search automatically
+      setTimeout(() => lookupCelebrity(), 100);
     }
   }
 
@@ -1815,7 +1817,7 @@
     const nm = (person.name || '').toLowerCase();
     if (n.includes('defence ·') || n.includes('· defence') || n.includes('military ·') || n.includes('· military') || n.includes('nuclear ·') || n.includes('· nuclear') || n.includes('weapons ·') || n.includes('munitions ·')) return 'Defence & Military';
     if (n.includes('fashion ·') || n.includes('· fashion') || n.includes('beauty ·') || n.includes('· beauty') || n.includes('perfume ·') || n.includes('· perfume') || n.includes('cosmetics ·') || n.includes('luxury fashion') || n.includes('clothing ·') || n.includes('· clothing')) return 'Fashion & Beauty';
-    if (n.includes('country ·') || n.includes('· country') || n.includes('countries ·')) return 'Countries of the World';
+    if (n.startsWith('country ·') || n.includes('· country ·') || n.includes('countries ·')) return 'Countries of the World';
     if (n.includes('transport ·') || n.includes('· transport') || n.includes('aviation ·') || n.includes('rail ·') || n.includes('· rail') || n.includes('automaker') || n.includes('car manufacturer') || n.includes('shipping ·')) return 'Transport';
     if (n.includes('national debt') || n.includes('govt debt') || nm.endsWith(' debt')) return 'National Debt';
     if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
@@ -2281,7 +2283,7 @@
     'thom yorke':          { wealth: 50,     note: 'Music · Rock · Radiohead · UK', url: 'https://en.wikipedia.org/wiki/Thom_Yorke' },
     'damon albarn':        { wealth: 40,     note: 'Music · Rock · Blur · Gorillaz · UK', url: 'https://en.wikipedia.org/wiki/Damon_Albarn' },
     'jarvis cocker':       { wealth: 15,     note: 'Music · Rock · Pulp · UK', url: 'https://en.wikipedia.org/wiki/Jarvis_Cocker' },
-    'dolly parton':        { wealth: 650,    note: 'Music · Country · USA · Dollywood', url: 'https://en.wikipedia.org/wiki/Dolly_Parton' },
+    'dolly parton':        { wealth: 650,    note: 'Music · Country Music · USA · Dollywood · I Will Always Love You · Jolene · 9 to 5', url: 'https://en.wikipedia.org/wiki/Dolly_Parton' },
     // ── HOLLYWOOD ────────────────────────────────────────
     '_sub_hw2':            { _subgroup: 'Hollywood' },
     'ryan reynolds':       { wealth: 350,    note: 'Film · Business · Canada · Aviation Gin · Wrexham AFC', url: 'https://en.wikipedia.org/wiki/Ryan_Reynolds' },
@@ -3706,17 +3708,17 @@
 
     '_sub_country':             { _subgroup: 'Country' },
     // ── COUNTRY MUSIC ──────────────────────────────────
-    'garth brooks':            { wealth: 400,    note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Garth_Brooks' },
-    'shania twain':            { wealth: 400,    note: 'Music · Country · Canada', url: 'https://en.wikipedia.org/wiki/Shania_Twain' },
-    'willie nelson':           { wealth: 25,     note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Willie_Nelson' },
-    'tim mcgraw':              { wealth: 185,    note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Tim_Mcgraw' },
-    'faith hill':              { wealth: 80,     note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Faith_Hill' },
-    'blake shelton':           { wealth: 100,    note: 'Music · Country · TV · USA · The Voice', url: 'https://en.wikipedia.org/wiki/Blake_Shelton' },
-    'carrie underwood':        { wealth: 140,    note: 'Music · Country · USA · American Idol', url: 'https://en.wikipedia.org/wiki/Carrie_Underwood' },
-    'keith urban':             { wealth: 75,     note: 'Music · Country · Australia', url: 'https://en.wikipedia.org/wiki/Keith_Urban' },
-    'luke bryan':              { wealth: 160,    note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Luke_Bryan' },
-    'miranda lambert':         { wealth: 60,     note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Miranda_Lambert' },
-    'zac brown':               { wealth: 30,     note: 'Music · Country · USA', url: 'https://en.wikipedia.org/wiki/Zac_Brown' },
+    'garth brooks':            { wealth: 400,    note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Garth_Brooks' },
+    'shania twain':            { wealth: 400,    note: 'Music · Country Music · Canada', url: 'https://en.wikipedia.org/wiki/Shania_Twain' },
+    'willie nelson':           { wealth: 25,     note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Willie_Nelson' },
+    'tim mcgraw':              { wealth: 185,    note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Tim_Mcgraw' },
+    'faith hill':              { wealth: 80,     note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Faith_Hill' },
+    'blake shelton':           { wealth: 100,    note: 'Music · Country Music · TV · USA · The Voice', url: 'https://en.wikipedia.org/wiki/Blake_Shelton' },
+    'carrie underwood':        { wealth: 140,    note: 'Music · Country Music · USA · American Idol', url: 'https://en.wikipedia.org/wiki/Carrie_Underwood' },
+    'keith urban':             { wealth: 75,     note: 'Music · Country Music · Australia', url: 'https://en.wikipedia.org/wiki/Keith_Urban' },
+    'luke bryan':              { wealth: 160,    note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Luke_Bryan' },
+    'miranda lambert':         { wealth: 60,     note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Miranda_Lambert' },
+    'zac brown':               { wealth: 30,     note: 'Music · Country Music · USA', url: 'https://en.wikipedia.org/wiki/Zac_Brown' },
 
     '_sub_classical':           { _subgroup: 'Classical & Crossover' },
     // ── CLASSICAL / CROSSOVER ──────────────────────────
@@ -4686,7 +4688,7 @@
     'pat eddery':          { wealth: 10,     note: 'Sport · Horse Racing · Jockey · UK · Historical', url: 'https://en.wikipedia.org/wiki/Pat_Eddery' },
     'jonah lomu':          { wealth: 1,      note: 'Sport · Rugby · New Zealand · Historical', url: 'https://en.wikipedia.org/wiki/Jonah_Lomu' },
     'mark spitz':          { wealth: 20,     note: 'Sport · Swimming · USA · Historical · 7 Olympic golds 1972', url: 'https://en.wikipedia.org/wiki/Mark_Spitz' },
-    'kenny rogers':            { wealth: 250,    note: 'Music · Country · USA · Historical', url: 'https://en.wikipedia.org/wiki/Kenny_Rogers' },
+    'kenny rogers':            { wealth: 250,    note: 'Music · Country Music · USA · Historical', url: 'https://en.wikipedia.org/wiki/Kenny_Rogers' },
     'jackie collins':          { wealth: 160,    note: 'Author · UK · Historical · Romance · Estate', url: 'https://en.wikipedia.org/wiki/Jackie_Collins' },
     'vivienne westwood':       { wealth: 40,     note: 'Fashion · UK · Historical · Punk · Died 2022 · Estate', url: 'https://en.wikipedia.org/wiki/Vivienne_Westwood' },
     'gopichand hinduja':        { wealth: 48000,  note: 'Business · UK · India · Historical · Hinduja patriarch · Died Nov 2025', url: 'https://en.wikipedia.org/wiki/Gopichand_Hinduja' },
@@ -5917,10 +5919,12 @@
   }
 
   function updateEditSubgroups(sk) {
-    const cat = document.getElementById('ec-' + sk).value;
+    const catEl = document.getElementById('ec-' + sk);
+    if (!catEl) return;
+    const cat = catEl.value;
     const row = document.getElementById('es-row-' + sk);
     const sel = document.getElementById('es-' + sk);
-    if (!cat || !SUBGROUPS[cat]) { row.style.display = 'none'; return; }
+    if (!cat || !SUBGROUPS[cat]) { if (row) row.style.display = 'none'; return; }
     sel.innerHTML = '<option value="">-- select sub-section --</option>';
     SUBGROUPS[cat].forEach(sub => {
       const opt = document.createElement('option');
