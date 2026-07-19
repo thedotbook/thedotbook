@@ -998,11 +998,12 @@
             <div style="font-size:11px;color:#888888;margin-top:6px">⚠ A brand new sub-section will appear at the end of the category until it has at least one entry.</div>
           </div>
 
-          <div style="font-size:12px;color:#888;margin-bottom:4px">Wikipedia URL (optional)</div>
-          <div style="display:flex;gap:8px;margin-bottom:12px">
-            <input id="add-url" type="text" placeholder="https://en.wikipedia.org/wiki/..." style="flex:1;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:13px;border-radius:4px;box-sizing:border-box">
+          <div style="font-size:12px;color:#888;margin-bottom:4px">Wikipedia URL — tap 🔍 Find to auto-generate</div>
+          <div style="display:flex;gap:8px;margin-bottom:4px">
+            <input id="add-url" type="text" placeholder="Tap 🔍 Find to auto-fill..." style="flex:1;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:13px;border-radius:4px;box-sizing:border-box">
             <button onclick="findWiki()" style="background:#f9e74a;color:#000;border:none;padding:12px 14px;cursor:pointer;border-radius:4px;font-size:13px;font-weight:bold;white-space:nowrap">🔍 Find</button>
           </div>
+          <div style="font-size:11px;color:#888888;margin-bottom:12px">⚠ Tap 🔍 Find first — it auto-fills the URL and opens Wikipedia to verify. Without a URL the yellow ↗ button won't appear.</div>
 
           <button onclick="addCeleb()" style="width:100%;background:#ffffff;color:#000000;border:none;padding:14px;font-weight:bold;cursor:pointer;border-radius:4px;font-size:15px">+ CONFIRM ADD</button>
         </div>
@@ -1731,6 +1732,16 @@
   }
 
 
+  function searchFromRow(name) {
+    const searchBox = document.getElementById('search-input');
+    if (searchBox) {
+      searchBox.value = name;
+      searchBox.dispatchEvent(new Event('input'));
+      searchBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      searchBox.focus();
+    }
+  }
+
   function showWealthPopup(td) {
     const span = td.querySelector('[data-name]');
     if (!span) return;
@@ -1769,7 +1780,7 @@
     'Individual Wealth',
     'The Twenty Wealthiest People on Earth', 'Film & TV', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming',
     'Global Perspective',
-    'Nations & Natural Wealth', 'Science & Innovation', 'National Debt', 'Institutions', 'Royalty & Politics'
+    'Nations & Natural Wealth', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics'
   ];
 
   const SECTION_DIVIDERS = new Set(['Individual Wealth', 'Global Perspective']);
@@ -1802,6 +1813,10 @@
     if (person._top20) return 'The Twenty Wealthiest People on Earth';
     const n = (person.note || '').toLowerCase();
     const nm = (person.name || '').toLowerCase();
+    if (n.includes('defence ·') || n.includes('· defence') || n.includes('military ·') || n.includes('· military') || n.includes('nuclear ·') || n.includes('· nuclear') || n.includes('weapons ·') || n.includes('munitions ·')) return 'Defence & Military';
+    if (n.includes('fashion ·') || n.includes('· fashion') || n.includes('beauty ·') || n.includes('· beauty') || n.includes('perfume ·') || n.includes('· perfume') || n.includes('cosmetics ·') || n.includes('luxury fashion') || n.includes('clothing ·') || n.includes('· clothing')) return 'Fashion & Beauty';
+    if (n.includes('country ·') || n.includes('· country') || n.includes('countries ·')) return 'Countries of the World';
+    if (n.includes('transport ·') || n.includes('· transport') || n.includes('aviation ·') || n.includes('rail ·') || n.includes('· rail') || n.includes('automaker') || n.includes('car manufacturer') || n.includes('shipping ·')) return 'Transport';
     if (n.includes('national debt') || n.includes('govt debt') || nm.endsWith(' debt')) return 'National Debt';
     if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
     if (n.includes('science') || n.includes('pharma') || n.includes('space ·') || n.includes('· space') || n.includes('biotech') || n.includes('climate ·') || n.includes('quantum') || n.includes('· ai ·') || n.includes('scientific')) return 'Science & Innovation';
@@ -2001,7 +2016,7 @@
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + '</td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search in app" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
       + '</tr>';
   }
 
@@ -2314,7 +2329,403 @@
 
     // ── UK TV & COMEDY ───────────────────────────────────
 
-    // ── NATIONAL DEBT ─────────────────────────────────────
+    // ── COUNTRIES OF THE WORLD ────────────────────────────
+
+    // ── North America ────────────────────────────────────
+    '_sub_country_na':       { _subgroup: 'North America — All Countries' },
+    'usa country':           { wealth: 29300000, note: 'Country · North America · USA · GDP $29.3T · 340M population · World largest economy · G7 · NATO', url: 'https://en.wikipedia.org/wiki/United_States' },
+    'canada country':        { wealth: 2240000,  note: 'Country · North America · Canada · GDP $2.24T · 40M population · G7 · Commonwealth · Maple Leaf', url: 'https://en.wikipedia.org/wiki/Canada' },
+    'mexico country':        { wealth: 1864000,  note: 'Country · North America · Mexico · GDP $1.86T · 130M population · Largest Spanish-speaking economy', url: 'https://en.wikipedia.org/wiki/Mexico' },
+    'guatemala country':     { wealth: 121000,   note: 'Country · North America · Guatemala · GDP $121B · 18M population · Mayan heritage', url: 'https://en.wikipedia.org/wiki/Guatemala' },
+    'honduras country':      { wealth: 38000,    note: 'Country · North America · Honduras · GDP $38B · 10M population', url: 'https://en.wikipedia.org/wiki/Honduras' },
+    'el salvador country':   { wealth: 37000,    note: 'Country · North America · El Salvador · GDP $37B · 6.5M population · First country to adopt Bitcoin as legal tender', url: 'https://en.wikipedia.org/wiki/El_Salvador' },
+    'nicaragua country':     { wealth: 17000,    note: 'Country · North America · Nicaragua · GDP $17B · 7M population', url: 'https://en.wikipedia.org/wiki/Nicaragua' },
+    'costa rica country':    { wealth: 103000,   note: 'Country · North America · Costa Rica · GDP $103B · 5M population · No army since 1948', url: 'https://en.wikipedia.org/wiki/Costa_Rica' },
+    'panama country':        { wealth: 92000,    note: 'Country · North America · Panama · GDP $92B · 4.5M population · Panama Canal', url: 'https://en.wikipedia.org/wiki/Panama' },
+    'cuba country':          { wealth: 107000,   note: 'Country · North America · Cuba · GDP $107B est. · 11M population · Communist state · US embargo since 1962', url: 'https://en.wikipedia.org/wiki/Cuba' },
+    'haiti country':         { wealth: 34000,    note: 'Country · North America · Haiti · GDP $34B · 12M population · First Black republic 1804', url: 'https://en.wikipedia.org/wiki/Haiti' },
+    'dominican republic country': { wealth: 128000, note: 'Country · North America · Dominican Republic · GDP $128B · 11M population', url: 'https://en.wikipedia.org/wiki/Dominican_Republic' },
+    'jamaica country':       { wealth: 19000,    note: 'Country · North America · Jamaica · GDP $19B · 3M population · Bob Marley · Usain Bolt', url: 'https://en.wikipedia.org/wiki/Jamaica' },
+    'trinidad tobago country': { wealth: 26000,  note: 'Country · North America · Trinidad and Tobago · GDP $26B · 1.5M population · Oil and gas rich', url: 'https://en.wikipedia.org/wiki/Trinidad_and_Tobago' },
+    'belize country':        { wealth: 3200,     note: 'Country · North America · Belize · GDP $3.2B · 430,000 population · Only English-speaking Central American nation', url: 'https://en.wikipedia.org/wiki/Belize' },
+    'bahamas country':       { wealth: 13000,    note: 'Country · North America · Bahamas · GDP $13B · 400,000 population · Tax haven · 700 islands', url: 'https://en.wikipedia.org/wiki/The_Bahamas' },
+    'barbados country':      { wealth: 6000,     note: 'Country · North America · Barbados · GDP $6B · 300,000 population · Republic since 2021', url: 'https://en.wikipedia.org/wiki/Barbados' },
+
+    // ── South America ────────────────────────────────────
+    '_sub_country_sa':       { _subgroup: 'South America — All Countries' },
+    'brazil country':        { wealth: 2130000,  note: 'Country · South America · Brazil · GDP $2.13T · 215M population · World Cup 5x winners · Amazon rainforest', url: 'https://en.wikipedia.org/wiki/Brazil' },
+    'argentina country':     { wealth: 684000,   note: 'Country · South America · Argentina · GDP $684B · 46M population · World Cup 2022 · Messi', url: 'https://en.wikipedia.org/wiki/Argentina' },
+    'colombia country':      { wealth: 438000,   note: 'Country · South America · Colombia · GDP $438B · 52M population', url: 'https://en.wikipedia.org/wiki/Colombia' },
+    'chile country':         { wealth: 344000,   note: 'Country · South America · Chile · GDP $344B · 19M population · World largest copper producer', url: 'https://en.wikipedia.org/wiki/Chile' },
+    'peru country':          { wealth: 323000,   note: 'Country · South America · Peru · GDP $323B · 33M population · Machu Picchu · Inca Empire', url: 'https://en.wikipedia.org/wiki/Peru' },
+    'venezuela country':     { wealth: 109000,   note: 'Country · South America · Venezuela · GDP $109B · 29M population · Largest oil reserves in world · Economic crisis', url: 'https://en.wikipedia.org/wiki/Venezuela' },
+    'ecuador country':       { wealth: 126000,   note: 'Country · South America · Ecuador · GDP $126B · 18M population · Galapagos Islands · Straddles the equator', url: 'https://en.wikipedia.org/wiki/Ecuador' },
+    'bolivia country':       { wealth: 56000,    note: 'Country · South America · Bolivia · GDP $56B · 12M population · World largest lithium reserves', url: 'https://en.wikipedia.org/wiki/Bolivia' },
+    'paraguay country':      { wealth: 45000,    note: 'Country · South America · Paraguay · GDP $45B · 7.5M population', url: 'https://en.wikipedia.org/wiki/Paraguay' },
+    'uruguay country':       { wealth: 80000,    note: 'Country · South America · Uruguay · GDP $80B · 3.5M population · First World Cup winners 1930', url: 'https://en.wikipedia.org/wiki/Uruguay' },
+    'guyana country':        { wealth: 26000,    note: 'Country · South America · Guyana · GDP $26B · 800,000 population · Fastest growing economy in world 2023-25', url: 'https://en.wikipedia.org/wiki/Guyana' },
+    'suriname country':      { wealth: 4000,     note: 'Country · South America · Suriname · GDP $4B · 620,000 population · Only Dutch-speaking South American nation', url: 'https://en.wikipedia.org/wiki/Suriname' },
+
+    // ── Europe ───────────────────────────────────────────
+    '_sub_country_europe':   { _subgroup: 'Europe — All Countries' },
+    'germany country':       { wealth: 4640000,  note: 'Country · Europe · Germany · GDP $4.64T · 84M population · G7 · NATO · Largest EU economy', url: 'https://en.wikipedia.org/wiki/Germany' },
+    'uk country':            { wealth: 3340000,  note: 'Country · Europe · United Kingdom · GDP $3.34T · 68M population · G7 · NATO · Permanent UN Security Council member', url: 'https://en.wikipedia.org/wiki/United_Kingdom' },
+    'france country':        { wealth: 3130000,  note: 'Country · Europe · France · GDP $3.13T · 68M population · G7 · NATO · Permanent UN Security Council member', url: 'https://en.wikipedia.org/wiki/France' },
+    'italy country':         { wealth: 2380000,  note: 'Country · Europe · Italy · GDP $2.38T · 60M population · G7 · NATO · Rome Vatican Renaissance', url: 'https://en.wikipedia.org/wiki/Italy' },
+    'russia country':        { wealth: 2100000,  note: 'Country · Europe · Russia · GDP $2.1T · 145M population · World largest country by area · Permanent UN Security Council member · War in Ukraine', url: 'https://en.wikipedia.org/wiki/Russia' },
+    'spain country':         { wealth: 1730000,  note: 'Country · Europe · Spain · GDP $1.73T · 48M population · NATO · 2010 World Cup winners', url: 'https://en.wikipedia.org/wiki/Spain' },
+    'netherlands country':   { wealth: 1160000,  note: 'Country · Europe · Netherlands · GDP $1.16T · 18M population · Amsterdam · Tulips · Dykes · Windmills', url: 'https://en.wikipedia.org/wiki/Netherlands' },
+    'switzerland country':   { wealth: 940000,   note: 'Country · Europe · Switzerland · GDP $940B · 8.8M population · Neutral · Banking · Alps · Home of UN agencies', url: 'https://en.wikipedia.org/wiki/Switzerland' },
+    'turkey country':        { wealth: 1130000,  note: 'Country · Europe · Turkey · GDP $1.13T · 85M population · NATO · Straddles Europe and Asia', url: 'https://en.wikipedia.org/wiki/Turkey' },
+    'poland country':        { wealth: 880000,   note: 'Country · Europe · Poland · GDP $880B · 38M population · NATO · EU · Largest eastern EU economy', url: 'https://en.wikipedia.org/wiki/Poland' },
+    'sweden country':        { wealth: 590000,   note: 'Country · Europe · Sweden · GDP $590B · 10.5M population · NATO 2024 · ABBA Ikea Volvo', url: 'https://en.wikipedia.org/wiki/Sweden' },
+    'norway country':        { wealth: 580000,   note: 'Country · Europe · Norway · GDP $580B · 5.5M population · Oil fund $1.7T · Richest per capita in Europe', url: 'https://en.wikipedia.org/wiki/Norway' },
+    'belgium country':       { wealth: 650000,   note: 'Country · Europe · Belgium · GDP $650B · 11.5M population · NATO HQ · EU HQ Brussels', url: 'https://en.wikipedia.org/wiki/Belgium' },
+    'austria country':       { wealth: 540000,   note: 'Country · Europe · Austria · GDP $540B · 9M population · Mozart · Vienna · Alps', url: 'https://en.wikipedia.org/wiki/Austria' },
+    'denmark country':       { wealth: 410000,   note: 'Country · Europe · Denmark · GDP $410B · 5.9M population · NATO · Happiest country in world rankings', url: 'https://en.wikipedia.org/wiki/Denmark' },
+    'finland country':       { wealth: 310000,   note: 'Country · Europe · Finland · GDP $310B · 5.5M population · NATO 2023 · Best education system · Nokia', url: 'https://en.wikipedia.org/wiki/Finland' },
+    'ireland country':       { wealth: 570000,   note: 'Country · Europe · Ireland · GDP $570B · 5.2M population · EU · Tech hub Apple Google Meta HQ', url: 'https://en.wikipedia.org/wiki/Republic_of_Ireland' },
+    'portugal country':      { wealth: 290000,   note: 'Country · Europe · Portugal · GDP $290B · 10.3M population · NATO · Cristiano Ronaldo', url: 'https://en.wikipedia.org/wiki/Portugal' },
+    'greece country':        { wealth: 250000,   note: 'Country · Europe · Greece · GDP $250B · 10.4M population · NATO · Birthplace of democracy', url: 'https://en.wikipedia.org/wiki/Greece' },
+    'ukraine country':       { wealth: 180000,   note: 'Country · Europe · Ukraine · GDP $180B · 44M population · At war with Russia since 2022 · NATO candidate', url: 'https://en.wikipedia.org/wiki/Ukraine' },
+    'czech republic country': { wealth: 340000,  note: 'Country · Europe · Czech Republic · GDP $340B · 10.8M population · NATO · EU · Prague', url: 'https://en.wikipedia.org/wiki/Czech_Republic' },
+    'romania country':       { wealth: 390000,   note: 'Country · Europe · Romania · GDP $390B · 19M population · NATO · EU · Dracula Transylvania', url: 'https://en.wikipedia.org/wiki/Romania' },
+    'hungary country':       { wealth: 230000,   note: 'Country · Europe · Hungary · GDP $230B · 10M population · NATO · EU · Budapest', url: 'https://en.wikipedia.org/wiki/Hungary' },
+    'slovakia country':      { wealth: 140000,   note: 'Country · Europe · Slovakia · GDP $140B · 5.5M population · NATO · EU', url: 'https://en.wikipedia.org/wiki/Slovakia' },
+    'croatia country':       { wealth: 90000,    note: 'Country · Europe · Croatia · GDP $90B · 4M population · EU · NATO · Adriatic coast', url: 'https://en.wikipedia.org/wiki/Croatia' },
+    'serbia country':        { wealth: 80000,    note: 'Country · Europe · Serbia · GDP $80B · 7M population · Belgrade', url: 'https://en.wikipedia.org/wiki/Serbia' },
+    'bulgaria country':      { wealth: 110000,   note: 'Country · Europe · Bulgaria · GDP $110B · 6.5M population · NATO · EU', url: 'https://en.wikipedia.org/wiki/Bulgaria' },
+    'luxembourg country':    { wealth: 90000,    note: 'Country · Europe · Luxembourg · GDP $90B · 660,000 population · Richest country per capita in world', url: 'https://en.wikipedia.org/wiki/Luxembourg' },
+    'iceland country':       { wealth: 31000,    note: 'Country · Europe · Iceland · GDP $31B · 380,000 population · NATO · 100% renewable energy', url: 'https://en.wikipedia.org/wiki/Iceland' },
+
+    // ── Middle East ──────────────────────────────────────
+    '_sub_country_me':       { _subgroup: 'Middle East — All Countries' },
+    'saudi arabia country':  { wealth: 1140000,  note: 'Country · Middle East · Saudi Arabia · GDP $1.14T · 36M population · World largest oil exporter · G20', url: 'https://en.wikipedia.org/wiki/Saudi_Arabia' },
+    'uae country':           { wealth: 530000,   note: 'Country · Middle East · UAE · GDP $530B · 10M population · Dubai Abu Dhabi · Richest per capita in Middle East', url: 'https://en.wikipedia.org/wiki/United_Arab_Emirates' },
+    'israel country':        { wealth: 560000,   note: 'Country · Middle East · Israel · GDP $560B · 9.5M population · Founded 1948 · Start-up nation · Silicon Wadi', url: 'https://en.wikipedia.org/wiki/Israel' },
+    'iran country':          { wealth: 401000,   note: 'Country · Middle East · Iran · GDP $401B · 90M population · Sanctions · Oil rich · Ancient Persian Empire', url: 'https://en.wikipedia.org/wiki/Iran' },
+    'iraq country':          { wealth: 267000,   note: 'Country · Middle East · Iraq · GDP $267B · 42M population · Oil rich · Cradle of civilisation', url: 'https://en.wikipedia.org/wiki/Iraq' },
+    'qatar country':         { wealth: 225000,   note: 'Country · Middle East · Qatar · GDP $225B · 3M population · World Cup 2022 hosts · LNG richest per capita', url: 'https://en.wikipedia.org/wiki/Qatar' },
+    'kuwait country':        { wealth: 130000,   note: 'Country · Middle East · Kuwait · GDP $130B · 4.5M population · Oil rich · Gulf state', url: 'https://en.wikipedia.org/wiki/Kuwait' },
+    'oman country':          { wealth: 115000,   note: 'Country · Middle East · Oman · GDP $115B · 4.5M population · Gulf state · Muscat', url: 'https://en.wikipedia.org/wiki/Oman' },
+    'jordan country':        { wealth: 55000,    note: 'Country · Middle East · Jordan · GDP $55B · 10M population · Petra · Wadi Rum', url: 'https://en.wikipedia.org/wiki/Jordan' },
+    'bahrain country':       { wealth: 44000,    note: 'Country · Middle East · Bahrain · GDP $44B · 1.7M population · F1 Grand Prix · Gulf state', url: 'https://en.wikipedia.org/wiki/Bahrain' },
+    'lebanon country':       { wealth: 18000,    note: 'Country · Middle East · Lebanon · GDP $18B · 5.5M population · Economic collapse 2019 · Beirut explosion 2020', url: 'https://en.wikipedia.org/wiki/Lebanon' },
+    'yemen country':         { wealth: 21000,    note: 'Country · Middle East · Yemen · GDP $21B · 33M population · Civil war since 2015 · Humanitarian crisis', url: 'https://en.wikipedia.org/wiki/Yemen' },
+    'syria country':         { wealth: 12000,    note: 'Country · Middle East · Syria · GDP $12B est. · 22M population · Civil war since 2011 · Ancient Damascus', url: 'https://en.wikipedia.org/wiki/Syria' },
+
+    // ── Asia ─────────────────────────────────────────────
+    '_sub_country_asia':     { _subgroup: 'Asia — All Countries' },
+    'china country':         { wealth: 19500000, note: 'Country · Asia · China · GDP $19.5T · 1.4B population · World 2nd largest economy · G20 · UN Security Council', url: 'https://en.wikipedia.org/wiki/China' },
+    'japan country':         { wealth: 4300000,  note: 'Country · Asia · Japan · GDP $4.3T · 125M population · G7 · World 3rd largest economy · Technology powerhouse', url: 'https://en.wikipedia.org/wiki/Japan' },
+    'india country':         { wealth: 3900000,  note: 'Country · Asia · India · GDP $3.9T · 1.44B population · World most populous · Fastest growing major economy · G20', url: 'https://en.wikipedia.org/wiki/India' },
+    'south korea country':   { wealth: 1870000,  note: 'Country · Asia · South Korea · GDP $1.87T · 52M population · Samsung Hyundai LG · K-pop · Korean Wave', url: 'https://en.wikipedia.org/wiki/South_Korea' },
+    'indonesia country':     { wealth: 1420000,  note: 'Country · Asia · Indonesia · GDP $1.42T · 277M population · 4th most populous country · G20 · 17,000 islands', url: 'https://en.wikipedia.org/wiki/Indonesia' },
+    'taiwan country':        { wealth: 760000,   note: 'Country · Asia · Taiwan · GDP $760B · 23M population · TSMC world leading chip maker · Disputed sovereignty with China', url: 'https://en.wikipedia.org/wiki/Taiwan' },
+    'thailand country':      { wealth: 570000,   note: 'Country · Asia · Thailand · GDP $570B · 70M population · Tourism hub · Bangkok', url: 'https://en.wikipedia.org/wiki/Thailand' },
+    'singapore country':     { wealth: 530000,   note: 'Country · Asia · Singapore · GDP $530B · 5.9M population · World financial hub · Richest per capita in Asia', url: 'https://en.wikipedia.org/wiki/Singapore' },
+    'malaysia country':      { wealth: 430000,   note: 'Country · Asia · Malaysia · GDP $430B · 33M population · Petronas towers · Rainforest', url: 'https://en.wikipedia.org/wiki/Malaysia' },
+    'vietnam country':       { wealth: 430000,   note: 'Country · Asia · Vietnam · GDP $430B · 98M population · Fastest growing SE Asian economy', url: 'https://en.wikipedia.org/wiki/Vietnam' },
+    'bangladesh country':    { wealth: 460000,   note: 'Country · Asia · Bangladesh · GDP $460B · 170M population · World largest garment exporter', url: 'https://en.wikipedia.org/wiki/Bangladesh' },
+    'pakistan country':      { wealth: 370000,   note: 'Country · Asia · Pakistan · GDP $370B · 230M population · Nuclear power · Second largest Muslim nation', url: 'https://en.wikipedia.org/wiki/Pakistan' },
+    'philippines country':   { wealth: 460000,   note: 'Country · Asia · Philippines · GDP $460B · 115M population · 7,000 islands · Manila', url: 'https://en.wikipedia.org/wiki/Philippines' },
+    'myanmar country':       { wealth: 65000,    note: 'Country · Asia · Myanmar · GDP $65B · 55M population · Military coup 2021 · Formerly Burma', url: 'https://en.wikipedia.org/wiki/Myanmar' },
+    'cambodia country':      { wealth: 32000,    note: 'Country · Asia · Cambodia · GDP $32B · 17M population · Angkor Wat · Khmer Rouge history', url: 'https://en.wikipedia.org/wiki/Cambodia' },
+    'sri lanka country':     { wealth: 84000,    note: 'Country · Asia · Sri Lanka · GDP $84B · 22M population · Economic crisis 2022 · Tea producer', url: 'https://en.wikipedia.org/wiki/Sri_Lanka' },
+    'nepal country':         { wealth: 43000,    note: 'Country · Asia · Nepal · GDP $43B · 30M population · Everest · Himalayas · Eight of world 10 tallest peaks', url: 'https://en.wikipedia.org/wiki/Nepal' },
+    'kazakhstan country':    { wealth: 260000,   note: 'Country · Asia · Kazakhstan · GDP $260B · 19M population · World largest landlocked country · Oil and minerals rich', url: 'https://en.wikipedia.org/wiki/Kazakhstan' },
+    'uzbekistan country':    { wealth: 100000,   note: 'Country · Asia · Uzbekistan · GDP $100B · 36M population · Silk Road · Samarkand', url: 'https://en.wikipedia.org/wiki/Uzbekistan' },
+    'mongolia country':      { wealth: 22000,    note: 'Country · Asia · Mongolia · GDP $22B · 3.4M population · Genghis Khan · Most sparsely populated country', url: 'https://en.wikipedia.org/wiki/Mongolia' },
+    'north korea country':   { wealth: 18000,    note: 'Country · Asia · North Korea · GDP $18B est. · 26M population · Hermit kingdom · Nuclear armed · No IMF data', url: 'https://en.wikipedia.org/wiki/North_Korea' },
+    'afghanistan country':   { wealth: 14000,    note: 'Country · Asia · Afghanistan · GDP $14B · 42M population · Taliban rule since 2021 · Opium producer', url: 'https://en.wikipedia.org/wiki/Afghanistan' },
+
+    // ── World Totals ─────────────────────────────────────
+    '_sub_country_world':    { _subgroup: 'World — The Big Numbers' },
+    'world gdp countries':   { wealth: 109000000, note: 'Country · World · Total Global GDP 2025 · $109 Trillion · IMF World Economic Outlook 2025', url: 'https://en.wikipedia.org/wiki/Gross_world_product' },
+    'world population':      { wealth: 1,         note: 'Country · World · 8.2 Billion people · 195 countries · 7,000 languages · 4,200 religions · One planet', url: 'https://en.wikipedia.org/wiki/World_population' },
+    'usa vs world':          { wealth: 29300000,  note: 'Country · World · USA alone = 27% of entire world GDP · More than EU 27 nations combined · IMF 2025', url: 'https://en.wikipedia.org/wiki/United_States_economy' },
+
+    // ── TRANSPORT ─────────────────────────────────────────
+
+    // ── Cars — Manufacturers ─────────────────────────────
+    '_sub_cars':             { _subgroup: 'Cars — Manufacturers' },
+    'tesla cars':            { wealth: 1100000, note: 'Transport · Cars · USA · Tesla · $1.1T · World most valuable car company · Elon Musk · EVs Solar Autopilot Cybertruck', url: 'https://en.wikipedia.org/wiki/Tesla,_Inc.' },
+    'toyota cars':           { wealth: 280000,  note: 'Transport · Cars · Japan · Toyota · $280B · World largest by volume · 10M cars/year · Prius Corolla Land Cruiser · Hybrid pioneer', url: 'https://en.wikipedia.org/wiki/Toyota' },
+    'byd cars':              { wealth: 120000,  note: 'Transport · Cars · China · BYD · $120B · Build Your Dreams · Backed by Warren Buffett · World leading EV · Atto 3 Han', url: 'https://en.wikipedia.org/wiki/BYD_Auto' },
+    'ferrari cars':          { wealth: 75000,   note: 'Transport · Cars · Italy · Ferrari · $75B · 14,000 cars/year · Roma Purosangue F8 · Most profitable car per unit in world · Founded 1939 Maranello', url: 'https://en.wikipedia.org/wiki/Ferrari' },
+    'general motors cars':   { wealth: 55000,   note: 'Transport · Cars · USA · General Motors · $55B · Chevrolet Cadillac GMC Buick · Founded 1908 · 6M cars/year', url: 'https://en.wikipedia.org/wiki/General_Motors' },
+    'mercedes cars':         { wealth: 62000,   note: 'Transport · Cars · Germany · Mercedes-Benz · $62B · AMG Maybach G-Class EQS · Founded 1926 · Three-pointed star · The Best or Nothing', url: 'https://en.wikipedia.org/wiki/Mercedes-Benz' },
+    'bmw cars':              { wealth: 57000,   note: 'Transport · Cars · Germany · BMW Group · $57B · BMW MINI Rolls-Royce · Bayerische Motoren Werke · Founded 1916 Munich · The Ultimate Driving Machine', url: 'https://en.wikipedia.org/wiki/BMW' },
+    'volkswagen cars':       { wealth: 55000,   note: 'Transport · Cars · Germany · Volkswagen Group · $55B · VW Audi Porsche Lamborghini Bentley SEAT Skoda · Peoples Car · Founded 1937', url: 'https://en.wikipedia.org/wiki/Volkswagen_Group' },
+    'ford cars':             { wealth: 48000,   note: 'Transport · Cars · USA · Ford Motor · $48B · F-Series Mustang Explorer Ranger · Founded Henry Ford 1903 · Changed world with Model T assembly line', url: 'https://en.wikipedia.org/wiki/Ford_Motor_Company' },
+    'porsche cars':          { wealth: 45000,   note: 'Transport · Cars · Germany · Porsche AG · $45B · 911 Cayenne Taycan Macan · Founded 1931 Stuttgart · Part of VW Group · Le Mans legend', url: 'https://en.wikipedia.org/wiki/Porsche' },
+    'honda cars':            { wealth: 44000,   note: 'Transport · Cars · Japan · Honda · $44B · Civic Jazz CR-V HR-V · Also motorcycles engines boats · Founded 1948', url: 'https://en.wikipedia.org/wiki/Honda' },
+    'hyundai cars':          { wealth: 40000,   note: 'Transport · Cars · South Korea · Hyundai · $40B · Tucson Ioniq 5 Kona Nexo · Kia sister company · Founded 1967', url: 'https://en.wikipedia.org/wiki/Hyundai_Motor_Company' },
+    'kia cars':              { wealth: 25000,   note: 'Transport · Cars · South Korea · Kia · $25B · EV6 Sportage Niro Stinger · Sister of Hyundai · Founded 1944', url: 'https://en.wikipedia.org/wiki/Kia' },
+    'audi cars':             { wealth: 20000,   note: 'Transport · Cars · Germany · Audi · Part of VW Group · A3 A4 A6 Q5 Q8 e-tron TT R8 · Founded 1909 · Four rings logo', url: 'https://en.wikipedia.org/wiki/Audi' },
+    'volvo cars':            { wealth: 18000,   note: 'Transport · Cars · Sweden · Volvo Cars · $18B · XC40 XC60 XC90 · Safety pioneers · Owned by Geely China · Founded 1927 Gothenburg', url: 'https://en.wikipedia.org/wiki/Volvo_Cars' },
+    'stellantis cars':       { wealth: 22000,   note: 'Transport · Cars · Netherlands · Stellantis · $22B · Fiat Chrysler Peugeot Citroen Jeep Alfa Romeo Vauxhall Opel Ram Maserati · 14 brands', url: 'https://en.wikipedia.org/wiki/Stellantis' },
+    'renault cars':          { wealth: 11000,   note: 'Transport · Cars · France · Renault · $11B · Clio Megane Zoe Scenic · Alliance with Nissan · Founded 1899 · F1 engine supplier', url: 'https://en.wikipedia.org/wiki/Renault' },
+    'nissan cars':           { wealth: 9000,    note: 'Transport · Cars · Japan · Nissan · $9B · GT-R Qashqai Leaf Juke · Alliance with Renault · Founded 1933 · Leaf world first mass EV', url: 'https://en.wikipedia.org/wiki/Nissan' },
+    'subaru cars':           { wealth: 16000,   note: 'Transport · Cars · Japan · Subaru · $16B · Forester Outback WRX Impreza · Famous for rally · Symmetrical AWD · Founded 1953', url: 'https://en.wikipedia.org/wiki/Subaru' },
+    'mazda cars':            { wealth: 7000,    note: 'Transport · Cars · Japan · Mazda · $7B · MX-5 Miata CX-5 CX-30 · Wankel rotary engine · Founded 1920 Hiroshima', url: 'https://en.wikipedia.org/wiki/Mazda' },
+    'mitsubishi cars':       { wealth: 8000,    note: 'Transport · Cars · Japan · Mitsubishi · $8B · Outlander Eclipse Cross L200 · Lancer Evolution legend · Founded 1970', url: 'https://en.wikipedia.org/wiki/Mitsubishi_Motors' },
+    'suzuki cars':           { wealth: 12000,   note: 'Transport · Cars · Japan · Suzuki · $12B · Swift Vitara Jimny Alto · Small cars and motorcycles · Founded 1909', url: 'https://en.wikipedia.org/wiki/Suzuki' },
+    'land rover cars':       { wealth: 25000,   note: 'Transport · Cars · UK · JLR · Jaguar Land Rover · Defender Discovery Range Rover Sport · Part of Tata Motors India · Founded 1948', url: 'https://en.wikipedia.org/wiki/Jaguar_Land_Rover' },
+    'jaguar cars':           { wealth: 5000,    note: 'Transport · Cars · UK · Jaguar · F-Type F-Pace XE · Part of JLR Tata Motors · Founded 1922 Coventry · Rebranding as pure EV from 2025', url: 'https://en.wikipedia.org/wiki/Jaguar_Cars' },
+    'rolls royce cars':      { wealth: 75000,   note: 'Transport · Cars · UK · Rolls-Royce Motor Cars · Part of BMW · Phantom Ghost Spectre Cullinan · Founded 1906 · From $350,000 per car · Spirit of Ecstasy', url: 'https://en.wikipedia.org/wiki/Rolls-Royce_Motor_Cars' },
+    'bentley cars':          { wealth: 3000,    note: 'Transport · Cars · UK · Bentley Motors · Part of VW Group · Continental GT Bentayga Flying Spur · Founded 1919 Crewe · From $200,000 per car', url: 'https://en.wikipedia.org/wiki/Bentley' },
+    'aston martin cars':     { wealth: 1200,    note: 'Transport · Cars · UK · Aston Martin · $1.2B · DB12 Vantage Valkyrie DBX · Founded 1913 · James Bond car · Struggling financially', url: 'https://en.wikipedia.org/wiki/Aston_Martin' },
+    'mclaren cars':          { wealth: 600,     note: 'Transport · Cars · UK · McLaren Automotive · 600M · Artura 750S GTS · Founded 1963 Woking · F1 heritage · 0-60 in 2.8s', url: 'https://en.wikipedia.org/wiki/McLaren_Automotive' },
+    'lamborghini cars':      { wealth: 10000,   note: 'Transport · Cars · Italy · Lamborghini · Part of VW/Audi · Urus Huracan Revuelto · Founded 1963 · Ferruccio Lamborghini made tractors first', url: 'https://en.wikipedia.org/wiki/Lamborghini' },
+    'bugatti cars':          { wealth: 5000,    note: 'Transport · Cars · France · Bugatti · Part of VW Group · Chiron Veyron Tourbillon · $5M per car · 1600 horsepower · Founded 1909 Alsace', url: 'https://en.wikipedia.org/wiki/Bugatti' },
+    'maserati cars':         { wealth: 2000,    note: 'Transport · Cars · Italy · Maserati · Part of Stellantis · Ghibli Levante GranTurismo · Founded 1914 Bologna · Trident logo', url: 'https://en.wikipedia.org/wiki/Maserati' },
+    'alfa romeo cars':       { wealth: 3000,    note: 'Transport · Cars · Italy · Alfa Romeo · Part of Stellantis · Giulia Stelvio Tonale · Founded 1910 Milan · F1 history · Emotional Italian design', url: 'https://en.wikipedia.org/wiki/Alfa_Romeo' },
+    'fiat cars':             { wealth: 5000,    note: 'Transport · Cars · Italy · Fiat · Part of Stellantis · 500 Panda Tipo · Founded 1899 Turin · Most popular Italian car · Italy national icon', url: 'https://en.wikipedia.org/wiki/Fiat' },
+    'peugeot cars':          { wealth: 8000,    note: 'Transport · Cars · France · Peugeot · Part of Stellantis · 208 308 508 2008 · Founded 1882 · Lion badge · World oldest surviving car brand', url: 'https://en.wikipedia.org/wiki/Peugeot' },
+    'citroen cars':          { wealth: 4000,    note: 'Transport · Cars · France · Citroen · Part of Stellantis · C3 C5 Berlingo · Founded 1919 · Famous for hydropneumatic suspension', url: 'https://en.wikipedia.org/wiki/Citro%C3%ABn' },
+    'mini cars':             { wealth: 5000,    note: 'Transport · Cars · UK · MINI · Part of BMW Group · Cooper Countryman Clubman · Original Mini 1959 by Alec Issigonis · British icon', url: 'https://en.wikipedia.org/wiki/Mini_(marque)' },
+    'vauxhall cars':         { wealth: 2000,    note: 'Transport · Cars · UK · Vauxhall · Part of Stellantis · Corsa Astra Mokka Grandland · Founded 1857 London · UK most popular brand for decades', url: 'https://en.wikipedia.org/wiki/Vauxhall_Motors' },
+    'seat cars':             { wealth: 3000,    note: 'Transport · Cars · Spain · SEAT · Part of VW Group · Ibiza Leon Arona Ateca · Founded 1950 Barcelona · Also owns Cupra brand', url: 'https://en.wikipedia.org/wiki/SEAT' },
+    'skoda cars':            { wealth: 4000,    note: 'Transport · Cars · Czech Republic · Skoda · Part of VW Group · Octavia Fabia Kodiaq Enyaq · Founded 1895 · World oldest surviving car manufacturer', url: 'https://en.wikipedia.org/wiki/%C5%A0koda_Auto' },
+    'geely cars':            { wealth: 15000,   note: 'Transport · Cars · China · Geely · $15B · Owns Volvo Lotus Polestar Lynk & Co · Founded 1986 · China largest private car maker', url: 'https://en.wikipedia.org/wiki/Geely' },
+    'polestar cars':         { wealth: 2000,    note: 'Transport · Cars · Sweden/China · Polestar · $2B · Polestar 2 3 4 · Volvo and Geely · Pure EV brand · Performance meets sustainability', url: 'https://en.wikipedia.org/wiki/Polestar' },
+    'lotus cars':            { wealth: 1500,    note: 'Transport · Cars · UK · Lotus · Owned by Geely · Eletre Emeya Emira Evija · Founded 1948 Colin Chapman · Formula 1 legend · Lightweight philosophy', url: 'https://en.wikipedia.org/wiki/Lotus_Cars' },
+    'morgan cars':           { wealth: 200,     note: 'Transport · Cars · UK · Morgan Motor Company · 200M · Plus Four Super 3 · Founded 1910 Malvern · Hand built in England · Family owned', url: 'https://en.wikipedia.org/wiki/Morgan_Motor_Company' },
+    'tvr cars':              { wealth: 50,      note: 'Transport · Cars · UK · TVR · Founded 1947 Blackpool · Pure British sports cars · No ABS no traction control · Drivers car', url: 'https://en.wikipedia.org/wiki/TVR' },
+    'rivian cars':           { wealth: 12000,   note: 'Transport · Cars · USA · Rivian · $12B · R1T R1S EDV · Amazon backed · Electric adventure vehicles · Founded 2009', url: 'https://en.wikipedia.org/wiki/Rivian' },
+    'lucid cars':            { wealth: 5000,    note: 'Transport · Cars · USA · Lucid Motors · $5B · Lucid Air · Longest range EV ever 516 miles · Saudi Arabia backed · Founded 2007', url: 'https://en.wikipedia.org/wiki/Lucid_Motors' },
+    'tata motors cars':      { wealth: 22000,   note: 'Transport · Cars · India · Tata Motors · $22B · Owns JLR Range Rover Jaguar · Nexon Punch Harrier · Founded 1945 · India largest car maker', url: 'https://en.wikipedia.org/wiki/Tata_Motors' },
+    'maruti suzuki cars':    { wealth: 28000,   note: 'Transport · Cars · India · Maruti Suzuki · $28B · Alto Swift Baleno WagonR · India most popular cars · 40% market share in India', url: 'https://en.wikipedia.org/wiki/Maruti_Suzuki' },
+    'great wall motors cars': { wealth: 14000,  note: 'Transport · Cars · China · Great Wall Motors · $14B · Haval Tank Ora Wey · Largest SUV maker in China · Founded 1984', url: 'https://en.wikipedia.org/wiki/Great_Wall_Motors' },
+    'chery cars':            { wealth: 8000,    note: 'Transport · Cars · China · Chery Automobile · $8B · Exporting globally · Budget EVs · Founded 1997 · China fastest growing exporter', url: 'https://en.wikipedia.org/wiki/Chery_Automobile' },
+    'dacia cars':            { wealth: 5000,    note: 'Transport · Cars · Romania · Dacia · Part of Renault · Sandero Duster Spring · Founded 1966 · Europe best value cars · Sandero cheapest new car in UK', url: 'https://en.wikipedia.org/wiki/Dacia' },
+
+    // ── Motorcycles ──────────────────────────────────────
+    '_sub_motorcycles':      { _subgroup: 'Motorcycles — Manufacturers' },
+    'honda motorcycles':     { wealth: 44000,   note: 'Transport · Motorcycles · Japan · Honda · World No.1 motorcycle maker · 20M units/year · CBR CB Africa Twin Gold Wing · Founded 1948 Soichiro Honda', url: 'https://en.wikipedia.org/wiki/Honda_motorcycles' },
+    'yamaha motorcycles':    { wealth: 12000,   note: 'Transport · Motorcycles · Japan · Yamaha Motor · $12B · 4.6M units/year · YZF-R1 MT-07 Tracer Tenere · MotoGP · Founded 1955', url: 'https://en.wikipedia.org/wiki/Yamaha_Motor_Company' },
+    'harley davidson motorcycles': { wealth: 2700, note: 'Transport · Motorcycles · USA · Harley-Davidson · $2.7B · Road Glide Street Glide Sportster · Founded 1903 Milwaukee · American legend · 75% of US touring market', url: 'https://en.wikipedia.org/wiki/Harley-Davidson' },
+    'kawasaki motorcycles':  { wealth: 8000,    note: 'Transport · Motorcycles · Japan · Kawasaki · Ninja ZX-10R Z900 Versys Z650 · Founded 1896 · MotoGP Superbike champion', url: 'https://en.wikipedia.org/wiki/Kawasaki_motorcycles' },
+    'suzuki motorcycles':    { wealth: 12000,   note: 'Transport · Motorcycles · Japan · Suzuki · GSX-R Hayabusa V-Strom SV650 · World fastest production bike Hayabusa · Founded 1909', url: 'https://en.wikipedia.org/wiki/Suzuki' },
+    'ducati motorcycles':    { wealth: 3000,    note: 'Transport · Motorcycles · Italy · Ducati · Part of VW/Audi · Panigale V4 Monster Multistrada Streetfighter · 60,000 bikes/year · MotoGP 14x champion · Founded 1926 Bologna', url: 'https://en.wikipedia.org/wiki/Ducati' },
+    'bmw motorcycles':       { wealth: 5000,    note: 'Transport · Motorcycles · Germany · BMW Motorrad · R1250GS R1250RT S1000RR · Adventure king GS · Founded 1923 · Boxer engine heritage', url: 'https://en.wikipedia.org/wiki/BMW_Motorrad' },
+    'triumph motorcycles':   { wealth: 1000,    note: 'Transport · Motorcycles · UK · Triumph Motorcycles · 1B · Bonneville Tiger Speed Triple Rocket 3 · Founded 1902 Coventry · Steve McQueen · Great Escape', url: 'https://en.wikipedia.org/wiki/Triumph_Motorcycles' },
+    'ktm motorcycles':       { wealth: 1500,    note: 'Transport · Motorcycles · Austria · KTM · $1.5B · 390 Duke 890 Adventure 1290 Super Duke · Off-road king · Founded 1934 · MotoGP 2x champion', url: 'https://en.wikipedia.org/wiki/KTM' },
+    'royal enfield motorcycles': { wealth: 4000, note: 'Transport · Motorcycles · India · Royal Enfield · $4B · Classic 350 Bullet Himalayan Hunter · World oldest motorcycle brand still in production · Founded 1901 UK', url: 'https://en.wikipedia.org/wiki/Royal_Enfield' },
+    'indian motorcycles':    { wealth: 1000,    note: 'Transport · Motorcycles · USA · Indian Motorcycle · Part of Polaris · Chief Chieftain Scout Challenger · Founded 1901 · America oldest motorcycle brand · Rivals Harley', url: 'https://en.wikipedia.org/wiki/Indian_Motorcycle' },
+    'aprilia motorcycles':   { wealth: 2000,    note: 'Transport · Motorcycles · Italy · Aprilia · Part of Piaggio · RS 660 Tuono RSV4 · Founded 1945 · MotoGP 7x champion · Italian performance', url: 'https://en.wikipedia.org/wiki/Aprilia' },
+    'vespa motorcycles':     { wealth: 3000,    note: 'Transport · Motorcycles · Italy · Vespa · Part of Piaggio · GTS Sprint Primavera · Founded 1946 · Italian icon · Audrey Hepburn Roman Holiday · 19M sold', url: 'https://en.wikipedia.org/wiki/Vespa' },
+    'norton motorcycles':    { wealth: 200,     note: 'Transport · Motorcycles · UK · Norton Motorcycle Company · Commando 961 V4CR Cafe Racer · Founded 1898 Birmingham · Owned by TVS India since 2020', url: 'https://en.wikipedia.org/wiki/Norton_Motorcycle_Company' },
+    // ── Aviation — Airlines ──────────────────────────────
+    '_sub_aviation':         { _subgroup: 'Aviation — Airlines & Manufacturers' },
+    'boeing aviation':       { wealth: 173000,  note: 'Transport · Aviation · USA · Boeing · $173B · 737 787 Dreamliner 777X · Founded 1916 · 150,000 employees', url: 'https://en.wikipedia.org/wiki/Boeing' },
+    'airbus aviation':       { wealth: 163000,  note: 'Transport · Aviation · Europe · Airbus · $163B · A320 A380 A350 · Founded 1970 · Rivals Boeing', url: 'https://en.wikipedia.org/wiki/Airbus' },
+    'rolls royce aviation':  { wealth: 30000,   note: 'Transport · Aviation · UK · Rolls-Royce Holdings · $30B · Aircraft engines · Trent 1000 XWB · Founded 1906 · Separate from car brand', url: 'https://en.wikipedia.org/wiki/Rolls-Royce_Holdings' },
+    'delta airlines':        { wealth: 42000,   note: 'Transport · Aviation · USA · Delta Air Lines · $42B · World largest airline by revenue · Atlanta hub', url: 'https://en.wikipedia.org/wiki/Delta_Air_Lines' },
+    'united airlines':       { wealth: 35000,   note: 'Transport · Aviation · USA · United Airlines · $35B · Chicago hub · Global network', url: 'https://en.wikipedia.org/wiki/United_Airlines' },
+    'ryanair aviation':      { wealth: 37000,   note: 'Transport · Aviation · Ireland · Ryanair · $37B · Europe largest airline · 600 routes · Michael O\'Leary CEO', url: 'https://en.wikipedia.org/wiki/Ryanair' },
+    'iag aviation':          { wealth: 24000,   note: 'Transport · Aviation · UK/Spain · IAG · $24B · British Airways Iberia Aer Lingus Vueling · 600 aircraft', url: 'https://en.wikipedia.org/wiki/International_Airlines_Group' },
+    'emirates aviation':     { wealth: 20000,   note: 'Transport · Aviation · UAE · Emirates · State owned · Not publicly listed · Dubai hub · A380 specialist · 100M passengers/year est.', url: 'https://en.wikipedia.org/wiki/Emirates_(airline)' },
+    'southwest aviation':    { wealth: 21000,   note: 'Transport · Aviation · USA · Southwest Airlines · $21B · Largest US domestic carrier · No frills model', url: 'https://en.wikipedia.org/wiki/Southwest_Airlines' },
+    'easyjet aviation':      { wealth: 4000,    note: 'Transport · Aviation · UK · EasyJet · $4B · Budget carrier · Founded 1995 Luton · 300 aircraft', url: 'https://en.wikipedia.org/wiki/EasyJet' },
+    'concorde aviation':     { wealth: 3000,    note: 'Transport · Aviation · UK/France · Concorde · Total development cost $3B in 1976 · Mach 2 · London to New York 3.5 hours · Retired 2003', url: 'https://en.wikipedia.org/wiki/Concorde' },
+
+    // ── Rail ─────────────────────────────────────────────
+    '_sub_rail':             { _subgroup: 'Rail — Infrastructure & Operators' },
+    'hs2 rail':              { wealth: 95000,   note: 'Transport · Rail · UK · HS2 High Speed 2 · £87-102B total estimated cost 2026 · 140 miles London to Birmingham · Largest UK infrastructure project ever · Originally estimated £32B in 2011', url: 'https://en.wikipedia.org/wiki/High_Speed_2' },
+    'channel tunnel rail':   { wealth: 12000,   note: 'Transport · Rail · UK/France · Channel Tunnel · £12B build cost 1994 · 50km undersea · 3 tunnels · 10M passengers/year', url: 'https://en.wikipedia.org/wiki/Channel_Tunnel' },
+    'eurostar rail':         { wealth: 3000,    note: 'Transport · Rail · Europe · Eurostar · £3B valuation · London to Paris 2h15 · Brussels Amsterdam · Through Channel Tunnel', url: 'https://en.wikipedia.org/wiki/Eurostar' },
+    'network rail':          { wealth: 60000,   note: 'Transport · Rail · UK · Network Rail · £60B asset value · 20,000 miles of track · 30,000 bridges · Government owned', url: 'https://en.wikipedia.org/wiki/Network_Rail' },
+    'london underground rail': { wealth: 30000, note: 'Transport · Rail · UK · London Underground · £30B asset value · 11 lines · 272 stations · 1.3B journeys/year · Opened 1863 — world first metro', url: 'https://en.wikipedia.org/wiki/London_Underground' },
+    'elizabeth line rail':   { wealth: 19000,   note: 'Transport · Rail · UK · Elizabeth Line · Crossrail · £19B cost · 118km · Opened 2022 · 4 years late £4B over budget', url: 'https://en.wikipedia.org/wiki/Elizabeth_line' },
+    'shinkansen rail':       { wealth: 200000,  note: 'Transport · Rail · Japan · Shinkansen Bullet Train · $200B network value · 3,000km · 420km/h · Opened 1964 · Zero fatalities in 60 years', url: 'https://en.wikipedia.org/wiki/Shinkansen' },
+    'tgv rail':              { wealth: 40000,   note: 'Transport · Rail · France · TGV · $40B network · Paris to Lyon 2 hours · 320km/h · Opened 1981', url: 'https://en.wikipedia.org/wiki/TGV' },
+    'dubai metro rail':      { wealth: 8000,    note: 'Transport · Rail · UAE · Dubai Metro · $8B build cost · Fully automated driverless · Opened 2009', url: 'https://en.wikipedia.org/wiki/Dubai_Metro' },
+
+    // ── Shipping ─────────────────────────────────────────
+    '_sub_shipping':         { _subgroup: 'Shipping — Ports & Maritime' },
+    'maersk shipping':       { wealth: 22000,   note: 'Transport · Shipping · Denmark · Maersk · $22B · World largest shipping company · 700 vessels · 100,000 containers', url: 'https://en.wikipedia.org/wiki/A.P._M%C3%B8ller%E2%80%93Maersk' },
+    'msc shipping':          { wealth: 50000,   note: 'Transport · Shipping · Switzerland/Italy · MSC · $50B est. · Mediterranean Shipping Company · Largest fleet in world · Privately owned', url: 'https://en.wikipedia.org/wiki/Mediterranean_Shipping_Company' },
+    'ever given shipping':   { wealth: 200,     note: 'Transport · Shipping · Panama/Japan · Ever Given · $200M vessel · Blocked Suez Canal March 2021 · Cost world trade $10B/day', url: 'https://en.wikipedia.org/wiki/Ever_Given' },
+    'port of shanghai':      { wealth: 15000,   note: 'Transport · Shipping · China · Port of Shanghai · $15B · World busiest port · 47M containers/year', url: 'https://en.wikipedia.org/wiki/Port_of_Shanghai' },
+    'port of felixstowe':    { wealth: 3000,    note: 'Transport · Shipping · UK · Port of Felixstowe · $3B · UK largest container port · 40% of UK container trade', url: 'https://en.wikipedia.org/wiki/Port_of_Felixstowe' },
+
+    // ── Transport — Notable Facts ─────────────────────────
+    '_sub_transport_facts':  { _subgroup: 'Transport — Fascinating Comparisons' },
+    'global car industry':   { wealth: 3000000, note: 'Transport · Cars · Global · Total car industry value 2025 · $3 Trillion · 90M cars made per year · 1.4B cars on roads worldwide', url: 'https://en.wikipedia.org/wiki/Automotive_industry' },
+    'global aviation industry': { wealth: 900000, note: 'Transport · Aviation · Global · Total aviation industry value 2025 · $900B · 4.7B passengers/year · 100,000 flights/day', url: 'https://en.wikipedia.org/wiki/Aviation_industry' },
+    'world road network':    { wealth: 50000000, note: 'Transport · Roads · Global · Total global road network construction value · $50 Trillion estimated · 64M km of roads worldwide', url: 'https://en.wikipedia.org/wiki/Road' },
+    'uk road network':       { wealth: 500000,  note: 'Transport · Roads · UK · UK road network asset value · $500B · 250,000 miles of roads · National Highways', url: 'https://en.wikipedia.org/wiki/Roads_in_the_United_Kingdom' },
+
+    // ── DEFENCE & MILITARY ────────────────────────────────
+
+    // ── Defence Contractors ───────────────────────────────
+    '_sub_defence_companies': { _subgroup: 'Defence Contractors — The Manufacturers' },
+    'lockheed martin defence': { wealth: 130000, note: 'Defence · USA · Lockheed Martin · $130B market cap · $75B revenue 2025 · F-35 fighter jet · Trident missiles · Sikorsky helicopters · THAAD · World largest defence contractor · 123,000 employees', url: 'https://en.wikipedia.org/wiki/Lockheed_Martin' },
+    'rtx defence':           { wealth: 180000,  note: 'Defence · USA · RTX Corporation · $180B · Formerly Raytheon Technologies · Patriot missiles Tomahawk Stinger AIM-9X · Pratt & Whitney engines · $80B revenue', url: 'https://en.wikipedia.org/wiki/RTX_Corporation' },
+    'northrop grumman defence': { wealth: 80000, note: 'Defence · USA · Northrop Grumman · $80B · B-21 Raider stealth bomber · James Webb Space Telescope · Nuclear missile systems · ICBM modernisation', url: 'https://en.wikipedia.org/wiki/Northrop_Grumman' },
+    'general dynamics defence': { wealth: 75000, note: 'Defence · USA · General Dynamics · $75B · M1 Abrams tank · Virginia-class submarine · Gulfstream jets · Columbia-class SSBN', url: 'https://en.wikipedia.org/wiki/General_Dynamics' },
+    'boeing defence':        { wealth: 92000,   note: 'Defence · USA · Boeing Defense · Part of Boeing · F/A-18 Super Hornet · Apache helicopter · KC-46 tanker · Minuteman III ICBM maintenance', url: 'https://en.wikipedia.org/wiki/Boeing_Defense,_Space_%26_Security' },
+    'bae systems defence':   { wealth: 55000,   note: 'Defence · UK · BAE Systems · $55B · Eurofighter Typhoon · Type 26 frigate · Challenger 3 tank · Dreadnought submarine partner · Europe largest defence company', url: 'https://en.wikipedia.org/wiki/BAE_Systems' },
+    'rheinmetall defence':   { wealth: 40000,   note: 'Defence · Germany · Rheinmetall · $40B · Panther tank · Artillery ammunition · Lynx IFV · $10B revenue 2025 · Up 29% · Europe fastest growing defence company', url: 'https://en.wikipedia.org/wiki/Rheinmetall' },
+    'thales defence':        { wealth: 30000,   note: 'Defence · France · Thales · $30B · Radar systems · Missiles · Cyber security · Avionics · Also makes civilian systems', url: 'https://en.wikipedia.org/wiki/Thales_Group' },
+    'leonardo defence':      { wealth: 10000,   note: 'Defence · Italy · Leonardo · $10B · Helicopters · Electronics · Cyber · AW101 Merlin helicopter · AgustaWestland', url: 'https://en.wikipedia.org/wiki/Leonardo_S.p.A.' },
+    'saab defence':          { wealth: 10000,   note: 'Defence · Sweden · Saab · $10B · Gripen fighter · Carl-Gustaf rocket launcher · RBS-15 missile · Also makes civilian planes', url: 'https://en.wikipedia.org/wiki/Saab_AB' },
+    'global defence spend':  { wealth: 2770000, note: 'Defence · Global · World Military Spending 2025 · $2.77 Trillion record · All nations combined · Up 9% year on year · NATO members spend most · SIPRI 2025', url: 'https://en.wikipedia.org/wiki/List_of_countries_by_military_expenditures' },
+
+    // ── Nuclear Weapons — Who Has Them ────────────────────
+    '_sub_nuclear':          { _subgroup: 'Nuclear Weapons — Who Has Them & What They Cost' },
+    'russia nuclear':        { wealth: 35000,   note: 'Nuclear · Russia · 5,460 warheads total · 1,718 deployed · Most nuclear weapons in world · Annual spend $8B · Sarmat RS-28 Satan II ICBM', url: 'https://en.wikipedia.org/wiki/Russia_and_weapons_of_mass_destruction' },
+    'usa nuclear':           { wealth: 55000,   note: 'Nuclear · USA · 5,180 warheads total · 1,670 deployed · Annual nuclear spend $55B · Trident Minuteman III B-21 Raider · Manhattan Project cost $30B in todays money', url: 'https://en.wikipedia.org/wiki/United_States_and_weapons_of_mass_destruction' },
+    'china nuclear':         { wealth: 12000,   note: 'Nuclear · China · 600 warheads 2025 · Up from 350 in 2020 · Projected 1,000 by 2030 · Annual spend $12B · Fastest growing nuclear arsenal', url: 'https://en.wikipedia.org/wiki/China_and_weapons_of_mass_destruction' },
+    'uk nuclear':            { wealth: 6000,    note: 'Nuclear · UK · 225 warheads · 40 deployed at sea on Vanguard submarines · Annual spend $6B · Trident II D5 missiles · Dreadnought replacement programme £36.7B', url: 'https://en.wikipedia.org/wiki/United_Kingdom_and_weapons_of_mass_destruction' },
+    'france nuclear':        { wealth: 6000,    note: 'Nuclear · France · 290 warheads · Triomphant-class submarines · Rafale aircraft · Annual spend $6B · Independent deterrent since de Gaulle', url: 'https://en.wikipedia.org/wiki/France_and_weapons_of_mass_destruction' },
+    'india nuclear':         { wealth: 3000,    note: 'Nuclear · India · 180 warheads · Added 8 in 2024 · Agni ICBM · Annual spend $3B · Not signed NPT · Rivals Pakistan', url: 'https://en.wikipedia.org/wiki/India_and_weapons_of_mass_destruction' },
+    'pakistan nuclear':      { wealth: 2000,    note: 'Nuclear · Pakistan · 170 warheads · Annual spend $2B · Not signed NPT · Rivals India · Shaheen missiles · AQ Khan network', url: 'https://en.wikipedia.org/wiki/Pakistan_and_weapons_of_mass_destruction' },
+    'israel nuclear':        { wealth: 2000,    note: 'Nuclear · Israel · 90 warheads est. · Never confirmed or denied · Ambiguity policy since 1960s · Dimona facility · Not signed NPT', url: 'https://en.wikipedia.org/wiki/Israel_and_weapons_of_mass_destruction' },
+    'north korea nuclear':   { wealth: 1000,    note: 'Nuclear · North Korea · 50 warheads est. · Spent $2.6B on programme 2000-2020 · Hwasong ICBM · Underground tests · Defied world sanctions', url: 'https://en.wikipedia.org/wiki/North_Korea_and_weapons_of_mass_destruction' },
+    'world nuclear total spend': { wealth: 119000, note: 'Nuclear · Global · Total world nuclear weapons spending 2025 · $119 Billion · $13.5M per hour · ICAN 2025 · Could fund world health and education instead', url: 'https://en.wikipedia.org/wiki/Nuclear_weapons' },
+    'hiroshima bomb cost':   { wealth: 30000,   note: 'Nuclear · USA · Manhattan Project · $30B in 2025 dollars · Little Boy dropped Hiroshima 6 Aug 1945 · 80,000 killed instantly · 140,000 by end 1945 · Changed world forever', url: 'https://en.wikipedia.org/wiki/Manhattan_Project' },
+
+    // ── Nuclear Submarines ────────────────────────────────
+    '_sub_subs':             { _subgroup: 'Nuclear Submarines — Cost & Capability' },
+    'dreadnought submarine': { wealth: 10000,   note: 'Defence · Nuclear · UK · Dreadnought-class SSBN · £10B per submarine · 4 being built at Barrow · Replaces Vanguard class · 12 Trident missiles · 130 crew · Due 2030s', url: 'https://en.wikipedia.org/wiki/Dreadnought-class_submarine' },
+    'vanguard submarine':    { wealth: 6000,    note: 'Defence · Nuclear · UK · Vanguard-class SSBN · £6B per submarine · 4 in service · Carries UK Trident deterrent · Continuous at sea since 1969 · HMS Vanguard Vigilant Victorious Vengeance', url: 'https://en.wikipedia.org/wiki/Vanguard-class_submarine' },
+    'columbia submarine':    { wealth: 9000,    note: 'Defence · Nuclear · USA · Columbia-class SSBN · $9B per submarine · 12 planned · Replaces Ohio class · 16 Trident II D5 missiles each · $132B total programme', url: 'https://en.wikipedia.org/wiki/Columbia-class_submarine' },
+    'ohio submarine':        { wealth: 3000,    note: 'Defence · Nuclear · USA · Ohio-class SSBN · $3B per submarine · 14 in service · Each carries 20 Trident II D5 missiles · Most destructive weapon in human history per vessel', url: 'https://en.wikipedia.org/wiki/Ohio-class_submarine' },
+    'borei submarine':       { wealth: 1500,    note: 'Defence · Nuclear · Russia · Borei-class SSBN · $1.5B per submarine · 5 in service · Bulava SLBM · Russia newest nuclear submarine · 107 crew', url: 'https://en.wikipedia.org/wiki/Borei-class_submarine' },
+    'astute submarine':      { wealth: 2000,    note: 'Defence · Nuclear · UK · Astute-class SSN · £2B per submarine · 7 planned · Attack submarine · Spearfish torpedoes Tomahawk missiles · Not nuclear armed · Nuclear powered', url: 'https://en.wikipedia.org/wiki/Astute-class_submarine' },
+    'aukus submarine':       { wealth: 6000,    note: 'Defence · Nuclear · Australia · AUKUS SSN · $6B est. per submarine · Australia USA UK pact 2021 · Gives Australia nuclear-powered subs · $368B total programme est.', url: 'https://en.wikipedia.org/wiki/AUKUS' },
+    'trident missile':       { wealth: 88,      note: 'Defence · Nuclear · USA/UK · Trident II D5 missile · $88M per missile · Submarine-launched ballistic missile · 8 warheads each · Range 7,000 miles · Made by Lockheed Martin', url: 'https://en.wikipedia.org/wiki/UGM-133_Trident_II' },
+
+    // ── Fighter Jets & Military Aircraft ─────────────────
+    '_sub_aircraft':         { _subgroup: 'Fighter Jets & Military Aircraft' },
+    'f35 fighter':           { wealth: 1700000, note: 'Defence · Military · USA · F-35 Lightning II · $1.7 Trillion lifetime programme cost · Most expensive weapons programme in history · $80M per aircraft · Lockheed Martin · 3,000 planned', url: 'https://en.wikipedia.org/wiki/Lockheed_Martin_F-35_Lightning_II' },
+    'eurofighter typhoon':   { wealth: 65000,   note: 'Defence · Military · Europe · Eurofighter Typhoon · $65B total programme · $120M per aircraft · UK Germany Italy Spain · BAE Systems EADS · 623 built · RAF backbone', url: 'https://en.wikipedia.org/wiki/Eurofighter_Typhoon' },
+    'f22 raptor':            { wealth: 67000,   note: 'Defence · Military · USA · F-22 Raptor · $67B total programme · $350M per aircraft · Stealth · World most capable air superiority fighter · 187 built · Lockheed Martin', url: 'https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor' },
+    'b21 raider':            { wealth: 203000,  note: 'Defence · Military · USA · B-21 Raider stealth bomber · $203B total programme · $700M per aircraft · Northrop Grumman · Replaces B-2 Spirit · Nuclear capable · Entered service 2025', url: 'https://en.wikipedia.org/wiki/Northrop_Grumman_B-21_Raider' },
+    'b2 spirit':             { wealth: 44000,   note: 'Defence · Military · USA · B-2 Spirit stealth bomber · $44B total programme · $2.1B per aircraft · Most expensive aircraft ever built · 21 built · Nuclear capable', url: 'https://en.wikipedia.org/wiki/Northrop_Grumman_B-2_Spirit' },
+    'raf typhoon':           { wealth: 5000,    note: 'Defence · Military · UK · RAF Eurofighter Typhoon · $5B fleet value · 160 aircraft · UK primary combat jet · Deployed Gulf Falklands Baltic · Scrambled to intercept Russian aircraft', url: 'https://en.wikipedia.org/wiki/Eurofighter_Typhoon_in_RAF_service' },
+
+    // ── Tanks & Armoured Vehicles ─────────────────────────
+    '_sub_tanks':            { _subgroup: 'Tanks & Armoured Vehicles' },
+    'abrams tank':           { wealth: 10000,   note: 'Defence · Military · USA · M1 Abrams · $10M per tank · 6,000 in US service · 4,666 combat ready · General Dynamics · Gas turbine engine · Used in Gulf War Iraq · World most advanced MBT', url: 'https://en.wikipedia.org/wiki/M1_Abrams' },
+    'challenger 3 tank':     { wealth: 8000,    note: 'Defence · Military · UK · Challenger 3 · £8M per tank · 148 being upgraded from Challenger 2 · BAE Systems · Rheinmetall 120mm gun · British Army primary MBT · Only tank with smoothbore gun from 2025', url: 'https://en.wikipedia.org/wiki/Challenger_3' },
+    'leopard 2 tank':        { wealth: 13000,   note: 'Defence · Military · Germany · Leopard 2 · $13M per tank · 3,600 built · 20 nations operate it · KNDS · Sent to Ukraine 2023 · Most widely used western MBT', url: 'https://en.wikipedia.org/wiki/Leopard_2' },
+    't14 armata tank':       { wealth: 8000,    note: 'Defence · Military · Russia · T-14 Armata · $8M per tank · 20 produced · Most advanced Russian tank · Unmanned turret · Never deployed in Ukraine war · Production issues', url: 'https://en.wikipedia.org/wiki/T-14_Armata' },
+    't72 tank':              { wealth: 500,     note: 'Defence · Military · Russia/Soviet · T-72 · $500,000 per tank · 25,000 built · Most produced tank since WWII · Used by 40+ countries · Widely used Ukraine war · Easily destroyed by Javelin', url: 'https://en.wikipedia.org/wiki/T-72' },
+    'world tank total':      { wealth: 200000,  note: 'Defence · Military · Global · World total main battle tanks 2025 · $200B est. · Russia 12,950 · China 5,000 · USA 4,666 · India 4,600 · N Korea 3,500 · 60,000 tanks worldwide', url: 'https://en.wikipedia.org/wiki/Main_battle_tank' },
+
+    // ── Ballistic Missiles & Weapons Systems ─────────────
+    '_sub_missiles':         { _subgroup: 'Missiles & Weapons Systems' },
+    'tomahawk missile':      { wealth: 3,       note: 'Defence · Military · USA/UK · Tomahawk cruise missile · $3M per missile · Range 1,000 miles · Used Iraq Syria Afghanistan · Precision strike · RTX Corporation · Both UK and US navies', url: 'https://en.wikipedia.org/wiki/BGM-109_Tomahawk' },
+    'javelin missile':       { wealth: 0,       note: 'Defence · Military · USA · FGM-148 Javelin · $175,000 per missile · Tank killer · Fire and forget · Devastating in Ukraine war · Lockheed Martin Raytheon joint · Changed modern warfare', url: 'https://en.wikipedia.org/wiki/FGM-148_Javelin' },
+    'patriot missile':       { wealth: 1000,    note: 'Defence · Military · USA · MIM-104 Patriot · $1B per battery · Air defence missile system · Shoots down ballistic missiles aircraft · Widely used Ukraine war · RTX Corporation', url: 'https://en.wikipedia.org/wiki/MIM-104_Patriot' },
+    'himars missile':        { wealth: 6,       note: 'Defence · Military · USA · HIMARS · $6M per launcher · High Mobility Artillery Rocket System · Transformed Ukraine war · 70km range · Precision rockets · Lockheed Martin', url: 'https://en.wikipedia.org/wiki/M142_HIMARS' },
+    'minuteman iii missile': { wealth: 100,     note: 'Defence · Military · USA · LGM-30G Minuteman III · $100M per ICBM · 400 deployed in silos · Range 8,000 miles · 3 warheads each · 30-minute global strike · Boeing maintains', url: 'https://en.wikipedia.org/wiki/LGM-30_Minuteman' },
+    'hypersonic missile':    { wealth: 50000,   note: 'Defence · Military · Global · Hypersonic Missile Race · $50B global development · Russia Zircon · USA LRHW · China DF-17 · 5x speed of sound · Cannot be intercepted by current defences', url: 'https://en.wikipedia.org/wiki/Hypersonic_missile' },
+
+    // ── Small Arms & Rifles ───────────────────────────────
+    '_sub_small_arms':       { _subgroup: 'Small Arms — Rifles Handguns & Manufacturers' },
+    'glock handgun':         { wealth: 1000,    note: 'Defence · Weapons · Austria · Glock · $1B est. · Most popular handgun in world · Used by 65% of US police · 80 countries military and police · Gaston Glock invented 1982', url: 'https://en.wikipedia.org/wiki/Glock' },
+    'sig sauer weapons':     { wealth: 2000,    note: 'Defence · Weapons · Germany/USA · SIG Sauer · $2B · Supplies US military M17 M18 sidearm · MCX Spear rifle · Special Forces favourite · Founded 1853 Switzerland', url: 'https://en.wikipedia.org/wiki/Sig_Sauer' },
+    'ak47 rifle':            { wealth: 1,       note: 'Defence · Weapons · Russia · AK-47 Kalashnikov · $1,000 per rifle · 100M+ produced · Most produced weapon in history · Mikhail Kalashnikov designed 1947 · On Mozambique flag · Everywhere in conflict zones', url: 'https://en.wikipedia.org/wiki/AK-47' },
+    'ar15 m16 rifle':        { wealth: 2,       note: 'Defence · Weapons · USA · AR-15 / M16 family · $2,000 civilian · Used by US military since Vietnam · Eugene Stoner designed 1956 · M4 carbine is modern military version · Colt and others', url: 'https://en.wikipedia.org/wiki/AR-15' },
+    'sa80 rifle':            { wealth: 2,       note: 'Defence · Weapons · UK · SA80 / L85A3 · $2,000 per rifle · British Army standard rifle since 1985 · 5.56mm NATO · Heckler & Koch upgraded version · Bullpup design', url: 'https://en.wikipedia.org/wiki/SA80' },
+    'heckler koch weapons':  { wealth: 1000,    note: 'Defence · Weapons · Germany · Heckler & Koch · $1B · MP5 submachine gun · HK416 · G36 · Used by SAS Delta Force Navy SEALs · Founded 1949 post-WW2 · World most trusted military weapons', url: 'https://en.wikipedia.org/wiki/Heckler_%26_Koch' },
+    'smith wesson weapons':  { wealth: 800,     note: 'Defence · Weapons · USA · Smith & Wesson · American Outdoor Brands · $800M · Founded 1852 · Revolvers handguns · Model 29 Dirty Harry · Made famous by Hollywood', url: 'https://en.wikipedia.org/wiki/Smith_%26_Wesson' },
+    'remington weapons':     { wealth: 500,     note: 'Defence · Weapons · USA · Remington Arms · $500M · Founded 1816 · Americas oldest gun maker · Shotguns rifles ammunition · Went bankrupt 2020 · Bought by Vista Outdoor', url: 'https://en.wikipedia.org/wiki/Remington_Arms' },
+    'global small arms':     { wealth: 7000,    note: 'Defence · Weapons · Global · Small Arms Market 2025 · $7B · 1 billion guns in civilian hands worldwide · 400M in USA alone · USA has more guns than people', url: 'https://en.wikipedia.org/wiki/Small_arms' },
+
+    // ── Drones & Unmanned Systems ─────────────────────────
+    '_sub_drones':           { _subgroup: 'Drones & Unmanned Systems — The New Warfare' },
+    'dji drones':            { wealth: 16000,   note: 'Defence · Drones · China · DJI · $16B est. · Owns 70% of global civilian drone market · Mavic Mini Phantom · Used by BOTH sides in Ukraine war · Shenzhen · Founded 2006 Frank Wang · Banned by US military 2020', url: 'https://en.wikipedia.org/wiki/DJI' },
+    'general atomics drones': { wealth: 3000,   note: 'Defence · Drones · USA · General Atomics Aeronautical · $3B · MQ-9 Reaper $32-64M per drone · MQ-1 Predator · Used for targeted strikes · $2.1B contracts FY2024 · 45 Reapers delivered 2024', url: 'https://en.wikipedia.org/wiki/General_Atomics_Aeronautical_Systems' },
+    'mq9 reaper drone':      { wealth: 64,      note: 'Defence · Drones · USA · MQ-9 Reaper · $64M per drone · Hellfire missiles · 27 hour endurance · 50,000ft ceiling · Used in Afghanistan Iraq Syria · General Atomics · Hunts and kills from Nevada', url: 'https://en.wikipedia.org/wiki/General_Atomics_MQ-9_Reaper' },
+    'baykar drones':         { wealth: 4000,    note: 'Defence · Drones · Turkey · Baykar · $4B est. · Bayraktar TB2 · Changed modern warfare · 30+ export countries · Founded Selcuk Bayraktar · Married Erdogans daughter · Ukraine hero', url: 'https://en.wikipedia.org/wiki/Baykar' },
+    'bayraktar tb2 drone':   { wealth: 5,       note: 'Defence · Drones · Turkey · Bayraktar TB2 · $5M per drone · Changed Ukraine war · Destroyed Russian columns 2022 · 150kg payload · 27hr endurance · 6 Hellfire-equivalent missiles · Ukraine crowdfunded one', url: 'https://en.wikipedia.org/wiki/Bayraktar_TB2' },
+    'shahed drone':          { wealth: 0,        note: 'Defence · Drones · Iran · Shahed-136 · $20,000-50,000 per drone · Kamikaze attack drone · Russia fires hundreds at Ukraine · Made in Iran · Simple lawn mower engine · One-way attack drone · Loitering munition', url: 'https://en.wikipedia.org/wiki/HESA_Shahed_136' },
+    'switchblade drone':     { wealth: 0,        note: 'Defence · Drones · USA · AeroVironment Switchblade · $6,000-70,000 per drone · Loitering munition · Soldier carries in backpack · Targets and kills · 600% increase in US Army orders 2022-2025 · Ukraine war', url: 'https://en.wikipedia.org/wiki/AeroVironment_Switchblade' },
+    'rq4 global hawk drone': { wealth: 130,     note: 'Defence · Drones · USA · Northrop Grumman RQ-4 Global Hawk · $130M per drone · Stratospheric surveillance · 60,000ft · 34hr endurance · Spy plane replaces U-2 · Watched Ukraine war from international airspace', url: 'https://en.wikipedia.org/wiki/Northrop_Grumman_RQ-4_Global_Hawk' },
+    'fpv ukraine drone':     { wealth: 0,        note: 'Defence · Drones · Ukraine · FPV First Person View Drones · $300-2,000 per drone · DJI modified · Grenade carrier · Ukraine produces 50,000/month · Russia same · Most used weapon in Ukraine war 2024-25 · Changed infantry warfare forever', url: 'https://en.wikipedia.org/wiki/FPV_drone' },
+    'aerovironment drones':  { wealth: 5000,    note: 'Defence · Drones · USA · AeroVironment · $5B market cap · Switchblade Puma Raven · Small tactical drones · 3,200 units shipped 2024 · $680M contracts FY2024 · NASDAQ listed', url: 'https://en.wikipedia.org/wiki/AeroVironment' },
+    'iai drones':            { wealth: 5000,    note: 'Defence · Drones · Israel · Israel Aerospace Industries · $5B · Harop loitering munition · Heron · Eitan · World pioneer of combat drones since 1970s · Used in Gaza Lebanon · Exported 60+ countries', url: 'https://en.wikipedia.org/wiki/Israel_Aerospace_Industries' },
+    'global drone market':   { wealth: 54000,   note: 'Defence · Drones · Global · Total Drone Market 2025 · $54B · Military $18B · Commercial $36B · Growing 12.5% per year · Projected $138B by 2033 · Fastest growing military technology', url: 'https://en.wikipedia.org/wiki/Unmanned_aerial_vehicle' },
+    'ukraine drone factory': { wealth: 500,     note: 'Defence · Drones · Ukraine · Ukraine Drone Industry 2025 · $500M · 50,000 FPV drones per month · 200+ domestic manufacturers · From DJI hobby drones to 1,000km range strike drones · Fastest growing defence industry in world', url: 'https://en.wikipedia.org/wiki/Military_of_Ukraine' },
+    'drone vs missile cost': { wealth: 0,        note: 'Defence · Drones · Global · The Big Comparison · A Shahed drone costs $20,000 · A Patriot interceptor missile costs $4M · Russia fires 200 Shaheds to exhaust Patriot stocks · Drone warfare economics are changing everything', url: 'https://en.wikipedia.org/wiki/Loitering_munition' },
+
+
+    '_sub_war_cost':         { _subgroup: 'The Cost of War — Perspective' },
+    'iraq war cost':         { wealth: 2400000, note: 'Defence · War · USA · Iraq War total cost 2003-2011 · $2.4 Trillion · Plus $1T veterans care · 4,500 US soldiers killed · 200,000+ Iraqi civilians · Weapons of mass destruction never found', url: 'https://en.wikipedia.org/wiki/Financial_cost_of_the_Iraq_War' },
+    'ukraine war cost':      { wealth: 500000,  note: 'Defence · War · Ukraine · Ukraine war cost 2022-2025 · $500B+ · USA gave $100B in aid · EU $85B · Ukraine spent 40% of GDP on defence 2025 · 100,000+ soldiers killed each side', url: 'https://en.wikipedia.org/wiki/Russo-Ukrainian_War' },
+    'afghanistan war cost':  { wealth: 2300000, note: 'Defence · War · USA · Afghanistan War total cost 2001-2021 · $2.3 Trillion · 20 year war · Taliban back in power · 2,400 US soldiers killed · Nation building failed', url: 'https://en.wikipedia.org/wiki/War_in_Afghanistan_(2001%E2%80%932021)' },
+    'world war 2 cost':      { wealth: 4100000, note: 'Defence · War · Global · World War 2 total cost 1939-1945 · $4.1 Trillion in 2025 dollars · 70-85M people killed · Deadliest conflict in human history · Changed the world forever', url: 'https://en.wikipedia.org/wiki/World_War_II' },
+    'nuclear spending total': { wealth: 8000000, note: 'Defence · Nuclear · USA · Total US nuclear weapons spending 1940-1996 · $8 Trillion in 2025 dollars · Brookings Institution · Most expensive military programme in history · Still spending $55B per year', url: 'https://en.wikipedia.org/wiki/Nuclear_weapons_of_the_United_States' },
+
+
+
+    // ── Luxury Fashion Houses ─────────────────────────────
+    '_sub_luxury_fashion':   { _subgroup: 'Luxury Fashion — The Great Houses' },
+    'lvmh fashion':          { wealth: 280000,  note: 'Fashion · Luxury · France · LVMH · $280B · Louis Vuitton Dior Givenchy Fendi Bulgari Tiffany Moet Hennessy Sephora · Bernard Arnault · 75 brands · World largest luxury group', url: 'https://en.wikipedia.org/wiki/LVMH' },
+    'hermes fashion':        { wealth: 200000,  note: 'Fashion · Luxury · France · Hermes · $200B · Birkin bag Kelly bag Silk scarves · Founded 1837 · Birkin bag worth more than a car · Ultra exclusive', url: 'https://en.wikipedia.org/wiki/Herm%C3%A8s' },
+    'chanel fashion':        { wealth: 90000,   note: 'Fashion · Luxury · France · Chanel · $90B est. privately owned · No 5 perfume · Little Black Dress · Founded Coco Chanel 1910 · Changed fashion for women forever', url: 'https://en.wikipedia.org/wiki/Chanel' },
+    'richemont fashion':     { wealth: 136000,  note: 'Fashion · Luxury · Switzerland · Richemont · $136B · Cartier IWC Montblanc Jaeger-LeCoultre Van Cleef Piaget · Luxury watches and jewellery', url: 'https://en.wikipedia.org/wiki/Richemont' },
+    'kering fashion':        { wealth: 35000,   note: 'Fashion · Luxury · France · Kering · $35B · Gucci Saint Laurent Balenciaga Bottega Veneta Alexander McQueen · Francois-Henri Pinault', url: 'https://en.wikipedia.org/wiki/Kering' },
+    'gucci fashion':         { wealth: 20000,   note: 'Fashion · Luxury · Italy · Gucci · Part of Kering · Handbags shoes clothing · Founded 1921 Florence · GG monogram · Tom Ford era · Alessandro Michele', url: 'https://en.wikipedia.org/wiki/Gucci' },
+    'prada fashion':         { wealth: 18000,   note: 'Fashion · Luxury · Italy · Prada · $18B · Miu Miu · Founded 1913 Milan · The Devil Wears Prada · Miuccia Prada · Nylon bags', url: 'https://en.wikipedia.org/wiki/Prada' },
+    'louis vuitton fashion': { wealth: 50000,   note: 'Fashion · Luxury · France · Louis Vuitton · Part of LVMH · $50B est. · LV monogram · Founded 1854 · World most recognised luxury brand', url: 'https://en.wikipedia.org/wiki/Louis_Vuitton' },
+    'dior fashion':          { wealth: 40000,   note: 'Fashion · Luxury · France · Christian Dior · Part of LVMH · New Look 1947 revolution · Miss Dior J adore Sauvage perfumes · Founded 1946 Paris', url: 'https://en.wikipedia.org/wiki/Christian_Dior_SE' },
+    'versace fashion':       { wealth: 5000,    note: 'Fashion · Luxury · Italy · Versace · Part of Capri Holdings · Gianni Versace founded 1978 · Donatella · Medusa logo · Gianni killed 1997 Miami', url: 'https://en.wikipedia.org/wiki/Versace' },
+    'armani fashion':        { wealth: 8000,    note: 'Fashion · Luxury · Italy · Giorgio Armani · $8B · Founded 1975 Milan · Power suits · Emporio Armani EA7 · Privately owned by Giorgio Armani himself', url: 'https://en.wikipedia.org/wiki/Giorgio_Armani' },
+    'burberry fashion':      { wealth: 4000,    note: 'Fashion · Luxury · UK · Burberry · $4B · Trench coat tartan check · Founded 1856 Thomas Burberry · Gabardine fabric inventor · British heritage', url: 'https://en.wikipedia.org/wiki/Burberry' },
+    'balenciaga fashion':    { wealth: 5000,    note: 'Fashion · Luxury · Spain/France · Balenciaga · Part of Kering · Founded 1917 Cristobal Balenciaga · Triple S trainers · Most talked about luxury brand', url: 'https://en.wikipedia.org/wiki/Balenciaga' },
+    'valentino fashion':     { wealth: 4000,    note: 'Fashion · Luxury · Italy · Valentino · $4B · Red Valentino · Founded 1960 Rome · Valentino Garavani · Ultra feminine fashion', url: 'https://en.wikipedia.org/wiki/Valentino_S.p.A.' },
+    'ralph lauren fashion':  { wealth: 16000,   note: 'Fashion · Luxury · USA · Ralph Lauren · $16B · Polo Ralph Lauren · Founded 1967 · American dream lifestyle · Purple Label · Lauren', url: 'https://en.wikipedia.org/wiki/Ralph_Lauren' },
+    'tommy hilfiger fashion': { wealth: 9000,   note: 'Fashion · Clothing · USA · Tommy Hilfiger · Part of PVH · $9B · Classic American style · Founded 1985 · Gigi Hadid campaigns', url: 'https://en.wikipedia.org/wiki/Tommy_Hilfiger' },
+    'calvin klein fashion':  { wealth: 8000,    note: 'Fashion · Clothing · USA · Calvin Klein · Part of PVH · CK One · Jeans Underwear · Founded 1968 New York · Brooke Shields campaign', url: 'https://en.wikipedia.org/wiki/Calvin_Klein' },
+    'zara fashion':          { wealth: 100000,  note: 'Fashion · Clothing · Spain · Zara · Part of Inditex · $100B · Fast fashion pioneer · 2,000 stores worldwide · Amancio Ortega founder · World richest fashion person', url: 'https://en.wikipedia.org/wiki/Zara_(retailer)' },
+    'hm fashion':            { wealth: 18000,   note: 'Fashion · Clothing · Sweden · H&M · $18B · Hennes & Mauritz · Fast fashion · 5,000 stores · Founded 1947 · Affordable fashion for all', url: 'https://en.wikipedia.org/wiki/H%26M' },
+    'primark fashion':       { wealth: 8000,    note: 'Fashion · Clothing · Ireland/UK · Primark · Part of ABF · $8B est. · Ultra budget fashion · No online sales · Founded 1969 Dublin · Penneys in Ireland', url: 'https://en.wikipedia.org/wiki/Primark' },
+    'marks spencer fashion': { wealth: 7000,    note: 'Fashion · Clothing · UK · Marks & Spencer · $7B · Clothing food · Founded 1884 Michael Marks Leeds market stall · Per Una Autograph · British institution', url: 'https://en.wikipedia.org/wiki/Marks_%26_Spencer' },
+    'next fashion':          { wealth: 12000,   note: 'Fashion · Clothing · UK · Next · $12B · Clothing homewares · Founded 1864 · UK largest fashion retailer · NEXT app and website powerhouse', url: 'https://en.wikipedia.org/wiki/Next_plc' },
+    'nike fashion':          { wealth: 60000,   note: 'Fashion · Sportswear · USA · Nike · $60B · Just Do It · Air Jordan Air Max · Founded 1964 Phil Knight · World most valuable sportswear brand', url: 'https://en.wikipedia.org/wiki/Nike,_Inc.' },
+    'adidas fashion':        { wealth: 32000,   note: 'Fashion · Sportswear · Germany · Adidas · $32B · Three stripes · Yeezy Stan Smith Samba · Founded 1949 Adi Dassler · World Cup and Olympics kit', url: 'https://en.wikipedia.org/wiki/Adidas' },
+    'puma fashion':          { wealth: 5000,    note: 'Fashion · Sportswear · Germany · Puma · $5B · Founded 1948 Rudolf Dassler · Brothers split over Adidas · Usain Bolt · King of Speed', url: 'https://en.wikipedia.org/wiki/Puma_(brand)' },
+    'new balance fashion':   { wealth: 7000,    note: 'Fashion · Sportswear · USA · New Balance · $7B · 990 1080 574 · Still made in USA and UK · Founded 1906 Boston · Cult following', url: 'https://en.wikipedia.org/wiki/New_Balance' },
+
+    // ── Beauty & Make-up ─────────────────────────────────
+    '_sub_beauty':           { _subgroup: 'Beauty & Make-up — Global Brands' },
+    'loreal beauty':         { wealth: 230000,  note: 'Beauty · Make-up · France · L\'Oreal · $230B · World largest beauty company · Maybelline Lancome Garnier Kerastase NYX · Founded 1909 · Because You\'re Worth It', url: 'https://en.wikipedia.org/wiki/L%27Or%C3%A9al' },
+    'estee lauder beauty':   { wealth: 14000,   note: 'Beauty · Make-up · USA · Estee Lauder · $14B revenue · Clinique MAC Bobbi Brown La Mer Jo Malone Tom Ford Beauty · Founded 1946 New York', url: 'https://en.wikipedia.org/wiki/Est%C3%A9e_Lauder_Companies' },
+    'shiseido beauty':       { wealth: 8000,    note: 'Beauty · Make-up · Japan · Shiseido · $8B · NARS Bare Minerals Drunk Elephant Laura Mercier · Founded 1872 · World oldest cosmetics company', url: 'https://en.wikipedia.org/wiki/Shiseido' },
+    'coty beauty':           { wealth: 5000,    note: 'Beauty · Make-up · USA · Coty · $5B · Rimmel Cover Girl Max Factor Sally Hansen · Also owns Kylie Cosmetics · Founded 1904', url: 'https://en.wikipedia.org/wiki/Coty_Inc.' },
+    'revlon beauty':         { wealth: 1000,    note: 'Beauty · Make-up · USA · Revlon · $1B · Elizabeth Arden · Founded 1932 · Went bankrupt 2022 · Rebounding 2025', url: 'https://en.wikipedia.org/wiki/Revlon' },
+    'mac cosmetics beauty':  { wealth: 12000,   note: 'Beauty · Make-up · Canada/USA · MAC Cosmetics · Part of Estee Lauder · Founded 1984 Toronto · Drag queen origins · Professional make up artists choice', url: 'https://en.wikipedia.org/wiki/MAC_Cosmetics' },
+    'charlotte tilbury beauty': { wealth: 2500, note: 'Beauty · Make-up · UK · Charlotte Tilbury · $2.5B · Hollywood Flawless Filter Pillow Talk · Founded 2013 · Backed by Puig · Glastonbury make-up artist', url: 'https://en.wikipedia.org/wiki/Charlotte_Tilbury' },
+    'kylie cosmetics beauty': { wealth: 1000,   note: 'Beauty · Make-up · USA · Kylie Cosmetics · Kylie Jenner · Part of Coty · Lip Kits · Founded 2015 · Youngest self made billionaire aged 21', url: 'https://en.wikipedia.org/wiki/Kylie_Cosmetics' },
+    'fenty beauty':          { wealth: 3000,    note: 'Beauty · Make-up · USA · Fenty Beauty · Rihanna · LVMH backed · $3B · 40 shades of foundation · Launched 2017 · Transformed inclusion in beauty', url: 'https://en.wikipedia.org/wiki/Fenty_Beauty' },
+    'clinique beauty':       { wealth: 3000,    note: 'Beauty · Skincare · USA · Clinique · Part of Estee Lauder · 3 Step skincare · Founded 1968 · First allergy tested cosmetics · Dermatologist developed', url: 'https://en.wikipedia.org/wiki/Clinique' },
+    'la mer beauty':         { wealth: 5000,    note: 'Beauty · Skincare · USA · La Mer · Part of Estee Lauder · Creme de la Mer · Most expensive moisturiser · $400 per jar · Founded 1965 Dr Max Huber aerospace engineer', url: 'https://en.wikipedia.org/wiki/La_Mer_(brand)' },
+    'global beauty industry': { wealth: 600000, note: 'Beauty · Global · World Beauty Industry 2025 · $600B total market · Skincare $200B Haircare $100B Colour cosmetics $80B Fragrance $60B · Growing 5% per year', url: 'https://en.wikipedia.org/wiki/Cosmetics' },
+
+    // ── Perfume & Fragrance ───────────────────────────────
+    '_sub_perfume':          { _subgroup: 'Perfume & Fragrance' },
+    'chanel no5 perfume':    { wealth: 15000,   note: 'Perfume · France · Chanel No 5 · $15B brand value · World most famous perfume · Launched 1921 · Marilyn Monroe wore nothing else to bed · Aldehyde floral', url: 'https://en.wikipedia.org/wiki/Chanel_No._5' },
+    'dior perfume':          { wealth: 12000,   note: 'Perfume · France · Dior Fragrances · J adore Miss Dior Sauvage Poison · Part of LVMH · Sauvage world best selling mens fragrance · Founded 1947', url: 'https://en.wikipedia.org/wiki/Dior_(fragrance)' },
+    'jo malone perfume':     { wealth: 4000,    note: 'Perfume · UK · Jo Malone London · Part of Estee Lauder · Lime Basil Mandarin English Pear Peony · Founded 1983 · Sold to Estee Lauder 1999', url: 'https://en.wikipedia.org/wiki/Jo_Malone_London' },
+    'creed perfume':         { wealth: 2000,    note: 'Perfume · UK/France · Creed · $2B · Aventus Silver Mountain Water Green Irish Tweed · Founded 1760 · Made for Kings Queens Royalty · Now owned by Kering', url: 'https://en.wikipedia.org/wiki/Creed_(fragrance_house)' },
+    'fragrance industry':    { wealth: 60000,   note: 'Perfume · Global · World Fragrance Market 2025 · $60B · 1B bottles sold per year · France still dominates fine fragrance · Growing fastest in Middle East', url: 'https://en.wikipedia.org/wiki/Perfume' },
+
+    // ── Jewellery & Watches ───────────────────────────────
+    '_sub_jewellery':        { _subgroup: 'Jewellery & Watches' },
+    'cartier jewellery':     { wealth: 20000,   note: 'Fashion · Jewellery · France · Cartier · Part of Richemont · Love bracelet Trinity ring · Founded 1847 Paris · Jeweller of Kings King of Jewellers', url: 'https://en.wikipedia.org/wiki/Cartier_(jeweler)' },
+    'tiffany jewellery':     { wealth: 16000,   note: 'Fashion · Jewellery · USA · Tiffany & Co · Part of LVMH · $16B · Blue box · Founded 1837 New York · Audrey Hepburn Breakfast at Tiffanys · Engagement rings', url: 'https://en.wikipedia.org/wiki/Tiffany_%26_Co.' },
+    'rolex watches':         { wealth: 9000,    note: 'Fashion · Watches · Switzerland · Rolex · $9B est. privately owned · Submariner Daytona GMT Master · Founded 1905 · World most recognised watch brand', url: 'https://en.wikipedia.org/wiki/Rolex' },
+    'patek philippe watches': { wealth: 7000,   note: 'Fashion · Watches · Switzerland · Patek Philippe · $7B est. privately owned · Nautilus Calatrava · You never actually own a Patek you merely look after it · Founded 1839', url: 'https://en.wikipedia.org/wiki/Patek_Philippe' },
+    'omega watches':         { wealth: 5000,    note: 'Fashion · Watches · Switzerland · Omega · Part of Swatch Group · Speedmaster Seamaster · James Bond watch · Neil Armstrong wore Speedmaster on Moon · Founded 1848', url: 'https://en.wikipedia.org/wiki/Omega_SA' },
+    'pandora jewellery':     { wealth: 13000,   note: 'Fashion · Jewellery · Denmark · Pandora · $13B · Charm bracelets · Founded 1982 Copenhagen · Most worn jewellery brand in world · 100M customers', url: 'https://en.wikipedia.org/wiki/Pandora_(jewelry)' },
+    'swarovski jewellery':   { wealth: 3000,    note: 'Fashion · Jewellery · Austria · Swarovski · $3B est. privately owned · Crystal jewellery · Founded 1895 · Elvis jumpsuits Oscars dresses · 2B crystals/year', url: 'https://en.wikipedia.org/wiki/Swarovski' },
 
     '_sub_debt_top20':       { _subgroup: 'National Debt — Top 20 Countries 2025' },
     'usa debt':              { wealth: 38300000, note: 'National Debt · USA · $38.3 Trillion · 125% of GDP · Growing by $2.9T per year · IMF 2025', url: 'https://en.wikipedia.org/wiki/National_debt_of_the_United_States' },
@@ -5255,6 +5666,15 @@
   function showAddForm() {
     document.getElementById('add-form').style.display = 'block';
     document.getElementById('add-wealth').focus();
+    // Auto-fill wiki URL if field is empty
+    const urlField = document.getElementById('add-url');
+    if (urlField && !urlField.value.trim()) {
+      const name = document.getElementById('admin-search').value.trim();
+      if (name) {
+        const wikiName = name.replace(/ /g, '_');
+        urlField.value = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(wikiName);
+      }
+    }
   }
 
   async function addCeleb() {
