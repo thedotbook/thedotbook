@@ -1747,11 +1747,11 @@
     const panel = document.createElement('div');
     panel.className = 'inline-search-panel';
     panel.style.cssText = 'display:block;margin-top:8px;padding:8px 10px;background:#1a1a1a;border:1px solid #444;border-radius:6px';
-    panel.innerHTML = '<div style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap">'
-      + '<input type="text" placeholder="Search for a connection..." style="min-width:0;flex:1;background:#000;border:1px solid #555;color:#fff;padding:6px 10px;font-size:13px;border-radius:4px;outline:none;box-sizing:border-box" />'
-      + '<button onclick="doInlineSearch(this)" style="flex-shrink:0;background:#f9e74a;color:#000;border:none;padding:6px 14px;font-size:13px;border-radius:4px;cursor:pointer;font-weight:bold">Go</button>'
-      + '<span style="flex-shrink:0;color:#555;font-size:16px;cursor:pointer;padding:0 4px" onclick="this.closest(\'.inline-search-panel\').remove()">✕</span>'
-      + '</div>'
+    panel.innerHTML = '<table style="width:100%;border-collapse:collapse"><tr>'
+      + '<td style="width:100%"><input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search for a connection..." style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:8px 10px;font-size:13px;border-radius:4px;outline:none;box-sizing:border-box" /></td>'
+      + '<td style="white-space:nowrap;padding-left:6px"><button onclick="doInlineSearch(this)" style="background:#f9e74a;color:#000;border:none;padding:8px 12px;font-size:13px;border-radius:4px;cursor:pointer;font-weight:bold">Go</button>'
+      + '<span style="color:#555;font-size:16px;cursor:pointer;padding:0 6px;vertical-align:middle" onclick="this.closest(\'.inline-search-panel\').remove()">✕</span></td>'
+      + '</tr></table>'
       + '<div class="inline-search-result" style="margin-top:8px;font-size:12px;color:#aaa;display:none"></div>';
 
     container.appendChild(panel);
