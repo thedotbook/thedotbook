@@ -1732,15 +1732,55 @@
   }
 
 
-  function searchFromRow(name) {
-    const searchBox = document.getElementById('name-input');
-    if (searchBox) {
-      searchBox.value = name;
-      toggleClearBtn();
-      searchBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      searchBox.focus();
-      // Trigger the search automatically
-      setTimeout(() => lookupCelebrity(), 100);
+  function searchFromRow(name, btn) {
+    const target = btn || event.target;
+    const container = target.closest('td') || target.parentElement;
+
+    // If a panel is already open, close it
+    const existingPanel = container.querySelector('.inline-search-panel');
+    if (existingPanel) { existingPanel.remove(); return; }
+
+    // Close any other open panels
+    document.querySelectorAll('.inline-search-panel').forEach(p => p.remove());
+
+    // Build inline panel
+    const panel = document.createElement('div');
+    panel.className = 'inline-search-panel';
+    panel.style.cssText = 'display:block;margin-top:8px;padding:8px 10px;background:#1a1a1a;border:1px solid #444;border-radius:6px';
+    panel.innerHTML = '<div style="display:flex;gap:6px;align-items:center">'
+      + '<input type="text" placeholder="Search for a connection..." style="flex:1;background:#000;border:1px solid #555;color:#fff;padding:6px 10px;font-size:13px;border-radius:4px;outline:none" />'
+      + '<button onclick="doInlineSearch(this)" style="background:#f9e74a;color:#000;border:none;padding:6px 12px;font-size:13px;border-radius:4px;cursor:pointer;font-weight:bold;white-space:nowrap">Go</button>'
+      + '<span style="color:#555;font-size:16px;cursor:pointer;padding:0 4px" onclick="this.closest(\'.inline-search-panel\').remove()">✕</span>'
+      + '</div>'
+      + '<div class="inline-search-result" style="margin-top:8px;font-size:12px;color:#aaa;display:none"></div>';
+
+    container.appendChild(panel);
+
+    const input = panel.querySelector('input');
+    input.focus();
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') doInlineSearch(panel.querySelector('button')); });
+  }
+
+  function doInlineSearch(btn) {
+    const panel = btn.closest('.inline-search-panel');
+    const input = panel.querySelector('input');
+    const result = panel.querySelector('.inline-search-result');
+    const q = input.value.trim().toLowerCase();
+    if (!q) return;
+
+    const match = CELEB_DB[q] || Object.entries(CELEB_DB).find(([k]) => k.includes(q) || q.includes(k))?.[1];
+    const matchKey = CELEB_DB[q] ? q : Object.keys(CELEB_DB).find(k => k.includes(q) || q.includes(k));
+
+    result.style.display = 'block';
+    if (match && !match._subgroup) {
+      const pg = Math.ceil(match.wealth / 3000) || 1;
+      const wikiBtn = match.url ? ' <a href="' + match.url + '" target="_blank" style="color:#f9e74a;font-size:11px">↗ Wiki</a>' : '';
+      result.innerHTML = '<span style="color:#fff;font-weight:bold">' + escHtml(matchKey.replace(/\b\w/g, c => c.toUpperCase())) + '</span>'
+        + ' &nbsp;·&nbsp; <span style="background:#fff;color:#000;padding:1px 5px;border-radius:2px;font-size:11px">p.' + pg + '</span>'
+        + ' &nbsp;·&nbsp; <span style="color:#888">' + escHtml(match.note) + '</span>'
+        + wikiBtn;
+    } else {
+      result.innerHTML = '<span style="color:#ff6666">Not found: ' + escHtml(input.value) + '</span>';
     }
   }
 
@@ -2018,7 +2058,7 @@
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search in app" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
       + '</tr>';
   }
 
