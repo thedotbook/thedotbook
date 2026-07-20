@@ -6344,53 +6344,16 @@
   }
 
   // Smart keyword mapping
-  const AI_KEYWORDS = {
-    'father': ['father','dad','son of','daughter of','parent','family','born to'],
-    'mother': ['mother','mum','mom','parent','family','born to'],
-    'wife': ['wife','married','spouse','partner'],
-    'husband': ['husband','married','spouse','partner'],
-    'born': ['born','birthplace','early life','childhood','grew up'],
-    'car': ['car','vehicle','drives','ferrari','lamborghini','rolls','mclaren'],
-    'band': ['band','group','member','formed','founded','alongside'],
-    'worth': ['worth','wealth','net worth','fortune','estimated'],
-    'children': ['children','child','son','daughter','kids'],
-    'school': ['school','educated','university','college','studied'],
-    'age': ['born','age','years old'],
-  };
+  const WORKER_URL = 'https://crimson-sky-6107.cook18404.workers.dev/';
 
-  function smartSearch(text, question) {
-    const q = question.toLowerCase();
-    const sentences = text.split('. ');
-    let keywords = q.split(' ').filter(w => w.length > 3);
-    for (const [trigger, expansions] of Object.entries(AI_KEYWORDS)) {
-      if (q.includes(trigger)) keywords = keywords.concat(expansions);
-    }
-    const scored = sentences.map(s => {
-      const sl = s.toLowerCase();
-      const score = keywords.filter(k => sl.includes(k)).length;
-      return { s, score };
-    }).sort((a, b) => b.score - a.score);
-    const best = scored.filter(x => x.score > 0).slice(0, 2).map(x => x.s);
-    return best.length > 0 ? best.join('. ') + '.' : sentences.slice(0, 2).join('. ') + '.';
-  }
-
-  async function wikiSearch(name) {
-    // Try REST summary first
-    try {
-      const res = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(name.replace(/ /g,'_')));
-      if (res.ok) { const d = await res.json(); if (d.extract) return d.extract; }
-    } catch(e) {}
-    // Fallback: opensearch API with origin=* for CORS
-    try {
-      const sr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(name) + '&format=json&origin=*&srlimit=1');
-      const sd = await sr.json();
-      const title = sd?.query?.search?.[0]?.title;
-      if (title) {
-        const r2 = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title.replace(/ /g,'_')));
-        if (r2.ok) { const d2 = await r2.json(); if (d2.extract) return d2.extract; }
-      }
-    } catch(e) {}
-    return null;
+  async function callClaude(question, context) {
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: question, context: context || '' })
+    });
+    const data = await response.json();
+    return data.text || 'No answer found.';
   }
 
   async function sendPopupAI(name) {
@@ -6398,17 +6361,35 @@
     const result = document.getElementById('popup-ai-result');
     const question = input.value.trim();
     if (!question) return;
+
     result.style.display = 'block';
-    result.innerHTML = '<em style="color:#aaa">Searching...</em>';
-    const extract = await wikiSearch(name);
-    if (extract) {
-      const answer = smartSearch(extract, question);
+    result.innerHTML = '<em style="color:#aaa">Asking Claude...</em>';
+
+    try {
+      const context = 'The user is looking at ' + name + ' in The Dot Book wealth app where every dot = $1 million.';
+      const answer = await callClaude(question, context);
       const db = CELEB_DB[name.toLowerCase()];
       const dotNote = db ? ' <em style="color:#888">(Dot Book page ' + getPage(db.wealth) + ')</em>' : '';
       result.innerHTML = '<strong style="color:#f9e74a">' + escHtml(name) + ':</strong> ' + escHtml(answer) + dotNote;
-    } else {
-      result.innerHTML = 'No Wikipedia page found for <strong>' + escHtml(name) + '</strong>. Try the ↗ Wikipedia button above.';
+    } catch(e) {
+      result.innerHTML = 'Could not connect. Please try again.';
     }
+  }
+
+  function answerFromDB(question) {
+    const q = question.toLowerCase();
+    if (q.includes('wealthiest') || q.includes('richest') || q.includes('most money')) {
+      const people = Object.entries(CELEB_DB).filter(([k,v]) => v.wealth && !v._subgroup && !k.includes('top20'));
+      people.sort((a,b) => b[1].wealth - a[1].wealth);
+      const top = people.slice(0,3);
+      const lines = top.map(([k,v]) => (v.name || k.replace(/\b\w/g,c=>c.toUpperCase())) + ' — $' + formatWealth(v.wealth));
+      return 'The wealthiest people in The Dot Book are: ' + lines.join(', ') + '. Every dot = $1 million.';
+    }
+    if (q.includes('how many') && (q.includes('entries') || q.includes('people') || q.includes('in the book'))) {
+      const count = Object.entries(CELEB_DB).filter(([k,v]) => !v._subgroup && !k.startsWith('_sub')).length;
+      return 'The Dot Book currently has ' + count + ' entries!';
+    }
+    return null;
   }
 
   function sendAIMessage() {
@@ -6416,20 +6397,32 @@
     const question = input.value.trim();
     if (!question) return;
     input.value = '';
-    const name = aiCurrentEntity ? aiCurrentEntity.name : question;
+
     addAIMessage(question, 'ai-msg-user');
-    const thinking = addAIMessage('Searching...', 'ai-msg-thinking');
-    wikiSearch(name).then(extract => {
+    const thinking = addAIMessage('Asking Claude...', 'ai-msg-thinking');
+
+    // Try database first for simple questions
+    const dbAnswer = answerFromDB(question);
+    if (dbAnswer) {
       thinking.remove();
-      if (extract) {
-        const answer = smartSearch(extract, question);
-        const db = CELEB_DB[name.toLowerCase()];
-        const dotNote = db ? ' (Dot Book page ' + getPage(db.wealth) + ')' : '';
-        addAIMessage(answer + dotNote, 'ai-msg-bot');
-      } else {
-        addAIMessage('No Wikipedia page found for "' + name + '". Try the ↗ Wikipedia button on their entry.', 'ai-msg-bot');
-      }
-    });
+      addAIMessage(dbAnswer, 'ai-msg-bot');
+      return;
+    }
+
+    // Otherwise call Claude via Worker
+    const context = aiCurrentEntity
+      ? 'The user is looking at ' + aiCurrentEntity.name + ' (' + aiCurrentEntity.note + ') in The Dot Book wealth app where every dot = $1 million.'
+      : 'The user is browsing The Dot Book wealth perspective app where every dot = $1 million.';
+
+    callClaude(question, context)
+      .then(answer => {
+        thinking.remove();
+        addAIMessage(answer, 'ai-msg-bot');
+      })
+      .catch(() => {
+        thinking.remove();
+        addAIMessage('Could not connect. Please try again.', 'ai-msg-bot');
+      });
   }
 </script>
 
