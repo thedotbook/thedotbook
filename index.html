@@ -6343,49 +6343,71 @@
     return div;
   }
 
+  // Smart keyword mapping
+  const AI_KEYWORDS = {
+    'father': ['father','dad','son of','daughter of','parent','family','born to'],
+    'mother': ['mother','mum','mom','parent','family','born to'],
+    'wife': ['wife','married','spouse','partner'],
+    'husband': ['husband','married','spouse','partner'],
+    'born': ['born','birthplace','early life','childhood','grew up'],
+    'car': ['car','vehicle','drives','ferrari','lamborghini','rolls','mclaren'],
+    'band': ['band','group','member','formed','founded','alongside'],
+    'worth': ['worth','wealth','net worth','fortune','estimated'],
+    'children': ['children','child','son','daughter','kids'],
+    'school': ['school','educated','university','college','studied'],
+    'age': ['born','age','years old'],
+  };
+
+  function smartSearch(text, question) {
+    const q = question.toLowerCase();
+    const sentences = text.split('. ');
+    let keywords = q.split(' ').filter(w => w.length > 3);
+    for (const [trigger, expansions] of Object.entries(AI_KEYWORDS)) {
+      if (q.includes(trigger)) keywords = keywords.concat(expansions);
+    }
+    const scored = sentences.map(s => {
+      const sl = s.toLowerCase();
+      const score = keywords.filter(k => sl.includes(k)).length;
+      return { s, score };
+    }).sort((a, b) => b.score - a.score);
+    const best = scored.filter(x => x.score > 0).slice(0, 2).map(x => x.s);
+    return best.length > 0 ? best.join('. ') + '.' : sentences.slice(0, 2).join('. ') + '.';
+  }
+
+  async function wikiSearch(name) {
+    // Try REST summary first
+    try {
+      const res = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(name.replace(/ /g,'_')));
+      if (res.ok) { const d = await res.json(); if (d.extract) return d.extract; }
+    } catch(e) {}
+    // Fallback: opensearch API with origin=* for CORS
+    try {
+      const sr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(name) + '&format=json&origin=*&srlimit=1');
+      const sd = await sr.json();
+      const title = sd?.query?.search?.[0]?.title;
+      if (title) {
+        const r2 = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title.replace(/ /g,'_')));
+        if (r2.ok) { const d2 = await r2.json(); if (d2.extract) return d2.extract; }
+      }
+    } catch(e) {}
+    return null;
+  }
+
   async function sendPopupAI(name) {
     const input = document.getElementById('popup-ai-input');
     const result = document.getElementById('popup-ai-result');
     const question = input.value.trim();
     if (!question) return;
-
     result.style.display = 'block';
-    result.textContent = 'Searching...';
-
-    try {
-      // Search Wikipedia for the person + question context
-      const searchTerm = name + ' ' + question;
-      const searchUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(name.replace(/ /g,'_'));
-
-      const res = await fetch(searchUrl);
-      const data = await res.json();
-
-      if (data.extract) {
-        // Got Wikipedia summary — find relevant sentences
-        const sentences = data.extract.split(/(?<=[.!?])\s+/);
-        const q = question.toLowerCase();
-
-        // Try to find sentences relevant to the question
-        const relevant = sentences.filter(s => {
-          const sl = s.toLowerCase();
-          return q.split(' ').some(word => word.length > 3 && sl.includes(word));
-        });
-
-        const answer = relevant.length > 0
-          ? relevant.slice(0,2).join(' ')
-          : sentences.slice(0,2).join(' ');
-
-        // Also check Dot Book database
-        const dbKey = name.toLowerCase();
-        const db = CELEB_DB[dbKey];
-        const dotNote = db ? ' In The Dot Book they appear on page ' + getPage(db.wealth) + '.' : '';
-
-        result.innerHTML = '<strong style="color:#f9e74a">' + escHtml(name) + ':</strong> ' + escHtml(answer) + dotNote;
-      } else {
-        result.textContent = 'No Wikipedia article found for ' + name + '. Try the Wikipedia ↗ button above.';
-      }
-    } catch(e) {
-      result.textContent = 'Search unavailable. Try the Wikipedia ↗ button above.';
+    result.innerHTML = '<em style="color:#aaa">Searching...</em>';
+    const extract = await wikiSearch(name);
+    if (extract) {
+      const answer = smartSearch(extract, question);
+      const db = CELEB_DB[name.toLowerCase()];
+      const dotNote = db ? ' <em style="color:#888">(Dot Book page ' + getPage(db.wealth) + ')</em>' : '';
+      result.innerHTML = '<strong style="color:#f9e74a">' + escHtml(name) + ':</strong> ' + escHtml(answer) + dotNote;
+    } else {
+      result.innerHTML = 'No Wikipedia page found for <strong>' + escHtml(name) + '</strong>. Try the ↗ Wikipedia button above.';
     }
   }
 
@@ -6394,35 +6416,20 @@
     const question = input.value.trim();
     if (!question) return;
     input.value = '';
-
     const name = aiCurrentEntity ? aiCurrentEntity.name : question;
     addAIMessage(question, 'ai-msg-user');
-    const thinking = addAIMessage('Searching Wikipedia...', 'ai-msg-thinking');
-
-    const wikiUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(name.replace(/ /g,'_'));
-
-    fetch(wikiUrl)
-      .then(r => r.json())
-      .then(data => {
-        thinking.remove();
-        if (data.extract) {
-          const sentences = data.extract.split(/(?<=[.!?])\s+/);
-          const q = question.toLowerCase();
-          const relevant = sentences.filter(s =>
-            q.split(' ').some(w => w.length > 3 && s.toLowerCase().includes(w))
-          );
-          const answer = (relevant.length > 0 ? relevant : sentences).slice(0,3).join(' ');
-          const db = CELEB_DB[name.toLowerCase()];
-          const dotNote = db ? ' (Dot Book page ' + getPage(db.wealth) + ')' : '';
-          addAIMessage(answer + dotNote, 'ai-msg-bot');
-        } else {
-          addAIMessage('No Wikipedia page found for "' + name + '". Try the Wikipedia ↗ button on their entry.', 'ai-msg-bot');
-        }
-      })
-      .catch(() => {
-        thinking.remove();
-        addAIMessage('Search unavailable. Try the Wikipedia ↗ button on any entry.', 'ai-msg-bot');
-      });
+    const thinking = addAIMessage('Searching...', 'ai-msg-thinking');
+    wikiSearch(name).then(extract => {
+      thinking.remove();
+      if (extract) {
+        const answer = smartSearch(extract, question);
+        const db = CELEB_DB[name.toLowerCase()];
+        const dotNote = db ? ' (Dot Book page ' + getPage(db.wealth) + ')' : '';
+        addAIMessage(answer + dotNote, 'ai-msg-bot');
+      } else {
+        addAIMessage('No Wikipedia page found for "' + name + '". Try the ↗ Wikipedia button on their entry.', 'ai-msg-bot');
+      }
+    });
   }
 </script>
 
