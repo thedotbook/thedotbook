@@ -1814,6 +1814,9 @@
     if (existing) existing.remove();
 
     document.body.insertAdjacentHTML('beforeend', html);
+
+    // Set AI context to this entity
+    if (typeof setAIEntity === 'function') setAIEntity(name, note);
   }
 
   // ── Category classification ────────────────────────────
@@ -6219,78 +6222,53 @@
   }
 </script>
 <!-- AI Assistant Chat Bubble -->
-<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:9000;width:52px;height:52px;background:#ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(255,255,255,0.3);font-size:22px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease" title="Ask the Dot Book AI">🤖</div>
+<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:9000;width:48px;height:48px;background:#ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(255,255,255,0.25);font-size:20px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease" title="Ask The Dot Book AI">🤖</div>
 
-<div id="ai-panel" style="display:none;position:fixed;bottom:88px;right:16px;left:16px;max-width:480px;margin:0 auto;z-index:9000;background:#111111;border:1px solid #333333;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.8);font-family:Georgia,serif;overflow:hidden">
+<div id="ai-panel" style="display:none;position:fixed;bottom:82px;right:16px;left:16px;max-width:400px;margin:0 auto;z-index:9000;background:#ffffff;border:1px solid #dddddd;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:Georgia,serif;overflow:hidden">
 
   <!-- Header -->
-  <div style="background:#000000;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #333333">
-    <div style="color:#ffffff;font-size:13px;letter-spacing:2px;text-transform:uppercase">🤖 Ask The Dot Book</div>
-    <div onclick="toggleAIPanel()" style="color:#555555;font-size:20px;cursor:pointer;line-height:1">✕</div>
+  <div style="background:#000000;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+    <div id="ai-context-label" style="color:#ffffff;font-size:12px;letter-spacing:1px">🤖 ASK THE DOT BOOK</div>
+    <div onclick="toggleAIPanel()" style="color:#888888;font-size:18px;cursor:pointer;line-height:1;padding:0 2px">✕</div>
   </div>
 
-  <!-- Suggested questions -->
-  <div id="ai-suggestions" style="padding:12px 16px;border-bottom:1px solid #222222">
-    <div style="color:#666666;font-size:11px;letter-spacing:1px;margin-bottom:8px">TRY ASKING:</div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px">
-      <span class="ai-chip" onclick="askAI('How does Elon Musk\'s wealth compare to the UK national debt?')">Musk vs UK debt</span>
-      <span class="ai-chip" onclick="askAI('What could you buy with Jeff Bezos\'s wealth?')">What Bezos could buy</span>
-      <span class="ai-chip" onclick="askAI('How much does a nuclear submarine cost compared to a footballer\'s salary?')">Sub vs footballer</span>
-      <span class="ai-chip" onclick="askAI('Which country has the most nuclear warheads?')">Nuclear warheads</span>
-      <span class="ai-chip" onclick="askAI('What is the most expensive car ever made?')">Most expensive car</span>
-    </div>
+  <!-- Messages -->
+  <div id="ai-messages" style="height:180px;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:8px;background:#ffffff">
+    <div id="ai-placeholder" style="color:#999999;font-size:12px;text-align:center;margin-top:60px;line-height:1.6">Tap any person in the list to set context<br>then ask a question here 💡</div>
   </div>
 
-  <!-- Chat messages -->
-  <div id="ai-messages" style="height:260px;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px">
-    <div style="color:#555555;font-size:12px;text-align:center;margin-top:80px">Ask me anything about wealth, perspective and the world 💡</div>
-  </div>
-
-  <!-- Input -->
-  <div style="padding:10px 12px;border-top:1px solid #222222;display:flex;gap:8px;align-items:center">
-    <input id="ai-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Ask anything..." style="flex:1;background:#000000;border:1px solid #444444;color:#ffffff;padding:8px 12px;font-size:13px;border-radius:6px;outline:none;font-family:Georgia,serif" />
-    <button onclick="sendAIMessage()" style="background:#ffffff;color:#000000;border:none;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">Ask</button>
+  <!-- Input — black text on white background -->
+  <div style="padding:8px 10px;border-top:1px solid #eeeeee;background:#ffffff;display:flex;gap:6px;align-items:center">
+    <input id="ai-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ask a question..." style="flex:1;background:#ffffff;border:1.5px solid #cccccc;color:#000000;padding:8px 10px;font-size:13px;border-radius:6px;outline:none;font-family:Georgia,serif;box-sizing:border-box" />
+    <button onclick="sendAIMessage()" style="flex-shrink:0;background:#000000;color:#ffffff;border:none;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">Ask</button>
   </div>
 
 </div>
 
 <style>
-  .ai-chip {
-    background:#1a1a1a;
-    color:#aaaaaa;
-    border:1px solid #333333;
-    border-radius:12px;
-    padding:4px 10px;
-    font-size:11px;
-    cursor:pointer;
-    white-space:nowrap;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .ai-chip:hover { background:#222222; color:#ffffff; }
   .ai-msg-user {
-    background:#1a1a1a;
-    color:#ffffff;
-    padding:8px 12px;
+    background:#f0f0f0;
+    color:#000000;
+    padding:7px 10px;
     border-radius:8px 8px 2px 8px;
-    font-size:13px;
+    font-size:12px;
     line-height:1.5;
     align-self:flex-end;
-    max-width:85%;
+    max-width:88%;
   }
   .ai-msg-bot {
-    background:#0a0a0a;
-    color:#cccccc;
-    padding:8px 12px;
+    background:#000000;
+    color:#ffffff;
+    padding:7px 10px;
     border-radius:8px 8px 8px 2px;
-    font-size:13px;
+    font-size:12px;
     line-height:1.6;
     align-self:flex-start;
     max-width:95%;
-    border:1px solid #222222;
   }
   .ai-msg-thinking {
-    color:#555555;
-    font-size:12px;
+    color:#aaaaaa;
+    font-size:11px;
     font-style:italic;
     align-self:flex-start;
   }
@@ -6298,29 +6276,38 @@
 
 <script>
   let aiPanelOpen = false;
+  let aiCurrentEntity = null; // Tracks selected entity
 
   function toggleAIPanel() {
     aiPanelOpen = !aiPanelOpen;
     document.getElementById('ai-panel').style.display = aiPanelOpen ? 'block' : 'none';
     document.getElementById('ai-bubble').style.transform = aiPanelOpen ? 'scale(0.9)' : 'scale(1)';
-    if (aiPanelOpen) {
-      setTimeout(() => document.getElementById('ai-input').focus(), 100);
-    }
+    if (aiPanelOpen) setTimeout(() => document.getElementById('ai-input').focus(), 100);
+  }
+
+  function setAIEntity(name, note) {
+    aiCurrentEntity = { name, note };
+    // Update header label
+    document.getElementById('ai-context-label').textContent = '🤖 ' + name.toUpperCase();
+    // Clear messages and show ready state
+    const msgs = document.getElementById('ai-messages');
+    msgs.innerHTML = '<div style="color:#999999;font-size:11px;text-align:center;margin-top:50px;line-height:1.6">Ready to answer questions about<br><strong style="color:#000000">' + name + '</strong> 💡</div>';
+    // Show and focus panel
+    aiPanelOpen = true;
+    document.getElementById('ai-panel').style.display = 'block';
+    document.getElementById('ai-bubble').style.transform = 'scale(0.9)';
+    setTimeout(() => document.getElementById('ai-input').focus(), 100);
   }
 
   document.getElementById('ai-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') sendAIMessage();
   });
 
-  function askAI(question) {
-    document.getElementById('ai-input').value = question;
-    sendAIMessage();
-  }
-
-  function addMessage(text, type) {
+  function addAIMessage(text, type) {
     const msgs = document.getElementById('ai-messages');
-    // Clear placeholder on first message
-    if (msgs.querySelector('[style*="margin-top:80px"]')) msgs.innerHTML = '';
+    // Clear placeholder
+    const ph = msgs.querySelector('[id]');
+    if (ph) ph.remove();
     const div = document.createElement('div');
     div.className = type;
     div.innerHTML = text;
@@ -6333,12 +6320,15 @@
     const input = document.getElementById('ai-input');
     const question = input.value.trim();
     if (!question) return;
-
     input.value = '';
-    document.getElementById('ai-suggestions').style.display = 'none';
 
-    addMessage(question, 'ai-msg-user');
-    const thinking = addMessage('Thinking...', 'ai-msg-thinking');
+    addAIMessage(question, 'ai-msg-user');
+    const thinking = addAIMessage('Thinking...', 'ai-msg-thinking');
+
+    // Build context string
+    const context = aiCurrentEntity
+      ? 'The user is currently looking at: ' + aiCurrentEntity.name + ' (' + aiCurrentEntity.note + '). '
+      : '';
 
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -6346,12 +6336,11 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
-          max_tokens: 1000,
+          max_tokens: 400,
           tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-          system: `You are The Dot Book AI assistant. The Dot Book is a wealth perspective app where every dot = $1 million. 
-Your job is to answer questions about wealth, money, famous people, world events and put figures in perspective using dots where helpful.
-Keep answers concise — 2-4 sentences max. Use dot metaphors when relevant e.g. "That's 500 dots" meaning $500 million.
-You have access to web search for current information. Always search for current figures before answering questions about wealth, prices or recent events.`,
+          system: `You are The Dot Book AI assistant. Every dot = $1 million. ${context}
+Answer questions about wealth, famous people and world topics concisely — 2-3 sentences max.
+Use dot metaphors e.g. "That is 500 dots = $500 million". Search the web for current facts.`,
           messages: [{ role: 'user', content: question }]
         })
       });
@@ -6359,21 +6348,16 @@ You have access to web search for current information. Always search for current
       const data = await response.json();
       thinking.remove();
 
-      // Extract text from response (may include tool use blocks)
       const text = (data.content || [])
         .filter(b => b.type === 'text')
         .map(b => b.text)
         .join(' ')
         .trim();
 
-      if (text) {
-        addMessage(text, 'ai-msg-bot');
-      } else {
-        addMessage('Sorry, I couldn\'t get an answer. Please try again!', 'ai-msg-bot');
-      }
+      addAIMessage(text || 'Sorry, no answer found. Try again!', 'ai-msg-bot');
     } catch(err) {
       thinking.remove();
-      addMessage('Connection error — please try again.', 'ai-msg-bot');
+      addAIMessage('Connection error — please try again.', 'ai-msg-bot');
     }
   }
 </script>
