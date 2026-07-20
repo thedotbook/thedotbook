@@ -1806,6 +1806,17 @@
     html += '<div style="font-size:13px;color:#aaaaaa;margin-bottom:16px">Page <strong style="color:#ffffff">' + pg + '</strong>' + star + ' of The Dot Book</div>';
     if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
     html += '<div style="font-size:10px;color:#888888;margin-bottom:16px">&#9888; Forbes public estimate · Figures fluctuate daily · DYOR</div>';
+
+    // Ask AI section inside popup
+    html += '<div style="border-top:1px solid #333;padding-top:14px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:8px">🤖 ASK ABOUT ' + escHtml(name.toUpperCase()) + '</div>';
+    html += '<table style="width:100%;border-collapse:collapse"><tr>';
+    html += '<td style="width:100%"><input id="popup-ai-input" type="text" autocomplete="off" autocorrect="off" placeholder="Ask a question..." style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:7px 10px;font-size:12px;border-radius:5px;outline:none;box-sizing:border-box;font-family:Georgia,serif" /></td>';
+    html += '<td style="white-space:nowrap;padding-left:6px"><button onclick="sendPopupAI(\'' + escHtml(name).replace(/'/g,"\\'") + '\')" style="background:#fff;color:#000;border:none;padding:7px 12px;border-radius:5px;font-size:12px;font-weight:bold;cursor:pointer">Ask</button></td>';
+    html += '</tr></table>';
+    html += '<div id="popup-ai-result" style="margin-top:8px;font-size:12px;color:#cccccc;text-align:left;line-height:1.6;display:none"></div>';
+    html += '</div>';
+
     html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:#ffffff;border:none;border-radius:4px;padding:10px 24px;color:#000000;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
     html += '</div></div>';
 
@@ -6332,63 +6343,86 @@
     return div;
   }
 
-  async function sendAIMessage() {
+  async function sendPopupAI(name) {
+    const input = document.getElementById('popup-ai-input');
+    const result = document.getElementById('popup-ai-result');
+    const question = input.value.trim();
+    if (!question) return;
+
+    result.style.display = 'block';
+    result.textContent = 'Searching...';
+
+    try {
+      // Search Wikipedia for the person + question context
+      const searchTerm = name + ' ' + question;
+      const searchUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(name.replace(/ /g,'_'));
+
+      const res = await fetch(searchUrl);
+      const data = await res.json();
+
+      if (data.extract) {
+        // Got Wikipedia summary — find relevant sentences
+        const sentences = data.extract.split(/(?<=[.!?])\s+/);
+        const q = question.toLowerCase();
+
+        // Try to find sentences relevant to the question
+        const relevant = sentences.filter(s => {
+          const sl = s.toLowerCase();
+          return q.split(' ').some(word => word.length > 3 && sl.includes(word));
+        });
+
+        const answer = relevant.length > 0
+          ? relevant.slice(0,2).join(' ')
+          : sentences.slice(0,2).join(' ');
+
+        // Also check Dot Book database
+        const dbKey = name.toLowerCase();
+        const db = CELEB_DB[dbKey];
+        const dotNote = db ? ' In The Dot Book they appear on page ' + getPage(db.wealth) + '.' : '';
+
+        result.innerHTML = '<strong style="color:#f9e74a">' + escHtml(name) + ':</strong> ' + escHtml(answer) + dotNote;
+      } else {
+        result.textContent = 'No Wikipedia article found for ' + name + '. Try the Wikipedia ↗ button above.';
+      }
+    } catch(e) {
+      result.textContent = 'Search unavailable. Try the Wikipedia ↗ button above.';
+    }
+  }
+
+  function sendAIMessage() {
     const input = document.getElementById('ai-input');
     const question = input.value.trim();
     if (!question) return;
     input.value = '';
 
+    const name = aiCurrentEntity ? aiCurrentEntity.name : question;
     addAIMessage(question, 'ai-msg-user');
-    const thinking = addAIMessage('Thinking...', 'ai-msg-thinking');
+    const thinking = addAIMessage('Searching Wikipedia...', 'ai-msg-thinking');
 
-    // Build context string
-    const context = aiCurrentEntity
-      ? 'The user is currently looking at: ' + aiCurrentEntity.name + ' (' + aiCurrentEntity.note + '). '
-      : '';
+    const wikiUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(name.replace(/ /g,'_'));
 
-    try {
-      // Use Wikipedia + DuckDuckGo instant answers as free no-auth APIs
-      const entityName = aiCurrentEntity ? aiCurrentEntity.name : '';
-      const searchQ = encodeURIComponent(entityName ? entityName + ' ' + question : question);
-
-      // Try DuckDuckGo instant answer API (free, no auth, CORS enabled)
-      const ddgRes = await fetch('https://api.duckduckgo.com/?q=' + searchQ + '&format=json&no_html=1&skip_disambig=1');
-      const ddgData = await ddgRes.json();
-
-      thinking.remove();
-
-      // Build answer from DDG data
-      let answer = '';
-      if (ddgData.AbstractText) {
-        answer = ddgData.AbstractText;
-      } else if (ddgData.Answer) {
-        answer = ddgData.Answer;
-      } else if (ddgData.Definition) {
-        answer = ddgData.Definition;
-      } else if (ddgData.RelatedTopics && ddgData.RelatedTopics[0]) {
-        answer = ddgData.RelatedTopics[0].Text || '';
-      }
-
-      // Also check our own database for context
-      const dbEntry = CELEB_DB[entityName.toLowerCase()] || 
-                      Object.entries(CELEB_DB).find(([k]) => k === entityName.toLowerCase())?.[1];
-      let dbNote = '';
-      if (dbEntry) dbNote = ' In The Dot Book: ' + dbEntry.note + ' (Page ' + getPage(dbEntry.wealth) + ').';
-
-      if (answer) {
-        addAIMessage(answer + dbNote, 'ai-msg-bot');
-      } else {
-        // Fall back to showing what we know from our database
-        if (dbEntry) {
-          addAIMessage('From The Dot Book: ' + entityName + ' — ' + dbEntry.note + '. They appear on page ' + getPage(dbEntry.wealth) + ' of The Dot Book.', 'ai-msg-bot');
+    fetch(wikiUrl)
+      .then(r => r.json())
+      .then(data => {
+        thinking.remove();
+        if (data.extract) {
+          const sentences = data.extract.split(/(?<=[.!?])\s+/);
+          const q = question.toLowerCase();
+          const relevant = sentences.filter(s =>
+            q.split(' ').some(w => w.length > 3 && s.toLowerCase().includes(w))
+          );
+          const answer = (relevant.length > 0 ? relevant : sentences).slice(0,3).join(' ');
+          const db = CELEB_DB[name.toLowerCase()];
+          const dotNote = db ? ' (Dot Book page ' + getPage(db.wealth) + ')' : '';
+          addAIMessage(answer + dotNote, 'ai-msg-bot');
         } else {
-          addAIMessage('I could not find a specific answer. Try searching Wikipedia for: ' + (entityName || question), 'ai-msg-bot');
+          addAIMessage('No Wikipedia page found for "' + name + '". Try the Wikipedia ↗ button on their entry.', 'ai-msg-bot');
         }
-      }
-    } catch(err) {
-      thinking.remove();
-      addAIMessage('Connection error — please try again.', 'ai-msg-bot');
-    }
+      })
+      .catch(() => {
+        thinking.remove();
+        addAIMessage('Search unavailable. Try the Wikipedia ↗ button on any entry.', 'ai-msg-bot');
+      });
   }
 </script>
 
