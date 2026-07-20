@@ -6222,9 +6222,9 @@
   }
 </script>
 <!-- AI Assistant Chat Bubble -->
-<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:9000;width:48px;height:48px;background:#ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(255,255,255,0.25);font-size:20px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease" title="Ask The Dot Book AI">🤖</div>
+<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:9000;width:52px;height:52px;background:#000000;border:2px solid #ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease;box-shadow:0 0 12px 4px rgba(255,255,255,0.6),0 0 24px 8px rgba(255,255,255,0.2)" title="Ask The Dot Book AI">🤖</div>
 
-<div id="ai-panel" style="display:none;position:fixed;bottom:82px;right:16px;left:16px;max-width:400px;margin:0 auto;z-index:9000;background:#ffffff;border:1px solid #dddddd;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:Georgia,serif;overflow:hidden">
+<div id="ai-panel" style="display:none;position:fixed;bottom:86px;right:16px;left:16px;max-width:400px;margin:0 auto;z-index:9000;background:#ffffff;border:1px solid #dddddd;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:Georgia,serif;overflow:hidden">
 
   <!-- Header -->
   <div style="background:#000000;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
@@ -6237,15 +6237,31 @@
     <div id="ai-placeholder" style="color:#999999;font-size:12px;text-align:center;margin-top:60px;line-height:1.6">Tap any person in the list to set context<br>then ask a question here 💡</div>
   </div>
 
-  <!-- Input — black text on white background -->
-  <div style="padding:8px 10px;border-top:1px solid #eeeeee;background:#ffffff;display:flex;gap:6px;align-items:center">
-    <input id="ai-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ask a question..." style="flex:1;background:#ffffff;border:1.5px solid #cccccc;color:#000000;padding:8px 10px;font-size:13px;border-radius:6px;outline:none;font-family:Georgia,serif;box-sizing:border-box" />
-    <button onclick="sendAIMessage()" style="flex-shrink:0;background:#000000;color:#ffffff;border:none;padding:8px 14px;border-radius:6px;font-size:13px;font-weight:bold;cursor:pointer;white-space:nowrap">Ask</button>
+  <!-- Input row — table layout for reliable sizing on mobile -->
+  <div style="padding:8px 10px;border-top:1px solid #eeeeee;background:#ffffff">
+    <table style="width:100%;border-collapse:collapse">
+      <tr>
+        <td style="width:100%">
+          <input id="ai-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ask a question..." style="width:100%;background:#ffffff;border:1.5px solid #999999;color:#000000;padding:8px 10px;font-size:13px;border-radius:6px;outline:none;font-family:Georgia,serif;box-sizing:border-box" />
+        </td>
+        <td style="white-space:nowrap;padding-left:6px">
+          <button onclick="sendAIMessage()" style="background:#000000;color:#ffffff;border:none;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer">Ask</button>
+        </td>
+      </tr>
+    </table>
   </div>
 
 </div>
 
 <style>
+  @keyframes ai-pulse {
+    0%   { box-shadow: 0 0 10px 3px rgba(255,255,255,0.7), 0 0 20px 6px rgba(255,255,255,0.3); }
+    50%  { box-shadow: 0 0 18px 6px rgba(255,255,255,1),   0 0 36px 12px rgba(255,255,255,0.5); }
+    100% { box-shadow: 0 0 10px 3px rgba(255,255,255,0.7), 0 0 20px 6px rgba(255,255,255,0.3); }
+  }
+  #ai-bubble { animation: ai-pulse 2s ease-in-out infinite; }
+  #ai-bubble:active { transform: scale(0.9) !important; }
+
   .ai-msg-user {
     background:#f0f0f0;
     color:#000000;
