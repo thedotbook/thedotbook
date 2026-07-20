@@ -6222,9 +6222,9 @@
   }
 </script>
 <!-- AI Assistant Chat Bubble -->
-<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:9000;width:52px;height:52px;background:#000000;border:2px solid #ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease;box-shadow:0 0 12px 4px rgba(255,255,255,0.6),0 0 24px 8px rgba(255,255,255,0.2)" title="Ask The Dot Book AI">🤖</div>
+<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:99998;width:52px;height:52px;background:#000000;border:2px solid #ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease;box-shadow:0 0 12px 4px rgba(255,255,255,0.6),0 0 24px 8px rgba(255,255,255,0.2)" title="Ask The Dot Book AI">🤖</div>
 
-<div id="ai-panel" style="display:none;position:fixed;bottom:86px;right:16px;left:16px;max-width:400px;margin:0 auto;z-index:9000;background:#ffffff;border:1px solid #dddddd;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:Georgia,serif;overflow:hidden">
+<div id="ai-panel" style="display:none;position:fixed;bottom:86px;right:16px;left:16px;max-width:400px;margin:0 auto;z-index:99998;background:#ffffff;border:1px solid #dddddd;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);font-family:Georgia,serif;overflow:hidden">
 
   <!-- Header -->
   <div style="background:#000000;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
@@ -6347,30 +6347,44 @@
       : '';
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 400,
-          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-          system: `You are The Dot Book AI assistant. Every dot = $1 million. ${context}
-Answer questions about wealth, famous people and world topics concisely — 2-3 sentences max.
-Use dot metaphors e.g. "That is 500 dots = $500 million". Search the web for current facts.`,
-          messages: [{ role: 'user', content: question }]
-        })
-      });
+      // Use Wikipedia + DuckDuckGo instant answers as free no-auth APIs
+      const entityName = aiCurrentEntity ? aiCurrentEntity.name : '';
+      const searchQ = encodeURIComponent(entityName ? entityName + ' ' + question : question);
 
-      const data = await response.json();
+      // Try DuckDuckGo instant answer API (free, no auth, CORS enabled)
+      const ddgRes = await fetch('https://api.duckduckgo.com/?q=' + searchQ + '&format=json&no_html=1&skip_disambig=1');
+      const ddgData = await ddgRes.json();
+
       thinking.remove();
 
-      const text = (data.content || [])
-        .filter(b => b.type === 'text')
-        .map(b => b.text)
-        .join(' ')
-        .trim();
+      // Build answer from DDG data
+      let answer = '';
+      if (ddgData.AbstractText) {
+        answer = ddgData.AbstractText;
+      } else if (ddgData.Answer) {
+        answer = ddgData.Answer;
+      } else if (ddgData.Definition) {
+        answer = ddgData.Definition;
+      } else if (ddgData.RelatedTopics && ddgData.RelatedTopics[0]) {
+        answer = ddgData.RelatedTopics[0].Text || '';
+      }
 
-      addAIMessage(text || 'Sorry, no answer found. Try again!', 'ai-msg-bot');
+      // Also check our own database for context
+      const dbEntry = CELEB_DB[entityName.toLowerCase()] || 
+                      Object.entries(CELEB_DB).find(([k]) => k === entityName.toLowerCase())?.[1];
+      let dbNote = '';
+      if (dbEntry) dbNote = ' In The Dot Book: ' + dbEntry.note + ' (Page ' + getPage(dbEntry.wealth) + ').';
+
+      if (answer) {
+        addAIMessage(answer + dbNote, 'ai-msg-bot');
+      } else {
+        // Fall back to showing what we know from our database
+        if (dbEntry) {
+          addAIMessage('From The Dot Book: ' + entityName + ' — ' + dbEntry.note + '. They appear on page ' + getPage(dbEntry.wealth) + ' of The Dot Book.', 'ai-msg-bot');
+        } else {
+          addAIMessage('I could not find a specific answer. Try searching Wikipedia for: ' + (entityName || question), 'ai-msg-bot');
+        }
+      }
     } catch(err) {
       thinking.remove();
       addAIMessage('Connection error — please try again.', 'ai-msg-bot');
