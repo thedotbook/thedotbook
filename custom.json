@@ -7,80 +7,85 @@
     },
     "kimi antonelli": {
       "wealth": 3,
-      "note": "Sport Â· F1 & Motorsport",
+      "note": "Sport ÃÂ· F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Kimi_Antonelli",
       "subgroup": "F1 & Motorsport"
     },
     "oliver bearman": {
       "wealth": 3,
-      "note": "Sport Â· F1 & Motorsport",
+      "note": "Sport ÃÂ· F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Oliver_Bearman",
       "subgroup": "F1 & Motorsport"
     },
     "carlos sainz jr": {
       "wealth": 5,
-      "note": "Sport Â· F1 & Motorsport",
+      "note": "Sport ÃÂ· F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Carlos_Sainz_Jr",
       "subgroup": "F1 & Motorsport"
     },
     "rory mcilroy": {
       "wealth": 300,
-      "note": "Sport Â· Golf",
+      "note": "Sport ÃÂ· Golf",
       "url": "https://en.wikipedia.org/wiki/Rory_McIlroy",
       "subgroup": "Golf"
     },
     "phil mickelson": {
       "wealth": 400,
-      "note": "Sport Â· Golf",
+      "note": "Sport ÃÂ· Golf",
       "url": "https://en.wikipedia.org/wiki/Phil_Mickelson",
       "subgroup": "Golf"
     },
     "augustus caesar": {
       "wealth": 4600000,
-      "note": "Historical Â· Royals & Emperors",
+      "note": "Historical ÃÂ· Royals & Emperors",
       "url": "https://en.wikipedia.org/wiki/Augustus",
       "subgroup": "Royals & Emperors"
     },
     "jamie moore": {
       "wealth": 3,
-      "note": "Sport Â· Horse Racing",
+      "note": "Sport ÃÂ· Horse Racing",
       "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
       "subgroup": "Horse Racing"
     },
     "ray manzarek": {
       "wealth": 1,
-      "note": "Music Â· Rock",
+      "note": "Music ÃÂ· Rock",
       "url": "https://en.wikipedia.org/wiki/Ray_manzarek",
       "subgroup": "Rock"
     },
     "jordan speith": {
       "wealth": 10,
-      "note": "Sport Â· Golf",
+      "note": "Sport ÃÂ· Golf",
       "url": "",
       "subgroup": "Golf"
     },
     "justin thomas": {
       "wealth": 10,
-      "note": "Sport Â· Golf",
+      "note": "Sport ÃÂ· Golf",
       "url": "",
       "subgroup": "Golf"
     },
     "gianluigi aponte": {
       "wealth": 53000,
-      "note": "Tech & Business Â· Dragons & Entrepreneurs",
+      "note": "Tech & Business ÃÂ· Dragons & Entrepreneurs",
       "url": "https://en.wikipedia.org/wiki/Gianluigi_Aponte",
       "subgroup": "Dragons & Entrepreneurs"
     },
     "david gilmour": {
       "wealth": 150,
-      "note": "Music Â· Rock",
+      "note": "Music ÃÂ· Rock",
       "url": "https://en.wikipedia.org/wiki/David_Gilmour",
       "subgroup": "Rock"
     },
     "bob dylan": {
       "wealth": 0,
-      "note": "Music · American",
+      "note": "Music Â· American",
       "url": "https://en.wikipedia.org/wiki/Bob_Dylan"
+    },
+    "john stith pemberton": {
+      "wealth": 0,
+      "note": "Tech & Business · American",
+      "url": "https://en.wikipedia.org/wiki/John_Stith_Pemberton"
     }
   },
   "removes": [
@@ -98,19 +103,19 @@
     "roman abramovich": {
       "wealth": 9500,
       "url": "https://en.wikipedia.org/wiki/Roman_Abramovich",
-      "note": "Tech & Business Â· Dragons & Entrepreneurs"
+      "note": "Tech & Business ÃÂ· Dragons & Entrepreneurs"
     },
     "usa mineral": {
       "url": "https://en.wikipedia.org/wiki/Natural_resources"
     },
     "ishowspeed": {
       "wealth": 35,
-      "note": "YouTube & Streaming Â· Top Earners"
+      "note": "YouTube & Streaming ÃÂ· Top Earners"
     },
     "ray manzarek": {
       "wealth": 5,
       "url": "https://en.wikipedia.org/wiki/Ray_manzarek",
-      "note": "Historical Â· Music Legends â Estate Values"
+      "note": "Historical ÃÂ· Music Legends Ã¢ÂÂ Estate Values"
     },
     "jordan speith": {
       "wealth": 120
