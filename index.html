@@ -4839,6 +4839,136 @@
     document.getElementById('name-input').focus();
   }
 
+  async function botSearchAndOffer(name) {
+    // Open the AI panel and show it's searching
+    aiPanelOpen = true;
+    document.getElementById('ai-panel').style.display = 'block';
+    document.getElementById('ai-bubble').style.transform = 'scale(0.9)';
+    document.getElementById('ai-context-label').textContent = '🤖 SEARCHING FOR ' + name.toUpperCase();
+
+    const msgs = document.getElementById('ai-messages');
+    msgs.innerHTML = '';
+    const thinking = addAIMessage('Searching for ' + name + '...', 'ai-msg-thinking');
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: 'Tell me about ' + name + '. Include: what they are famous for, their estimated net worth in millions of dollars, their nationality, and their Wikipedia URL if you know it. Format your answer as: NAME | WORTH_IN_MILLIONS | CATEGORY | NATIONALITY | WIKIPEDIA_URL | DESCRIPTION. Use | as separator. For category use one of: Music, Film & TV, Sport, Tech & Business, Historical, Royalty & Politics. If you do not know their net worth use 0.',
+          context: 'The user searched for ' + name + ' in The Dot Book wealth app but they were not found in the database.'
+        })
+      });
+
+      const data = await response.json();
+      thinking.remove();
+
+      const text = data.text || '';
+
+      // Try to parse structured response
+      const parts = text.split('|').map(p => p.trim());
+
+      if (parts.length >= 4) {
+        const foundName  = parts[0] || name;
+        const wealth     = parseInt(parts[1]) || 0;
+        const category   = parts[2] || 'Film & TV';
+        const nationality = parts[3] || '';
+        const wikiUrl    = parts[4] || '';
+        const desc       = parts[5] || text;
+
+        addAIMessage(
+          '<strong style="color:#f9e74a">' + escHtml(foundName) + '</strong><br>' +
+          escHtml(desc) + '<br><br>' +
+          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots)</em><br>' : '') +
+          '<br><button onclick="botAddToBook(\'' + escHtml(foundName).replace(/'/g,"\\'") + '\',' + wealth + ',\'' + escHtml(category).replace(/'/g,"\\'") + '\',\'' + escHtml(nationality).replace(/'/g,"\\'") + '\',\'' + escHtml(wikiUrl).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book</button>',
+          'ai-msg-bot'
+        );
+      } else {
+        // Unstructured response — just show it with manual add option
+        addAIMessage(
+          text + '<br><br><button onclick="botManualAdd(\'' + escHtml(name).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book manually</button>',
+          'ai-msg-bot'
+        );
+      }
+
+      document.getElementById('rate-status').textContent = '🤖 AI found ' + name + ' — see bot panel';
+      setTimeout(() => document.getElementById('rate-status').textContent = '', 5000);
+
+    } catch(e) {
+      thinking.remove();
+      addAIMessage('Could not search for ' + name + '. Please add them manually via the admin panel.', 'ai-msg-bot');
+      document.getElementById('rate-status').textContent = '✗ Not found in Dot Book or AI';
+      setTimeout(() => document.getElementById('rate-status').textContent = '', 5000);
+    }
+  }
+
+  async function botAddToBook(name, wealth, category, nationality, wikiUrl) {
+    const note = category + ' · ' + nationality;
+    const key = name.toLowerCase();
+
+    // Show saving message in bot panel
+    addAIMessage('Adding ' + escHtml(name) + ' to The Dot Book...', 'ai-msg-thinking');
+
+    try {
+      // Save to GitHub via Worker
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'add',
+          name: name,
+          wealth: wealth,
+          note: note,
+          url: wikiUrl
+        })
+      });
+
+      const result = await response.json();
+
+      // Remove thinking message
+      const thinking = document.querySelector('.ai-msg-thinking:last-child');
+      if (thinking) thinking.remove();
+
+      if (result.success) {
+        // Add to local database immediately so they appear now
+        CELEB_DB[key] = { wealth: wealth, note: note, url: wikiUrl };
+        renderTable();
+
+        addAIMessage(
+          '✅ <strong style="color:#f9e74a">' + escHtml(name) + '</strong> has been added to The Dot Book permanently!<br>' +
+          '<em style="color:#aaa">Worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots) · ' + escHtml(note) + '</em>',
+          'ai-msg-bot'
+        );
+      } else {
+        addAIMessage('⚠ Could not save permanently: ' + result.message + '. Added locally for this session only.', 'ai-msg-bot');
+        // Still add locally
+        CELEB_DB[key] = { wealth: wealth, note: note, url: wikiUrl };
+        renderTable();
+      }
+    } catch(e) {
+      const thinking = document.querySelector('.ai-msg-thinking:last-child');
+      if (thinking) thinking.remove();
+      addAIMessage('⚠ Connection error. Added locally for this session only.', 'ai-msg-bot');
+      CELEB_DB[key] = { wealth: wealth, note: note, url: wikiUrl };
+      renderTable();
+    }
+  }
+
+  function botManualAdd(name) {
+    // Pre-fill admin search box and open admin panel
+    const adminSearch = document.getElementById('admin-search');
+    if (adminSearch) {
+      adminSearch.value = name;
+      // Open admin if not already open
+      const adminPanel = document.getElementById('admin-panel');
+      if (adminPanel && adminPanel.style.display === 'none') {
+        adminPanel.style.display = 'block';
+      }
+      adminSearch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    addAIMessage('Admin panel pre-filled with "' + escHtml(name) + '" — complete the details and tap Add.', 'ai-msg-bot');
+  }
+
   async function lookupCelebrity() {
     const raw = document.getElementById('name-input').value.trim();
     if (!raw) { alert('Please enter a name to find.'); return; }
@@ -4864,8 +4994,9 @@
         showClubResults(raw, clubMatches);
       } else {
         document.getElementById('club-results-card').style.display = 'none';
-        document.getElementById('rate-status').textContent = '✗ Not found. Try a different spelling or check Forbes.com';
-        setTimeout(() => document.getElementById('rate-status').textContent = '', 5000);
+        document.getElementById('rate-status').textContent = '🤖 Not found — asking the AI...';
+        // Auto-trigger bot search for this person
+        botSearchAndOffer(raw);
       }
     }
   }
