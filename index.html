@@ -4897,8 +4897,8 @@
         addAIMessage(
           '<strong style="color:#f9e74a">' + escHtml(foundName) + '</strong><br>' +
           escHtml(desc) + '<br><br>' +
-          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots)</em><br>' : '') +
-          '<br><button onclick="botAddToBook(\'' + escHtml(foundName).replace(/'/g,"\\'") + '\',' + wealth + ',\'' + escHtml(category).replace(/'/g,"\\'") + '\',\'' + escHtml(nationality).replace(/'/g,"\\'") + '\',\'' + escHtml(wikiUrl).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book</button>',
+          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots)</em><br>' : '<em style="color:#ff9999">Wealth unknown — enter value in $ millions below:</em><br><input id="bot-wealth-input" type="number" placeholder="e.g. 500 for $500M" style="background:#000;border:1px solid #555;color:#fff;padding:6px 10px;font-size:13px;border-radius:4px;width:180px;margin:4px 0" /><br>') +
+          '<br><button onclick="botAddToBook(\'' + escHtml(foundName).replace(/'/g,"\\'") + '\', (document.getElementById(\'bot-wealth-input\') ? parseInt(document.getElementById(\'bot-wealth-input\').value)||' + wealth + ' : ' + wealth + '),\'' + escHtml(category).replace(/'/g,"\\'") + '\',\'' + escHtml(nationality).replace(/'/g,"\\'") + '\',\'' + escHtml(wikiUrl).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book</button>',
           'ai-msg-bot'
         );
       } else {
