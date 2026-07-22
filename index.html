@@ -777,7 +777,7 @@
     </div>
   </div>
   <div id="countdown-banner" style="margin-top:16px;background:rgba(255,255,255,0.08);border:1px solid #333333;border-radius:6px;padding:12px 20px;display:inline-block">
-    <span style="font-size:13px;letter-spacing:2px;color:#ffffff;text-transform:uppercase;font-weight:bold;">Musk hits page 335 </span>
+    <span id="musk-banner-label" style="font-size:13px;letter-spacing:2px;color:#ffffff;text-transform:uppercase;font-weight:bold;">Elon Musk · Live </span>
     <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#ffffff;letter-spacing:1px">calculating...</span>
   </div>
 </header>
@@ -846,7 +846,7 @@
     </div>
     <div class="progress-labels">
       <span>$1 Million &middot; p.1</span>
-      <span>Musk $1T &middot; p.335 &middot; History beyond →</span>
+      <span id="musk-slider-label">Musk · p.335 · History beyond →</span>
     </div>
     <div class="result-note" id="result-note"></div>
     <div id="result-wiki"></div>
@@ -6436,6 +6436,15 @@
         }
 
         renderTable();
+
+        // Update front page banner and slider label
+        const muskPage = getPage(totalWealth);
+        const muskDisplay = formatWealth(totalWealth);
+        const bannerLabel = document.getElementById('musk-banner-label');
+        const sliderLabel = document.getElementById('musk-slider-label');
+        if (bannerLabel) bannerLabel.textContent = 'Elon Musk Live · ' + muskDisplay + ' · p.' + muskPage + ' · TSLA $' + tslaPrice.toFixed(2) + ' ';
+        if (sliderLabel) sliderLabel.textContent = 'Musk ' + muskDisplay + ' · p.' + muskPage + ' · History beyond →';
+
         console.log('Elon wealth updated: ' + formatWealth(totalWealth) + ' (TSLA $' + tslaPrice.toFixed(2) + ')');
       }
     } catch(e) {
