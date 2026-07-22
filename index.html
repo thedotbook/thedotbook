@@ -4864,17 +4864,35 @@
       thinking.remove();
 
       const text = data.text || '';
+      const wikiWealth = data.wikiWealth || 0; // Wealth found by Worker from Wikipedia
 
       // Try to parse structured response
       const parts = text.split('|').map(p => p.trim());
 
+      // Smart wealth extractor — finds numbers in text like "$900 million" or "900,000,000"
+      function extractWealth(str) {
+        // Try billions first e.g. $1.2 billion, 1.2B
+        let m = str.match(/\$?([\d,.]+)\s*billion/i);
+        if (m) return Math.round(parseFloat(m[1].replace(/,/g,'')) * 1000);
+        // Try millions e.g. $900 million, 900M
+        m = str.match(/\$?([\d,.]+)\s*million/i);
+        if (m) return Math.round(parseFloat(m[1].replace(/,/g,'')));
+        // Try plain number over 1000 (assume millions)
+        m = str.match(/\$?([\d,]{4,})/);
+        if (m) return Math.round(parseFloat(m[1].replace(/,/g,'')));
+        return 0;
+      }
+
       if (parts.length >= 4) {
-        const foundName  = parts[0] || name;
-        const wealth     = parseInt(parts[1]) || 0;
-        const category   = parts[2] || 'Film & TV';
+        const foundName   = parts[0] || name;
+        let wealth        = parseInt(parts[1]) || 0;
+        const category    = parts[2] || 'Film & TV';
         const nationality = parts[3] || '';
-        const wikiUrl    = parts[4] || '';
-        const desc       = parts[5] || text;
+        const wikiUrl     = parts[4] || '';
+        const desc        = parts[5] || text;
+
+        // If wealth is 0 try to extract from description or full text, then fall back to wikiWealth
+        if (wealth === 0) wealth = extractWealth(desc) || extractWealth(text) || wikiWealth;
 
         addAIMessage(
           '<strong style="color:#f9e74a">' + escHtml(foundName) + '</strong><br>' +
@@ -4884,9 +4902,12 @@
           'ai-msg-bot'
         );
       } else {
-        // Unstructured response — just show it with manual add option
+        // Unstructured response — extract wealth from text and show add button
+        const wealth = extractWealth(text) || wikiWealth;
         addAIMessage(
-          text + '<br><br><button onclick="botManualAdd(\'' + escHtml(name).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book manually</button>',
+          text + '<br><br>' +
+          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots)</em><br><br>' : '') +
+          '<button onclick="botAddToBook(\'' + escHtml(name).replace(/'/g,"\\'") + '\',' + wealth + ',\'Music\',\'\',\'\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book</button>',
           'ai-msg-bot'
         );
       }
