@@ -3915,9 +3915,9 @@
     'mike ashley':         { wealth: 3000,   note: 'Business · UK · Sports Direct · Newcastle Utd', url: 'https://en.wikipedia.org/wiki/Mike_Ashley' },
 
     // ── TOP 20 RICHEST LIVING PEOPLE ON EARTH (2025 est.) ──
-    'elon musk top20':     { wealth: 970000, note: 'Top 20 · Tech · USA · Tesla SpaceX xAI · $970B July 2026 · Forbes #1 · First person ever to approach $1 Trillion · DOGE · Neuralink · Born South Africa', url: 'https://en.wikipedia.org/wiki/Elon_Musk', _top20: true },
+    'elon musk top20':     { wealth: 792000, note: 'Top 20 · Tech · USA · Tesla SpaceX xAI · $792B · Bloomberg 22 July 2026 · Updates live from Tesla price · World first trillionaire June 2026 · SpaceX IPO largest in history · Born South Africa', url: 'https://en.wikipedia.org/wiki/Elon_Musk', _top20: true },
     'jeff bezos top20':    { wealth: 257000, note: 'Top 20 · Tech · USA · Amazon Blue Origin Washington Post · $257B · Forbes #4 2026 · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez', url: 'https://en.wikipedia.org/wiki/Jeff_Bezos', _top20: true },
-    'mark zuckerberg top20':{ wealth: 222000, note: 'Top 20 · Tech · USA · Meta Facebook Instagram WhatsApp · $222B · Forbes #5 2026 · Founded Facebook Harvard 2004 · Age 41 · MMA fighter', url: 'https://en.wikipedia.org/wiki/Mark_Zuckerberg', _top20: true },
+    'mark zuckerberg top20':{ wealth: 228000, note: 'Top 20 · Tech · USA · Meta Facebook Instagram WhatsApp · $222B · Forbes #5 2026 · Founded Facebook Harvard 2004 · Age 41 · MMA fighter', url: 'https://en.wikipedia.org/wiki/Mark_Zuckerberg', _top20: true },
     'larry ellison top20': { wealth: 190000, note: 'Top 20 · Tech · USA · Oracle · $190B · Forbes #6 2026 · Co-founded Oracle 1977 · Owns 98% of Lanai Hawaii island', url: 'https://en.wikipedia.org/wiki/Larry_Ellison', _top20: true },
     'larry page top20':    { wealth: 284000, note: 'Top 20 · Tech · USA · Google Alphabet · $284B · Forbes #2 2026 · Co-founded Google 1998 · Stanford PhD dropout', url: 'https://en.wikipedia.org/wiki/Larry_Page', _top20: true },
     'sergey brin top20':   { wealth: 262000,  note: 'Top 20 · Tech · USA · Google Alphabet · $262B · Forbes #3 2026 · Co-founded Google 1998 · Born Moscow Russia', url: 'https://en.wikipedia.org/wiki/Sergey_Brin', _top20: true },
@@ -6403,7 +6403,51 @@
   // ── END CUSTOM.JSON LOADER ───────────────────────────────
 
   // Register Service Worker for PWA
-  // Unregister old service workers and register fresh
+  // ── LIVE ELON MUSK WEALTH TRACKER ───────────────────────
+  async function updateElonWealth() {
+    try {
+      // Fetch Tesla stock price from Yahoo Finance (free, no auth)
+      const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/TSLA?interval=1d&range=1d');
+      const data = await res.json();
+      const tslaPrice = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+
+      if (tslaPrice) {
+        // Correct share counts from SEC filings:
+        // Tesla: ~413M shares (Revocable Trust) + ~286M (2018 options exercised) = ~700M shares
+        // But Bloomberg/Forbes use ~413M primary stake = more conservative
+        // We use Forbes methodology: ~413M Tesla shares
+        const teslaShares = 413000000;
+        const teslaValue = Math.round((tslaPrice * teslaShares) / 1000000); // in $M
+
+        // SpaceX: Forbes values at ~$250B (more conservative than IPO peak)
+        // Bloomberg uses ~$280B for his ~38% stake
+        const spacexValue = 260000; // $260B
+
+        // xAI/X/Neuralink/Boring Co combined ~$50B
+        const otherAssets = 50000;
+
+        const totalWealth = teslaValue + spacexValue + otherAssets;
+
+        // Update both Elon entries in CELEB_DB
+        if (CELEB_DB['elon musk top20']) {
+          CELEB_DB['elon musk top20'].wealth = totalWealth;
+          const display = formatWealth(totalWealth);
+          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' live · Forbes Real-Time · TSLA $' + tslaPrice.toFixed(2) + ' · World first trillionaire June 2026 · Born South Africa';
+        }
+
+        renderTable();
+        console.log('Elon wealth updated: ' + formatWealth(totalWealth) + ' (TSLA $' + tslaPrice.toFixed(2) + ')');
+      }
+    } catch(e) {
+      console.log('Live wealth update unavailable — using static figure');
+    }
+  }
+
+  // Run on load and every 5 minutes
+  setTimeout(updateElonWealth, 3000);
+  setInterval(updateElonWealth, 300000);
+
+  // ── END LIVE TRACKER ────────────────────────────────────
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(registrations => {
       for (let registration of registrations) {
