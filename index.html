@@ -3915,7 +3915,7 @@
     'mike ashley':         { wealth: 3000,   note: 'Business · UK · Sports Direct · Newcastle Utd', url: 'https://en.wikipedia.org/wiki/Mike_Ashley' },
 
     // ── TOP 20 RICHEST LIVING PEOPLE ON EARTH (2025 est.) ──
-    'elon musk top20':     { wealth: 792000, note: 'Top 20 · Tech · USA · Tesla SpaceX xAI · $792B · Bloomberg 22 July 2026 · Updates live from Tesla price · World first trillionaire June 2026 · SpaceX IPO largest in history · Born South Africa', url: 'https://en.wikipedia.org/wiki/Elon_Musk', _top20: true },
+    'elon musk top20':     { wealth: 792000, note: 'Top 20 · Tech · USA · Tesla SpaceX xAI · $792B · Tesla price live · SpaceX xAI estimated · Forbes methodology · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa', url: 'https://en.wikipedia.org/wiki/Elon_Musk', _top20: true },
     'jeff bezos top20':    { wealth: 257000, note: 'Top 20 · Tech · USA · Amazon Blue Origin Washington Post · $257B · Forbes #4 2026 · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez', url: 'https://en.wikipedia.org/wiki/Jeff_Bezos', _top20: true },
     'mark zuckerberg top20':{ wealth: 228000, note: 'Top 20 · Tech · USA · Meta Facebook Instagram WhatsApp · $222B · Forbes #5 2026 · Founded Facebook Harvard 2004 · Age 41 · MMA fighter', url: 'https://en.wikipedia.org/wiki/Mark_Zuckerberg', _top20: true },
     'larry ellison top20': { wealth: 190000, note: 'Top 20 · Tech · USA · Oracle · $190B · Forbes #6 2026 · Co-founded Oracle 1977 · Owns 98% of Lanai Hawaii island', url: 'https://en.wikipedia.org/wiki/Larry_Ellison', _top20: true },
@@ -6406,10 +6406,14 @@
   // ── LIVE ELON MUSK WEALTH TRACKER ───────────────────────
   async function updateElonWealth() {
     try {
-      // Fetch Tesla stock price from Yahoo Finance (free, no auth)
-      const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/TSLA?interval=1d&range=1d');
+      // Fetch Tesla price via Worker (avoids CORS)
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'tsla' })
+      });
       const data = await res.json();
-      const tslaPrice = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+      const tslaPrice = data.price;
 
       if (tslaPrice) {
         // Correct share counts from SEC filings:
@@ -6432,7 +6436,7 @@
         if (CELEB_DB['elon musk top20']) {
           CELEB_DB['elon musk top20'].wealth = totalWealth;
           const display = formatWealth(totalWealth);
-          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' live · Forbes Real-Time · TSLA $' + tslaPrice.toFixed(2) + ' · World first trillionaire June 2026 · Born South Africa';
+          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' · Tesla live TSLA $' + tslaPrice.toFixed(2) + ' · SpaceX xAI estimated · Forbes methodology · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa';
         }
 
         renderTable();
