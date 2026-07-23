@@ -737,7 +737,7 @@
   <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
   <h1>The Dot Book</h1>
   <div class="subtitle">Every dot is $1 Million &middot; Every page holds 3,000 dots &middot; Page 1 to Page 335 = $1 Trillion</div>
-  <div style="margin-top:10px;font-size:13px;color:#aaaaaa;font-style:italic">SpaceX IPO · Nasdaq · 12 Jun 2026 · Ticker: SPCX · $135/share · First Trillionaire · Now ~$963B</div>
+  <div id="elon-live-banner" style="margin-top:10px;font-size:13px;color:#aaaaaa;font-style:italic">SpaceX IPO · Nasdaq · 12 Jun 2026 · Ticker: SPCX · World First Trillionaire · Now <span id="elon-live-figure">~$790B</span></div>
 
   <!-- Reveal strip -->
   <div id="reveal-strip" onclick="revealAnswer()" style="cursor:pointer;margin:18px auto 0;max-width:480px;background:rgba(0,0,0,0.9);border:1.5px solid #333333;border-radius:8px;padding:16px 20px;text-align:center">
@@ -5593,9 +5593,10 @@
     if (answer.style.display === 'none' || !answer.style.display) {
       question.style.display = 'none';
       answer.style.display = 'block';
-      const page = getPage(963000);
+      const elonWealth = CELEB_DB['elon musk top20']?.wealth || 790000;
+      const page = getPage(elonWealth);
       document.getElementById('reveal-page-number').textContent = 'Page ' + page;
-      document.getElementById('reveal-page-label').textContent = 'Elon Musk · ~$963B · World\'s first Trillionaire';
+      document.getElementById('reveal-page-label').textContent = 'Elon Musk · ' + formatWealth(elonWealth) + ' · World\'s first Trillionaire';
     } else {
       question.style.display = 'block';
       answer.style.display = 'none';
@@ -6416,26 +6417,22 @@
       const tslaPrice = data.tsla || 0;
       const spcxPrice = data.spcx || 0;
 
-      if (tslaPrice) {
-        // Tesla: 636M shares (SEC filings June 2026)
+      if (tslaPrice && tslaPrice > 0) {
+        // Forbes methodology (as of July 2026):
+        // Tesla: 636M shares × live price
+        // SpaceX: Forbes values at ~$500B (their own private valuation, not live SPCX stock)
+        // xAI/X/Neuralink/Boring: ~$50B
+        // Note: Forbes does NOT simply use SPCX stock price — they use their own valuation
         const teslaShares = 636000000;
         const teslaValue = Math.round((tslaPrice * teslaShares) / 1000000);
-
-        // SpaceX: if SPCX is trading, use live price × Musk's ~42% of 1.8B shares
-        // Otherwise use last known valuation
-        const spacexShares = 756000000; // Musk's ~42% of SpaceX shares
-        const spacexValue = spcxPrice > 0
-          ? Math.round((spcxPrice * spacexShares) / 1000000)
-          : 756000;
-
-        // xAI X Neuralink Boring Co (Forbes estimate)
-        const otherAssets = 38000;
-        const totalWealth = teslaValue + spacexValue + otherAssets;
+        const spacexForbesValue = 500000; // Forbes private valuation ~$500B
+        const otherAssets = 50000;
+        const totalWealth = teslaValue + spacexForbesValue + otherAssets;
 
         if (CELEB_DB['elon musk top20']) {
           CELEB_DB['elon musk top20'].wealth = totalWealth;
           const display = formatWealth(totalWealth);
-          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' · TSLA $' + tslaPrice.toFixed(2) + (spcxPrice > 0 ? ' · SPCX $' + spcxPrice.toFixed(2) : '') + ' · Tesla & SpaceX live · Forbes methodology · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa';
+          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' · TSLA $' + tslaPrice.toFixed(2) + ' live · SpaceX valued at Forbes estimate · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa';
         }
 
         renderTable();
@@ -6447,6 +6444,10 @@
         if (sliderLabel) sliderLabel.textContent = 'Musk · ' + display + ' · p.' + muskPage + ' · History beyond →';
 
         console.log('Elon updated: ' + display + ' TSLA $' + tslaPrice.toFixed(2));
+
+        // Update top banner live figure
+        const liveFig = document.getElementById('elon-live-figure');
+        if (liveFig) liveFig.textContent = display;
       }
     } catch(e) {
       console.log('Live wealth update unavailable — using static figure');
