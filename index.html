@@ -1875,6 +1875,7 @@
     if (n.includes('transport ·') || n.includes('· transport') || n.includes('aviation ·') || n.includes('rail ·') || n.includes('· rail') || n.includes('automaker') || n.includes('car manufacturer') || n.includes('shipping ·')) return 'Transport';
     if (n.includes('national debt') || n.includes('govt debt') || nm.endsWith(' debt')) return 'National Debt';
     if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
+    if (n.startsWith('billionaire ·')) return 'The Twenty Wealthiest People on Earth';
     if (n.startsWith('artist ·') || n.includes('· old master') || n.includes('· impressionist') || n.includes('· art market') || n.includes('· pop art') || n.includes('· street art') || n.includes('· modern ·') || n.includes('· contemporary ·')) return 'Artists';
     if (n.includes('infamous ·') || n.includes('· infamous') || n.includes('criminal ·') || n.includes('· criminal') || n.includes('gang ·') || n.includes('cartel ·') || n.includes('fraud ·')) return 'Infamous';
     if (n.startsWith('science ·') || n.includes('· physicist') || n.includes('· inventor ·') || n.includes('· mathematician') || n.includes('· chemist ·') || n.includes('· naturalist') || n.includes('· biologist')) return 'Scientists';
@@ -3958,26 +3959,26 @@
 
     // ── UK RICH LIST — TOP FAMILIES ─────────────────────
     '_sub_ukrichlist':          { _subgroup: 'Global Billionaires — Beyond The Top 20' },
-    'hinduja family':           { wealth: 48000,  note: 'Business · UK · India · Hinduja Group · #1 UK Rich List 2026 · £38B', url: 'https://en.wikipedia.org/wiki/Hinduja_Family' },
-    'sanjay hinduja':           { wealth: 48000,  note: 'Business · UK · India · Hinduja Group · Sunday Times #1 2026', url: 'https://en.wikipedia.org/wiki/Sanjay_Hinduja' },
-    'dheeraj hinduja':          { wealth: 48000,  note: 'Business · UK · India · Hinduja Group · Brother of Sanjay', url: 'https://en.wikipedia.org/wiki/Dheeraj_Hinduja' },
-    'david reuben':             { wealth: 35000,  note: 'Business · Property · UK · Reuben Brothers · Born Mumbai · £27.97B', url: 'https://en.wikipedia.org/wiki/David_Reuben' },
-    'simon reuben':             { wealth: 35000,  note: 'Business · Property · UK · Reuben Brothers · Born Mumbai · £27.97B', url: 'https://en.wikipedia.org/wiki/Simon_Reuben' },
-    'reuben brothers':          { wealth: 35000,  note: 'Business · Property · UK · David & Simon Reuben · Born Mumbai', url: 'https://en.wikipedia.org/wiki/Reuben_Brothers' },
-    'leonard blavatnik':        { wealth: 34000,  note: 'Business · Media · UK/USA · Ukraine-born · Warner Music · Access Industries · £26.85B', url: 'https://en.wikipedia.org/wiki/Leonard_Blavatnik' },
-    'sir leonard blavatnik':    { wealth: 34000,  note: 'Business · Media · UK/USA · Access Industries · Warner Music', url: 'https://en.wikipedia.org/wiki/Sir_Leonard_Blavatnik' },
-    'idan ofer':                { wealth: 31000,  note: 'Business · Shipping · UK/Israel · Israel Corp · £24.48B', url: 'https://en.wikipedia.org/wiki/Idan_Ofer' },
-    'christopher harborne':     { wealth: 23000,  note: 'Business · UK · Thailand · Bitcoin · £18.18B', url: 'https://en.wikipedia.org/wiki/Christopher_Harborne' },
-    'nik storonsky':            { wealth: 21000,  note: 'Tech · Business · UK · Russia-born · Revolut founder · £16.41B', url: 'https://en.wikipedia.org/wiki/Nik_Storonsky' },
-    'alex gerko':               { wealth: 20000,  note: 'Tech · Finance · UK · XTX Markets · £16B', url: 'https://en.wikipedia.org/wiki/Alex_Gerko' },
-    'igor bukhman':             { wealth: 18000,  note: 'Tech · Business · UK · Playrix · Games · £14.26B', url: 'https://en.wikipedia.org/wiki/Igor_Bukhman' },
-    'dmitry bukhman':           { wealth: 18000,  note: 'Tech · Business · UK · Playrix · Games · £14.26B', url: 'https://en.wikipedia.org/wiki/Dmitry_Bukhman' },
-    'anil agarwal':             { wealth: 10000,  note: 'Business · Mining · UK · India · Vedanta Resources', url: 'https://en.wikipedia.org/wiki/Anil_Agarwal' },
-    'prakash lohia':            { wealth: 8000,   note: 'Business · UK · India · Indorama Ventures · Chemicals', url: 'https://en.wikipedia.org/wiki/Prakash_Lohia' },
-    'denise coates':            { wealth: 10000,  note: 'Business · UK · Bet365 founder · Self-made billionaire', url: 'https://en.wikipedia.org/wiki/Denise_Coates' },
-    'duke of westminster':      { wealth: 11000,  note: 'Royalty · Business · UK · Hugh Grosvenor · Youngest UK billionaire', url: 'https://en.wikipedia.org/wiki/Duke_Of_Westminster' },
-    'hugh grosvenor':           { wealth: 11000,  note: 'Royalty · Business · UK · Duke of Westminster · 7th Duke', url: 'https://en.wikipedia.org/wiki/Hugh_Grosvenor' },
-    'swire family':             { wealth: 11000,  note: 'Business · UK · Swire Group · Cathay Pacific · Property · Hong Kong', url: 'https://en.wikipedia.org/wiki/Swire_Family' },
+    'hinduja family':           { wealth: 48000,  note: 'Billionaire · Business · UK · India · Hinduja Group · #1 UK Rich List 2026 · £38B', url: 'https://en.wikipedia.org/wiki/Hinduja_Family' },
+    'sanjay hinduja':           { wealth: 48000,  note: 'Billionaire · Business · UK · India · Hinduja Group · Sunday Times #1 2026', url: 'https://en.wikipedia.org/wiki/Sanjay_Hinduja' },
+    'dheeraj hinduja':          { wealth: 48000,  note: 'Billionaire · Business · UK · India · Hinduja Group · Brother of Sanjay', url: 'https://en.wikipedia.org/wiki/Dheeraj_Hinduja' },
+    'david reuben':             { wealth: 35000,  note: 'Billionaire · Business · Property · UK · Reuben Brothers · Born Mumbai · £27.97B', url: 'https://en.wikipedia.org/wiki/David_Reuben' },
+    'simon reuben':             { wealth: 35000,  note: 'Billionaire · Business · Property · UK · Reuben Brothers · Born Mumbai · £27.97B', url: 'https://en.wikipedia.org/wiki/Simon_Reuben' },
+    'reuben brothers':          { wealth: 35000,  note: 'Billionaire · Business · Property · UK · David & Simon Reuben · Born Mumbai', url: 'https://en.wikipedia.org/wiki/Reuben_Brothers' },
+    'leonard blavatnik':        { wealth: 34000,  note: 'Billionaire · Business · Media · UK/USA · Ukraine-born · Warner Music · Access Industries · £26.85B', url: 'https://en.wikipedia.org/wiki/Leonard_Blavatnik' },
+    'sir leonard blavatnik':    { wealth: 34000,  note: 'Billionaire · Business · Media · UK/USA · Access Industries · Warner Music', url: 'https://en.wikipedia.org/wiki/Sir_Leonard_Blavatnik' },
+    'idan ofer':                { wealth: 31000,  note: 'Billionaire · Business · Shipping · UK/Israel · Israel Corp · £24.48B', url: 'https://en.wikipedia.org/wiki/Idan_Ofer' },
+    'christopher harborne':     { wealth: 23000,  note: 'Billionaire · Business · UK · Thailand · Bitcoin · £18.18B', url: 'https://en.wikipedia.org/wiki/Christopher_Harborne' },
+    'nik storonsky':            { wealth: 21000,  note: 'Billionaire · Tech · Business · UK · Russia-born · Revolut founder · £16.41B', url: 'https://en.wikipedia.org/wiki/Nik_Storonsky' },
+    'alex gerko':               { wealth: 20000,  note: 'Billionaire · Tech · Finance · UK · XTX Markets · £16B', url: 'https://en.wikipedia.org/wiki/Alex_Gerko' },
+    'igor bukhman':             { wealth: 18000,  note: 'Billionaire · Tech · Business · UK · Playrix · Games · £14.26B', url: 'https://en.wikipedia.org/wiki/Igor_Bukhman' },
+    'dmitry bukhman':           { wealth: 18000,  note: 'Billionaire · Tech · Business · UK · Playrix · Games · £14.26B', url: 'https://en.wikipedia.org/wiki/Dmitry_Bukhman' },
+    'anil agarwal':             { wealth: 10000,  note: 'Billionaire · Business · Mining · UK · India · Vedanta Resources', url: 'https://en.wikipedia.org/wiki/Anil_Agarwal' },
+    'prakash lohia':            { wealth: 8000,   note: 'Billionaire · Business · UK · India · Indorama Ventures · Chemicals', url: 'https://en.wikipedia.org/wiki/Prakash_Lohia' },
+    'denise coates':            { wealth: 10000,  note: 'Billionaire · Business · UK · Bet365 founder · Self-made billionaire', url: 'https://en.wikipedia.org/wiki/Denise_Coates' },
+    'duke of westminster':      { wealth: 11000,  note: 'Billionaire · Royalty · Business · UK · Hugh Grosvenor · Youngest UK billionaire', url: 'https://en.wikipedia.org/wiki/Duke_Of_Westminster' },
+    'hugh grosvenor':           { wealth: 11000,  note: 'Billionaire · Royalty · Business · UK · Duke of Westminster · 7th Duke', url: 'https://en.wikipedia.org/wiki/Hugh_Grosvenor' },
+    'swire family':             { wealth: 11000,  note: 'Billionaire · Business · UK · Swire Group · Cathay Pacific · Property · Hong Kong', url: 'https://en.wikipedia.org/wiki/Swire_Family' },
 
     '_sub_dragons':             { _subgroup: 'Dragons & Entrepreneurs' },
     // ── TECH FOUNDERS ───────────────────────────────────
@@ -4003,7 +4004,6 @@
     'michael bloomberg':   { wealth: 100000, note: 'Tech & Business · USA · Michael Bloomberg · $100B · Bloomberg LP financial data · Former NYC Mayor 3 terms · Bloomberg terminals in every trading floor in world', url: 'https://en.wikipedia.org/wiki/Michael_Bloomberg' },
     'john warnock':        { wealth: 1000,   note: 'Tech & Business · USA · John Warnock · $1B · Adobe Systems co-founder 1982 · Invented PDF PostScript · PDF used by billions daily · Also co-founded with Chuck Geschke · Died 2023', url: 'https://en.wikipedia.org/wiki/John_Warnock' },
     'shantanu narayen':    { wealth: 1500,   note: 'Tech & Business · USA/India · Shantanu Narayen · $1.5B · Adobe CEO since 2007 · Photoshop Illustrator Acrobat Creative Cloud · Born Hyderabad India · Transformed Adobe into subscription model', url: 'https://en.wikipedia.org/wiki/Shantanu_Narayen' },
-    'jensen huang':        { wealth: 154000, note: 'Tech & Business · USA · Jensen Huang · $154B · Nvidia CEO and co-founder 1993 · AI chip revolution · H100 GPU powers all AI · Born Taiwan · Leather jacket icon · Age 61', url: 'https://en.wikipedia.org/wiki/Jensen_Huang' },
     'richard branson':     { wealth: 3000,   note: 'Tech & Business · UK · Sir Richard Branson · $3B · Virgin Group · Virgin Atlantic Virgin Galactic Virgin Records Virgin Money · Founded 400 companies · Necker Island · Space tourist', url: 'https://en.wikipedia.org/wiki/Richard_Branson' },
     'james dyson':         { wealth: 20000,  note: 'Tech & Business · UK · Sir James Dyson · £16.3B · Dyson vacuum cleaners fans hairdryers · 5,127 prototypes before it worked · Founded 1993 · Lives Singapore · Brexit supporter', url: 'https://en.wikipedia.org/wiki/James_Dyson' },
     'jim ratcliffe':       { wealth: 14000,  note: 'Tech & Business · UK · Sir Jim Ratcliffe · £14B · INEOS chemicals · Man Utd 25% owner · INEOS Grenadier 4x4 · Born Failsworth Manchester · Self-made from council estate', url: 'https://en.wikipedia.org/wiki/Jim_Ratcliffe' },
