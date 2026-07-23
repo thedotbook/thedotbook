@@ -1958,6 +1958,8 @@
     attachSubgroupListeners();
   }
 
+
+
   function toggleSubgroup(sid) {
     const people = document.querySelectorAll('#table-body tr.db-person[data-sid="' + sid + '"]');
     const lbl = document.querySelector('#table-body tr.subgroup-label[data-sid="' + sid + '"]');
@@ -1981,19 +1983,20 @@
     // Walk CELEB_DB in insertion order to get subgroup->names sequence
     const subgroupSequence = {}; // category -> [{type:'sub',label}|{type:'name',key}]
     let currentSub = null;
-    let pendingSub = null;
+
+    let pendingSubs = []; // collect ALL pending subgroups
     let pendingSubCat = null;
 
     const celebDBEntries = Object.entries(CELEB_DB);
     for (let i = 0; i < celebDBEntries.length; i++) {
       const [key, val] = celebDBEntries[i];
       if (val._subgroup) {
-        // Look ahead to find the category this subgroup belongs to
-        pendingSub = val._subgroup;
+        // Collect this subgroup — look ahead to find category
+        pendingSubs.push(val._subgroup);
         pendingSubCat = null;
         for (let j = i + 1; j < celebDBEntries.length; j++) {
           const [nextKey, nextVal] = celebDBEntries[j];
-          if (nextVal._subgroup) continue; // skip consecutive subgroup markers, keep looking
+          if (nextVal._subgroup) continue;
           const nextPerson = byName.get(nextKey) || (() => {
             const dn = nextKey.replace(/\b\w/g, c => c.toUpperCase());
             return byName.get(dn.toLowerCase());
@@ -2008,9 +2011,12 @@
         if (person) {
           const cat = getCategory(person);
           if (!subgroupSequence[cat]) subgroupSequence[cat] = [];
-          if (pendingSub && pendingSubCat === cat) {
-            subgroupSequence[cat].push({ type: 'sub', label: pendingSub });
-            pendingSub = null;
+          if (pendingSubs.length > 0 && pendingSubCat === cat) {
+            // Push ALL pending subgroups in order
+            for (const sub of pendingSubs) {
+              subgroupSequence[cat].push({ type: 'sub', label: sub });
+            }
+            pendingSubs = [];
             pendingSubCat = null;
           }
           subgroupSequence[cat].push({ type: 'person', person });
@@ -2045,8 +2051,15 @@
         }
       }
       blocks.push(block);
-      // Sort people within each block by wealth — wealthiest first
+      // Sort people within each block by wealth
       for (const b of blocks) b.people.sort((a,b) => sortAlpha ? a.name.localeCompare(b.name) : b.wealth - a.wealth);
+      // Sort blocks alphabetically by subgroup name
+      blocks.sort((a, b) => {
+        if (!a.sub && !b.sub) return 0;
+        if (!a.sub) return 1;
+        if (!b.sub) return -1;
+        return a.sub.trim().localeCompare(b.sub.trim());
+      });
       // Flatten back
       const sorted = [];
       for (const b of blocks) {
@@ -2142,8 +2155,9 @@
       for (const item of items) {
         if (item.type === 'sub') {
           thisSid = subIdx++;
+          const isIndented = item.label.startsWith('  ');
           html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
-                + '<td colspan="3" style="padding-left:' + (item.label.startsWith('  ') ? '40px' : '20px') + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(item.label.trim()) + ' —</td></tr>';
+                + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(item.label.trim()) + ' —</td></tr>';
         } else if (thisSid >= 0) {
           html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
                 + renderPersonRow(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
@@ -4146,8 +4160,7 @@
     // ── RUSSIA ─────────────────────────────────────────
 
     // ── FOOTBALL PLAYERS — Ex-Footballers and Personalities ──
-    '_sub_football_main':    { _subgroup: 'Football' },
-    '_sub_football_legends': { _subgroup: '  Ex-Footballers & Personalities' },
+    '_sub_football_legends': { _subgroup: 'Football — Ex-Footballers & Personalities' },
     'zlatan':              { wealth: 190,    note: 'Football · Sweden · Retired · Zlatan Ibrahimovic', url: 'https://en.wikipedia.org/wiki/Zlatan_Ibrahimovic' },
 
     // French legends
@@ -4194,7 +4207,7 @@
     'david beckham':       { wealth: 1000,   note: 'Music · Sport · TV · Film & TV · UK · $1B · Sunday Times Rich List 2026 · Britain first billionaire sports personality · Man Utd Real Madrid LA Galaxy · Victoria Beckham · Inter Miami co-owner · Brand empire', url: 'https://en.wikipedia.org/wiki/David_Beckham' },
 
     // ── FOOTBALL PLAYERS — Current Stars ──────────────
-    '_sub_football_stars': { _subgroup: '  Current Stars' },
+    '_sub_football_stars': { _subgroup: 'Football — Current Stars' },
     'kylian mbappe':       { wealth: 180,    note: 'Football · France · Real Madrid', url: 'https://en.wikipedia.org/wiki/Kylian_Mbappe' },
     'cristiano ronaldo':   { wealth: 1300, note: 'Football · Portugal · Al Nassr · $1.3B · CR7 · 5x Ballon d Or · 900 career goals · Most followed person on Instagram 650M', url: 'https://en.wikipedia.org/wiki/Cristiano_Ronaldo' },
     'lionel messi':        { wealth: 1300, note: 'Football · Argentina · Inter Miami · $1.3B · 8x Ballon d Or · World Cup 2022 · 800 career goals · Greatest of all time', url: 'https://en.wikipedia.org/wiki/Lionel_Messi' },
@@ -4252,7 +4265,7 @@
     'victoria beckham':    { wealth: 500,    note: 'Fashion · Luxury · UK · $500M · Sunday Times Rich List 2026 · Victoria Beckham fashion label · Posh Spice · David Beckham wife · Beauty brand', url: 'https://en.wikipedia.org/wiki/Victoria_Beckham' },
 
     // ── FOOTBALL MANAGERS ──────────────────────────────
-    '_sub_football_managers': { _subgroup: '  Football Managers' },
+    '_sub_football_managers': { _subgroup: 'Football — Managers' },
     'jose mourinho':       { wealth: 120,    note: 'Football Manager · Portugal · Real Madrid', url: 'https://en.wikipedia.org/wiki/Jose_Mourinho' },
     'pep guardiola':       { wealth: 100,    note: 'Football Manager · Spain · Manchester City', url: 'https://en.wikipedia.org/wiki/Pep_Guardiola' },
     'diego simeone':       { wealth: 120,    note: 'Football Manager · Argentina · Atletico', url: 'https://en.wikipedia.org/wiki/Diego_Simeone' },
@@ -4263,7 +4276,6 @@
     'zinedine zidane':     { wealth: 200,    note: 'Football Manager · France · Retired', url: 'https://en.wikipedia.org/wiki/Zinedine_Zidane' },
     'brendan rodgers':     { wealth: 40,     note: 'Football Manager · Northern Ireland', url: 'https://en.wikipedia.org/wiki/Brendan_Rodgers' },
     'antonio conte':       { wealth: 80,     note: 'Football Manager · Italy', url: 'https://en.wikipedia.org/wiki/Antonio_Conte' },
-    'mikel arteta':        { wealth: 30,     note: 'Football Manager · Spain · Arsenal', url: 'https://en.wikipedia.org/wiki/Mikel_Arteta' },
     'gareth southgate':    { wealth: 15,     note: 'Football Manager · England', url: 'https://en.wikipedia.org/wiki/Gareth_Southgate' },
     'sven goran eriksson': { wealth: 30,     note: 'Football Manager · Sweden · Retired', url: 'https://en.wikipedia.org/wiki/Sven_Goran_Eriksson' },
     'fabio capello':       { wealth: 40,     note: 'Football Manager · Italy · Retired', url: 'https://en.wikipedia.org/wiki/Fabio_Capello' },
@@ -4305,7 +4317,7 @@
     'chris kamara':        { wealth: 8,      note: 'Sport · TV · UK', url: 'https://en.wikipedia.org/wiki/Chris_Kamara' },
 
     // ── 2026 WORLD CUP STARS — BY NATION ──────────────
-    '_sub_worldcup2026': { _subgroup: '  World Cup Players 2026' },
+    '_sub_worldcup2026': { _subgroup: 'Football — World Cup Players 2026' },
     // Only confirmed 2026 World Cup squad players with notable wealth
     // Italy did NOT qualify · Russia suspended · All 48 teams listed below
 
@@ -4516,272 +4528,259 @@
 
 
     // ── PREMIER LEAGUE 2025-26 — BY CLUB ──────────────
-    '_sub_premierleague': { _subgroup: '  Premier League 2025-26 — By Club' },
-    // Note: squads/wealth shift each transfer window — these are 2025-26 season estimates
-    'florian wirtz':       { wealth: 40,     note: 'Football · Germany · Liverpool', url: 'https://en.wikipedia.org/wiki/Florian_Wirtz' },
-    'dominik szoboszlai':  { wealth: 30,     note: 'Football · Hungary · Liverpool', url: 'https://en.wikipedia.org/wiki/Dominik_Szoboszlai' },
-    'cody gakpo':          { wealth: 25,     note: 'Football · Netherlands · Liverpool · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Cody_Gakpo' },
-    'ryan gravenberch':    { wealth: 20,     note: 'Football · Netherlands · Liverpool', url: 'https://en.wikipedia.org/wiki/Ryan_Gravenberch' },
+    '_sub_premierleague': { _subgroup: 'Football — Premier League — All Clubs' },
 
-    'viktor gyokeres':     { wealth: 45,     note: 'Football · Sweden · Arsenal', url: 'https://en.wikipedia.org/wiki/Viktor_Gyokeres' },
-    'eberechi eze':        { wealth: 35,     note: 'Football · England · Arsenal', url: 'https://en.wikipedia.org/wiki/Eberechi_Eze' },
-    'gabriel magalhaes':   { wealth: 30,     note: 'Football · Brazil · Arsenal', url: 'https://en.wikipedia.org/wiki/Gabriel_Magalhaes' },
-    'william saliba':      { wealth: 35,     note: 'Football · France · Arsenal', url: 'https://en.wikipedia.org/wiki/William_Saliba' },
+    // ── Arsenal ──────────────────────────────────────────
+    '_sub_pl_arsenal':       { _subgroup: 'Football — Arsenal FC' },
+    'mikel arteta':          { wealth: 20,     note: 'Football · Manager · Spain · Arsenal · Won Premier League 2025-26 · Pep Guardiola protege · Former Arsenal captain', url: 'https://en.wikipedia.org/wiki/Mikel_Arteta' },
+    'bukayo saka arsenal':   { wealth: 80,     note: 'Football · England · Arsenal · £300,000/week · Arsenal highest paid · PL Champion 2026 · World Cup 2026 · Born Ealing London 2001', url: 'https://en.wikipedia.org/wiki/Bukayo_Saka' },
+    'kai havertz arsenal':   { wealth: 40,     note: 'Football · Germany · Arsenal · £280,000/week · Champions 2026 · Signed from Chelsea · Versatile forward', url: 'https://en.wikipedia.org/wiki/Kai_Havertz' },
+    'declan rice arsenal':   { wealth: 50,     note: 'Football · England · Arsenal · £240,000/week · Signed from West Ham £105M 2023 · World Cup 2026 · Champions 2026', url: 'https://en.wikipedia.org/wiki/Declan_Rice' },
+    'martin odegaard arsenal': { wealth: 45,   note: 'Football · Norway · Arsenal · £240,000/week · Captain · Champions 2026 · From Real Madrid · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Martin_%C3%98degaard' },
+    'william saliba arsenal': { wealth: 35,    note: 'Football · France · Arsenal · £250,000/week · Champions 2026 · Best centre back in PL · World Cup 2026', url: 'https://en.wikipedia.org/wiki/William_Saliba' },
+    'viktor gyokeres arsenal': { wealth: 45,   note: 'Football · Sweden · Arsenal · Signed summer 2025 · Champions 2026 · Was at Sporting Lisbon · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Viktor_Gyok%C3%B6res' },
+    'gabriel magalhaes arsenal': { wealth: 30, note: 'Football · Brazil · Arsenal · £200,000/week · Champions 2026 · Centre back partner Saliba · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Gabriel_Magalh%C3%A3es' },
+    'david raya arsenal':    { wealth: 20,     note: 'Football · Spain · Arsenal · £120,000/week · Golden Glove winner · Champions 2026 · From Brentford', url: 'https://en.wikipedia.org/wiki/David_Raya' },
+    'jurrien timber arsenal': { wealth: 20,    note: 'Football · Netherlands · Arsenal · Right back · Champions 2026 · From Ajax · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jurrien_Timber' },
+    'ben white arsenal':     { wealth: 25,     note: 'Football · England · Arsenal · £150,000/week · Champions 2026 · From Brighton', url: 'https://en.wikipedia.org/wiki/Ben_White' },
+    'eberechi eze arsenal':  { wealth: 35,     note: 'Football · England · Arsenal · Signed summer 2025 from Crystal Palace · Champions 2026 · England winger', url: 'https://en.wikipedia.org/wiki/Eberechi_Eze' },
+    'martin zubimendi arsenal': { wealth: 20,  note: 'Football · Spain · Arsenal · £75,000/week · Signed summer 2025 · Defensive midfielder · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mart%C3%ADn_Zubimendi' },
+    'mikel merino arsenal':  { wealth: 15,     note: 'Football · Spain · Arsenal · £130,000/week · Champions 2026 · Midfielder', url: 'https://en.wikipedia.org/wiki/Mikel_Merino' },
+    'gabriel jesus arsenal': { wealth: 20,     note: 'Football · Brazil · Arsenal · £175,000/week · Champions 2026 · From Man City · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Gabriel_Jesus' },
 
-    'phil foden':          { wealth: 60,     note: 'Football · England · Manchester City · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Phil_Foden' },
-    'jeremy doku':         { wealth: 25,     note: 'Football · Belgium · Manchester City · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jeremy_Doku' },
-    'ruben dias':          { wealth: 30,     note: 'Football · Portugal · Manchester City · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ruben_Dias' },
+    // ── Aston Villa ──────────────────────────────────────
+    '_sub_pl_villa':         { _subgroup: 'Football — Aston Villa FC' },
+    'unai emery villa':      { wealth: 15,     note: 'Football · Manager · Spain · Aston Villa · 4x Europa League winner · Champions League 2025-26 · £8M/year salary', url: 'https://en.wikipedia.org/wiki/Unai_Emery' },
+    'ollie watkins villa':   { wealth: 30,     note: 'Football · England · Aston Villa · Champions League 2025-26 · World Cup 2026 · England striker · From Brentford', url: 'https://en.wikipedia.org/wiki/Ollie_Watkins' },
+    'emiliano martinez villa': { wealth: 20,   note: 'Football · Argentina · Aston Villa · World Cup winner 2022 · Champions League 2025-26 · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Emiliano_Mart%C3%ADnez' },
+    'morgan rogers villa':   { wealth: 15,     note: 'Football · England · Aston Villa · Champions League 2025-26 · Young England midfielder', url: 'https://en.wikipedia.org/wiki/Morgan_Rogers' },
+    'youri tielemans villa': { wealth: 15,     note: 'Football · Belgium · Aston Villa · Champions League 2025-26 · World Cup 2026 · From Leicester', url: 'https://en.wikipedia.org/wiki/Youri_Tielemans' },
+    'pau torres villa':      { wealth: 15,     note: 'Football · Spain · Aston Villa · Champions League 2025-26 · Centre back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Pau_Torres' },
+    'ezri konsa villa':      { wealth: 10,     note: 'Football · England · Aston Villa · Champions League 2025-26 · England defender', url: 'https://en.wikipedia.org/wiki/Ezri_Konsa' },
+    'john mcginn villa':     { wealth: 15,     note: 'Football · Scotland · Aston Villa · Champions League 2025-26 · Club captain · Scotland captain', url: 'https://en.wikipedia.org/wiki/John_McGinn' },
+    'donyell malen villa':   { wealth: 15,     note: 'Football · Netherlands · Aston Villa · Champions League 2025-26 · World Cup 2026 · Winger', url: 'https://en.wikipedia.org/wiki/Donyell_Malen' },
+    'ian maatsen villa':     { wealth: 12,     note: 'Football · Netherlands · Aston Villa · Champions League 2025-26 · Left back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ian_Maatsen' },
+    'ross barkley villa':    { wealth: 8,      note: 'Football · England · Aston Villa · Champions League 2025-26 · Veteran midfielder', url: 'https://en.wikipedia.org/wiki/Ross_Barkley' },
+    'boubacar kamara villa': { wealth: 10,     note: 'Football · France · Aston Villa · Champions League 2025-26 · Defensive midfielder', url: 'https://en.wikipedia.org/wiki/Boubacar_Kamara' },
+    'matty cash villa':      { wealth: 10,     note: 'Football · Poland · Aston Villa · Champions League 2025-26 · Right back', url: 'https://en.wikipedia.org/wiki/Matty_Cash' },
 
-    'bruno fernandes':     { wealth: 40,     note: 'Football · Portugal · Manchester United · Captain', url: 'https://en.wikipedia.org/wiki/Bruno_Fernandes' },
-    'rasmus hojlund':      { wealth: 20,     note: 'Football · Denmark · Manchester United', url: 'https://en.wikipedia.org/wiki/Rasmus_Hojlund' },
-    'bryan mbeumo':        { wealth: 25,     note: 'Football · Cameroon · Manchester United', url: 'https://en.wikipedia.org/wiki/Bryan_Mbeumo' },
-    'matheus cunha':       { wealth: 25,     note: 'Football · Brazil · Manchester United', url: 'https://en.wikipedia.org/wiki/Matheus_Cunha' },
-    'noussair mazraoui':   { wealth: 15,     note: 'Football · Morocco · Manchester United', url: 'https://en.wikipedia.org/wiki/Noussair_Mazraoui' },
+    // ── Bournemouth ──────────────────────────────────────
+    '_sub_pl_bournemouth':   { _subgroup: 'Football — AFC Bournemouth' },
+    'andoni iraola bournemouth': { wealth: 10, note: 'Football · Manager · Spain · Bournemouth · Europa League 2025-26 · Overachiever · £4M/year', url: 'https://en.wikipedia.org/wiki/Andoni_Iraola' },
+    'justin kluivert bournemouth': { wealth: 10, note: 'Football · Netherlands · Bournemouth · Europa League · Son of Patrick Kluivert · Top scorer', url: 'https://en.wikipedia.org/wiki/Justin_Kluivert' },
+    'antoine semenyo bournemouth': { wealth: 15, note: 'Football · Ghana · Bournemouth · Europa League · Pacy winger', url: 'https://en.wikipedia.org/wiki/Antoine_Semenyo' },
+    'djordje petrovic bournemouth': { wealth: 10, note: 'Football · Serbia · Bournemouth · Goalkeeper · Europa League', url: 'https://en.wikipedia.org/wiki/Dj%C3%B6rdje_Petrovi%C4%87' },
+    'marcos senesi bournemouth': { wealth: 10,  note: 'Football · Argentina · Bournemouth · Europa League · Centre back', url: 'https://en.wikipedia.org/wiki/Marcos_Senesi' },
+    'ryan christie bournemouth': { wealth: 8,   note: 'Football · Scotland · Bournemouth · Europa League · Midfielder', url: 'https://en.wikipedia.org/wiki/Ryan_Christie' },
+    'tyler adams bournemouth': { wealth: 8,     note: 'Football · USA · Bournemouth · Europa League · World Cup 2026 · American captain', url: 'https://en.wikipedia.org/wiki/Tyler_Adams' },
+    'david brooks bournemouth': { wealth: 8,    note: 'Football · Wales · Bournemouth · Europa League · Overcame cancer 2022 · Inspirational', url: 'https://en.wikipedia.org/wiki/David_Brooks' },
+    'enes unal bournemouth': { wealth: 8,       note: 'Football · Turkey · Bournemouth · Europa League · Striker', url: 'https://en.wikipedia.org/wiki/Enes_Unal' },
+    'marcus tavernier bournemouth': { wealth: 10, note: 'Football · England · Bournemouth · Europa League · Midfielder', url: 'https://en.wikipedia.org/wiki/Marcus_Tavernier' },
 
-    'cole palmer':         { wealth: 50,     note: 'Football · England · Chelsea · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Cole_Palmer' },
-    'joao pedro':          { wealth: 25,     note: 'Football · Brazil · Chelsea', url: 'https://en.wikipedia.org/wiki/Joao_Pedro' },
-    'enzo fernandez':      { wealth: 35,     note: 'Football · Argentina · Chelsea · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Enzo_Fernandez' },
-    'moises caicedo':      { wealth: 30,     note: 'Football · Ecuador · Chelsea', url: 'https://en.wikipedia.org/wiki/Moises_Caicedo' },
-    'levi colwill':        { wealth: 15,     note: 'Football · England · Chelsea', url: 'https://en.wikipedia.org/wiki/Levi_Colwill' },
+    // ── Brentford ────────────────────────────────────────
+    '_sub_pl_brentford':     { _subgroup: 'Football — Brentford FC' },
+    'keith andrews brentford': { wealth: 5,     note: 'Football · Manager · Ireland · Brentford · Took over as head coach 2025', url: 'https://en.wikipedia.org/wiki/Keith_Andrews' },
+    'yoane wissa brentford': { wealth: 10,      note: 'Football · DR Congo · Brentford · Striker · Key player', url: 'https://en.wikipedia.org/wiki/Yoane_Wissa' },
+    'christian norgaard brentford': { wealth: 8, note: 'Football · Denmark · Brentford · Club captain · £65,000/week · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Christian_N%C3%B8rgaard' },
+    'mikkel damsgaard brentford': { wealth: 10, note: 'Football · Denmark · Brentford · Winger · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mikkel_Damsgaard' },
+    'nathan collins brentford': { wealth: 10,   note: 'Football · Ireland · Brentford · Centre back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Nathan_Collins' },
+    'mark flekken brentford': { wealth: 8,      note: 'Football · Netherlands · Brentford · Goalkeeper · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Mark_Flekken' },
+    'fabio carvalho brentford': { wealth: 10,   note: 'Football · Portugal · Brentford · Attacking midfielder · From Liverpool', url: 'https://en.wikipedia.org/wiki/F%C3%A1bio_Carvalho' },
+    'sepp van den berg brentford': { wealth: 8, note: 'Football · Netherlands · Brentford · Defender', url: 'https://en.wikipedia.org/wiki/Sepp_van_den_Berg' },
+    'igor thiago brentford': { wealth: 10,      note: 'Football · Brazil · Brentford · Striker', url: 'https://en.wikipedia.org/wiki/Igor_Thiago' },
+    'kevin schade brentford': { wealth: 10,     note: 'Football · Germany · Brentford · Winger', url: 'https://en.wikipedia.org/wiki/Kevin_Schade' },
 
-    'james maddison':      { wealth: 20,     note: 'Football · England · Tottenham', url: 'https://en.wikipedia.org/wiki/James_Maddison' },
-    'micky van de ven':    { wealth: 15,     note: 'Football · Netherlands · Tottenham', url: 'https://en.wikipedia.org/wiki/Micky_Van_De_Ven' },
-    'cristian romero':     { wealth: 25,     note: 'Football · Argentina · Tottenham · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Cristian_Romero' },
-    'brennan johnson':     { wealth: 15,     note: 'Football · Wales · Tottenham · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Brennan_Johnson' },
+    // ── Brighton ─────────────────────────────────────────
+    '_sub_pl_brighton':      { _subgroup: 'Football — Brighton & Hove Albion' },
+    'fabian hurzeler brighton': { wealth: 8,    note: 'Football · Manager · Germany · Brighton · Conference League 2025-26 · Youngest PL manager · 31 years old', url: 'https://en.wikipedia.org/wiki/Fabian_H%C3%BCrzeler' },
+    'kaoru mitoma brighton': { wealth: 20,      note: 'Football · Japan · Brighton · Conference League · Japan most popular footballer · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Kaoru_Mitoma' },
+    'joao pedro brighton':   { wealth: 25,      note: 'Football · Brazil · Brighton · Conference League · Striker · World Cup 2026 · From Watford', url: 'https://en.wikipedia.org/wiki/Jo%C3%A3o_Pedro_(footballer,_born_2001)' },
+    'lewis dunk brighton':   { wealth: 10,      note: 'Football · England · Brighton · Club captain · Centre back · Lifelong Brighton fan', url: 'https://en.wikipedia.org/wiki/Lewis_Dunk' },
+    'bart verbruggen brighton': { wealth: 8,    note: 'Football · Netherlands · Brighton · Goalkeeper · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Bart_Verbruggen' },
+    'yankuba minteh brighton': { wealth: 10,    note: 'Football · Gambia · Brighton · Winger', url: 'https://en.wikipedia.org/wiki/Yankuba_Minteh' },
+    'matt oriley brighton':  { wealth: 10,      note: 'Football · Denmark · Brighton · Midfielder · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Matt_O%27Riley' },
+    'jan paul van hecke brighton': { wealth: 8, note: 'Football · Netherlands · Brighton · Centre back · World Cup 2026 · Recently signed from Spurs', url: 'https://en.wikipedia.org/wiki/Jan_Paul_van_Hecke' },
+    'brajan gruda brighton': { wealth: 10,      note: 'Football · Germany · Brighton · Winger', url: 'https://en.wikipedia.org/wiki/Brajan_Gruda' },
+    'yasin ayari brighton':  { wealth: 8,       note: 'Football · Sweden · Brighton · Midfielder', url: 'https://en.wikipedia.org/wiki/Yasin_Ayari' },
+    'diego gomez brighton':  { wealth: 8,       note: 'Football · Paraguay · Brighton · Midfielder', url: 'https://en.wikipedia.org/wiki/Diego_G%C3%B3mez_(footballer)' },
+    'maxim de cuyper brighton': { wealth: 8,    note: 'Football · Belgium · Brighton · Left back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Maxim_De_Cuyper' },
 
-    'sandro tonali':       { wealth: 30,     note: 'Football · Italy · Newcastle', url: 'https://en.wikipedia.org/wiki/Sandro_Tonali' },
-    'bruno guimaraes':     { wealth: 30,     note: 'Football · Brazil · Newcastle · Captain', url: 'https://en.wikipedia.org/wiki/Bruno_Guimaraes' },
-    'nick pope':           { wealth: 10,     note: 'Football · England · Newcastle', url: 'https://en.wikipedia.org/wiki/Nick_Pope' },
+    // ── Chelsea ──────────────────────────────────────────
+    '_sub_pl_chelsea':       { _subgroup: 'Football — Chelsea FC' },
+    'enzo maresca chelsea':  { wealth: 15,      note: 'Football · Manager · Italy · Chelsea · £10M/year · Former Man City coach · Progressive style', url: 'https://en.wikipedia.org/wiki/Enzo_Maresca' },
+    'cole palmer chelsea':   { wealth: 50,      note: 'Football · England · Chelsea · £200,000/week · World Cup 2026 · 2024 Player of Season · From Man City', url: 'https://en.wikipedia.org/wiki/Cole_Palmer' },
+    'enzo fernandez chelsea': { wealth: 35,     note: 'Football · Argentina · Chelsea · £200,000/week · World Cup winner 2022 · Club record £107M signing 2023', url: 'https://en.wikipedia.org/wiki/Enzo_Fern%C3%A1ndez' },
+    'moises caicedo chelsea': { wealth: 30,     note: 'Football · Ecuador · Chelsea · £200,000/week · Club record £115M 2023 · Defensive midfielder', url: 'https://en.wikipedia.org/wiki/Mois%C3%A9s_Caicedo' },
+    'reece james chelsea':   { wealth: 20,      note: 'Football · England · Chelsea · Captain · Right back · World Cup 2026 · Academy graduate', url: 'https://en.wikipedia.org/wiki/Reece_James' },
+    'nicolas jackson chelsea': { wealth: 15,    note: 'Football · Senegal · Chelsea · Striker · World Cup 2026 · From Villarreal', url: 'https://en.wikipedia.org/wiki/Nicolas_Jackson' },
+    'marc cucurella chelsea': { wealth: 15,     note: 'Football · Spain · Chelsea · Left back · World Cup 2026 winner · From Brighton', url: 'https://en.wikipedia.org/wiki/Marc_Cucurella' },
+    'romeo lavia chelsea':   { wealth: 15,      note: 'Football · Belgium · Chelsea · Midfielder · World Cup 2026 · From Southampton', url: 'https://en.wikipedia.org/wiki/Romeo_Lavia' },
+    'levi colwill chelsea':  { wealth: 15,      note: 'Football · England · Chelsea · Centre back · World Cup 2026 · Academy graduate', url: 'https://en.wikipedia.org/wiki/Levi_Colwill' },
+    'malo gusto chelsea':    { wealth: 10,      note: 'Football · France · Chelsea · Right back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Malo_Gusto' },
+    'noni madueke chelsea':  { wealth: 15,      note: 'Football · England · Chelsea · Winger · World Cup 2026 · From PSV', url: 'https://en.wikipedia.org/wiki/Noni_Madueke' },
+    'joao felix chelsea':    { wealth: 20,      note: 'Football · Portugal · Chelsea · Attacking midfielder · World Cup 2026 · Originally £113M to Atletico', url: 'https://en.wikipedia.org/wiki/Jo%C3%A3o_F%C3%A9lix' },
 
-    'ollie watkins':       { wealth: 30,     note: 'Football · England · Aston Villa', url: 'https://en.wikipedia.org/wiki/Ollie_Watkins' },
-    'emiliano martinez':   { wealth: 20,     note: 'Football · Argentina · Aston Villa · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Emiliano_Martinez' },
-    'morgan rogers':       { wealth: 15,     note: 'Football · England · Aston Villa', url: 'https://en.wikipedia.org/wiki/Morgan_Rogers' },
-    'ezri konsa':          { wealth: 10,     note: 'Football · England · Aston Villa', url: 'https://en.wikipedia.org/wiki/Ezri_Konsa' },
+    // ── Crystal Palace ───────────────────────────────────
+    '_sub_pl_palace':        { _subgroup: 'Football — Crystal Palace FC' },
+    'oliver glasner palace': { wealth: 10,      note: 'Football · Manager · Austria · Crystal Palace · Europa League · Won FA Cup 2024 · Tactical innovator', url: 'https://en.wikipedia.org/wiki/Oliver_Glasner' },
+    'marc guehi palace':     { wealth: 15,      note: 'Football · England · Crystal Palace · Europa League · Centre back · World Cup 2026 · Academy Chelsea', url: 'https://en.wikipedia.org/wiki/Marc_Gu%C3%A9hi' },
+    'jean-philippe mateta palace': { wealth: 15, note: 'Football · France · Crystal Palace · Europa League · Striker · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jean-Philippe_Mateta' },
+    'dean henderson palace': { wealth: 10,      note: 'Football · England · Crystal Palace · Europa League · Goalkeeper · World Cup 2026 · From Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Dean_Henderson' },
+    'adam wharton palace':   { wealth: 15,      note: 'Football · England · Crystal Palace · Europa League · Midfielder · England international · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Adam_Wharton' },
+    'ismaila sarr palace':   { wealth: 10,      note: 'Football · Senegal · Crystal Palace · Europa League · Winger', url: 'https://en.wikipedia.org/wiki/Ismaila_Sarr' },
+    'cheick doucoure palace': { wealth: 10,     note: 'Football · Mali · Crystal Palace · Europa League · Midfielder', url: 'https://en.wikipedia.org/wiki/Cheick_Doucour%C3%A9' },
+    'daniel munoz palace':   { wealth: 10,      note: 'Football · Colombia · Crystal Palace · Europa League · Right back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Daniel_Mu%C3%B1oz' },
+    'tyrick mitchell palace': { wealth: 10,     note: 'Football · England · Crystal Palace · Europa League · Left back', url: 'https://en.wikipedia.org/wiki/Tyrick_Mitchell' },
+    'maxence lacroix palace': { wealth: 10,     note: 'Football · France · Crystal Palace · Europa League · Centre back', url: 'https://en.wikipedia.org/wiki/Maxence_Lacroix' },
+    'daichi kamada palace':  { wealth: 10,      note: 'Football · Japan · Crystal Palace · Europa League · Midfielder · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Daichi_Kamada' },
+    'eddie nketiah palace':  { wealth: 10,      note: 'Football · England · Crystal Palace · Europa League · Striker · Former Arsenal', url: 'https://en.wikipedia.org/wiki/Eddie_Nketiah' },
 
-    'kaoru mitoma':        { wealth: 20,     note: 'Football · Japan · Brighton · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Kaoru_Mitoma' },
-    'yankuba minteh':      { wealth: 10,     note: 'Football · Gambia · Brighton', url: 'https://en.wikipedia.org/wiki/Yankuba_Minteh' },
-    'jan paul van hecke':  { wealth: 8,      note: 'Football · Netherlands · Brighton', url: 'https://en.wikipedia.org/wiki/Jan_Paul_Van_Hecke' },
+    // ── Everton ──────────────────────────────────────────
+    '_sub_pl_everton':       { _subgroup: 'Football — Everton FC' },
+    'david moyes everton':   { wealth: 10,      note: 'Football · Manager · Scotland · Everton · Returned to Everton after West Ham · Known as The Chosen One · £4M/year', url: 'https://en.wikipedia.org/wiki/David_Moyes' },
+    'jordan pickford everton': { wealth: 15,    note: 'Football · England · Everton · £150,000/week · World Cup 2026 · England No.1 goalkeeper · From Sunderland', url: 'https://en.wikipedia.org/wiki/Jordan_Pickford' },
+    'jarrad branthwaite everton': { wealth: 15, note: 'Football · England · Everton · £120,000/week · World Cup 2026 · Centre back · Turned down Man Utd £70M', url: 'https://en.wikipedia.org/wiki/Jarrad_Branthwaite' },
+    'jack grealish everton': { wealth: 30,      note: 'Football · England · Everton · On loan from Manchester City · £225,000/week · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jack_Grealish' },
+    'iliman ndiaye everton': { wealth: 10,      note: 'Football · Senegal · Everton · World Cup 2026 · Winger', url: 'https://en.wikipedia.org/wiki/Iliman_Ndiaye' },
+    'james tarkowski everton': { wealth: 8,     note: 'Football · England · Everton · Centre back partner Branthwaite', url: 'https://en.wikipedia.org/wiki/James_Tarkowski' },
+    'vitalii mykolenko everton': { wealth: 8,   note: 'Football · Ukraine · Everton · Left back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Vitalii_Mykolenko' },
+    'idrissa gueye everton': { wealth: 8,       note: 'Football · Senegal · Everton · Veteran midfielder · World Cup 2026 · Former PSG Aston Villa', url: 'https://en.wikipedia.org/wiki/Idrissa_Gueye' },
+    'carlos alcaraz everton': { wealth: 10,     note: 'Football · Argentina · Everton · Midfielder · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Carlos_Alcaraz_(footballer)' },
+    'michael keane everton': { wealth: 8,       note: 'Football · England · Everton · Veteran centre back · Longtime servant', url: 'https://en.wikipedia.org/wiki/Michael_Keane' },
 
-    'jarrod bowen':        { wealth: 20,     note: 'Football · England · West Ham', url: 'https://en.wikipedia.org/wiki/Jarrod_Bowen' },
-    'lucas paqueta':       { wealth: 25,     note: 'Football · Brazil · West Ham', url: 'https://en.wikipedia.org/wiki/Lucas_Paqueta' },
-    'mohammed kudus':      { wealth: 20,     note: 'Football · Ghana · West Ham', url: 'https://en.wikipedia.org/wiki/Mohammed_Kudus' },
+    // ── Fulham ───────────────────────────────────────────
+    '_sub_pl_fulham':        { _subgroup: 'Football — Fulham FC' },
+    'marco silva fulham':    { wealth: 10,      note: 'Football · Manager · Portugal · Fulham · £5M/year · Consistent overachiever · Former Everton manager', url: 'https://en.wikipedia.org/wiki/Marco_Silva' },
+    'alex iwobi fulham':     { wealth: 15,      note: 'Football · Nigeria · Fulham · Attacking midfielder · World Cup 2026 · Nephew of Jay-Jay Okocha', url: 'https://en.wikipedia.org/wiki/Alex_Iwobi' },
+    'emile smith rowe fulham': { wealth: 10,    note: 'Football · England · Fulham · Signed from Arsenal · World Cup 2026 · Attacking midfielder', url: 'https://en.wikipedia.org/wiki/Emile_Smith_Rowe' },
+    'bernd leno fulham':     { wealth: 8,       note: 'Football · Germany · Fulham · Goalkeeper · World Cup 2026 · From Arsenal', url: 'https://en.wikipedia.org/wiki/Bernd_Leno' },
+    'rodrigo muniz fulham':  { wealth: 8,       note: 'Football · Brazil · Fulham · Striker · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Rodrigo_Muniz' },
+    'andreas pereira fulham': { wealth: 10,     note: 'Football · Brazil · Fulham · Midfielder · World Cup 2026 · Former Man Utd', url: 'https://en.wikipedia.org/wiki/Andreas_Pereira' },
+    'joachim andersen fulham': { wealth: 10,    note: 'Football · Denmark · Fulham · Centre back · World Cup 2026 · From Crystal Palace', url: 'https://en.wikipedia.org/wiki/Joachim_Andersen' },
+    'calvin bassey fulham':  { wealth: 10,      note: 'Football · Nigeria · Fulham · Centre back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Calvin_Bassey' },
+    'timothy castagne fulham': { wealth: 8,     note: 'Football · Belgium · Fulham · Right back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Timothy_Castagne' },
+    'sasa lukic fulham':     { wealth: 8,       note: 'Football · Serbia · Fulham · Midfielder · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Saša_Lukić' },
+    'ryan sessegnon fulham': { wealth: 8,       note: 'Football · England · Fulham · Left back · Former Spurs · Academy graduate', url: 'https://en.wikipedia.org/wiki/Ryan_Sessegnon' },
 
-    'marc guehi':          { wealth: 15,     note: 'Football · England · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Marc_Guehi' },
-    'jean-philippe mateta':{ wealth: 15,     note: 'Football · France · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Jean-philippe_Mateta' },
-    'adam wharton':        { wealth: 15,     note: 'Football · England · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Adam_Wharton' },
+    // ── Liverpool ────────────────────────────────────────
+    '_sub_pl_liverpool':     { _subgroup: 'Football — Liverpool FC' },
+    'arne slot liverpool':   { wealth: 15,      note: 'Football · Manager · Netherlands · Liverpool · £10M/year · Champions League 2025-26 · Replaced Jurgen Klopp · Former Feyenoord', url: 'https://en.wikipedia.org/wiki/Arne_Slot' },
+    'florian wirtz liverpool': { wealth: 40,    note: 'Football · Germany · Liverpool · Signed summer 2025 from Leverkusen · World Cup 2026 · Club record signing', url: 'https://en.wikipedia.org/wiki/Florian_Wirtz' },
+    'alexis mac allister liverpool': { wealth: 25, note: 'Football · Argentina · Liverpool · World Cup winner 2022 · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Alexis_Mac_Allister' },
+    'dominik szoboszlai liverpool': { wealth: 30, note: 'Football · Hungary · Liverpool · Captain · From Leipzig · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Dominik_Szoboszlai' },
+    'cody gakpo liverpool':  { wealth: 25,      note: 'Football · Netherlands · Liverpool · Winger striker · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Cody_Gakpo' },
+    'ryan gravenberch liverpool': { wealth: 20, note: 'Football · Netherlands · Liverpool · Midfielder · Champions League · World Cup 2026 · From Bayern Munich', url: 'https://en.wikipedia.org/wiki/Ryan_Gravenberch' },
+    'ibrahima konate liverpool': { wealth: 20,  note: 'Football · France · Liverpool · Centre back · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ibrahima_Konate' },
+    'conor bradley liverpool': { wealth: 8,     note: 'Football · Northern Ireland · Liverpool · Right back · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Conor_Bradley' },
+    'diogo jota liverpool':  { wealth: 20,      note: 'Football · Portugal · Liverpool · Striker · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Diogo_Jota' },
+    'andrew robertson liverpool': { wealth: 20, note: 'Football · Scotland · Liverpool · Left back · Champions League · Scotland captain', url: 'https://en.wikipedia.org/wiki/Andrew_Robertson' },
+    'trent alexander-arnold liverpool': { wealth: 40, note: 'Football · England · Liverpool · Now at Real Madrid · World Cup 2026 · Best right back in world', url: 'https://en.wikipedia.org/wiki/Trent_Alexander-Arnold' },
+    'alisson becker liverpool': { wealth: 25,   note: 'Football · Brazil · Liverpool · Goalkeeper · Champions League · World Cup 2026 · Best GK in world', url: 'https://en.wikipedia.org/wiki/Alisson_Becker' },
+    'virgil van dijk liverpool': { wealth: 30,  note: 'Football · Netherlands · Liverpool · Captain · Centre back · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Virgil_van_Dijk' },
 
-    'emile smith rowe':    { wealth: 10,     note: 'Football · England · Fulham', url: 'https://en.wikipedia.org/wiki/Emile_Smith_Rowe' },
-    'rodrigo muniz':       { wealth: 8,      note: 'Football · Brazil · Fulham', url: 'https://en.wikipedia.org/wiki/Rodrigo_Muniz' },
-    'bernd leno':          { wealth: 8,      note: 'Football · Germany · Fulham', url: 'https://en.wikipedia.org/wiki/Bernd_Leno' },
+    // ── Manchester City ──────────────────────────────────
+    '_sub_pl_mancity':       { _subgroup: 'Football — Manchester City FC' },
+    'pep guardiola mancity': { wealth: 100,     note: 'Football · Manager · Spain · Manchester City · £20M/year · Highest paid manager in world · 9 PL titles · Champions League · Greatest manager ever', url: 'https://en.wikipedia.org/wiki/Pep_Guardiola' },
+    'erling haaland mancity': { wealth: 80,     note: 'Football · Norway · Manchester City · £375,000/week · Top scorer PL 2025-26 27 goals · World Cup 2026 · Machine', url: 'https://en.wikipedia.org/wiki/Erling_Haaland' },
+    'kevin de bruyne mancity': { wealth: 80,    note: 'Football · Belgium · Manchester City · £400,000/week · Greatest PL midfielder ever · World Cup 2026 · From Chelsea', url: 'https://en.wikipedia.org/wiki/Kevin_De_Bruyne' },
+    'phil foden mancity':    { wealth: 60,      note: 'Football · England · Manchester City · £300,000/week · PFA Player of Year 2024 · World Cup 2026 · Manchester born', url: 'https://en.wikipedia.org/wiki/Phil_Foden' },
+    'bernardo silva mancity': { wealth: 40,     note: 'Football · Portugal · Manchester City · £350,000/week · World Cup 2026 · Champions League · Technical genius', url: 'https://en.wikipedia.org/wiki/Bernardo_Silva' },
+    'ruben dias mancity':    { wealth: 30,      note: 'Football · Portugal · Manchester City · Centre back · Champions League · World Cup 2026 · PFA Player of Year 2021', url: 'https://en.wikipedia.org/wiki/Rub%C3%A9n_Dias' },
+    'jeremy doku mancity':   { wealth: 25,      note: 'Football · Belgium · Manchester City · Winger · World Cup 2026 · From Rennes', url: 'https://en.wikipedia.org/wiki/Jeremy_Doku' },
+    'mateo kovacic mancity': { wealth: 20,      note: 'Football · Croatia · Manchester City · Midfielder · World Cup winner 2022 · From Chelsea', url: 'https://en.wikipedia.org/wiki/Mateo_Kovacic' },
+    'matheus nunes mancity': { wealth: 20,      note: 'Football · Portugal · Manchester City · Midfielder · World Cup 2026 · From Wolves', url: 'https://en.wikipedia.org/wiki/Matheus_Nunes' },
+    'ederson mancity':       { wealth: 20,      note: 'Football · Brazil · Manchester City · Goalkeeper · Champions League · World Cup 2026 · Ball-playing GK', url: 'https://en.wikipedia.org/wiki/Ederson_(footballer)' },
+    'jack grealish mancity': { wealth: 30,      note: 'Football · England · Manchester City · On loan at Everton · £100M signing 2021 · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jack_Grealish' },
+    'rico lewis mancity':    { wealth: 15,      note: 'Football · England · Manchester City · Young right back · World Cup 2026 · Academy graduate · Innovative role', url: 'https://en.wikipedia.org/wiki/Rico_Lewis' },
 
-    'antoine semenyo':     { wealth: 15,     note: 'Football · Ghana · Bournemouth', url: 'https://en.wikipedia.org/wiki/Antoine_Semenyo' },
-    'marcus tavernier':    { wealth: 10,     note: 'Football · England · Bournemouth', url: 'https://en.wikipedia.org/wiki/Marcus_Tavernier' },
+    // ── Manchester United ────────────────────────────────
+    '_sub_pl_manutd':        { _subgroup: 'Football — Manchester United FC' },
+    'ruben amorim manutd':   { wealth: 15,      note: 'Football · Manager · Portugal · Manchester United · £10M/year · Champions League 2025-26 · From Sporting Lisbon · 3-4-3 system', url: 'https://en.wikipedia.org/wiki/Rub%C3%A9n_Amorim' },
+    'bruno fernandes manutd': { wealth: 40,     note: 'Football · Portugal · Manchester United · £240,000/week · Captain · Best Player PL 2025-26 · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Bruno_Fernandes' },
+    'rasmus hojlund manutd': { wealth: 20,      note: 'Football · Denmark · Manchester United · Striker · £120,000/week · World Cup 2026 · From Atalanta £72M', url: 'https://en.wikipedia.org/wiki/Rasmus_H%C3%B8jlund' },
+    'bryan mbeumo manutd':   { wealth: 25,      note: 'Football · Cameroon · Manchester United · Winger · Signed from Brentford · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Bryan_Mbeumo' },
+    'lisandro martinez manutd': { wealth: 20,   note: 'Football · Argentina · Manchester United · Centre back · World Cup winner 2022 · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Lisandro_Mart%C3%ADnez' },
+    'kobbie mainoo manutd':  { wealth: 15,      note: 'Football · England · Manchester United · Midfielder · World Cup 2026 · Academy graduate · Breakthrough star', url: 'https://en.wikipedia.org/wiki/Kobbie_Mainoo' },
+    'andre onana manutd':    { wealth: 15,      note: 'Football · Cameroon · Manchester United · Goalkeeper · World Cup 2026 · From Inter Milan', url: 'https://en.wikipedia.org/wiki/Andre_Onana' },
+    'harry maguire manutd':  { wealth: 15,      note: 'Football · England · Manchester United · Centre back · World Cup 2026 · Captain during difficult period', url: 'https://en.wikipedia.org/wiki/Harry_Maguire' },
+    'matheus cunha manutd':  { wealth: 25,      note: 'Football · Brazil · Manchester United · Striker · Signed from Wolves · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Matheus_Cunha' },
+    'diogo dalot manutd':    { wealth: 10,      note: 'Football · Portugal · Manchester United · Right back · World Cup 2026 · From Porto', url: 'https://en.wikipedia.org/wiki/Diogo_Dalot' },
+    'noussair mazraoui manutd': { wealth: 15,   note: 'Football · Morocco · Manchester United · Right back · World Cup 2026 · From Bayern Munich', url: 'https://en.wikipedia.org/wiki/Noussair_Mazraoui' },
 
-    'igor thiago':         { wealth: 10,     note: 'Football · Brazil · Brentford', url: 'https://en.wikipedia.org/wiki/Igor_Thiago' },
-    'kevin schade':        { wealth: 10,     note: 'Football · Germany · Brentford', url: 'https://en.wikipedia.org/wiki/Kevin_Schade' },
-    'keane lewis-potter':  { wealth: 8,      note: 'Football · England · Brentford', url: 'https://en.wikipedia.org/wiki/Keane_Lewis-potter' },
+    // ── Newcastle United ─────────────────────────────────
+    '_sub_pl_newcastle':     { _subgroup: 'Football — Newcastle United FC' },
+    'eddie howe newcastle':  { wealth: 15,      note: 'Football · Manager · England · Newcastle United · £8M/year · Transformed Newcastle · Saudi takeover era', url: 'https://en.wikipedia.org/wiki/Eddie_Howe' },
+    'sandro tonali newcastle': { wealth: 30,    note: 'Football · Italy · Newcastle · £100,000/week · World Cup 2026 · From AC Milan · Completed gambling ban', url: 'https://en.wikipedia.org/wiki/Sandro_Tonali' },
+    'bruno guimaraes newcastle': { wealth: 30,  note: 'Football · Brazil · Newcastle · Captain · £200,000/week · World Cup 2026 · Best defensive midfielder in PL', url: 'https://en.wikipedia.org/wiki/Bruno_Guimar%C3%A3es' },
+    'alexander isak newcastle': { wealth: 40,   note: 'Football · Sweden · Newcastle · Striker · £200,000/week · World Cup 2026 · From Real Sociedad £60M', url: 'https://en.wikipedia.org/wiki/Alexander_Isak' },
+    'kieran trippier newcastle': { wealth: 20,  note: 'Football · England · Newcastle · Right back · World Cup 2026 · From Atletico Madrid', url: 'https://en.wikipedia.org/wiki/Kieran_Trippier' },
+    'nick pope newcastle':   { wealth: 10,      note: 'Football · England · Newcastle · Goalkeeper · World Cup 2026 · From Burnley', url: 'https://en.wikipedia.org/wiki/Nick_Pope' },
+    'fabian schar newcastle': { wealth: 15,     note: 'Football · Switzerland · Newcastle · Centre back · World Cup 2026 · Veteran', url: 'https://en.wikipedia.org/wiki/Fabian_Sch%C3%A4r' },
+    'harvey barnes newcastle': { wealth: 15,    note: 'Football · England · Newcastle · Winger · World Cup 2026 · From Leicester', url: 'https://en.wikipedia.org/wiki/Harvey_Barnes' },
+    'tino livramento newcastle': { wealth: 10,  note: 'Football · England · Newcastle · Right back · World Cup 2026 · From Southampton', url: 'https://en.wikipedia.org/wiki/Tino_Livramento' },
+    'dan burn newcastle':    { wealth: 10,      note: 'Football · England · Newcastle · Centre back · Geordie · Club and country', url: 'https://en.wikipedia.org/wiki/Dan_Burn' },
+    'lewis hall newcastle':  { wealth: 10,      note: 'Football · England · Newcastle · Left back · World Cup 2026 · From Chelsea', url: 'https://en.wikipedia.org/wiki/Lewis_Hall' },
 
-    'morgan gibbs-white':  { wealth: 20,     note: 'Football · England · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Morgan_Gibbs-white' },
+    // ── Nottingham Forest ────────────────────────────────
+    '_sub_pl_forest':        { _subgroup: 'Football — Nottingham Forest FC' },
+    'ange postecoglou forest': { wealth: 10,    note: 'Football · Manager · Australia · Nottingham Forest · From Tottenham · Champions League football · Former Celtic · Celtic manager', url: 'https://en.wikipedia.org/wiki/Ange_Postecoglou' },
+    'morgan gibbs-white forest': { wealth: 20,  note: 'Football · England · Nottingham Forest · Attacking midfielder · World Cup 2026 · From Wolves', url: 'https://en.wikipedia.org/wiki/Morgan_Gibbs-White' },
+    'callum hudson-odoi forest': { wealth: 10,  note: 'Football · England · Nottingham Forest · Winger · World Cup 2026 · Former Chelsea', url: 'https://en.wikipedia.org/wiki/Callum_Hudson-Odoi' },
+    'anthony elanga forest': { wealth: 10,      note: 'Football · Sweden · Nottingham Forest · Winger · World Cup 2026 · From Manchester United', url: 'https://en.wikipedia.org/wiki/Anthony_Elanga' },
+    'matz sels forest':      { wealth: 8,       note: 'Football · Belgium · Nottingham Forest · Goalkeeper · World Cup 2026 · Best season of career', url: 'https://en.wikipedia.org/wiki/Matz_Sels' },
+    'nikola milenkovic forest': { wealth: 10,   note: 'Football · Serbia · Nottingham Forest · Centre back · World Cup 2026 · From Fiorentina', url: 'https://en.wikipedia.org/wiki/Nikola_Milenkovic' },
+    'neco williams forest':  { wealth: 8,       note: 'Football · Wales · Nottingham Forest · Right back · World Cup 2026 · Former Liverpool', url: 'https://en.wikipedia.org/wiki/Neco_Williams' },
+    'ola aina forest':       { wealth: 8,       note: 'Football · Nigeria · Nottingham Forest · Left back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ola_Aina' },
+    'ibrahim sangare forest': { wealth: 8,      note: 'Football · Ivory Coast · Nottingham Forest · Midfielder · World Cup 2026 · From PSV', url: 'https://en.wikipedia.org/wiki/Ibrahim_Sangare' },
 
-    'jordan pickford':     { wealth: 15,     note: 'Football · England · Everton · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jordan_Pickford' },
-    'iliman ndiaye':       { wealth: 10,     note: 'Football · Senegal · Everton', url: 'https://en.wikipedia.org/wiki/Iliman_Ndiaye' },
+    // ── Sunderland ───────────────────────────────────────
+    '_sub_pl_sunderland':    { _subgroup: 'Football — Sunderland AFC' },
+    'regis le bris sunderland': { wealth: 8,    note: 'Football · Manager · France · Sunderland · Europa League · Promoted from Championship · Young innovative coach', url: 'https://en.wikipedia.org/wiki/R%C3%A9gis_Le_Bris' },
+    'granit xhaka sunderland': { wealth: 15,    note: 'Football · Switzerland · Sunderland · Europa League · World Cup 2026 · Captain · Veteran leader · From Bayer Leverkusen', url: 'https://en.wikipedia.org/wiki/Granit_Xhaka' },
+    'habib diarra sunderland': { wealth: 10,    note: 'Football · Senegal · Sunderland · Europa League · Midfielder · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Habib_Diarra' },
+    'chris rigg sunderland': { wealth: 10,      note: 'Football · England · Sunderland · Europa League · Teenager · World Cup 2026 · Academy jewel · £50M future', url: 'https://en.wikipedia.org/wiki/Chris_Rigg' },
+    'enzo le fee sunderland': { wealth: 10,     note: 'Football · France · Sunderland · Europa League · Midfielder · World Cup 2026 · From Roma', url: 'https://en.wikipedia.org/wiki/Enzo_Le_F%C3%A9e' },
+    'anthony patterson sunderland': { wealth: 8, note: 'Football · England · Sunderland · Europa League · Goalkeeper · Homegrown · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Anthony_Patterson' },
+    'dan ballard sunderland': { wealth: 8,      note: 'Football · Northern Ireland · Sunderland · Europa League · Centre back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Dan_Ballard' },
+    'trai hume sunderland':  { wealth: 8,       note: 'Football · Northern Ireland · Sunderland · Europa League · Right back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Trai_Hume' },
+    'patrick roberts sunderland': { wealth: 8,  note: 'Football · England · Sunderland · Europa League · Winger · Career renaissance', url: 'https://en.wikipedia.org/wiki/Patrick_Roberts' },
+    'luke onien sunderland': { wealth: 8,       note: 'Football · England · Sunderland · Europa League · Midfielder · Club stalwart', url: 'https://en.wikipedia.org/wiki/Luke_O%27Nien' },
 
-    'jorgen strand larsen':{ wealth: 15,     note: 'Football · Norway · Wolves · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jorgen_Strand_Larsen' },
-    'yerson mosquera':     { wealth: 8,      note: 'Football · Colombia · Wolves', url: 'https://en.wikipedia.org/wiki/Yerson_Mosquera' },
+    // ── Tottenham Hotspur ────────────────────────────────
+    '_sub_pl_spurs':         { _subgroup: 'Football — Tottenham Hotspur FC' },
+    'thomas frank spurs':    { wealth: 10,      note: 'Football · Manager · Denmark · Tottenham · £8M/year · From Brentford · Narrowly avoided relegation · Rebuilding', url: 'https://en.wikipedia.org/wiki/Thomas_Frank' },
+    'james maddison spurs':  { wealth: 20,      note: 'Football · England · Tottenham · £200,000/week · World Cup 2026 · Playmaker · From Leicester', url: 'https://en.wikipedia.org/wiki/James_Maddison' },
+    'cristian romero spurs': { wealth: 25,      note: 'Football · Argentina · Tottenham · Centre back · World Cup winner 2022 · World Cup 2026 · Best PL CB', url: 'https://en.wikipedia.org/wiki/Crist%C3%ADan_Romero' },
+    'micky van de ven spurs': { wealth: 15,     note: 'Football · Netherlands · Tottenham · Centre back · World Cup 2026 · Fastest defender in PL · From Wolfsburg', url: 'https://en.wikipedia.org/wiki/Micky_van_de_Ven' },
+    'pedro porro spurs':     { wealth: 15,      note: 'Football · Spain · Tottenham · Right back · World Cup 2026 · From Sporting Lisbon', url: 'https://en.wikipedia.org/wiki/Pedro_Porro' },
+    'guglielmo vicario spurs': { wealth: 15,    note: 'Football · Italy · Tottenham · Goalkeeper · World Cup 2026 · From Empoli', url: 'https://en.wikipedia.org/wiki/Guglielmo_Vicario' },
+    'yves bissouma spurs':   { wealth: 15,      note: 'Football · Mali · Tottenham · Midfielder · World Cup 2026 · From Brighton', url: 'https://en.wikipedia.org/wiki/Yves_Bissouma' },
+    'pape matar sarr spurs': { wealth: 10,      note: 'Football · Senegal · Tottenham · Midfielder · World Cup 2026 · Academy Metz', url: 'https://en.wikipedia.org/wiki/Pape_Matar_Sarr' },
+    'brennan johnson spurs': { wealth: 15,      note: 'Football · Wales · Tottenham · Winger · World Cup 2026 · From Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Brennan_Johnson' },
+    'dejan kulusevski spurs': { wealth: 20,     note: 'Football · Sweden · Tottenham · Winger · World Cup 2026 · From Juventus · Brilliant consistency', url: 'https://en.wikipedia.org/wiki/Dejan_Kulusevski' },
+    'heung-min son spurs':   { wealth: 40,      note: 'Football · South Korea · Tottenham · £200,000/week · Captain · PL top scorer 2022 · Icon · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Heung-min_Son' },
 
-    'wilfried gnonto':     { wealth: 10,     note: 'Football · Italy · Leeds', url: 'https://en.wikipedia.org/wiki/Wilfried_Gnonto' },
-    'joel piroe':          { wealth: 10,     note: 'Football · Netherlands · Leeds', url: 'https://en.wikipedia.org/wiki/Joel_Piroe' },
+    // ── West Ham ─────────────────────────────────────────
+    '_sub_pl_westham':       { _subgroup: 'Football — West Ham United FC' },
+    'graham potter westham': { wealth: 10,      note: 'Football · Manager · England · West Ham · £6M/year · Relegated with Wolves · Returned to PL at West Ham', url: 'https://en.wikipedia.org/wiki/Graham_Potter' },
+    'jarrod bowen westham':  { wealth: 20,      note: 'Football · England · West Ham · £150,000/week · World Cup 2026 · England international · From Hull', url: 'https://en.wikipedia.org/wiki/Jarrod_Bowen' },
+    'lucas paqueta westham': { wealth: 25,      note: 'Football · Brazil · West Ham · £150,000/week · World Cup 2026 · Creative midfielder · £51M from Lyon', url: 'https://en.wikipedia.org/wiki/Lucas_Paquet%C3%A1' },
+    'mohammed kudus westham': { wealth: 20,     note: 'Football · Ghana · West Ham · Winger · World Cup 2026 · From Ajax', url: 'https://en.wikipedia.org/wiki/Mohammed_Kudus' },
+    'crysencio summerville westham': { wealth: 15, note: 'Football · Netherlands · West Ham · Winger · World Cup 2026 · PFA Young Player 2024', url: 'https://en.wikipedia.org/wiki/Crysencio_Summerville' },
+    'niclas fullkrug westham': { wealth: 10,    note: 'Football · Germany · West Ham · Striker · World Cup 2026 · Late bloomer · From Dortmund', url: 'https://en.wikipedia.org/wiki/Niclas_F%C3%BCllkrug' },
+    'jean-clair todibo westham': { wealth: 10,  note: 'Football · France · West Ham · Centre back · World Cup 2026 · From Nice', url: 'https://en.wikipedia.org/wiki/Jean-Clair_Todibo' },
+    'maximilian kilman westham': { wealth: 10,  note: 'Football · England · West Ham · Centre back · World Cup 2026 · From Wolves', url: 'https://en.wikipedia.org/wiki/Maximilian_Kilman' },
+    'guido rodriguez westham': { wealth: 10,    note: 'Football · Argentina · West Ham · Midfielder · World Cup winner 2022 · From Real Betis', url: 'https://en.wikipedia.org/wiki/Guido_Rodr%C3%ADguez' },
+    'aaron wan-bissaka westham': { wealth: 10,  note: 'Football · England · West Ham · Right back · World Cup 2026 · From Manchester United', url: 'https://en.wikipedia.org/wiki/Aaron_Wan-Bissaka' },
 
-    'josh brownhill':      { wealth: 8,      note: 'Football · England · Burnley', url: 'https://en.wikipedia.org/wiki/Josh_Brownhill' },
-    'james trafford':      { wealth: 10,     note: 'Football · England · Burnley', url: 'https://en.wikipedia.org/wiki/James_Trafford' },
-
-    'granit xhaka':        { wealth: 15,     note: 'Football · Switzerland · Sunderland · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Granit_Xhaka' },
-    'habib diarra':        { wealth: 10,     note: 'Football · Senegal · Sunderland', url: 'https://en.wikipedia.org/wiki/Habib_Diarra' },
-
-    // ── PREMIER LEAGUE 2025-26 — SQUAD DEPTH & MANAGERS ──
-    // Note: squads/wealth shift each transfer window — these are 2025-26 season estimates
-
-    // Liverpool (manager: Arne Slot)
-    'arne slot':           { wealth: 15,     note: 'Football Manager · Netherlands · Liverpool', url: 'https://en.wikipedia.org/wiki/Arne_Slot' },
-    'ibrahima konate':     { wealth: 20,     note: 'Football · France · Liverpool · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ibrahima_Konate' },
-    'alexis mac allister': { wealth: 25,     note: 'Football · Argentina · Liverpool · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Alexis_Mac_Allister' },
-    'conor bradley':       { wealth: 8,      note: 'Football · Northern Ireland · Liverpool', url: 'https://en.wikipedia.org/wiki/Conor_Bradley' },
-
-    // Arsenal (manager: Mikel Arteta — already in DB)
-    'kai havertz':         { wealth: 40,     note: 'Football · Germany · Arsenal', url: 'https://en.wikipedia.org/wiki/Kai_Havertz' },
-    'jurrien timber':      { wealth: 20,     note: 'Football · Netherlands · Arsenal', url: 'https://en.wikipedia.org/wiki/Jurrien_Timber' },
-    'david raya':          { wealth: 20,     note: 'Football · Spain · Arsenal · World Cup 2026', url: 'https://en.wikipedia.org/wiki/David_Raya' },
-
-    // Manchester City (manager: Pep Guardiola — already in DB)
-    'bernardo silva':      { wealth: 40,     note: 'Football · Portugal · Manchester City', url: 'https://en.wikipedia.org/wiki/Bernardo_Silva' },
-    'mateo kovacic':       { wealth: 20,     note: 'Football · Croatia · Manchester City', url: 'https://en.wikipedia.org/wiki/Mateo_Kovacic' },
-    'matheus nunes':       { wealth: 20,     note: 'Football · Portugal · Manchester City', url: 'https://en.wikipedia.org/wiki/Matheus_Nunes' },
-    'nico oreilly':        { wealth: 10,     note: 'Football · England · Manchester City', url: 'https://en.wikipedia.org/wiki/Nico_Oreilly' },
-
-    // Manchester United (manager: Ruben Amorim)
-    'ruben amorim':        { wealth: 15,     note: 'Football Manager · Portugal · Manchester United', url: 'https://en.wikipedia.org/wiki/Ruben_Amorim' },
-    'harry maguire':       { wealth: 15,     note: 'Football · England · Manchester United · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Harry_Maguire' },
-    'lisandro martinez':   { wealth: 20,     note: 'Football · Argentina · Manchester United · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Lisandro_Martinez' },
-    'kobbie mainoo':       { wealth: 15,     note: 'Football · England · Manchester United', url: 'https://en.wikipedia.org/wiki/Kobbie_Mainoo' },
-    'andre onana':         { wealth: 15,     note: 'Football · Cameroon · Manchester United', url: 'https://en.wikipedia.org/wiki/Andre_Onana' },
-    'diogo dalot':         { wealth: 10,     note: 'Football · Portugal · Manchester United', url: 'https://en.wikipedia.org/wiki/Diogo_Dalot' },
-
-    // Chelsea (manager: Enzo Maresca)
-    'enzo maresca':        { wealth: 15,     note: 'Football Manager · Italy · Chelsea', url: 'https://en.wikipedia.org/wiki/Enzo_Maresca' },
-    'reece james':         { wealth: 20,     note: 'Football · England · Chelsea', url: 'https://en.wikipedia.org/wiki/Reece_James' },
-    'nicolas jackson':     { wealth: 15,     note: 'Football · Senegal · Chelsea', url: 'https://en.wikipedia.org/wiki/Nicolas_Jackson' },
-    'romeo lavia':         { wealth: 15,     note: 'Football · Belgium · Chelsea', url: 'https://en.wikipedia.org/wiki/Romeo_Lavia' },
-    'malo gusto':          { wealth: 10,     note: 'Football · France · Chelsea', url: 'https://en.wikipedia.org/wiki/Malo_Gusto' },
-    'marc cucurella':      { wealth: 15,     note: 'Football · Spain · Chelsea · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Marc_Cucurella' },
-
-    // Tottenham (manager: Thomas Frank)
-    'thomas frank':        { wealth: 10,     note: 'Football Manager · Denmark · Tottenham', url: 'https://en.wikipedia.org/wiki/Thomas_Frank' },
-    'andy robertson':      { wealth: 25,     note: 'Football · Scotland · Tottenham', url: 'https://en.wikipedia.org/wiki/Andy_Robertson' },
-    'yves bissouma':       { wealth: 15,     note: 'Football · Mali · Tottenham', url: 'https://en.wikipedia.org/wiki/Yves_Bissouma' },
-    'pedro porro':         { wealth: 15,     note: 'Football · Spain · Tottenham', url: 'https://en.wikipedia.org/wiki/Pedro_Porro' },
-    'guglielmo vicario':   { wealth: 15,     note: 'Football · Italy · Tottenham', url: 'https://en.wikipedia.org/wiki/Guglielmo_Vicario' },
-    'pape matar sarr':     { wealth: 10,     note: 'Football · Senegal · Tottenham', url: 'https://en.wikipedia.org/wiki/Pape_Matar_Sarr' },
-
-    // Newcastle (manager: Eddie Howe)
-    'eddie howe':          { wealth: 15,     note: 'Football Manager · England · Newcastle', url: 'https://en.wikipedia.org/wiki/Eddie_Howe' },
-    'fabian schar':        { wealth: 15,     note: 'Football · Switzerland · Newcastle', url: 'https://en.wikipedia.org/wiki/Fabian_Schar' },
-    'dan burn':            { wealth: 10,     note: 'Football · England · Newcastle', url: 'https://en.wikipedia.org/wiki/Dan_Burn' },
-    'harvey barnes':       { wealth: 15,     note: 'Football · England · Newcastle', url: 'https://en.wikipedia.org/wiki/Harvey_Barnes' },
-    'kieran trippier':     { wealth: 20,     note: 'Football · England · Newcastle · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Kieran_Trippier' },
-    'tino livramento':     { wealth: 10,     note: 'Football · England · Newcastle', url: 'https://en.wikipedia.org/wiki/Tino_Livramento' },
-
-    // Aston Villa (manager: Unai Emery)
-    'unai emery':          { wealth: 15,     note: 'Football Manager · Spain · Aston Villa', url: 'https://en.wikipedia.org/wiki/Unai_Emery' },
-    'youri tielemans':     { wealth: 15,     note: 'Football · Belgium · Aston Villa', url: 'https://en.wikipedia.org/wiki/Youri_Tielemans' },
-    'ross barkley':        { wealth: 8,      note: 'Football · England · Aston Villa', url: 'https://en.wikipedia.org/wiki/Ross_Barkley' },
-    'pau torres':          { wealth: 15,     note: 'Football · Spain · Aston Villa', url: 'https://en.wikipedia.org/wiki/Pau_Torres' },
-    'matty cash':          { wealth: 10,     note: 'Football · Poland · Aston Villa', url: 'https://en.wikipedia.org/wiki/Matty_Cash' },
-    'lucas digne':         { wealth: 10,     note: 'Football · France · Aston Villa', url: 'https://en.wikipedia.org/wiki/Lucas_Digne' },
-    'boubacar kamara':     { wealth: 10,     note: 'Football · France · Aston Villa', url: 'https://en.wikipedia.org/wiki/Boubacar_Kamara' },
-
-    // Brighton (manager: Fabian Hurzeler)
-    'fabian hurzeler':     { wealth: 8,      note: 'Football Manager · Germany · Brighton', url: 'https://en.wikipedia.org/wiki/Fabian_Hurzeler' },
-    'lewis dunk':          { wealth: 10,     note: 'Football · England · Brighton · Captain', url: 'https://en.wikipedia.org/wiki/Lewis_Dunk' },
-    'bart verbruggen':     { wealth: 8,      note: 'Football · Netherlands · Brighton', url: 'https://en.wikipedia.org/wiki/Bart_Verbruggen' },
-    'brajan gruda':        { wealth: 10,     note: 'Football · Germany · Brighton', url: 'https://en.wikipedia.org/wiki/Brajan_Gruda' },
-    'yasin ayari':         { wealth: 8,      note: 'Football · Sweden · Brighton', url: 'https://en.wikipedia.org/wiki/Yasin_Ayari' },
-    'diego gomez':         { wealth: 8,      note: 'Football · Paraguay · Brighton', url: 'https://en.wikipedia.org/wiki/Diego_Gomez' },
-    'matt oriley':         { wealth: 10,     note: 'Football · Denmark · Brighton', url: 'https://en.wikipedia.org/wiki/Matt_Oriley' },
-    'maxim de cuyper':     { wealth: 8,      note: 'Football · Belgium · Brighton', url: 'https://en.wikipedia.org/wiki/Maxim_De_Cuyper' },
-
-    // West Ham (manager: Graham Potter)
-    'graham potter':       { wealth: 10,     note: 'Football Manager · England · West Ham', url: 'https://en.wikipedia.org/wiki/Graham_Potter' },
-    'crysencio summerville':{ wealth: 15,    note: 'Football · Netherlands · West Ham', url: 'https://en.wikipedia.org/wiki/Crysencio_Summerville' },
-    'maximilian kilman':   { wealth: 10,     note: 'Football · England · West Ham', url: 'https://en.wikipedia.org/wiki/Maximilian_Kilman' },
-    'guido rodriguez':     { wealth: 10,     note: 'Football · Argentina · West Ham', url: 'https://en.wikipedia.org/wiki/Guido_Rodriguez' },
-    'aaron wan-bissaka':   { wealth: 10,     note: 'Football · England · West Ham', url: 'https://en.wikipedia.org/wiki/Aaron_Wan-bissaka' },
-    'jean-clair todibo':   { wealth: 10,     note: 'Football · France · West Ham', url: 'https://en.wikipedia.org/wiki/Jean-clair_Todibo' },
-
-    // Crystal Palace (manager: Oliver Glasner)
-    'oliver glasner':      { wealth: 10,     note: 'Football Manager · Austria · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Oliver_Glasner' },
-    'daniel munoz':        { wealth: 10,     note: 'Football · Colombia · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Daniel_Munoz' },
-    'maxence lacroix':     { wealth: 10,     note: 'Football · France · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Maxence_Lacroix' },
-    'tyrick mitchell':     { wealth: 10,     note: 'Football · England · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Tyrick_Mitchell' },
-    'eddie nketiah':       { wealth: 10,     note: 'Football · England · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Eddie_Nketiah' },
-    'ismaila sarr':        { wealth: 10,     note: 'Football · Senegal · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Ismaila_Sarr' },
-    'dean henderson':      { wealth: 10,     note: 'Football · England · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Dean_Henderson' },
-
-    // Fulham (manager: Marco Silva)
-    'marco silva':         { wealth: 10,     note: 'Football Manager · Portugal · Fulham', url: 'https://en.wikipedia.org/wiki/Marco_Silva' },
-    'andreas pereira':     { wealth: 10,     note: 'Football · Brazil · Fulham', url: 'https://en.wikipedia.org/wiki/Andreas_Pereira' },
-    'sasa lukic':          { wealth: 8,      note: 'Football · Serbia · Fulham', url: 'https://en.wikipedia.org/wiki/Sasa_Lukic' },
-    'calvin bassey':       { wealth: 10,     note: 'Football · Nigeria · Fulham', url: 'https://en.wikipedia.org/wiki/Calvin_Bassey' },
-    'joachim andersen':    { wealth: 10,     note: 'Football · Denmark · Fulham', url: 'https://en.wikipedia.org/wiki/Joachim_Andersen' },
-    'alex iwobi':          { wealth: 15,     note: 'Football · Nigeria · Fulham', url: 'https://en.wikipedia.org/wiki/Alex_Iwobi' },
-    'ryan sessegnon':      { wealth: 8,      note: 'Football · England · Fulham', url: 'https://en.wikipedia.org/wiki/Ryan_Sessegnon' },
-
-    // Bournemouth (manager: Andoni Iraola)
-    'andoni iraola':       { wealth: 10,     note: 'Football Manager · Spain · Bournemouth', url: 'https://en.wikipedia.org/wiki/Andoni_Iraola' },
-    'djordje petrovic':    { wealth: 10,     note: 'Football · Serbia · Bournemouth', url: 'https://en.wikipedia.org/wiki/Djordje_Petrovic' },
-    'justin kluivert':     { wealth: 10,     note: 'Football · Netherlands · Bournemouth', url: 'https://en.wikipedia.org/wiki/Justin_Kluivert' },
-    'david brooks':        { wealth: 8,      note: 'Football · Wales · Bournemouth', url: 'https://en.wikipedia.org/wiki/David_Brooks' },
-    'ryan christie':       { wealth: 8,      note: 'Football · Scotland · Bournemouth', url: 'https://en.wikipedia.org/wiki/Ryan_Christie' },
-    'marcos senesi':       { wealth: 10,     note: 'Football · Argentina · Bournemouth', url: 'https://en.wikipedia.org/wiki/Marcos_Senesi' },
-    'enes unal':           { wealth: 8,      note: 'Football · Turkey · Bournemouth', url: 'https://en.wikipedia.org/wiki/Enes_Unal' },
-
-    // Brentford (manager: Keith Andrews)
-    'keith andrews':       { wealth: 5,      note: 'Football Manager · Ireland · Brentford', url: 'https://en.wikipedia.org/wiki/Keith_Andrews' },
-    'yoane wissa':         { wealth: 10,     note: 'Football · DR Congo · Brentford', url: 'https://en.wikipedia.org/wiki/Yoane_Wissa' },
-    'christian norgaard':  { wealth: 8,      note: 'Football · Denmark · Brentford', url: 'https://en.wikipedia.org/wiki/Christian_Norgaard' },
-    'nathan collins':      { wealth: 10,     note: 'Football · Ireland · Brentford', url: 'https://en.wikipedia.org/wiki/Nathan_Collins' },
-    'mark flekken':        { wealth: 8,      note: 'Football · Netherlands · Brentford', url: 'https://en.wikipedia.org/wiki/Mark_Flekken' },
-    'mikkel damsgaard':    { wealth: 10,     note: 'Football · Denmark · Brentford', url: 'https://en.wikipedia.org/wiki/Mikkel_Damsgaard' },
-    'sepp van den berg':   { wealth: 8,      note: 'Football · Netherlands · Brentford', url: 'https://en.wikipedia.org/wiki/Sepp_Van_Den_Berg' },
-
-    // Nottingham Forest (manager: Ange Postecoglou)
-    'ange postecoglou':    { wealth: 10,     note: 'Football Manager · Australia · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Ange_Postecoglou' },
-    'matz sels':           { wealth: 8,      note: 'Football · Belgium · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Matz_Sels' },
-    'neco williams':       { wealth: 8,      note: 'Football · Wales · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Neco_Williams' },
-    'nikola milenkovic':   { wealth: 10,     note: 'Football · Serbia · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Nikola_Milenkovic' },
-    'ola aina':            { wealth: 8,      note: 'Football · Nigeria · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Ola_Aina' },
-    'callum hudson-odoi':  { wealth: 10,     note: 'Football · England · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Callum_Hudson-odoi' },
-    'anthony elanga':      { wealth: 10,     note: 'Football · Sweden · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Anthony_Elanga' },
-
-    // Everton (manager: David Moyes)
-    'david moyes':         { wealth: 10,     note: 'Football Manager · Scotland · Everton', url: 'https://en.wikipedia.org/wiki/David_Moyes' },
-    'jarrad branthwaite':  { wealth: 15,     note: 'Football · England · Everton · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Jarrad_Branthwaite' },
-    'vitalii mykolenko':   { wealth: 8,      note: 'Football · Ukraine · Everton', url: 'https://en.wikipedia.org/wiki/Vitalii_Mykolenko' },
-    'james tarkowski':     { wealth: 8,      note: 'Football · England · Everton', url: 'https://en.wikipedia.org/wiki/James_Tarkowski' },
-    'jack grealish':       { wealth: 30,     note: 'Football · England · Everton', url: 'https://en.wikipedia.org/wiki/Jack_Grealish' },
-    'idrissa gueye':       { wealth: 8,      note: 'Football · Senegal · Everton', url: 'https://en.wikipedia.org/wiki/Idrissa_Gueye' },
-    'carlos alcaraz':      { wealth: 10,     note: 'Football · Argentina · Everton', url: 'https://en.wikipedia.org/wiki/Carlos_Alcaraz' },
-
-    // Wolves (manager: Vitor Pereira)
-    'vitor pereira':       { wealth: 8,      note: 'Football Manager · Portugal · Wolves', url: 'https://en.wikipedia.org/wiki/Vitor_Pereira' },
-    'jose sa':             { wealth: 10,     note: 'Football · Portugal · Wolves', url: 'https://en.wikipedia.org/wiki/Jose_Sa' },
-    'rayan ait-nouri':     { wealth: 10,     note: 'Football · Algeria · Wolves', url: 'https://en.wikipedia.org/wiki/Rayan_Ait-nouri' },
-    'joao gomes':          { wealth: 10,     note: 'Football · Brazil · Wolves', url: 'https://en.wikipedia.org/wiki/Joao_Gomes' },
-    'pablo sarabia':       { wealth: 8,      note: 'Football · Spain · Wolves', url: 'https://en.wikipedia.org/wiki/Pablo_Sarabia' },
-    'tommy doyle':         { wealth: 8,      note: 'Football · England · Wolves', url: 'https://en.wikipedia.org/wiki/Tommy_Doyle' },
-    'hugo bueno':          { wealth: 8,      note: 'Football · Spain · Wolves', url: 'https://en.wikipedia.org/wiki/Hugo_Bueno' },
-
-    // Leeds (manager: Daniel Farke)
-    'daniel farke':        { wealth: 8,      note: 'Football Manager · Germany · Leeds', url: 'https://en.wikipedia.org/wiki/Daniel_Farke' },
-    'dominic calvert-lewin':{ wealth: 10,    note: 'Football · England · Leeds', url: 'https://en.wikipedia.org/wiki/Dominic_Calvert-lewin' },
-    'lucas perri':         { wealth: 8,      note: 'Football · Brazil · Leeds', url: 'https://en.wikipedia.org/wiki/Lucas_Perri' },
-    'ethan ampadu':        { wealth: 10,     note: 'Football · Wales · Leeds', url: 'https://en.wikipedia.org/wiki/Ethan_Ampadu' },
-    'pascal struijk':      { wealth: 8,      note: 'Football · Netherlands · Leeds', url: 'https://en.wikipedia.org/wiki/Pascal_Struijk' },
-    'ilia gruev':          { wealth: 8,      note: 'Football · Bulgaria · Leeds', url: 'https://en.wikipedia.org/wiki/Ilia_Gruev' },
-    'daniel james':        { wealth: 8,      note: 'Football · Wales · Leeds · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Daniel_James' },
-    'sean longstaff':      { wealth: 8,      note: 'Football · England · Leeds', url: 'https://en.wikipedia.org/wiki/Sean_Longstaff' },
-
-    // Burnley (manager: Scott Parker)
-    'scott parker':        { wealth: 8,      note: 'Football Manager · England · Burnley', url: 'https://en.wikipedia.org/wiki/Scott_Parker' },
-    'josh cullen':         { wealth: 8,      note: 'Football · Ireland · Burnley', url: 'https://en.wikipedia.org/wiki/Josh_Cullen' },
-    'maxime esteve':       { wealth: 8,      note: 'Football · France · Burnley', url: 'https://en.wikipedia.org/wiki/Maxime_Esteve' },
-    'cj egan-riley':       { wealth: 8,      note: 'Football · England · Burnley', url: 'https://en.wikipedia.org/wiki/Cj_Egan-riley' },
-    'jaidon anthony':      { wealth: 8,      note: 'Football · England · Burnley', url: 'https://en.wikipedia.org/wiki/Jaidon_Anthony' },
-    'lesley ugochukwu':    { wealth: 10,     note: 'Football · France · Burnley', url: 'https://en.wikipedia.org/wiki/Lesley_Ugochukwu' },
-    'zian flemming':       { wealth: 8,      note: 'Football · Netherlands · Burnley', url: 'https://en.wikipedia.org/wiki/Zian_Flemming' },
-    'hannibal mejbri':     { wealth: 8,      note: 'Football · Tunisia · Burnley', url: 'https://en.wikipedia.org/wiki/Hannibal_Mejbri' },
-
-    // Sunderland (manager: Regis Le Bris)
-    'regis le bris':       { wealth: 8,      note: 'Football Manager · France · Sunderland', url: 'https://en.wikipedia.org/wiki/Regis_Le_Bris' },
-    'anthony patterson':   { wealth: 8,      note: 'Football · England · Sunderland', url: 'https://en.wikipedia.org/wiki/Anthony_Patterson' },
-    'dan ballard':         { wealth: 8,      note: 'Football · Northern Ireland · Sunderland', url: 'https://en.wikipedia.org/wiki/Dan_Ballard' },
-    'trai hume':           { wealth: 8,      note: 'Football · Northern Ireland · Sunderland', url: 'https://en.wikipedia.org/wiki/Trai_Hume' },
-    'patrick roberts':     { wealth: 8,      note: 'Football · England · Sunderland', url: 'https://en.wikipedia.org/wiki/Patrick_Roberts' },
-    'chris rigg':          { wealth: 10,     note: 'Football · England · Sunderland', url: 'https://en.wikipedia.org/wiki/Chris_Rigg' },
-    'enzo le fee':         { wealth: 10,     note: 'Football · France · Sunderland', url: 'https://en.wikipedia.org/wiki/Enzo_Le_Fee' },
-
-    // ── Topping up to 10+ players per club ──────────────
-    'lewis hall':          { wealth: 10,     note: 'Football · England · Newcastle', url: 'https://en.wikipedia.org/wiki/Lewis_Hall' },
-    'niclas fullkrug':     { wealth: 10,     note: 'Football · Germany · West Ham', url: 'https://en.wikipedia.org/wiki/Niclas_Fullkrug' },
-    'cheick doucoure':     { wealth: 10,     note: 'Football · Mali · Crystal Palace', url: 'https://en.wikipedia.org/wiki/Cheick_Doucoure' },
-    'timothy castagne':    { wealth: 8,      note: 'Football · Belgium · Fulham', url: 'https://en.wikipedia.org/wiki/Timothy_Castagne' },
-    'tyler adams':         { wealth: 8,      note: 'Football · USA · Bournemouth · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Tyler_Adams' },
-    'fabio carvalho':      { wealth: 10,     note: 'Football · Portugal · Brentford', url: 'https://en.wikipedia.org/wiki/Fabio_Carvalho' },
-    'ibrahim sangare':     { wealth: 8,      note: 'Football · Ivory Coast · Nottingham Forest', url: 'https://en.wikipedia.org/wiki/Ibrahim_Sangare' },
-    'emmanuel agbadou':    { wealth: 8,      note: 'Football · Ivory Coast · Wolves', url: 'https://en.wikipedia.org/wiki/Emmanuel_Agbadou' },
-    'joe rodon':           { wealth: 8,      note: 'Football · Wales · Leeds', url: 'https://en.wikipedia.org/wiki/Joe_Rodon' },
-    'quilindschy hartman': { wealth: 8,      note: 'Football · Netherlands · Burnley', url: 'https://en.wikipedia.org/wiki/Quilindschy_Hartman' },
-    'luke onien':          { wealth: 8,      note: 'Football · England · Sunderland', url: 'https://en.wikipedia.org/wiki/Luke_Onien' },
-    'michael keane':       { wealth: 8,      note: 'Football · England · Everton', url: 'https://en.wikipedia.org/wiki/Michael_Keane' },
+    // ── Relegated Clubs 2025-26 ──────────────────────────
+    '_sub_pl_relegated':     { _subgroup: 'Football — Relegated 2025-26' },
+    // West Ham relegated
+    'jorgen strand larsen':  { wealth: 15,      note: 'Football · Norway · Wolves · World Cup 2026 · Striker · Relegated 2026 · From Celta Vigo', url: 'https://en.wikipedia.org/wiki/J%C3%B8rgen_Strand_Larsen' },
+    'rayan ait-nouri wolves': { wealth: 10,     note: 'Football · Algeria · Wolves · Left back · World Cup 2026 · Relegated 2026', url: 'https://en.wikipedia.org/wiki/Rayan_A%C3%AFt-Nouri' },
+    'joao gomes wolves':     { wealth: 10,      note: 'Football · Brazil · Wolves · Midfielder · World Cup 2026 · Relegated 2026 · From Flamengo', url: 'https://en.wikipedia.org/wiki/Jo%C3%A3o_Gomes_(footballer)' },
+    'josh brownhill burnley': { wealth: 8,      note: 'Football · England · Burnley · Midfielder · Relegated 2026 · Club captain · Career at Burnley', url: 'https://en.wikipedia.org/wiki/Josh_Brownhill' },
+    'james trafford burnley': { wealth: 10,     note: 'Football · England · Burnley · Goalkeeper · World Cup 2026 · Relegated 2026 · England future', url: 'https://en.wikipedia.org/wiki/James_Trafford' },
 
     // ── HISTORICAL FIGURES — Inflation Adjusted to 2026 USD ──────────
     // Note: figures are historian/economist estimates, methodology varies
@@ -5892,7 +5891,7 @@
     'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values'],
     'Music': ['Pop','Hip-Hop & R&B','Rock','Country','Classical & Crossover','K-pop'],
     'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
-    'Sport': ['Football','  Current Stars','  Ex-Footballers & Personalities','  Football Managers','  World Cup Players 2026','  Premier League 2025-26 — By Club','Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
+    'Sport': ['Football — Current Stars','Football — Ex-Footballers & Personalities','Football — Managers','Football — Premier League 2025-26','Football — Arsenal FC','Football — Aston Villa FC','Football — AFC Bournemouth','Football — Brentford FC','Football — Brighton & Hove Albion','Football — Chelsea FC','Football — Crystal Palace FC','Football — Everton FC','Football — Fulham FC','Football — Liverpool FC','Football — Manchester City FC','Football — Manchester United FC','Football — Newcastle United FC','Football — Nottingham Forest FC','Football — Sunderland AFC','Football — Tottenham Hotspur FC','Football — West Ham United FC','Football — Relegated 2025-26','Football — World Cup Players 2026','American Football / NFL','Athletics','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
     'Tech & Business': ['Tech Founders & CEOs','Dragons & Entrepreneurs','Female Founders','News & Media','Fashion','Automotive','Global Billionaires — Beyond The Top 20','Authors'],
     'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
   };
