@@ -1834,7 +1834,7 @@
   let GROUP_ORDER = [
     'My Own Entries',
     'Individual Wealth',
-    'The Twenty Wealthiest People on Earth', 'Film & TV', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming',
+    'The Twenty Wealthiest People on Earth', 'Film & TV', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming', 'Artists', 'Scientists', 'Infamous',
     'Global Perspective',
     'Nations & Natural Wealth', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics'
   ];
@@ -1875,6 +1875,9 @@
     if (n.includes('transport ·') || n.includes('· transport') || n.includes('aviation ·') || n.includes('rail ·') || n.includes('· rail') || n.includes('automaker') || n.includes('car manufacturer') || n.includes('shipping ·')) return 'Transport';
     if (n.includes('national debt') || n.includes('govt debt') || nm.endsWith(' debt')) return 'National Debt';
     if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
+    if (n.startsWith('artist ·') || n.includes('· old master') || n.includes('· impressionist') || n.includes('· art market') || n.includes('· pop art') || n.includes('· street art') || n.includes('· modern ·') || n.includes('· contemporary ·')) return 'Artists';
+    if (n.includes('infamous ·') || n.includes('· infamous') || n.includes('criminal ·') || n.includes('· criminal') || n.includes('gang ·') || n.includes('cartel ·') || n.includes('fraud ·')) return 'Infamous';
+    if (n.startsWith('science ·') || n.includes('· physicist') || n.includes('· inventor ·') || n.includes('· mathematician') || n.includes('· chemist ·') || n.includes('· naturalist') || n.includes('· biologist')) return 'Scientists';
     if (n.includes('science') || n.includes('pharma') || n.includes('space ·') || n.includes('· space') || n.includes('biotech') || n.includes('climate ·') || n.includes('quantum') || n.includes('· ai ·') || n.includes('scientific')) return 'Science & Innovation';
     if (n.includes('institution') || n.includes('central bank') || n.includes('federal reserve') ||
         n.includes('world bank') || (n.includes('imf') && !n.includes('nation')) || n.includes('fort knox') ||
@@ -2256,17 +2259,6 @@
     // ── POP ──────────────────────────────────────────────
     '_sub_pop':            { _subgroup: 'Pop' },
     'taylor swift':        { wealth: 2100, note: 'Music · Pop · USA · $2.1B · Forbes #2052 · Eras Tour · Married Travis Kelce MSG New York 3 July 2026 · Adam Sandler officiated', url: 'https://en.wikipedia.org/wiki/Taylor_Swift' },
-
-    '_sub_swiftwedding':   { _subgroup: "Taylor Swift's Wedding — Rumoured Guests (unconfirmed)" },
-    // ── These are media-reported / rumoured guests only — nothing has
-    // been officially confirmed by Taylor Swift or Travis Kelce. DYOR.
-    'zoe kravitz':         { wealth: 30,     note: 'Music · Film · USA · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Zoe_Kravitz' },
-    'selena gomez':        { wealth: 1700,   note: 'Music · TV · Business · USA · Rare Beauty · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Selena_Gomez' },
-    'cara delevingne':     { wealth: 60,     note: 'Music · TV · Fashion · UK · Model · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Cara_Delevingne' },
-    'jason kelce':         { wealth: 30,     note: 'Music · TV · Sport · USA · Former NFL · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Jason_Kelce' },
-    'brittany mahomes':    { wealth: 100,    note: 'Music · TV · USA · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Brittany_Mahomes' },
-    'andy reid':           { wealth: 30,     note: 'Music · Sport · USA · NFL Head Coach · Kansas City Chiefs · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Andy_Reid' },
-    'sombr':               { wealth: 5,      note: 'Music · USA · Rising artist · Rumoured wedding guest (unconfirmed)', url: 'https://en.wikipedia.org/wiki/Sombr' },
 
     '_sub_pop_continued':  { _subgroup: 'Pop' },
     'beyonce':             { wealth: 1000, note: 'Music · Pop · R&B · USA · $1B · Forbes #3332 2026 · Destiny Child · Jay-Z · Lemonade · Renaissance', url: 'https://en.wikipedia.org/wiki/Beyonce' },
@@ -2782,6 +2774,49 @@
     'pandora jewellery':     { wealth: 13000,   note: 'Fashion · Jewellery · Denmark · Pandora · $13B · Charm bracelets · Founded 1982 Copenhagen · Most worn jewellery brand in world · 100M customers', url: 'https://en.wikipedia.org/wiki/Pandora_(jewelry)' },
     'swarovski jewellery':   { wealth: 3000,    note: 'Fashion · Jewellery · Austria · Swarovski · $3B est. privately owned · Crystal jewellery · Founded 1895 · Elvis jumpsuits Oscars dresses · 2B crystals/year', url: 'https://en.wikipedia.org/wiki/Swarovski' },
 
+    // ── INFAMOUS ──────────────────────────────────────────
+
+    // ── Drug Lords & Cartels ──────────────────────────────
+    '_sub_drug_lords':       { _subgroup: 'Drug Lords & Cartels' },
+    'pablo escobar':         { wealth: 30000,   note: 'Infamous · Criminal · Colombia · $30B at peak · Medellin Cartel · Supplied 80% of world cocaine · Killed 4,000 people · Died 1993 · His money was eaten by rats · Burned $2M to keep daughter warm', url: 'https://en.wikipedia.org/wiki/Pablo_Escobar' },
+    'el chapo':              { wealth: 3000,    note: 'Infamous · Criminal · Mexico · $3B · Joaquin Guzman · Sinaloa Cartel · Escaped prison twice · Captured 2016 · Life sentence US prison · Tunnel escape used motorbike on rails', url: 'https://en.wikipedia.org/wiki/El_Chapo' },
+    'amado carrillo fuentes': { wealth: 25000,  note: 'Infamous · Criminal · Mexico · $25B · Lord of the Skies · Juarez Cartel · Fleet of Boeing 727s to move cocaine · Died 1997 during plastic surgery to change appearance', url: 'https://en.wikipedia.org/wiki/Amado_Carri%C3%B3_Fuentes' },
+    'griselda blanco':       { wealth: 2000,    note: 'Infamous · Criminal · Colombia · $2B · Godmother of Cocaine · Miami drug wars 1970s-80s · Killed over 200 people · Assassinated 2012 · Netflix series', url: 'https://en.wikipedia.org/wiki/Griselda_Blanco' },
+    'sinaloa cartel':        { wealth: 3000,    note: 'Infamous · Cartel · Mexico · $3B annual revenue est. · World most powerful drug trafficking organisation · Fentanyl crisis · Still operating post El Chapo', url: 'https://en.wikipedia.org/wiki/Sinaloa_Cartel' },
+
+    // ── Financial Fraudsters ──────────────────────────────
+    '_sub_fraudsters':       { _subgroup: 'Financial Fraudsters — The Great Swindles' },
+    'bernie madoff':         { wealth: 65000,   note: 'Infamous · Fraud · USA · $65B Ponzi scheme · Largest fraud in history · 37,000 victims · FBI arrested 2008 · 150 year sentence · Died prison 2021 · Sons turned him in', url: 'https://en.wikipedia.org/wiki/Bernie_Madoff' },
+    'sam bankman-fried':     { wealth: 26000,   note: 'Infamous · Fraud · USA · FTX crypto exchange collapse · $8B customer funds stolen · Was worth $26B · Now worth $0 · 25 year sentence 2024 · Fell from grace in months', url: 'https://en.wikipedia.org/wiki/Sam_Bankman-Fried' },
+    'elizabeth holmes':      { wealth: 9000,    note: 'Infamous · Fraud · USA · Theranos blood testing scandal · Was worth $9B · Claimed one drop of blood could test for 200 diseases · Completely false · 11 year sentence 2023 · The Dropout Netflix', url: 'https://en.wikipedia.org/wiki/Elizabeth_Holmes' },
+    'nick leeson':           { wealth: 0,       note: 'Infamous · Fraud · UK · Barings Bank rogue trader · Lost £827M in 1995 · Brought down oldest merchant bank in UK founded 1762 · Fled to Germany · 6.5 year sentence Singapore · Film Rogue Trader', url: 'https://en.wikipedia.org/wiki/Nick_Leeson' },
+    'jordan belfort':        { wealth: 200,     note: 'Infamous · Fraud · USA · Wolf of Wall Street · $200M fraud · Stratton Oakmont broker · 22 months prison · Now motivational speaker · Leonardo DiCaprio played him', url: 'https://en.wikipedia.org/wiki/Jordan_Belfort' },
+    'adam neumann':          { wealth: 1400,    note: 'Infamous · Fraud · USA/Israel · WeWork founder · Was worth $14B · Company collapsed from $47B to near zero · Largest failed IPO · Still worth $1.4B post collapse', url: 'https://en.wikipedia.org/wiki/Adam_Neumann' },
+
+    // ── Dictators & Corrupt Leaders ───────────────────────
+    '_sub_dictators':        { _subgroup: 'Dictators & Corrupt Leaders — Stolen Wealth' },
+    'kim jong un':           { wealth: 5000,    note: 'Infamous · Dictator · North Korea · $5B est. · Stolen from North Korean people · 25M in poverty · Nuclear weapons while people starve · Absolute ruler since 2011', url: 'https://en.wikipedia.org/wiki/Kim_Jong-un' },
+    'vladimir putin infamous': { wealth: 200000, note: 'Infamous · Dictator · Russia · $200B est. · Hidden through oligarchs and shell companies · War in Ukraine · Former KGB spy · Palaces superyachts private jets · True wealth unknown', url: 'https://en.wikipedia.org/wiki/Vladimir_Putin' },
+    'muammar gaddafi':       { wealth: 200000,  note: 'Infamous · Dictator · Libya · $200B stolen from Libya · Hidden in banks worldwide · Ruled 42 years · Killed 2011 Arab Spring · Cash gold found in bunkers', url: 'https://en.wikipedia.org/wiki/Muammar_Gaddafi' },
+    'hosni mubarak':         { wealth: 70000,   note: 'Infamous · Dictator · Egypt · $70B stolen · Ruled 30 years · Toppled Arab Spring 2011 · Swiss banks frozen · Died 2020 · Family kept much of wealth', url: 'https://en.wikipedia.org/wiki/Hosni_Mubarak' },
+    'ferdinand marcos':      { wealth: 35000,   note: 'Infamous · Dictator · Philippines · $35B stolen · Ruled 21 years · Wife Imelda had 3,000 pairs of shoes · Toppled 1986 People Power Revolution · Son Bongbong Marcos now President', url: 'https://en.wikipedia.org/wiki/Ferdinand_Marcos' },
+    'suharto infamous':      { wealth: 35000,   note: 'Infamous · Dictator · Indonesia · $35B stolen · Transparency International most corrupt leader in history · Ruled 31 years · Died 2008 never prosecuted', url: 'https://en.wikipedia.org/wiki/Suharto' },
+    'mobutu sese seko':      { wealth: 5000,    note: 'Infamous · Dictator · Congo · $5B stolen · Renamed country Zaire after himself · Swiss bank accounts · Country among world poorest despite vast mineral wealth · Died 1997', url: 'https://en.wikipedia.org/wiki/Mobutu_Sese_Seko' },
+
+    // ── Gangsters & Organised Crime ───────────────────────
+    '_sub_gangsters':        { _subgroup: 'Gangsters & Organised Crime' },
+    'al capone':             { wealth: 1400,    note: 'Infamous · Criminal · USA · $1.4B adjusted · Chicago Mob · Prohibition bootlegging · Valentine Day Massacre · Jailed for tax evasion not murder · Died 1947 of syphilis', url: 'https://en.wikipedia.org/wiki/Al_Capone' },
+    'meyer lansky':          { wealth: 2000,    note: 'Infamous · Criminal · USA · $2B est. · Mob Accountant · Founded organised crime financial system · Never convicted · Died 1983 · FBI called him more powerful than many presidents', url: 'https://en.wikipedia.org/wiki/Meyer_Lansky' },
+    'lucky luciano':         { wealth: 1000,    note: 'Infamous · Criminal · USA/Italy · $1B adjusted · Father of Modern Organised Crime · Created Five Families New York · Deported to Italy · Died 1962', url: 'https://en.wikipedia.org/wiki/Lucky_Luciano' },
+    'ronnie kray':           { wealth: 10,      note: 'Infamous · Criminal · UK · £10M · Kray Twins · East End London gangsters 1950s-60s · Murder · Celebrity friends · Jailed 1969 · Both died in prison', url: 'https://en.wikipedia.org/wiki/Ronnie_Kray' },
+    'russian mafia':         { wealth: 500000,  note: 'Infamous · Criminal · Russia/Global · $500B est. combined · Russian Bratva · World most powerful organised crime · Real estate money laundering fraud', url: 'https://en.wikipedia.org/wiki/Russian_mafia' },
+
+    // ── Infamous But Legal ────────────────────────────────
+    '_sub_infamous_legal':   { _subgroup: 'Infamous But Legal — Controversial Fortunes' },
+    'martin shkreli':        { wealth: 50,      note: 'Infamous · Pharma · USA · Most Hated Man in America · Raised AIDS drug price 5000% overnight · Securities fraud conviction · 7 year sentence · Still worth $50M · Unrepentant', url: 'https://en.wikipedia.org/wiki/Martin_Shkreli' },
+    'harvey weinstein':      { wealth: 300,     note: 'Infamous · Film · USA · Hollywood mogul · Miramax · #MeToo movement · 70+ allegations · 23 year sentence 2020 · Was worth $300M', url: 'https://en.wikipedia.org/wiki/Harvey_Weinstein' },
+    'lance armstrong infamous': { wealth: 50,   note: 'Infamous · Sport · USA · 7x Tour de France titles · All stripped · Doping scandal · Banned for life · Lost Nike $75M deal · Oprah confession', url: 'https://en.wikipedia.org/wiki/Lance_Armstrong' },
+
     '_sub_debt_top20':       { _subgroup: 'National Debt — Top 20 Countries 2025' },
     'usa debt':              { wealth: 38300000, note: 'National Debt · USA · $38.3 Trillion · 125% of GDP · Growing by $2.9T per year · IMF 2025', url: 'https://en.wikipedia.org/wiki/National_debt_of_the_United_States' },
     'china debt':            { wealth: 18700000, note: 'National Debt · China · $18.7 Trillion · 84% of GDP · Growing by $2.2T per year · IMF 2025', url: 'https://en.wikipedia.org/wiki/Economy_of_China' },
@@ -2868,14 +2903,77 @@
 
     // ── Greatest Scientists — Historical ─────────────────
     '_sub_scientists_hist':  { _subgroup: 'Greatest Scientists — What We Paid Them' },
-    'albert einstein':       { wealth: 1,       note: 'Science · Physicist · Germany/USA · Theory of Relativity · Nobel Prize 1921 · Salary-based wealth · Died 1955', url: 'https://en.wikipedia.org/wiki/Albert_Einstein' },
-    'marie curie':           { wealth: 1,       note: 'Science · Physicist/Chemist · Poland/France · Two Nobel Prizes · Radioactivity · Died 1934', url: 'https://en.wikipedia.org/wiki/Marie_Curie' },
-    'stephen hawking':       { wealth: 20,      note: 'Science · Physicist · UK · A Brief History of Time · Black holes · Motor neurone disease · Died 2018', url: 'https://en.wikipedia.org/wiki/Stephen_Hawking' },
-    'alan turing science':   { wealth: 1,       note: 'Science · Mathematician · UK · Father of Computing · Cracked Enigma · Persecuted · Died 1954', url: 'https://en.wikipedia.org/wiki/Alan_Turing' },
-    'tim berners-lee':       { wealth: 10,      note: 'Science · UK · Inventor of the World Wide Web · Gave it away free · Sir Tim Berners-Lee', url: 'https://en.wikipedia.org/wiki/Tim_Berners-Lee' },
-    'rosalind franklin':     { wealth: 1,       note: 'Science · Chemist · UK · Discovered DNA structure · Credit denied · Died 1958', url: 'https://en.wikipedia.org/wiki/Rosalind_Franklin' },
-    'charles darwin':        { wealth: 1500,    note: 'Science · Naturalist · UK · On the Origin of Species · Evolution · Died 1882 · Inflation adjusted', url: 'https://en.wikipedia.org/wiki/Charles_Darwin' },
-    'nikola tesla science':  { wealth: 1,       note: 'Science · Inventor · Serbia/USA · AC electricity · Died in poverty 1943 · Tesla the car named after him', url: 'https://en.wikipedia.org/wiki/Nikola_Tesla' },
+    'albert einstein':       { wealth: 1,       note: 'Science · Physicist · Germany/USA · Theory of Relativity E=mc² · Nobel Prize 1921 · Salary $10,000/year Princeton · Died 1955 · Estate left to Hebrew University', url: 'https://en.wikipedia.org/wiki/Albert_Einstein' },
+    'marie curie':           { wealth: 1,       note: 'Science · Physicist/Chemist · Poland/France · Two Nobel Prizes Physics & Chemistry · Discovered Polonium & Radium · Died 1934 of radiation exposure · Her notebooks still radioactive', url: 'https://en.wikipedia.org/wiki/Marie_Curie' },
+    'stephen hawking':       { wealth: 20,      note: 'Science · Physicist · UK · $20M estate · A Brief History of Time sold 25M copies · Black holes Hawking radiation · Motor neurone disease 55 years · Died 2018 aged 76', url: 'https://en.wikipedia.org/wiki/Stephen_Hawking' },
+    'alan turing science':   { wealth: 1,       note: 'Science · Mathematician · UK · Father of Computing · Cracked Nazi Enigma code · Saved millions of lives · Persecuted for being gay · Died 1954 aged 41 · Now on £50 note', url: 'https://en.wikipedia.org/wiki/Alan_Turing' },
+    'tim berners-lee':       { wealth: 10,      note: 'Science · UK · Sir Tim Berners-Lee · $10M · Invented the World Wide Web 1989 · Gave it away completely free · Could have been richest person in world · Born London 1955', url: 'https://en.wikipedia.org/wiki/Tim_Berners-Lee' },
+    'rosalind franklin':     { wealth: 1,       note: 'Science · Chemist · UK · Discovered DNA double helix structure · Credit stolen by Watson and Crick who won Nobel Prize · Died 1958 aged 37 · Never knew her contribution was stolen', url: 'https://en.wikipedia.org/wiki/Rosalind_Franklin' },
+    'charles darwin':        { wealth: 1500,    note: 'Science · Naturalist · UK · On the Origin of Species 1859 · Theory of Evolution · Died 1882 · Worth £1.5B in today money · Now on £10 note', url: 'https://en.wikipedia.org/wiki/Charles_Darwin' },
+    'nikola tesla science':  { wealth: 1,       note: 'Science · Inventor · Serbia/USA · AC electricity · Induction motor · Wireless energy · 300 patents · Died in poverty in New York hotel 1943 · Elon Musk named Tesla after him', url: 'https://en.wikipedia.org/wiki/Nikola_Tesla' },
+    'isaac newton science':  { wealth: 2500,    note: 'Science · Physicist/Mathematician · UK · Laws of Motion · Gravity · Calculus · Died 1727 · Worth £2.5B adjusted · Master of the Royal Mint · Made fortune from silver', url: 'https://en.wikipedia.org/wiki/Isaac_Newton' },
+    'galileo science':       { wealth: 1,       note: 'Science · Astronomer · Italy · Father of modern science · Proved Earth orbits Sun · Imprisoned by Catholic Church · Died 1642 · Telescope pioneer', url: 'https://en.wikipedia.org/wiki/Galileo_Galilei' },
+    'james watt science':    { wealth: 2000,    note: 'Science · Inventor · Scotland · Steam engine improved 1769 · Powered the Industrial Revolution · Worth £2B adjusted · Watt unit of power named after him · Died 1819', url: 'https://en.wikipedia.org/wiki/James_Watt' },
+    'alexander fleming':     { wealth: 5,       note: 'Science · Biologist · Scotland · Discovered Penicillin 1928 · Saved 200 million lives · Nobel Prize 1945 · Refused to patent it so all could benefit · Died 1955', url: 'https://en.wikipedia.org/wiki/Alexander_Fleming' },
+    'thomas edison science': { wealth: 12000,   note: 'Science · Inventor · USA · 1,093 patents · Light bulb phonograph motion pictures · Edison Electric became GE · Died 1931 · Worth $12B adjusted · Rivalry with Tesla', url: 'https://en.wikipedia.org/wiki/Thomas_Edison' },
+    'james clerk maxwell':   { wealth: 500,     note: 'Science · Physicist · Scotland · Equations of electromagnetism · Foundation of radio TV wireless · Einstein called him greatest physicist · Died 1879 aged 48', url: 'https://en.wikipedia.org/wiki/James_Clerk_Maxwell' },
+
+    // ── ARTISTS ───────────────────────────────────────────
+
+    // ── Old Masters & Historical Artists ──────────────────
+    '_sub_old_masters':      { _subgroup: 'Old Masters — Estate & Legacy Values' },
+    'leonardo da vinci':     { wealth: 8000,    note: 'Artist · Old Master · Italy · $8B estimated estate value · Mona Lisa · The Last Supper · Vitruvian Man · Inventor architect sculptor · Born 1452 · Mona Lisa valued at $1B alone', url: 'https://en.wikipedia.org/wiki/Leonardo_da_Vinci' },
+    'michelangelo artist':   { wealth: 5000,    note: 'Artist · Old Master · Italy · $5B estimated · Sistine Chapel ceiling · David sculpture · St Peters Basilica dome · Born 1475 · Died 1564 · Richest artist of Renaissance', url: 'https://en.wikipedia.org/wiki/Michelangelo' },
+    'rembrandt artist':      { wealth: 3000,    note: 'Artist · Old Master · Netherlands · $3B estate value · Self portraits · The Night Watch · Born 1606 · Died bankrupt 1669 · Works now worth billions', url: 'https://en.wikipedia.org/wiki/Rembrandt' },
+    'vermeer artist':        { wealth: 2000,    note: 'Artist · Old Master · Netherlands · $2B est. · Girl with a Pearl Earring · Only 34 known works · Each worth $100M+ · Born 1632 · Died 1675 · Rediscovered 200 years after death', url: 'https://en.wikipedia.org/wiki/Johannes_Vermeer' },
+    'raphael artist':        { wealth: 3000,    note: 'Artist · Old Master · Italy · $3B est. · School of Athens · Sistine Madonna · Worked alongside Leonardo and Michelangelo · Born 1483 · Died aged 37 in 1520', url: 'https://en.wikipedia.org/wiki/Raphael' },
+    'caravaggio artist':     { wealth: 1500,    note: 'Artist · Old Master · Italy · $1.5B est. · Baroque master · Dramatic light and shadow · Murder suspect · Died 1610 aged 38 · Rediscovered 300 years after death', url: 'https://en.wikipedia.org/wiki/Caravaggio' },
+    'turner artist':         { wealth: 2500,    note: 'Artist · Old Master · UK · $2.5B est. · Fighting Temeraire · Rain Steam and Speed · Left 300 paintings to nation · Born 1775 · Died 1851 · Tate Britain houses his collection', url: 'https://en.wikipedia.org/wiki/J._M._W._Turner' },
+    'constable artist':      { wealth: 1000,    note: 'Artist · Old Master · UK · $1B est. · The Hay Wain · Salisbury Cathedral · Suffolk landscapes · Born 1776 · Died 1837 · Influenced French Impressionists', url: 'https://en.wikipedia.org/wiki/John_Constable' },
+
+    // ── Impressionists ────────────────────────────────────
+    '_sub_impressionists':   { _subgroup: 'Impressionists — The Game Changers' },
+    'claude monet artist':   { wealth: 5000,    note: 'Artist · Impressionist · France · $5B est. estate · Water Lilies Haystacks · Founded Impressionism · Cataracts but kept painting · Died 1926 · Giverny garden', url: 'https://en.wikipedia.org/wiki/Claude_Monet' },
+    'vincent van gogh':      { wealth: 10000,   note: 'Artist · Post-Impressionist · Netherlands · $10B est. estate · Starry Night Sunflowers Self Portrait · Sold ONE painting in his lifetime · Died 1890 aged 37 · Most recognised artist in world', url: 'https://en.wikipedia.org/wiki/Vincent_van_Gogh' },
+    'paul cezanne artist':   { wealth: 4000,    note: 'Artist · Post-Impressionist · France · $4B est. · Mont Sainte-Victoire · Bridge between Impressionism and Cubism · Father of Modern Art · Died 1906', url: 'https://en.wikipedia.org/wiki/Paul_C%C3%A9zanne' },
+    'paul gauguin artist':   { wealth: 2000,    note: 'Artist · Post-Impressionist · France · $2B est. · Tahitian paintings · Left family for Pacific islands · Died 1903 Marquesas · Nafea Faa Ipoipo sold $300M 2015', url: 'https://en.wikipedia.org/wiki/Paul_Gauguin' },
+    'edgar degas artist':    { wealth: 2000,    note: 'Artist · Impressionist · France · $2B est. · Ballet dancers · Horse racing · Sculptures · Died 1917 · Collection of 200+ works found in studio', url: 'https://en.wikipedia.org/wiki/Edgar_Degas' },
+    'pierre renoir artist':  { wealth: 2000,    note: 'Artist · Impressionist · France · $2B est. · Bal du moulin de la Galette · Joyful scenes of Parisian life · Died 1919 painting to last day despite arthritis', url: 'https://en.wikipedia.org/wiki/Pierre-Auguste_Renoir' },
+
+    // ── Modern & Contemporary — Deceased ──────────────────
+    '_sub_modern_artists':   { _subgroup: 'Modern Masters — Deceased Estates' },
+    'pablo picasso artist':  { wealth: 50000,   note: 'Artist · Modern · Spain · $50B est. estate · 16,000 works · Cubism · Guernica · Died 1973 without a will · Legal battle cost $30M · Picasso Administration manages image rights · Most valuable estate in art history', url: 'https://en.wikipedia.org/wiki/Pablo_Picasso' },
+    'andy warhol artist':    { wealth: 15000,   note: 'Artist · Pop Art · USA · $15B est. estate · Shot Sage Blue Marilyn sold $195M 2022 · Campbell Soup cans · Factory studio · Died 1987 · Andy Warhol Foundation · Studio 54', url: 'https://en.wikipedia.org/wiki/Andy_Warhol' },
+    'frida kahlo artist':    { wealth: 5000,    note: 'Artist · Modern · Mexico · $5B est. estate · Self portraits · Diego Rivera husband · Survived polio and bus crash · Died 1954 · Most expensive Latin American artist', url: 'https://en.wikipedia.org/wiki/Frida_Kahlo' },
+    'salvador dali artist':  { wealth: 3000,    note: 'Artist · Surrealism · Spain · $3B est. estate · Persistence of Memory melting clocks · Theatre Museum Figueres · Died 1989 · Left estate to Spanish state', url: 'https://en.wikipedia.org/wiki/Salvador_Dal%C3%AD' },
+    'jackson pollock artist': { wealth: 2000,   note: 'Artist · Abstract Expressionism · USA · $2B est. estate · Number 17A sold $200M · Drip painting · Died 1956 car crash aged 44 · Lee Krasner managed estate', url: 'https://en.wikipedia.org/wiki/Jackson_Pollock' },
+    'jean-michel basquiat':  { wealth: 4000,    note: 'Artist · Neo-Expressionism · USA · $4B est. estate · Street artist SAMO · Untitled skull sold $110M 2017 · Andy Warhol collaborator · Died 1988 aged 27 · 27 Club', url: 'https://en.wikipedia.org/wiki/Jean-Michel_Basquiat' },
+    'mark rothko artist':    { wealth: 3000,    note: 'Artist · Abstract Expressionism · USA · $3B est. estate · Colour field paintings · Tate Modern Rothko Room · Died 1970 · No 6 sold $186M 2014', url: 'https://en.wikipedia.org/wiki/Mark_Rothko' },
+    'keith haring artist':   { wealth: 1000,    note: 'Artist · Pop Art · USA · $1B est. estate · Subway drawings · Radiant Baby · AIDS awareness · Died 1990 aged 31 · Keith Haring Foundation supports AIDS and children charities', url: 'https://en.wikipedia.org/wiki/Keith_Haring' },
+    'georgia o\'keeffe':     { wealth: 500,     note: "Artist · Modern · USA · $500M est. estate · Flower paintings · New Mexico desert · Died 1986 aged 98 · Georgia O'Keeffe Museum Santa Fe", url: 'https://en.wikipedia.org/wiki/Georgia_O%27Keeffe' },
+    'gustav klimt artist':   { wealth: 5000,    note: 'Artist · Symbolism · Austria · $5B est. estate · The Kiss Portrait of Adele · Gold leaf · Portrait of Elisabeth Lederer sold $236M Sotheby 2025 · Died 1918', url: 'https://en.wikipedia.org/wiki/Gustav_Klimt' },
+
+    // ── Living Artists ────────────────────────────────────
+    '_sub_living_artists':   { _subgroup: 'Living Artists — Current Net Worth' },
+    'damien hirst artist':   { wealth: 700,     note: 'Artist · Contemporary · UK · $700M · World richest living artist · The Physical Impossibility of Death in the Mind of Someone Living · Shark in formaldehyde · Diamond skull £50M · Young British Artists', url: 'https://en.wikipedia.org/wiki/Damien_Hirst' },
+    'jeff koons artist':     { wealth: 500,     note: 'Artist · Contemporary · USA · $500M · Balloon Dog sculpture sold $58.4M · Rabbit $91M 2019 · Stainless steel mirror sculptures · Lives New York', url: 'https://en.wikipedia.org/wiki/Jeff_Koons' },
+    'jasper johns artist':   { wealth: 300,     note: 'Artist · Contemporary · USA · $300M · Flag painting · American flags targets numbers · Inspired Pop Art · Born 1930 · Flag sold $110M 2014', url: 'https://en.wikipedia.org/wiki/Jasper_Johns' },
+    'david hockney artist':  { wealth: 150,     note: 'Artist · Contemporary · UK · £150M · A Bigger Splash · Pool with Two Figures sold $90M 2018 · Bradford born · Lives California and Yorkshire · iPad paintings', url: 'https://en.wikipedia.org/wiki/David_Hockney' },
+    'yayoi kusama artist':   { wealth: 120,     note: 'Artist · Contemporary · Japan · $120M · Polka dots · Infinity Mirror Rooms · Pumpkins · Born 1929 · Voluntarily lives in psychiatric institution · Most exhibited living artist', url: 'https://en.wikipedia.org/wiki/Yayoi_Kusama' },
+    'banksy artist':         { wealth: 100,     note: 'Artist · Street Art · UK · $100M est. · Anonymous identity · Girl with Balloon self-destructed at Sotheby 2018 · Dismaland · Bristol origins · Never confirmed identity', url: 'https://en.wikipedia.org/wiki/Banksy' },
+    'gerhard richter artist': { wealth: 100,    note: 'Artist · Contemporary · Germany · $100M · Abstract and photo-realistic · Squeegee technique · Abstraktes Bild sold $46M · Born 1932 · Most expensive living German artist', url: 'https://en.wikipedia.org/wiki/Gerhard_Richter' },
+    'anish kapoor artist':   { wealth: 85,      note: 'Artist · Contemporary · UK/India · $85M · Cloud Gate Chicago Bean · Orbit tower London · Won Turner Prize 1991 · Born Mumbai 1954 · Vantablack controversy', url: 'https://en.wikipedia.org/wiki/Anish_Kapoor' },
+    'tracey emin artist':    { wealth: 70,      note: 'Artist · Contemporary · UK · £70M · My Bed · Everyone I Have Ever Slept With · Turner Prize · Young British Artists · Professor Royal Academy · Made CBE', url: 'https://en.wikipedia.org/wiki/Tracey_Emin' },
+    'peter doig artist':     { wealth: 60,      note: 'Artist · Contemporary · UK/Canada · $60M · Boat paintings · 100 Years Ago sold $28M · Turner Prize nominee · Born Edinburgh 1959 · Most sought after British painter', url: 'https://en.wikipedia.org/wiki/Peter_Doig' },
+
+    // ── Art Market Facts ──────────────────────────────────
+    '_sub_art_market':       { _subgroup: 'Art Market — The Big Numbers' },
+    'global art market':     { wealth: 65000,   note: 'Artist · Global · World Art Market 2025 · $65B total · Christie\'s Sotheby\'s Phillips dominate · USA 43% China 19% UK 17% · Most expensive: da Vinci Salvator Mundi $450M 2017', url: 'https://en.wikipedia.org/wiki/Art_market' },
+    'salvator mundi':        { wealth: 450,     note: 'Artist · Record · Leonardo da Vinci · Salvator Mundi · $450M · Most expensive artwork ever sold · Christie\'s 2017 · Bought by Saudi Arabia · Location unknown · Jesus holding crystal orb', url: 'https://en.wikipedia.org/wiki/Salvator_Mundi_(Leonardo)' },
+    'shot sage blue marilyn': { wealth: 195,    note: 'Artist · Record · Andy Warhol · Shot Sage Blue Marilyn · $195M · Christie\'s 2022 · Most expensive 20th century artwork · Surpassed Picasso record', url: 'https://en.wikipedia.org/wiki/Shot_Marilyns' },
+    'portrait of adele':     { wealth: 135,     note: 'Artist · Record · Gustav Klimt · Portrait of Adele Bloch-Bauer · $135M · Christie\'s 2006 · Stolen by Nazis · Returned to rightful owner · Woman in Gold film', url: 'https://en.wikipedia.org/wiki/Portrait_of_Adele_Bloch-Bauer_I' },
+
+
 
     // ── NATIONS & NATURAL WEALTH — by Continent (GDP) ──
 
@@ -3883,36 +3981,34 @@
 
     '_sub_dragons':             { _subgroup: 'Dragons & Entrepreneurs' },
     // ── TECH FOUNDERS ───────────────────────────────────
-    '_sub_techfounders':   { _subgroup: 'Tech Founders' },
-    'sam altman':          { wealth: 2000,   note: 'Tech · AI · USA · OpenAI · ChatGPT', url: 'https://en.wikipedia.org/wiki/Sam_Altman' },
-    'sundar pichai':       { wealth: 1200,   note: 'Tech · Business · USA · Google CEO', url: 'https://en.wikipedia.org/wiki/Sundar_Pichai' },
-    'satya nadella':       { wealth: 1000,   note: 'Tech · Business · India/USA · Microsoft CEO', url: 'https://en.wikipedia.org/wiki/Satya_Nadella' },
-    'tim cook':            { wealth: 2000,   note: 'Tech · Business · USA · Apple CEO', url: 'https://en.wikipedia.org/wiki/Tim_Cook' },
-    'andy jassy':          { wealth: 500,    note: 'Tech · Business · USA · Amazon CEO', url: 'https://en.wikipedia.org/wiki/Andy_Jassy' },
-    'reed hastings':       { wealth: 5000,   note: 'Tech · Business · USA · Netflix founder', url: 'https://en.wikipedia.org/wiki/Reed_Hastings' },
-    'travis kalanick':     { wealth: 4000,   note: 'Tech · Business · USA · Uber founder', url: 'https://en.wikipedia.org/wiki/Travis_Kalanick' },
-    'jack dorsey':         { wealth: 5800,   note: 'Tech · Business · USA · Twitter/X · Square', url: 'https://en.wikipedia.org/wiki/Jack_Dorsey' },
-    'evan spiegel':        { wealth: 2200,   note: 'Tech · Business · USA · Snapchat', url: 'https://en.wikipedia.org/wiki/Evan_Spiegel' },
-    'patrick collison':    { wealth: 9700,   note: 'Tech · Business · Ireland · Stripe', url: 'https://en.wikipedia.org/wiki/Patrick_Collison' },
-    'john collison':       { wealth: 9700,   note: 'Tech · Business · Ireland · Stripe', url: 'https://en.wikipedia.org/wiki/John_Collison' },
-    'palmer luckey':       { wealth: 3000,   note: 'Tech · Business · USA · Oculus · Anduril Defence · $28B valuation', url: 'https://en.wikipedia.org/wiki/Palmer_Luckey' },
-    'daniel ek':           { wealth: 5500,   note: 'Tech · Business · Sweden · Spotify', url: 'https://en.wikipedia.org/wiki/Daniel_Ek' },
-    'tobi lutke':          { wealth: 9000,   note: 'Tech · Business · Canada · Shopify', url: 'https://en.wikipedia.org/wiki/Tobi_Lutke' },
-    'guillaume faury':     { wealth: 15,     note: 'Tech · Business · France · Airbus CEO · Salary-based', url: 'https://en.wikipedia.org/wiki/Guillaume_Faury' },
-    'brian chesky':        { wealth: 11000,  note: 'Tech · Business · USA · Airbnb founder', url: 'https://en.wikipedia.org/wiki/Brian_Chesky' },
-    'dara khosrowshahi':   { wealth: 500,    note: 'Tech · Business · USA · Uber CEO', url: 'https://en.wikipedia.org/wiki/Dara_Khosrowshahi' },
-    'whitney wolfe':       { wealth: 700,    note: 'Tech · Business · USA · Bumble founder', url: 'https://en.wikipedia.org/wiki/Whitney_Wolfe_Herd' },
-    'peter thiel':         { wealth: 9000,   note: 'Tech · Business · USA · PayPal · Palantir · Facebook investor', url: 'https://en.wikipedia.org/wiki/Peter_Thiel' },
-    'reid hoffman':        { wealth: 2500,   note: 'Tech · Business · USA · LinkedIn founder', url: 'https://en.wikipedia.org/wiki/Reid_Hoffman' },
-    'eric schmidt':        { wealth: 25000,  note: 'Tech · Business · USA · Google former CEO', url: 'https://en.wikipedia.org/wiki/Eric_Schmidt' },
-    'michael bloomberg':   { wealth: 100000, note: 'Tech · Business · USA · Bloomberg LP · Former NYC Mayor', url: 'https://en.wikipedia.org/wiki/Michael_Bloomberg' },
-    'rupert murdoch':      { wealth: 20000,  note: 'Media · Business · USA/Australia · News Corp · Fox News', url: 'https://en.wikipedia.org/wiki/Rupert_Murdoch' },
-    'james murdoch':       { wealth: 2000,   note: 'Media · Business · USA · News Corp', url: 'https://en.wikipedia.org/wiki/James_Murdoch' },
-    'richard branson':     { wealth: 3000,   note: 'Business · UK · Virgin Group · Virgin Galactic', url: 'https://en.wikipedia.org/wiki/Richard_Branson' },
-    'lord sugar':          { wealth: 1300,   note: 'Business · TV · UK · Amstrad · The Apprentice · Lord Alan Sugar', url: 'https://en.wikipedia.org/wiki/Alan_Sugar' },
-    'james dyson':         { wealth: 20000,  note: 'Tech & Business · UK · Sir James Dyson · £16.3B Sunday Times Rich List 2026 · Dyson vacuum cleaners fans hairdryers · Cyclone technology · Founded 1993 · Lives Singapore', url: 'https://en.wikipedia.org/wiki/James_Dyson' },
-    'jim ratcliffe':       { wealth: 14000,  note: 'Tech & Business · UK · INEOS · £14B Sunday Times Rich List 2026 · Man Utd co-owner · INEOS Grenadier · Chemicals · Sir Jim Ratcliffe · Brexit supporter', url: 'https://en.wikipedia.org/wiki/Jim_Ratcliffe' },
-    'mike ashley':         { wealth: 3000,   note: 'Business · UK · Sports Direct · Newcastle Utd', url: 'https://en.wikipedia.org/wiki/Mike_Ashley' },
+    '_sub_techfounders':   { _subgroup: 'Tech Founders & CEOs' },
+    'sam altman':          { wealth: 2000,   note: 'Tech & Business · AI · USA · Sam Altman · $2B · OpenAI CEO · ChatGPT · Changed the world with AI in 2022 · Age 39 · Born Missouri · Briefly fired then reinstated by board', url: 'https://en.wikipedia.org/wiki/Sam_Altman' },
+    'sundar pichai':       { wealth: 1200,   note: 'Tech & Business · USA · Sundar Pichai · $1.2B · Google CEO since 2015 · Alphabet CEO · Born Tamil Nadu India · Computer Science Stanford · Turned down many CEO offers before Google', url: 'https://en.wikipedia.org/wiki/Sundar_Pichai' },
+    'satya nadella':       { wealth: 1000,   note: 'Tech & Business · India/USA · Satya Nadella · $1B · Microsoft CEO since 2014 · Transformed Microsoft · Azure cloud · Born Hyderabad India · Cricket lover', url: 'https://en.wikipedia.org/wiki/Satya_Nadella' },
+    'tim cook':            { wealth: 2000,   note: 'Tech & Business · USA · Tim Cook · $2B · Apple CEO since Steve Jobs died 2011 · Took Apple from $350B to $3T · Supply chain genius · Born Alabama', url: 'https://en.wikipedia.org/wiki/Tim_Cook' },
+    'andy jassy':          { wealth: 500,    note: 'Tech & Business · USA · Andy Jassy · $500M · Amazon CEO · Succeeded Jeff Bezos 2021 · Created Amazon Web Services AWS · Cloud computing pioneer', url: 'https://en.wikipedia.org/wiki/Andy_Jassy' },
+    'reed hastings':       { wealth: 5000,   note: 'Tech & Business · USA · Reed Hastings · $5B · Netflix founder 1997 · Started as DVD mail rental · Pivoted to streaming · Changed TV forever · 270M subscribers', url: 'https://en.wikipedia.org/wiki/Reed_Hastings' },
+    'jack dorsey':         { wealth: 5800,   note: 'Tech & Business · USA · Jack Dorsey · $5.8B · Co-founded Twitter 2006 · Also founded Square/Block payments · Fired from Twitter twice · Bitcoin advocate', url: 'https://en.wikipedia.org/wiki/Jack_Dorsey' },
+    'evan spiegel':        { wealth: 2200,   note: 'Tech & Business · USA · Evan Spiegel · $2.2B · Snapchat founder age 21 · Turned down $3B Facebook offer · Youngest billionaire at 23 · Miranda Kerr husband', url: 'https://en.wikipedia.org/wiki/Evan_Spiegel' },
+    'patrick collison':    { wealth: 9700,   note: 'Tech & Business · Ireland · Patrick Collison · $9.7B · Stripe co-founder with brother John · Payments infrastructure · Became billionaire at 26 · Ireland most successful tech export', url: 'https://en.wikipedia.org/wiki/Patrick_Collison' },
+    'john collison':       { wealth: 9700,   note: 'Tech & Business · Ireland · John Collison · $9.7B · Stripe co-founder with brother Patrick · Became youngest self-made billionaire in history aged 26 · Galway born', url: 'https://en.wikipedia.org/wiki/John_Collison' },
+    'palmer luckey':       { wealth: 3000,   note: 'Tech & Business · USA · Palmer Luckey · $3B · Oculus VR founder · Sold to Facebook $2B · Then founded Anduril Defence · Military AI drones · Age 31', url: 'https://en.wikipedia.org/wiki/Palmer_Luckey' },
+    'daniel ek':           { wealth: 5500,   note: 'Tech & Business · Sweden · Daniel Ek · $5.5B · Spotify founder 2006 · 600M monthly listeners · Changed music forever · Stockholm born · Turned down Apple job offer', url: 'https://en.wikipedia.org/wiki/Daniel_Ek' },
+    'tobi lutke':          { wealth: 9000,   note: 'Tech & Business · Canada · Tobi Lutke · $9B · Shopify founder · Powers 10% of US e-commerce · Started as snowboard shop · Born Germany · Self-taught programmer', url: 'https://en.wikipedia.org/wiki/Tobi_Lutke' },
+    'brian chesky':        { wealth: 11000,  note: 'Tech & Business · USA · Brian Chesky · $11B · Airbnb co-founder 2008 · Started renting air mattress in flat during conference · 7M listings worldwide · Revolutionary hospitality', url: 'https://en.wikipedia.org/wiki/Brian_Chesky' },
+    'travis kalanick':     { wealth: 4000,   note: 'Tech & Business · USA · Travis Kalanick · $4B · Uber co-founder · Forced out as CEO 2017 · Changed transport forever · Founded CloudKitchens after Uber', url: 'https://en.wikipedia.org/wiki/Travis_Kalanick' },
+    'peter thiel':         { wealth: 9000,   note: 'Tech & Business · USA · Peter Thiel · $9B · PayPal co-founder with Elon Musk · Facebook first investor $500K for 10% · Palantir · Trump supporter · Zero to One book', url: 'https://en.wikipedia.org/wiki/Peter_Thiel' },
+    'reid hoffman':        { wealth: 2500,   note: 'Tech & Business · USA · Reid Hoffman · $2.5B · LinkedIn founder · Sold to Microsoft $26B 2016 · PayPal mafia member · Greylock venture capital partner', url: 'https://en.wikipedia.org/wiki/Reid_Hoffman' },
+    'eric schmidt':        { wealth: 25000,  note: 'Tech & Business · USA · Eric Schmidt · $25B · Google CEO 2001-2011 · Guided Google from startup to giant · Now AI government adviser · Previously Novell CEO', url: 'https://en.wikipedia.org/wiki/Eric_Schmidt' },
+    'michael bloomberg':   { wealth: 100000, note: 'Tech & Business · USA · Michael Bloomberg · $100B · Bloomberg LP financial data · Former NYC Mayor 3 terms · Bloomberg terminals in every trading floor in world', url: 'https://en.wikipedia.org/wiki/Michael_Bloomberg' },
+    'john warnock':        { wealth: 1000,   note: 'Tech & Business · USA · John Warnock · $1B · Adobe Systems co-founder 1982 · Invented PDF PostScript · PDF used by billions daily · Also co-founded with Chuck Geschke · Died 2023', url: 'https://en.wikipedia.org/wiki/John_Warnock' },
+    'shantanu narayen':    { wealth: 1500,   note: 'Tech & Business · USA/India · Shantanu Narayen · $1.5B · Adobe CEO since 2007 · Photoshop Illustrator Acrobat Creative Cloud · Born Hyderabad India · Transformed Adobe into subscription model', url: 'https://en.wikipedia.org/wiki/Shantanu_Narayen' },
+    'jensen huang':        { wealth: 154000, note: 'Tech & Business · USA · Jensen Huang · $154B · Nvidia CEO and co-founder 1993 · AI chip revolution · H100 GPU powers all AI · Born Taiwan · Leather jacket icon · Age 61', url: 'https://en.wikipedia.org/wiki/Jensen_Huang' },
+    'richard branson':     { wealth: 3000,   note: 'Tech & Business · UK · Sir Richard Branson · $3B · Virgin Group · Virgin Atlantic Virgin Galactic Virgin Records Virgin Money · Founded 400 companies · Necker Island · Space tourist', url: 'https://en.wikipedia.org/wiki/Richard_Branson' },
+    'james dyson':         { wealth: 20000,  note: 'Tech & Business · UK · Sir James Dyson · £16.3B · Dyson vacuum cleaners fans hairdryers · 5,127 prototypes before it worked · Founded 1993 · Lives Singapore · Brexit supporter', url: 'https://en.wikipedia.org/wiki/James_Dyson' },
+    'jim ratcliffe':       { wealth: 14000,  note: 'Tech & Business · UK · Sir Jim Ratcliffe · £14B · INEOS chemicals · Man Utd 25% owner · INEOS Grenadier 4x4 · Born Failsworth Manchester · Self-made from council estate', url: 'https://en.wikipedia.org/wiki/Jim_Ratcliffe' },
+    'mike ashley':         { wealth: 3000,   note: 'Tech & Business · UK · Mike Ashley · £3B · Sports Direct · Frasers Group · Newcastle Utd former owner · Started with £10,000 loan · Controversial business methods', url: 'https://en.wikipedia.org/wiki/Mike_Ashley' },
+    'rupert murdoch':      { wealth: 20000,  note: 'Tech & Business · Media · USA/Australia · Rupert Murdoch · $20B · News Corp · Fox News · The Sun · Times · Sky · Changed media landscape worldwide · Age 93', url: 'https://en.wikipedia.org/wiki/Rupert_Murdoch' },
 
     // ── TOP 20 RICHEST LIVING PEOPLE ON EARTH (2025 est.) ──
     'elon musk top20':     { wealth: 792000, note: 'Top 20 · Tech · USA · Tesla SpaceX xAI · $792B · Tesla price live · SpaceX xAI estimated · Forbes methodology · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa', url: 'https://en.wikipedia.org/wiki/Elon_Musk', _top20: true },
