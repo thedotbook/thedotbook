@@ -1834,7 +1834,7 @@
   let GROUP_ORDER = [
     'My Own Entries',
     'Individual Wealth',
-    'The Twenty Wealthiest People on Earth', 'Film & TV', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming', 'Artists', 'Scientists', 'Infamous',
+    'The Twenty Wealthiest People on Earth', 'Global Billionaires', 'Film & TV', 'Historical', 'Music', 'Sport', 'Tech & Business', 'YouTube & Streaming', 'Artists', 'Scientists', 'Infamous',
     'Global Perspective',
     'Nations & Natural Wealth', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics'
   ];
@@ -1875,7 +1875,7 @@
     if (n.includes('transport ·') || n.includes('· transport') || n.includes('aviation ·') || n.includes('rail ·') || n.includes('· rail') || n.includes('automaker') || n.includes('car manufacturer') || n.includes('shipping ·')) return 'Transport';
     if (n.includes('national debt') || n.includes('govt debt') || nm.endsWith(' debt')) return 'National Debt';
     if (n.includes('natural wealth') || n.includes('mineral wealth') || n.includes('nation ·') || nm.endsWith(' gdp') || nm.endsWith(' mineral')) return 'Nations & Natural Wealth';
-    if (n.startsWith('billionaire ·')) return 'The Twenty Wealthiest People on Earth';
+    if (n.startsWith('billionaire ·')) return 'Global Billionaires';
     if (n.startsWith('artist ·') || n.includes('· old master') || n.includes('· impressionist') || n.includes('· art market') || n.includes('· pop art') || n.includes('· street art') || n.includes('· modern ·') || n.includes('· contemporary ·')) return 'Artists';
     if (n.includes('infamous ·') || n.includes('· infamous') || n.includes('criminal ·') || n.includes('· criminal') || n.includes('gang ·') || n.includes('cartel ·') || n.includes('fraud ·')) return 'Infamous';
     if (n.startsWith('science ·') || n.includes('· physicist') || n.includes('· inventor ·') || n.includes('· mathematician') || n.includes('· chemist ·') || n.includes('· naturalist') || n.includes('· biologist')) return 'Scientists';
