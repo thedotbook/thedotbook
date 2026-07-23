@@ -2143,7 +2143,7 @@
         if (item.type === 'sub') {
           thisSid = subIdx++;
           html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
-                + '<td colspan="3" style="padding-left:20px"><span class="sub-arrow">&#9658;</span> — ' + escHtml(item.label) + ' —</td></tr>';
+                + '<td colspan="3" style="padding-left:' + (item.label.startsWith('  ') ? '40px' : '20px') + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(item.label.trim()) + ' —</td></tr>';
         } else if (thisSid >= 0) {
           html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
                 + renderPersonRow(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
@@ -4146,7 +4146,8 @@
     // ── RUSSIA ─────────────────────────────────────────
 
     // ── FOOTBALL PLAYERS — Ex-Footballers and Personalities ──
-    '_sub_football_legends': { _subgroup: 'Ex-Footballers and Personalities' },
+    '_sub_football_main':    { _subgroup: 'Football' },
+    '_sub_football_legends': { _subgroup: '  Ex-Footballers & Personalities' },
     'zlatan':              { wealth: 190,    note: 'Football · Sweden · Retired · Zlatan Ibrahimovic', url: 'https://en.wikipedia.org/wiki/Zlatan_Ibrahimovic' },
 
     // French legends
@@ -4193,7 +4194,7 @@
     'david beckham':       { wealth: 1000,   note: 'Music · Sport · TV · Film & TV · UK · $1B · Sunday Times Rich List 2026 · Britain first billionaire sports personality · Man Utd Real Madrid LA Galaxy · Victoria Beckham · Inter Miami co-owner · Brand empire', url: 'https://en.wikipedia.org/wiki/David_Beckham' },
 
     // ── FOOTBALL PLAYERS — Current Stars ──────────────
-    '_sub_football_stars': { _subgroup: 'Current Stars' },
+    '_sub_football_stars': { _subgroup: '  Current Stars' },
     'kylian mbappe':       { wealth: 180,    note: 'Football · France · Real Madrid', url: 'https://en.wikipedia.org/wiki/Kylian_Mbappe' },
     'cristiano ronaldo':   { wealth: 1300, note: 'Football · Portugal · Al Nassr · $1.3B · CR7 · 5x Ballon d Or · 900 career goals · Most followed person on Instagram 650M', url: 'https://en.wikipedia.org/wiki/Cristiano_Ronaldo' },
     'lionel messi':        { wealth: 1300, note: 'Football · Argentina · Inter Miami · $1.3B · 8x Ballon d Or · World Cup 2022 · 800 career goals · Greatest of all time', url: 'https://en.wikipedia.org/wiki/Lionel_Messi' },
@@ -4251,7 +4252,7 @@
     'victoria beckham':    { wealth: 500,    note: 'Fashion · Luxury · UK · $500M · Sunday Times Rich List 2026 · Victoria Beckham fashion label · Posh Spice · David Beckham wife · Beauty brand', url: 'https://en.wikipedia.org/wiki/Victoria_Beckham' },
 
     // ── FOOTBALL MANAGERS ──────────────────────────────
-    '_sub_football_managers': { _subgroup: 'Football Managers' },
+    '_sub_football_managers': { _subgroup: '  Football Managers' },
     'jose mourinho':       { wealth: 120,    note: 'Football Manager · Portugal · Real Madrid', url: 'https://en.wikipedia.org/wiki/Jose_Mourinho' },
     'pep guardiola':       { wealth: 100,    note: 'Football Manager · Spain · Manchester City', url: 'https://en.wikipedia.org/wiki/Pep_Guardiola' },
     'diego simeone':       { wealth: 120,    note: 'Football Manager · Argentina · Atletico', url: 'https://en.wikipedia.org/wiki/Diego_Simeone' },
@@ -4304,7 +4305,7 @@
     'chris kamara':        { wealth: 8,      note: 'Sport · TV · UK', url: 'https://en.wikipedia.org/wiki/Chris_Kamara' },
 
     // ── 2026 WORLD CUP STARS — BY NATION ──────────────
-    '_sub_worldcup2026': { _subgroup: 'World Cup 2026 — By Nation' },
+    '_sub_worldcup2026': { _subgroup: '  World Cup Players 2026' },
     // Only confirmed 2026 World Cup squad players with notable wealth
     // Italy did NOT qualify · Russia suspended · All 48 teams listed below
 
@@ -4515,7 +4516,7 @@
 
 
     // ── PREMIER LEAGUE 2025-26 — BY CLUB ──────────────
-    '_sub_premierleague': { _subgroup: 'Premier League 2025-26 — By Club' },
+    '_sub_premierleague': { _subgroup: '  Premier League 2025-26 — By Club' },
     // Note: squads/wealth shift each transfer window — these are 2025-26 season estimates
     'florian wirtz':       { wealth: 40,     note: 'Football · Germany · Liverpool', url: 'https://en.wikipedia.org/wiki/Florian_Wirtz' },
     'dominik szoboszlai':  { wealth: 30,     note: 'Football · Hungary · Liverpool', url: 'https://en.wikipedia.org/wiki/Dominik_Szoboszlai' },
@@ -4850,6 +4851,7 @@
     'whitney houston':     { wealth: 20,     note: 'Music · Pop · USA · Historical · Estate', url: 'https://en.wikipedia.org/wiki/Whitney_Houston' },
     'grace kelly':             { wealth: 10,     note: 'Royalty · Monaco · Historical · Film', url: 'https://en.wikipedia.org/wiki/Grace_Kelly' },
     'florence griffith joyner':{ wealth: 1,  note: 'Sport · Athletics · USA · Historical · Flo-Jo', url: 'https://en.wikipedia.org/wiki/Florence_Griffith_Joyner' },
+    'kevin keegan':          { wealth: 40,     note: 'Sport · Football · UK · Historical · England captain · Twice European Player of the Year 1978 1979 · Liverpool Hamburg · England manager · Died 2025 · Legendary character · The Mighty Mouse', url: 'https://en.wikipedia.org/wiki/Kevin_Keegan' },
     'kobe bryant':         { wealth: 600,    note: 'Sport · Basketball · USA · Historical · 5x NBA champion', url: 'https://en.wikipedia.org/wiki/Kobe_Bryant' },
     'shane warne':         { wealth: 35,     note: 'Sport · Cricket · Australia · Historical · Estate', url: 'https://en.wikipedia.org/wiki/Shane_Warne' },
     'niki lauda':          { wealth: 200,    note: 'Sport · F1 · Austria · Historical · 3x champion', url: 'https://en.wikipedia.org/wiki/Niki_Lauda' },
@@ -5890,7 +5892,7 @@
     'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values'],
     'Music': ['Pop','Hip-Hop & R&B','Rock','Country','Classical & Crossover','K-pop'],
     'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
-    'Sport': ['Current Stars','Ex-Footballers and Personalities','Football Managers','World Cup 2026 — By Nation','Premier League 2025-26 — By Club','Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
+    'Sport': ['Football','  Current Stars','  Ex-Footballers & Personalities','  Football Managers','  World Cup Players 2026','  Premier League 2025-26 — By Club','Athletics','American Football / NFL','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
     'Tech & Business': ['Tech Founders & CEOs','Dragons & Entrepreneurs','Female Founders','News & Media','Fashion','Automotive','Global Billionaires — Beyond The Top 20','Authors'],
     'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
   };
