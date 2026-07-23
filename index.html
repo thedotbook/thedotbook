@@ -6406,57 +6406,53 @@
   // ── LIVE ELON MUSK WEALTH TRACKER ───────────────────────
   async function updateElonWealth() {
     try {
-      // Fetch Tesla price via Worker (avoids CORS)
+      // Fetch both Tesla and SpaceX prices via Worker
       const res = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'tsla' })
+        body: JSON.stringify({ action: 'elon' })
       });
       const data = await res.json();
-      const tslaPrice = data.price;
+      const tslaPrice = data.tsla || 0;
+      const spcxPrice = data.spcx || 0;
 
       if (tslaPrice) {
-        // Correct share counts from SEC filings:
-        // Tesla: ~413M shares (Revocable Trust) + ~286M (2018 options exercised) = ~700M shares
-        // But Bloomberg/Forbes use ~413M primary stake = more conservative
-        // We use Forbes methodology: ~413M Tesla shares
-        const teslaShares = 413000000;
-        const teslaValue = Math.round((tslaPrice * teslaShares) / 1000000); // in $M
+        // Tesla: 636M shares (SEC filings June 2026)
+        const teslaShares = 636000000;
+        const teslaValue = Math.round((tslaPrice * teslaShares) / 1000000);
 
-        // SpaceX: Forbes values at ~$250B (more conservative than IPO peak)
-        // Bloomberg uses ~$280B for his ~38% stake
-        const spacexValue = 260000; // $260B
+        // SpaceX: if SPCX is trading, use live price × Musk's ~42% of 1.8B shares
+        // Otherwise use last known valuation
+        const spacexShares = 756000000; // Musk's ~42% of SpaceX shares
+        const spacexValue = spcxPrice > 0
+          ? Math.round((spcxPrice * spacexShares) / 1000000)
+          : 756000;
 
-        // xAI/X/Neuralink/Boring Co combined ~$50B
-        const otherAssets = 50000;
-
+        // xAI X Neuralink Boring Co (Forbes estimate)
+        const otherAssets = 38000;
         const totalWealth = teslaValue + spacexValue + otherAssets;
 
-        // Update both Elon entries in CELEB_DB
         if (CELEB_DB['elon musk top20']) {
           CELEB_DB['elon musk top20'].wealth = totalWealth;
           const display = formatWealth(totalWealth);
-          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' · Tesla live TSLA $' + tslaPrice.toFixed(2) + ' · SpaceX xAI estimated · Forbes methodology · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa';
+          CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' · TSLA $' + tslaPrice.toFixed(2) + (spcxPrice > 0 ? ' · SPCX $' + spcxPrice.toFixed(2) : '') + ' · Tesla & SpaceX live · Forbes methodology · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa';
         }
 
         renderTable();
 
-        // Update front page banner and slider label
         const muskPage = getPage(totalWealth);
-        const muskDisplay = formatWealth(totalWealth);
         const bannerLabel = document.getElementById('musk-banner-label');
         const sliderLabel = document.getElementById('musk-slider-label');
-        if (bannerLabel) bannerLabel.textContent = 'Elon Musk Live · ' + muskDisplay + ' · p.' + muskPage + ' · TSLA $' + tslaPrice.toFixed(2) + ' ';
-        if (sliderLabel) sliderLabel.textContent = 'Musk ' + muskDisplay + ' · p.' + muskPage + ' · History beyond →';
+        if (bannerLabel) bannerLabel.textContent = 'Elon Musk · ' + display + ' · p.' + muskPage + ' ';
+        if (sliderLabel) sliderLabel.textContent = 'Musk · ' + display + ' · p.' + muskPage + ' · History beyond →';
 
-        console.log('Elon wealth updated: ' + formatWealth(totalWealth) + ' (TSLA $' + tslaPrice.toFixed(2) + ')');
+        console.log('Elon updated: ' + display + ' TSLA $' + tslaPrice.toFixed(2));
       }
     } catch(e) {
       console.log('Live wealth update unavailable — using static figure');
     }
   }
 
-  // Run on load and every 5 minutes
   setTimeout(updateElonWealth, 3000);
   setInterval(updateElonWealth, 300000);
 
