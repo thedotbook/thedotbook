@@ -1796,29 +1796,32 @@
     const usd = formatWealth(wealthM);
     const local = hc && hc !== 'USD' ? formatInHomeCurrency(wealthM, hc) : null;
     const pg = getPage(wealthM);
-    const star = pg > 800 ? ' ★★★' : pg > 460 ? ' ★★' : pg > 335 ? ' ★' : '';
 
-    let html = '<div id="wealth-popup-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="document.getElementById(\'wealth-popup-overlay\').remove()">';
-    html += '<div style="background:#1a1a1a;border:1px solid #555555;border-radius:8px;padding:28px;max-width:340px;width:100%;text-align:center;position:relative" onclick="event.stopPropagation()">';
-    html += '<div style="font-size:18px;color:#ffffff;font-weight:bold;margin-bottom:12px">' + escHtml(name) + '</div>';
-    html += '<div style="font-size:13px;color:#aaaaaa;margin-bottom:16px;letter-spacing:1px">' + escHtml(note) + '</div>';
-    html += '<div style="font-size:32px;font-weight:bold;color:#ffffff;margin-bottom:6px">' + usd + '</div>';
-    if (local) html += '<div style="font-size:16px;color:#aaaaaa;margin-bottom:6px">' + local + '</div>';
-    html += '<div style="font-size:13px;color:#aaaaaa;margin-bottom:16px">Page <strong style="color:#ffffff">' + pg + '</strong>' + star + ' of The Dot Book</div>';
-    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">View Wikipedia profile &#8599;</a><br>';
-    html += '<div style="font-size:10px;color:#888888;margin-bottom:16px">&#9888; Forbes public estimate · Figures fluctuate daily · DYOR</div>';
+    let html = '<div id="wealth-popup-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="document.getElementById(\'wealth-popup-overlay\').remove()">';
+    html += '<div style="background:#111;border:1px solid #444;border-radius:8px;padding:24px;max-width:320px;width:100%;text-align:center" onclick="event.stopPropagation()">';
 
-    // Ask AI section inside popup
-    html += '<div style="border-top:1px solid #333;padding-top:14px;margin-bottom:14px">';
-    html += '<div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:8px">🤖 ASK ABOUT ' + escHtml(name.toUpperCase()) + '</div>';
+    // Name
+    html += '<div style="font-size:20px;color:#ffffff;font-weight:bold;margin-bottom:8px">' + escHtml(name) + '</div>';
+
+    // Wealth and page
+    html += '<div style="font-size:28px;font-weight:bold;color:#ffffff;margin-bottom:4px">' + usd + '</div>';
+    if (local) html += '<div style="font-size:14px;color:#aaa;margin-bottom:4px">' + local + '</div>';
+    html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 1,000</div>';
+
+    // Wikipedia link
+    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">Wikipedia &#8599;</a><br>';
+
+    // Ask AI
+    html += '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:12px">';
     html += '<table style="width:100%;border-collapse:collapse"><tr>';
-    html += '<td style="width:100%"><input id="popup-ai-input" type="text" autocomplete="off" autocorrect="off" placeholder="Ask a question..." style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:7px 10px;font-size:12px;border-radius:5px;outline:none;box-sizing:border-box;font-family:Georgia,serif" /></td>';
+    html += '<td style="width:100%"><input id="popup-ai-input" type="text" autocomplete="off" autocorrect="off" placeholder="Ask about ' + escHtml(name) + '..." style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:7px 10px;font-size:12px;border-radius:5px;outline:none;box-sizing:border-box;font-family:Georgia,serif" /></td>';
     html += '<td style="white-space:nowrap;padding-left:6px"><button onclick="sendPopupAI(\'' + escHtml(name).replace(/'/g,"\\'") + '\')" style="background:#fff;color:#000;border:none;padding:7px 12px;border-radius:5px;font-size:12px;font-weight:bold;cursor:pointer">Ask</button></td>';
     html += '</tr></table>';
-    html += '<div id="popup-ai-result" style="margin-top:8px;font-size:12px;color:#cccccc;text-align:left;line-height:1.6;display:none"></div>';
+    html += '<div id="popup-ai-result" style="margin-top:8px;font-size:12px;color:#ccc;text-align:left;line-height:1.6;display:none"></div>';
     html += '</div>';
 
-    html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:#ffffff;border:none;border-radius:4px;padding:10px 24px;color:#000000;font-family:Georgia,serif;font-weight:bold;cursor:pointer;letter-spacing:1px">Close</button>';
+    // Close
+    html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:#222;border:1px solid #444;border-radius:4px;padding:8px 24px;color:#fff;font-family:Georgia,serif;font-size:12px;cursor:pointer">Close</button>';
     html += '</div></div>';
 
     // Remove any existing popup first
