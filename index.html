@@ -736,7 +736,7 @@
   <div onclick="adminTap()" style="position:absolute;top:14px;right:14px;width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:1px solid #333333;z-index:100;cursor:pointer"></div>
   <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
   <h1>The Dot Book</h1>
-  <div class="subtitle">Every dot is $1 Million &middot; Every page holds 3,000 dots &middot; Page 1 to Page 335 = $1 Trillion</div>
+  <div class="subtitle">Every dot is $1 Million &middot; Every page holds 1,000 dots &middot; Page 1 to Page 1,000 = $1 Trillion</div>
   <div id="elon-live-banner" style="margin-top:10px;font-size:13px;color:#aaaaaa;font-style:italic">SpaceX IPO · Nasdaq · 12 Jun 2026 · Ticker: SPCX · World First Trillionaire · Now <span id="elon-live-figure">~$790B</span></div>
 
   <!-- Reveal strip -->
@@ -839,14 +839,14 @@
   <div id="result-card">
     <span onclick="clearResult()" style="position:absolute;top:10px;right:12px;cursor:pointer;font-size:20px;color:#ffffff;line-height:1" title="Clear result">✕</span>
     <div class="page-number" id="result-page">—</div>
-    <div class="page-of" id="result-page-of">of 335</div>
+    <div class="page-of" id="result-page-of">of 1000</div>
     <div class="result-name" id="result-text"></div>
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
     <div class="progress-labels">
       <span>$1 Million &middot; p.1</span>
-      <span id="musk-slider-label">Musk · p.335 · History beyond →</span>
+      <span id="musk-slider-label">Musk · p.1000 · History beyond →</span>
     </div>
     <div class="result-note" id="result-note"></div>
     <div id="result-wiki"></div>
@@ -1037,7 +1037,7 @@
 <script>
   // Page badge colour scale — white text on all, distinct readable colours
   // p1-p33: soft blue  p34-p66: teal  p67-p100: green  p101-p167: amber
-  // p168-p200: orange  p201-p250: coral  p251-p335: red  p335+: gold (Musk)
+  // p168-p200: orange  p201-p250: coral  p251-p1000: red  p1000+: gold (Musk)
   function getPageColor(page) {
     return '#000000';
   }
@@ -1050,8 +1050,8 @@
 
   function getPage(wealthMillions) {
     if (wealthMillions <= 0) return 1;
-    return Math.max(1, Math.ceil((wealthMillions * 335) / 1000000));
-    // No upper cap — book extends beyond 335 for historical figures
+    return Math.max(1, Math.ceil(wealthMillions / 1000));
+    // No upper cap — book extends beyond 1000 for historical figures
   }
 
   function formatWealth(wm) {
@@ -1774,7 +1774,7 @@
 
     result.style.display = 'block';
     if (match && !match._subgroup) {
-      const pg = Math.ceil(match.wealth / 3000) || 1;
+      const pg = Math.ceil(match.wealth / 1000) || 1;
       const wikiBtn = match.url ? ' <a href="' + match.url + '" target="_blank" style="color:#f9e74a;font-size:11px">↗ Wiki</a>' : '';
       result.innerHTML = '<span style="color:#fff;font-weight:bold">' + escHtml(matchKey.replace(/\b\w/g, c => c.toUpperCase())) + '</span>'
         + ' &nbsp;·&nbsp; <span style="background:#fff;color:#000;padding:1px 5px;border-radius:2px;font-size:11px">p.' + pg + '</span>'
@@ -5817,7 +5817,7 @@
   async function calculateFromCeleb(name, match) {
     const wm = match.wealth;
     const page = getPage(wm);
-    const pct = Math.min(100, Math.max(0.3, ((page / 335) * 100).toFixed(1)));
+    const pct = Math.min(100, Math.max(0.3, ((page / 1000) * 100).toFixed(1)));
 
     const card = document.getElementById('result-card');
     card.style.display = 'block';
@@ -5829,9 +5829,9 @@
     document.getElementById('save-my-entry-btn').style.display = 'none';
 
     document.getElementById('result-page').textContent = page;
-    const pageOfText = page > 335 ? 'beyond page 335' : 'of 335';
+    const pageOfText = page > 1000 ? 'beyond page 1000' : 'of 1000';
     document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 335';
+    const beyondTag = page > 1000 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 1000';
     const hc = getHomeCurrency(match.note, name);
     const hcDisplay = hc ? formatInHomeCurrency(wm, hc) : formatWealth(wm);
     document.getElementById('result-text').innerHTML =
@@ -5843,11 +5843,11 @@
 
     let note = "";
     if (page === 1) note = "On page 1 — alongside hundreds of other celebrities!";
-    else if (page === 335) note = "Page 335 — Elon Musk Trillionaire target! SpaceX IPO 12 June 2026";
-    else if (page > 335 && page <= 460) note = "★ Beyond Elon Musk Trillionaire page!";
+    else if (page === 1000) note = "Page 1000 — Trillionaire target! SpaceX IPO 12 June 2026";
+    else if (page > 1000 && page <= 1500) note = "★ Beyond the Trillionaire page 1000!";
     else if (page > 460 && page <= 800) note = "★★ In the territory of emperors and ancient kings!";
     else if (page > 800) note = "★★★ Beyond the wealth of recorded human history!";
-    else note = (335 - page) + " pages of dots to go before reaching the Trillionaire finish line.";
+    else note = (1000 - page) + " pages of dots to go before reaching the Trillionaire finish line.";
     document.getElementById('result-note').textContent = note;
 
     // Add Wikipedia link if available
@@ -6009,7 +6009,7 @@
     }
 
     const page = getPage(wm);
-    const pct  = Math.min(100, Math.max(0.3, ((page / 335) * 100).toFixed(1)));
+    const pct  = Math.min(100, Math.max(0.3, ((page / 1000) * 100).toFixed(1)));
 
     // Format local currency label
     const symbols = {
@@ -6039,9 +6039,9 @@
     document.getElementById('save-my-entry-btn').style.display = 'block';
 
     document.getElementById('result-page').textContent = page;
-    const pageOfText = page > 335 ? 'beyond page 335' : 'of 335';
+    const pageOfText = page > 1000 ? 'beyond page 1000' : 'of 1000';
     document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 335 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 335';
+    const beyondTag = page > 1000 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 1000';
     const hcDisplay = (() => { const hc = getHomeCurrency(match.note, name); return hc ? formatInHomeCurrency(match.wealth, hc) : formatWealth(match.wealth); })();
     document.getElementById('result-text').innerHTML =
       '<strong>' + escHtml(name) + '</strong> appears on page ' + page
@@ -6051,11 +6051,11 @@
     if (page === 1 && wm < 1) note = "Your wealth is below $1 million — you are at the very start of page 1!";
     else if (page === 1) note = "You share page 1 with the book starting point — alongside several billionaires!";
     else if (page === 1) note = 'You share page 1 with the book\'s starting point — alongside several billionaires!';
-    else if (page === 335) note = "You have reached page 335 — Elon Musk Trillionaire finish line! SpaceX IPO 12 June 2026 Nasdaq SPCX";
-    else if (page > 335 && page <= 460) note = "★ You are beyond Elon Musk Trillionaire page! Into the realm of history greatest fortunes.";
+    else if (page === 1000) note = "You have reached page 1000 — the Trillionaire finish line! SpaceX IPO 12 June 2026 Nasdaq SPCX";
+    else if (page > 1000 && page <= 1500) note = "★ You are beyond page 1000 — into the realm of history greatest fortunes!";
     else if (page > 460 && page <= 800) note = '★★ You are in the territory of emperors and ancient kings — wealth beyond the modern imagination.';
     else if (page > 800) note = '★★★ You are beyond the wealth of recorded human history. Even Augustus Caesar bows to you.';
-    else note = (335 - page) + " pages of dots still to go before reaching the Trillionaire finish line.";
+    else note = (1000 - page) + " pages of dots still to go before reaching the Trillionaire finish line.";
     document.getElementById('result-note').textContent = note;
 
     // Store share data
@@ -6078,7 +6078,7 @@
     const name = card.dataset.name;
     const page = card.dataset.page;
     const wealth = card.dataset.wealth;
-    const text = `I found my place in The Dot Book 📖\n\n${name} (${wealth}) is on page ${page}${page > 335 ? ' — BEYOND Elon Musk!' : ' of 335'}.\n\nElon Musk becomes the worlds first Trillionaire on 12 June 2026 (SpaceX IPO · Nasdaq · SPCX)\n\nPage 1 = $1 Million · Page 335 = $1 Trillion\nOne full stop per million dollars.\n\nWhere are you in the book? https://thedotbook.github.io/thedotbook/\n\n⚠ For illustration only · Not financial advice · DYOR`;
+    const text = `I found my place in The Dot Book 📖\n\n${name} (${wealth}) is on page ${page}${page > 1000 ? ' — BEYOND Trillionusk!' : ' of 335'}.\n\nElon Musk becomes the worlds first Trillionaire on 12 June 2026 (SpaceX IPO · Nasdaq · SPCX)\n\nPage 1 = $1 Million · Page 1000 = $1 Trillion\nOne full stop per million dollars.\n\nWhere are you in the book? https://thedotbook.github.io/thedotbook/\n\n⚠ For illustration only · Not financial advice · DYOR`;
 
     navigator.clipboard.writeText(text).then(() => {
       showToast('Copied to clipboard!');
