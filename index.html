@@ -1861,7 +1861,7 @@
     if (n.startsWith('billionaire ·')) return 'Global Billionaires';
     if (n.startsWith('artist ·') || n.includes('· old master') || n.includes('· impressionist') || n.includes('· art market') || n.includes('· pop art') || n.includes('· street art') || n.includes('· modern ·') || n.includes('· contemporary ·')) return 'Artists';
     if (n.includes('infamous ·') || n.includes('· infamous') || n.includes('criminal ·') || n.includes('· criminal') || n.includes('gang ·') || n.includes('cartel ·') || n.includes('fraud ·')) return 'Infamous';
-    if (n.startsWith('science ·') || n.includes('· physicist') || n.includes('· inventor ·') || n.includes('· mathematician') || n.includes('· chemist ·') || n.includes('· naturalist') || n.includes('· biologist')) return 'Scientists';
+    if (n.startsWith('science ·') || n.includes('· physicist') || n.includes('· inventor ·') || n.includes('· mathematician') || n.includes('· chemist ·') || n.includes('· naturalist') || n.includes('· biologist')) return n.includes('historical') ? 'Historical' : 'Scientists';
     if (n.includes('science') || n.includes('pharma') || n.includes('space ·') || n.includes('· space') || n.includes('biotech') || n.includes('climate ·') || n.includes('quantum') || n.includes('· ai ·') || n.includes('scientific')) return 'Science & Innovation';
     if (n.includes('institution') || n.includes('central bank') || n.includes('federal reserve') ||
         n.includes('world bank') || (n.includes('imf') && !n.includes('nation')) || n.includes('fort knox') ||
@@ -4097,6 +4097,7 @@
     // ── UK RICH LIST — TOP FAMILIES ─────────────────────
     '_sub_ukrichlist':          { _subgroup: 'Global Billionaires — Beyond The Top 20' },
     'gordon getty':        { wealth: 8000,   note: 'Business · Global Billionaires · USA · Getty Oil heir · $8B · Classical composer · PlumpJack winery · Son of J Paul Getty', url: 'https://en.wikipedia.org/wiki/Gordon_Getty' },
+    'gopichand hinduja':    { wealth: 48000,   note: 'Business · Global Billionaires · UK · India · Hinduja Group · $48B · Diversified conglomerate · Banking automotive energy', url: 'https://en.wikipedia.org/wiki/Gopichand_Hinduja' },
     'phil knight':              { wealth: 52000,  note: 'Billionaire · USA · Phil Knight · $52B · Nike co-founder 1964 · Just Do It · Started selling shoes from car boot · Oregon track coach · Shoe Dog memoir', url: 'https://en.wikipedia.org/wiki/Phil_Knight' },
     'dieter schwarz':           { wealth: 45000,  note: 'Billionaire · Germany · Dieter Schwarz · $45B · Lidl and Kaufland supermarkets · Never gives interviews · Most secretive billionaire in world · Rarely photographed', url: 'https://en.wikipedia.org/wiki/Dieter_Schwarz' },
     'jacqueline mars':          { wealth: 37000,  note: 'Billionaire · USA · Jacqueline Mars · $37B · Mars candy empire · M&Ms Snickers Twix Pedigree · Grandfather Frank Mars invented Milky Way · Family reclusive · Never listed company', url: 'https://en.wikipedia.org/wiki/Jacqueline_Mars' },
@@ -5544,7 +5545,6 @@
     'genghis khan':        { wealth: 100000, note: 'Historical · Mongol Empire', url: 'https://en.wikipedia.org/wiki/Genghis_Khan' },
     'kublai khan':         { wealth: 100000, note: 'Historical · Mongol Empire', url: 'https://en.wikipedia.org/wiki/Kublai_Khan' },
     'nicholas romanov':    { wealth: 348000, note: 'Historical · Russian Empire', url: 'https://en.wikipedia.org/wiki/Nicholas_Romanov' },
-    'napoleon':            { wealth: 600000, note: 'Historical · Military · France · Inflation-adjusted estimate', url: 'https://en.wikipedia.org/wiki/Napoleon' },
     'julius caesar':       { wealth: 50000,  note: 'Historical · Rome · 100-44 BC · Dictator perpetuo', url: 'https://en.wikipedia.org/wiki/Julius_Caesar' },
     'queen elizabeth i':   { wealth: 30000,  note: 'Historical · Queen Elizabeth I · Tudor · Virgin Queen · England', url: 'https://en.wikipedia.org/wiki/Queen_Elizabeth_I' },
     'akbar the great':     { wealth: 21000,  note: 'Historical · Mughal Empire', url: 'https://en.wikipedia.org/wiki/Akbar_The_Great' },
@@ -5575,9 +5575,7 @@
     'sam walton':          { wealth: 100000, note: 'Historical · Walmart Founder', url: 'https://en.wikipedia.org/wiki/Sam_Walton' },
     'rothschild family':   { wealth: 350000, note: 'Historical · Banking · Europe · Founded by Mayer Amschel Rothschild Frankfurt 1760 · Sons set up banks in London Paris Vienna Naples · Financed Napoleonic Wars · Wellington campaign · Built railway network · Most powerful banking dynasty in history', url: 'https://en.wikipedia.org/wiki/Rothschild_family' },
     'henry ford':          { wealth: 200000,  note: 'Historical · Ford Motors · USA · Inflation adjusted', url: 'https://en.wikipedia.org/wiki/Henry_Ford' },
-    'henry ford historical':  { wealth: 200000, note: 'Historical · Industrial · USA · $200B inflation adjusted · Ford Motor Company 1903 · Model T · Assembly line · Paid workers $5/day · Changed America', url: 'https://en.wikipedia.org/wiki/Henry_Ford' },
     'cornelius vanderbilt':  { wealth: 185000, note: 'Historical · Industrial · USA · $185B inflation adjusted · Railroads · Steamships · Richest American of 19th century · Vanderbilt University', url: 'https://en.wikipedia.org/wiki/Cornelius_Vanderbilt' },
-    'andrew carnegie historical': { wealth: 150000, note: 'Historical · Industrial · Scotland/USA · $150B inflation adjusted · Carnegie Steel · Sold to JP Morgan 1901 · Gave away 90% of wealth · Carnegie Hall · 2500 libraries', url: 'https://en.wikipedia.org/wiki/Andrew_Carnegie' },
     'jp morgan':           { wealth: 41000,   note: 'Historical · Banking · USA · $41B inflation adjusted · Founded JPMorgan Chase · Saved US economy twice · Financed US Steel Carnegie buyout $480M 1901 · Father of Wall Street', url: 'https://en.wikipedia.org/wiki/J._P._Morgan' },
     'mark getty':           { wealth: 500,    note: 'Business · Finance · USA/UK · Getty Images co-founder · KBE', url: 'https://en.wikipedia.org/wiki/Mark_Getty' },
     'getty family':         { wealth: 8000,   note: 'Business · USA · Oil dynasty · Getty Oil · Getty Images', url: 'https://en.wikipedia.org/wiki/Getty_Family' },
@@ -5594,8 +5592,8 @@
 
     // Deceased Celebrities & Estates
     '_sub_hist_entertainment': { _subgroup: 'Deceased Celebrities & Estates' },
-    'margaret thatcher':   { wealth: 10,     note: 'Politics · UK · Historical', url: 'https://en.wikipedia.org/wiki/Margaret_Thatcher' },
-    'alexei navalny':      { wealth: 1,      note: 'Politics · Russia · Historical · Opposition leader · Died 2024', url: 'https://en.wikipedia.org/wiki/Alexei_Navalny' },
+    'margaret thatcher':   { wealth: 10,     note: 'Historical · Politics · UK · First female UK Prime Minister · 1979-1990 · Iron Lady · Died 2013', url: 'https://en.wikipedia.org/wiki/Margaret_Thatcher' },
+    'alexei navalny':      { wealth: 1,      note: 'Historical · Politics · Russia · Opposition leader · Died Feb 2024 prison · Anti-corruption campaigner · Opposition leader · Died 2024', url: 'https://en.wikipedia.org/wiki/Alexei_Navalny' },
     'grace kelly':             { wealth: 10,     note: 'Royalty · Monaco · Historical · Film', url: 'https://en.wikipedia.org/wiki/Grace_Kelly' },
     'florence griffith joyner':{ wealth: 1,  note: 'Sport · Athletics · USA · Historical · Flo-Jo', url: 'https://en.wikipedia.org/wiki/Florence_Griffith_Joyner' },
     'kevin keegan':          { wealth: 40,     note: 'Sport · Football · UK · Historical · England captain · Twice European Player of the Year 1978 1979 · Liverpool Hamburg · England manager · Died 2025 · Legendary character · The Mighty Mouse', url: 'https://en.wikipedia.org/wiki/Kevin_Keegan' },
@@ -5616,7 +5614,6 @@
     'kenny rogers':            { wealth: 250,    note: 'Music · Country Music · USA · Historical', url: 'https://en.wikipedia.org/wiki/Kenny_Rogers' },
     'jackie collins':          { wealth: 160,    note: 'Author · UK · Historical · Romance · Estate', url: 'https://en.wikipedia.org/wiki/Jackie_Collins' },
     'vivienne westwood':       { wealth: 40,     note: 'Fashion · UK · Historical · Punk · Died 2022 · Estate', url: 'https://en.wikipedia.org/wiki/Vivienne_Westwood' },
-    'gopichand hinduja':        { wealth: 48000,  note: 'Business · UK · India · Historical · Hinduja patriarch · Died Nov 2025', url: 'https://en.wikipedia.org/wiki/Gopichand_Hinduja' },
     'michael parkinson':   { wealth: 20,     note: 'TV · Media · UK · Historical · Parkinson · Died 2023', url: 'https://en.wikipedia.org/wiki/Michael_Parkinson' },
     'roger moore':         { wealth: 110,    note: 'Film · UK · Historical · James Bond · Died 2017 · Estate', url: 'https://en.wikipedia.org/wiki/Roger_Moore' },
     'bob monkhouse':       { wealth: 8,      note: 'TV · Comedy · UK · Historical · Died 2003', url: 'https://en.wikipedia.org/wiki/Bob_Monkhouse' },
@@ -5667,18 +5664,6 @@
 
     '_sub_hist_musiclegends': { _subgroup: 'Music Legends — Estate Values' },
     // ── Music Legend Search Aliases ─────────────────────
-    'elvis presley':       { wealth: 500,    note: 'Historical · Music · Estate · USA · King of Rock and Roll · Graceland · $17M/year earner · 1B records sold · Died 1977 aged 42', url: 'https://en.wikipedia.org/wiki/Elvis_Presley' },
-    'michael jackson':     { wealth: 2100,   note: 'Historical · Music · Estate · USA · King of Pop · Thriller · $105M/year earner · MJ The Musical · Died 2009 aged 50', url: 'https://en.wikipedia.org/wiki/Michael_Jackson' },
-    'john lennon':         { wealth: 800,    note: 'Historical · Music · Estate · UK · Beatles · Imagine · Working Class Hero · $12M/year earner · Died 1980 aged 40', url: 'https://en.wikipedia.org/wiki/John_Lennon' },
-    'george harrison':     { wealth: 400,    note: 'Historical · Music · Estate · UK · Beatles · Something · Here Comes the Sun · HandMade Films · Died 2001 aged 58', url: 'https://en.wikipedia.org/wiki/George_Harrison' },
-    'frank sinatra':       { wealth: 600,    note: 'Historical · Music · Estate · USA · My Way · New York New York · Ol Blue Eyes · Rat Pack · 9 Grammys · Died 1998 aged 82', url: 'https://en.wikipedia.org/wiki/Frank_Sinatra' },
-    'jimi hendrix':        { wealth: 175,    note: 'Historical · Music · Estate · USA · Purple Haze · All Along the Watchtower · Greatest guitarist ever · Died 1970 aged 27', url: 'https://en.wikipedia.org/wiki/Jimi_Hendrix' },
-    'prince':              { wealth: 156,    note: 'Historical · Music · Estate · USA · Purple Rain · When Doves Cry · Paisley Park · Vault of unreleased songs · Died 2016 aged 57', url: 'https://en.wikipedia.org/wiki/Prince_(musician)' },
-    'david bowie':         { wealth: 230,    note: 'Historical · Music · Estate · UK · Ziggy Stardust · Heroes · Lets Dance · Bowie Bonds $55M · Died 2016 aged 69', url: 'https://en.wikipedia.org/wiki/David_Bowie' },
-    'bob marley':          { wealth: 150,    note: 'Historical · Music · Estate · Jamaica · Reggae · No Woman No Cry · One Love · Redemption Song · Died 1981 aged 36', url: 'https://en.wikipedia.org/wiki/Bob_Marley' },
-    'freddie mercury':     { wealth: 100,    note: 'Historical · Music · Estate · UK · Queen · Bohemian Rhapsody · We Are the Champions · Greatest live performer ever · Died 1991 aged 45', url: 'https://en.wikipedia.org/wiki/Freddie_Mercury' },
-    'amy winehouse':       { wealth: 6,      note: 'Historical · Music · Estate · UK · Back to Black · Rehab · 5 Grammys · Amy Foundation · Died 2011 aged 27 · 27 Club', url: 'https://en.wikipedia.org/wiki/Amy_Winehouse' },
-    'whitney houston':     { wealth: 20,     note: 'Historical · Music · Estate · USA · I Will Always Love You · Greatest Love of All · 200M records · Died 2012 aged 48', url: 'https://en.wikipedia.org/wiki/Whitney_Houston' },
     'michael jackson estate': { wealth: 2100,  note: 'Historical · Music · Estate · USA · King of Pop · $105M/year earner · MJ The Musical Broadway · Las Vegas show · Sony catalog deal 2024 · Thriller best selling album 70M copies · Died 2009 aged 50', url: 'https://en.wikipedia.org/wiki/Michael_Jackson' },
     'frank sinatra estate':  { wealth: 600,    note: 'Historical · Music · Estate · USA · My Way · New York New York · Ol Blue Eyes · Rat Pack · Chairman of the Board · 9 Grammys · Died 1998 aged 82', url: 'https://en.wikipedia.org/wiki/Frank_Sinatra' },
     'elvis presley estate':  { wealth: 500,    note: 'Historical · Music · Estate · USA · King of Rock and Roll · Graceland 600K visitors/year · $17M/year earner · 1B records sold · 31 films · Died 1977 aged 42', url: 'https://en.wikipedia.org/wiki/Elvis_Presley' },
