@@ -2047,17 +2047,11 @@
       blocks.push(block);
       // Sort people within each block by wealth
       for (const b of blocks) b.people.sort((a,b) => sortAlpha ? a.name.localeCompare(b.name) : b.wealth - a.wealth);
-      // Sort blocks by SUBGROUPS defined order if available, otherwise alphabetically
-      const subOrder = SUBGROUPS[cat] || [];
+      // Sort blocks alphabetically by subgroup name
       blocks.sort((a, b) => {
         if (!a.sub && !b.sub) return 0;
         if (!a.sub) return 1;
         if (!b.sub) return -1;
-        const ai = subOrder.indexOf(a.sub.trim());
-        const bi = subOrder.indexOf(b.sub.trim());
-        if (ai >= 0 && bi >= 0) return ai - bi;
-        if (ai >= 0) return -1;
-        if (bi >= 0) return 1;
         return a.sub.trim().localeCompare(b.sub.trim());
       });
       // Flatten back
