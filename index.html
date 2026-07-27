@@ -4502,6 +4502,13 @@
     'kourtney kardashian': { wealth: 65,     note: 'Film & TV · Reality TV · USA · Keeping Up with the Kardashians · Poosh lifestyle brand · Travis Barker wife · Eldest Kardashian', url: 'https://en.wikipedia.org/wiki/Kourtney_Kardashian' },
     // ── 2026 WORLD CUP STARS — BY NATION ──────────────
     '_sub_worldcup2026': { _subgroup: 'Football — World Cup Players 2026' },
+    'cristiano ronaldo worldcup': { wealth: 1300, note: 'Football · Portugal · 6th World Cup, a record · Scored 2 goals in group stage · Eliminated by Spain', url: 'https://en.wikipedia.org/wiki/Cristiano_Ronaldo' },
+    'lionel messi worldcup':      { wealth: 1300, note: 'Football · Argentina · 6th World Cup, a record · Golden Boot leader with 6 goals · Beat Egypt in Round of 16 · Reached semi-final', url: 'https://en.wikipedia.org/wiki/Lionel_Messi' },
+    'kylian mbappe worldcup':     { wealth: 180,  note: 'Football · France · Captain · 3rd consecutive World Cup · France all-time top scorer', url: 'https://en.wikipedia.org/wiki/Kylian_Mbappe' },
+    'erling haaland worldcup':    { wealth: 90,   note: 'Football · Norway · Norway first World Cup finals since before he was born · Scored brace vs Brazil', url: 'https://en.wikipedia.org/wiki/Erling_Haaland' },
+    'neymar worldcup':            { wealth: 200,  note: 'Football · Brazil · Playing at his 4th World Cup', url: 'https://en.wikipedia.org/wiki/Neymar' },
+    'harry kane worldcup':        { wealth: 140,  note: 'Football · England · Captain · Scored 3 goals in group stage · Reached semi-final', url: 'https://en.wikipedia.org/wiki/Harry_Kane' },
+    'mohamed salah worldcup':     { wealth: 140,  note: 'Football · Egypt · Captain · Eliminated by Argentina in Round of 16', url: 'https://en.wikipedia.org/wiki/Mohamed_Salah' },
     // Only confirmed 2026 World Cup squad players with notable wealth
     // Italy did NOT qualify · Russia suspended · All 48 teams listed below
 
@@ -4965,7 +4972,7 @@
     // ── Manchester City ──────────────────────────────────
     '_sub_pl_mancity':       { _subgroup: 'Football — Manchester City FC' },
     'enzo maresca mancity club': { wealth: 15,     note: 'Football · MANAGER · Italy · ENZO MARESCA · Manchester City from June 2026 · Replaced Guardiola · 3 year deal · Former Chelsea · Pep Guardiola disciple', url: 'https://en.wikipedia.org/wiki/Enzo_Maresca' },
-    'erling haaland mancity': { wealth: 80,     note: 'Football · Norway · Manchester City · £375,000/week · Top scorer PL 2025-26 27 goals · World Cup 2026 · Machine', url: 'https://en.wikipedia.org/wiki/Erling_Haaland' },
+    'erling haaland mancity': { wealth: 90,     note: 'Football · Norway · Manchester City · £375,000/week · Top scorer PL 2025-26 27 goals · World Cup 2026 · Machine', url: 'https://en.wikipedia.org/wiki/Erling_Haaland' },
     'kevin de bruyne mancity': { wealth: 80,    note: 'Football · Belgium · Manchester City · £400,000/week · Greatest PL midfielder ever · World Cup 2026 · From Chelsea', url: 'https://en.wikipedia.org/wiki/Kevin_De_Bruyne' },
     'phil foden mancity':    { wealth: 60,      note: 'Football · England · Manchester City · £300,000/week · PFA Player of Year 2024 · World Cup 2026 · Manchester born', url: 'https://en.wikipedia.org/wiki/Phil_Foden' },
     'bernardo silva mancity': { wealth: 40,     note: 'Football · Portugal · Manchester City · £350,000/week · World Cup 2026 · Champions League · Technical genius', url: 'https://en.wikipedia.org/wiki/Bernardo_Silva' },
@@ -6289,8 +6296,16 @@
         if (item.type === 'sub') {
           thisSid = subIdx++;
           const isIndented = item.label.startsWith('  ');
+          const labelTrimmed = item.label.trim();
+          const yellowSections = ['Football — Ex-Footballers & Personalities', 'Football — Twenty Wealthiest Players', 'Football — UEFA Champions League 2026-27', 'Football — World Cup Players 2026'];
+          let subHighlightStyle = '';
+          if (yellowSections.indexOf(labelTrimmed) !== -1) {
+            subHighlightStyle = 'background:#f5e642;color:#111111;';
+          } else if (labelTrimmed.indexOf('Women') !== -1) {
+            subHighlightStyle = 'background:#f5a9d0;color:#111111;';
+          }
           html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
-                + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(item.label.trim()) + ' —</td></tr>';
+                + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
         } else if (thisSid >= 0) {
           html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
                 + renderPersonRow(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
