@@ -41,12 +41,6 @@
       "url": "https://en.wikipedia.org/wiki/Augustus",
       "subgroup": "Royals & Emperors"
     },
-    "jamie moore": {
-      "wealth": 3,
-      "note": "Sport ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ· Horse Racing",
-      "url": "https://en.wikipedia.org/wiki/Jamie_Moore",
-      "subgroup": "Horse Racing"
-    },
     "ray manzarek": {
       "wealth": 1,
       "note": "Music ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ· Rock",
@@ -107,7 +101,8 @@
     "lord archer",
     "thomas muller",
     "ishowspeed",
-    "dolly parton"
+    "dolly parton",
+    "jamie moore"
   ],
   "edits": {
     "roman abramovich": {
