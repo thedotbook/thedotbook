@@ -893,7 +893,7 @@
     <div class="table-header">
       <div class="table-header-label">The Dot Book</div>
       <div style="display:flex;gap:12px;align-items:center">
-        <button id="sort-toggle" onclick="toggleSort()" style="background:#333333;color:#ffffff;border:1px solid #555555;padding:5px 12px;border-radius:4px;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">A-Z</button>
+        <button id="sort-toggle" onclick="toggleSort()" style="background:#333333;color:#ffffff;border:1px solid #555555;padding:5px 12px;border-radius:4px;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">$ Wealth</button>
         <div style="font-size:10px;color:#888888;letter-spacing:1px">Source: Forbes public data · Illustrative only</div>
         <div id="entry-count"></div>
       </div>
@@ -5973,7 +5973,7 @@
     sortAlpha = !sortAlpha;
     const btn = document.getElementById('sort-toggle');
     if (btn) {
-      btn.textContent = sortAlpha ? '$ Wealth' : 'A-Z';
+      btn.textContent = sortAlpha ? 'A-Z' : '$ Wealth';
       btn.style.background = sortAlpha ? '#ffffff' : '#333333';
       btn.style.color = sortAlpha ? '#000000' : '#ffffff';
     }
