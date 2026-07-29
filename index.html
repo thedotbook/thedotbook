@@ -767,7 +767,8 @@
       <div style="font-size:13px;color:#cccccc;line-height:1.8;margin-bottom:14px">
         All wealth figures are <strong style="color:#ffffff">estimates based on public information</strong> (Forbes, Sunday Times Rich List, press reports) at the time of publication. They have <strong style="color:#ffffff">not been independently verified</strong> and are provided purely for <strong style="color:#ffffff">entertainment and perspective</strong>.<br><br>
         These figures are <strong style="color:#ffffff">manually updated periodically</strong> and do <strong style="color:#ffffff">not update automatically</strong>. Actual wealth may differ significantly — particularly for those whose wealth is tied to share prices, which can change daily.<br><br>
-        <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and are not intended to be precise.
+        <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and are not intended to be precise.<br><br>
+        Some entries describe individuals, families, or organisations connected to <strong style="color:#ffffff">legal proceedings, public scandals, or historical events</strong>. These descriptions reflect <strong style="color:#ffffff">publicly reported facts and public record</strong> at the time of publication, presented for educational and historical context. Inclusion in this book does not imply any view about guilt or character beyond what is already a matter of public record.
       </div>
       <div style="border-top:1px solid #555555;padding-top:14px;font-size:12px;color:#aaaaaa;line-height:1.7">
         Not financial, investment, or legal advice.<br>
@@ -778,7 +779,7 @@
   </div>
   <div id="countdown-banner" style="margin-top:16px;background:rgba(255,255,255,0.08);border:1px solid #333333;border-radius:6px;padding:12px 20px;display:inline-block">
     <span id="musk-banner-label" style="font-size:13px;letter-spacing:2px;color:#ffffff;text-transform:uppercase;font-weight:bold;">Elon Musk · Live </span>
-    <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#ffffff;letter-spacing:1px">calculating...</span>
+    <span id="countdown-timer" style="font-size:18px;font-weight:bold;color:#ffffff;letter-spacing:1px">~$790B</span>
   </div>
 </header>
 
@@ -913,6 +914,7 @@
     The Dot Book<br>
     Wealth figures sourced from Forbes public data for illustrative purposes only.<br>
     Not financial advice. Figures fluctuate constantly. DYOR.<br>
+    Content on scandals or controversies reflects public record at time of publication.<br>
     <span id="admin-trigger" onclick="adminTap()" style="cursor:default;user-select:none;color:inherit">The Dot Book concept © Kevin Cook 2026</span>
   </footer>
 
@@ -2066,7 +2068,7 @@
     'lance armstrong infamous': { wealth: 50,   note: 'Infamous · Sport · USA · 7x Tour de France titles · All stripped · Doping scandal · Banned for life · Lost Nike $75M deal · Oprah confession', url: 'https://en.wikipedia.org/wiki/Lance_Armstrong' },
     'sackler family':        { wealth: 11000,   note: 'Infamous · Pharma · USA · Purdue Pharma owners · OxyContin fuelled opioid crisis · Settled for billions without personal criminal conviction', url: 'https://en.wikipedia.org/wiki/Sackler_family' },
     'charles koch':          { wealth: 67000,   note: 'Infamous · Business · USA · Koch Industries · Controversial political spending influence · Legal but widely criticised business empire', url: 'https://en.wikipedia.org/wiki/Charles_Koch' },
-    'les wexner':            { wealth: 5000,    note: 'Infamous · Business · USA · Victoria\'s Secret founder · Financial ties to Jeffrey Epstein scrutinised · Died 2024', url: 'https://en.wikipedia.org/wiki/Les_Wexner' },
+    'les wexner':            { wealth: 5000,    note: 'Infamous · Business · USA · Victoria\'s Secret founder · Named in unsealed Epstein files as a financial associate · Not criminally charged · Testified to Congress Feb 2026 denying wrongdoing', url: 'https://en.wikipedia.org/wiki/Les_Wexner' },
     'martin winterkorn':     { wealth: 10,      note: 'Infamous · Automotive · Germany · Former VW CEO · Dieselgate emissions cheating scandal · Fined and charged', url: 'https://en.wikipedia.org/wiki/Martin_Winterkorn' },
     'bernie ecclestone':     { wealth: 3000,    note: 'Infamous · Sport · UK · Built Formula 1 into global business · Settled UK tax fraud case for £652M in 2023', url: 'https://en.wikipedia.org/wiki/Bernie_Ecclestone' },
     'silvio berlusconi':     { wealth: 7000,    note: 'Infamous · Media · Italy · Media mogul and 3x Italian Prime Minister · Numerous scandals and trials · Died 2023', url: 'https://en.wikipedia.org/wiki/Silvio_Berlusconi' },
@@ -7928,6 +7930,8 @@
         // Update top banner live figure
         const liveFig = document.getElementById('elon-live-figure');
         if (liveFig) liveFig.textContent = display;
+        const countdownFig = document.getElementById('countdown-timer');
+        if (countdownFig) countdownFig.textContent = display;
       }
     } catch(e) {
       console.log('Live wealth update unavailable — using static figure');
