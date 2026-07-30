@@ -5518,7 +5518,7 @@
   }
 
   function formatWealth(wm) {
-    if (wm >= 1000000) return '$' + (wm / 1000000).toFixed(0) + 'T';
+    if (wm >= 1000000) return '$' + (wm / 1000000).toFixed(2) + 'T';
     if (wm >= 1000)    return '$' + (wm / 1000).toFixed(1) + 'B';
     return '$' + wm.toLocaleString() + 'M';
   }
@@ -5992,7 +5992,7 @@
     html += '<div style="font-size:20px;color:#ffffff;font-weight:bold;margin-bottom:8px">' + escHtml(name) + '</div>';
     html += '<div style="font-size:28px;font-weight:bold;color:#ffffff;margin-bottom:4px">' + usd + '</div>';
     if (local) html += '<div style="font-size:14px;color:#aaa;margin-bottom:4px">' + local + '</div>';
-    html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 1,000</div>';
+    html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 334</div>';
     if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">Wikipedia &#8599;</a><br>';
     html += '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:12px">';
     html += '<table style="width:100%;border-collapse:collapse"><tr>';
