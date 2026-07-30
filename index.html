@@ -770,7 +770,9 @@
         These figures are <strong style="color:#ffffff">manually updated periodically</strong> and do <strong style="color:#ffffff">not update automatically</strong>. Actual wealth may differ significantly — particularly for those whose wealth is tied to share prices, which can change daily.<br><br>
         <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and are not intended to be precise.<br><br>
         Some entries describe individuals, families, or organisations connected to <strong style="color:#ffffff">legal proceedings, public scandals, or historical events</strong>. These descriptions reflect <strong style="color:#ffffff">publicly reported facts and public record</strong> at the time of publication, presented for educational and historical context. Inclusion in this book does not imply any view about guilt or character beyond what is already a matter of public record.<br><br>
-        The Dot Book is <strong style="color:#ffffff">free to use</strong> and run informally on a <strong style="color:#ffffff">not-for-profit basis</strong>. Any future support goes toward keeping it accurate and online.
+        The Dot Book is <strong style="color:#ffffff">free to use</strong> and run informally on a <strong style="color:#ffffff">not-for-profit basis</strong>. Any future support goes toward keeping it accurate and online.<br><br>
+        <strong style="color:#ffffff">Net Zero and climate transition costs</strong> vary enormously between sources and methodologies — credible institutions have produced estimates for the same country differing by a factor of ten or more. Figures here are best-available estimates for comparison and perspective, not precise forecasts.<br><br>
+        <strong style="color:#ffffff">Carbon Offset Share</strong> is a deliberately illustrative calculation, not a real allocation or financial mechanism. It simply divides the total value of the world's compliance carbon markets in proportion to each country's Net Zero investment need, to give a sense of scale — this is not how carbon markets actually distribute funds.
       </div>
       <div style="border-top:1px solid #555555;padding-top:14px;font-size:12px;color:#aaaaaa;line-height:1.7">
         Not financial, investment, or legal advice.<br>
@@ -918,6 +920,7 @@
     Not financial advice. Figures fluctuate constantly. DYOR.<br>
     Content on scandals or controversies reflects public record at time of publication.<br>
     Free to use, run informally on a not-for-profit basis. Any future support goes toward keeping it accurate and online.<br>
+    Net Zero and climate transition figures are best-available estimates — sources vary widely.<br>
     <span id="admin-trigger" onclick="adminTap()" style="cursor:default;user-select:none;color:inherit">The Dot Book concept © Kevin Cook 2026</span>
   </footer>
 
@@ -2163,6 +2166,50 @@
     'biontech':              { wealth: 25000,   note: 'Science · Biotech · Germany · BioNTech · $25B market cap · Co-developed the Pfizer COVID vaccine', url: 'https://en.wikipedia.org/wiki/BioNTech' },
 
     // ── Climate & Energy ─────────────────────────────────
+    '_sub_netzero':          { _subgroup: 'Net Zero — Annual Investment Required' },
+    'china net zero':        { wealth: 1177000, note: 'Nation · Net Zero · China · $1.177 Trillion needed per year · Wood Mackenzie Energy Transition Outlook Oct 2025 · Up from $913B current spend', url: 'https://en.wikipedia.org/wiki/Climate_change_in_China' },
+    'usa net zero':          { wealth: 682000,  note: 'Nation · Net Zero · USA · $682 Billion needed per year · Wood Mackenzie Energy Transition Outlook Oct 2025 · Up from $388B current spend, steepest increase of any major economy', url: 'https://en.wikipedia.org/wiki/Climate_change_in_the_United_States' },
+    'european union net zero': { wealth: 619000, note: 'Nation · Net Zero · Europe · $619 Billion needed per year · Wood Mackenzie Energy Transition Outlook Oct 2025 · Up from $455B current spend', url: 'https://en.wikipedia.org/wiki/European_Green_Deal' },
+    'india net zero':        { wealth: 200000,  note: 'Nation · Net Zero · India · $200B est. needed per year · Higher relative cost as share of GDP than wealthier nations', url: 'https://en.wikipedia.org/wiki/Climate_change_in_India' },
+    'japan net zero':        { wealth: 150000,  note: 'Nation · Net Zero · Japan · $150B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Japan' },
+    'uk net zero':           { wealth: 100000,  note: 'Nation · Net Zero · UK · $100B est. needed per year · Cost estimates vary hugely by source, from £108B to over £9 Trillion cumulative to 2050', url: 'https://en.wikipedia.org/wiki/Climate_Change_Committee' },
+    'germany net zero':      { wealth: 90000,   note: 'Nation · Net Zero · Germany · $90B est. needed per year · Largest single economy within the EU total', url: 'https://en.wikipedia.org/wiki/Energiewende' },
+    'south korea net zero':  { wealth: 80000,   note: 'Nation · Net Zero · South Korea · $80B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_South_Korea' },
+    'canada net zero':       { wealth: 70000,   note: 'Nation · Net Zero · Canada · $70B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Canada' },
+    'brazil net zero':       { wealth: 60000,   note: 'Nation · Net Zero · Brazil · $60B est. needed per year · Strong hydropower and wind resources', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Brazil' },
+    'france net zero':       { wealth: 60000,   note: 'Nation · Net Zero · France · $60B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_France' },
+    'australia net zero':    { wealth: 50000,   note: 'Nation · Net Zero · Australia · $50B est. needed per year · 53% of electricity still from coal', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Australia' },
+    'russia net zero':       { wealth: 50000,   note: 'Nation · Net Zero · Russia · $50B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Russia' },
+    'indonesia net zero':    { wealth: 40000,   note: 'Nation · Net Zero · Indonesia · $40B est. needed per year · 78% of electricity still from coal', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Indonesia' },
+    'saudi arabia net zero': { wealth: 40000,   note: 'Nation · Net Zero · Saudi Arabia · $40B est. needed per year · Transitioning world largest oil economy', url: 'https://en.wikipedia.org/wiki/Vision_2030_(Saudi_Arabia)' },
+    'mexico net zero':       { wealth: 35000,   note: 'Nation · Net Zero · Mexico · $35B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Mexico' },
+    'turkey net zero':       { wealth: 25000,   note: 'Nation · Net Zero · Turkey · $25B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Turkey' },
+    'south africa net zero': { wealth: 25000,   note: 'Nation · Net Zero · South Africa · $25B est. needed per year', url: 'https://en.wikipedia.org/wiki/Climate_change_in_South_Africa' },
+    'uae net zero':          { wealth: 20000,   note: 'Nation · Net Zero · UAE · $20B est. needed per year · Hosted COP28 climate summit', url: 'https://en.wikipedia.org/wiki/Climate_change_in_the_United_Arab_Emirates' },
+    'nigeria net zero':      { wealth: 15000,   note: 'Nation · Net Zero · Nigeria · $15B est. needed per year · Africa largest economy', url: 'https://en.wikipedia.org/wiki/Climate_change_in_Nigeria' },
+
+    '_sub_carbonoffset':     { _subgroup: 'Carbon Offset Share — An Illustrative Split' },
+    'china carbon offset':   { wealth: 279160,  note: 'Nation · Illustrative · China · Target 2060 · If the $851B global compliance carbon market were split by each country share of total Net Zero need, China would get $279B — 32.8% of the pool', url: 'https://en.wikipedia.org/wiki/Emissions_trading_scheme_(China)' },
+    'usa carbon offset':     { wealth: 161756,  note: 'Nation · Illustrative · USA · Target 2050 · Illustrative 19.0% share of the $851B global compliance carbon market pool, based on relative Net Zero need = $162B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'eu carbon offset':      { wealth: 146814,  note: 'Nation · Illustrative · European Union · Target 2050 · Illustrative 17.3% share of the $851B pool = $147B · EU ETS is the world largest and most established carbon market', url: 'https://en.wikipedia.org/wiki/European_Union_Emissions_Trading_System' },
+    'india carbon offset':   { wealth: 47436,   note: 'Nation · Illustrative · India · Target 2070 · Illustrative 5.6% share of the $851B pool = $47B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'japan carbon offset':   { wealth: 35577,   note: 'Nation · Illustrative · Japan · Target 2050 · Illustrative 4.2% share of the $851B pool = $36B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'uk carbon offset':      { wealth: 23718,   note: 'Nation · Illustrative · UK · Target 2050 · Illustrative 2.8% share of the $851B pool = $24B · UK ETS launched 2021 after leaving EU ETS', url: 'https://en.wikipedia.org/wiki/UK_Emissions_Trading_Scheme' },
+    'germany carbon offset': { wealth: 21346,   note: 'Nation · Illustrative · Germany · Target 2045 · Illustrative 2.5% share of the $851B pool = $21B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'south korea carbon offset': { wealth: 18974, note: 'Nation · Illustrative · South Korea · Target 2050 · Illustrative 2.2% share of the $851B pool = $19B · K-ETS third largest ETS in the world', url: 'https://en.wikipedia.org/wiki/Emissions_trading_scheme_(South_Korea)' },
+    'canada carbon offset':  { wealth: 16603,   note: 'Nation · Illustrative · Canada · Target 2050 · Illustrative 2.0% share of the $851B pool = $17B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'brazil carbon offset':  { wealth: 14231,   note: 'Nation · Illustrative · Brazil · Target 2050 · Illustrative 1.7% share of the $851B pool = $14B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'france carbon offset':  { wealth: 14231,   note: 'Nation · Illustrative · France · Target 2050 · Illustrative 1.7% share of the $851B pool = $14B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'australia carbon offset': { wealth: 11859, note: 'Nation · Illustrative · Australia · Target 2050 · Illustrative 1.4% share of the $851B pool = $12B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'russia carbon offset':  { wealth: 11859,   note: 'Nation · Illustrative · Russia · Target 2060 · Illustrative 1.4% share of the $851B pool = $12B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'indonesia carbon offset': { wealth: 9487,  note: 'Nation · Illustrative · Indonesia · Target 2060 · Illustrative 1.1% share of the $851B pool = $9B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'saudi arabia carbon offset': { wealth: 9487, note: 'Nation · Illustrative · Saudi Arabia · Target 2060 · Illustrative 1.1% share of the $851B pool = $9B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'mexico carbon offset':  { wealth: 8301,    note: 'Nation · Illustrative · Mexico · Target 2050 · Illustrative 1.0% share of the $851B pool = $8B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'turkey carbon offset':  { wealth: 5929,    note: 'Nation · Illustrative · Turkey · Target 2053 · Illustrative 0.7% share of the $851B pool = $6B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'south africa carbon offset': { wealth: 5929, note: 'Nation · Illustrative · South Africa · Target 2050 · Illustrative 0.7% share of the $851B pool = $6B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'uae carbon offset':     { wealth: 4744,    note: 'Nation · Illustrative · UAE · Target 2050 · Illustrative 0.6% share of the $851B pool = $5B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+    'nigeria carbon offset': { wealth: 3558,    note: 'Nation · Illustrative · Nigeria · Target 2060 · Illustrative 0.4% share of the $851B pool = $4B', url: 'https://en.wikipedia.org/wiki/Carbon_emission_trading' },
+
     '_sub_climate':          { _subgroup: 'Climate & Energy' },
     'global climate fund':   { wealth: 13000,   note: 'Science · Climate · Global · Green Climate Fund · $13B pledged · Paris Agreement', url: 'https://en.wikipedia.org/wiki/Green_Climate_Fund' },
     'tesla energy':          { wealth: 1000000, note: 'Science · Climate · USA · Tesla · $1T market cap · EVs · Solar · Powerwall · Elon Musk', url: 'https://en.wikipedia.org/wiki/Tesla,_Inc.' },
