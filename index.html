@@ -726,22 +726,41 @@
   function playCashRegister() {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const playBell = (freq, startTime, duration) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.001, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.25, startTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(startTime);
-        osc.stop(startTime + duration);
-      };
       const now = ctx.currentTime;
-      playBell(1500, now, 0.25);
-      playBell(1900, now + 0.12, 0.35);
+
+      // Mechanical "thunk" — the drawer/lever action before the bell
+      const thunkOsc = ctx.createOscillator();
+      const thunkGain = ctx.createGain();
+      thunkOsc.type = 'square';
+      thunkOsc.frequency.setValueAtTime(180, now);
+      thunkOsc.frequency.exponentialRampToValueAtTime(60, now + 0.08);
+      thunkGain.gain.setValueAtTime(0.15, now);
+      thunkGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+      thunkOsc.connect(thunkGain);
+      thunkGain.connect(ctx.destination);
+      thunkOsc.start(now);
+      thunkOsc.stop(now + 0.09);
+
+      // Metallic bell "ding" — layered, slightly detuned partials for a real bell-like timbre
+      const playBell = (freq, startTime, duration, volume) => {
+        const partials = [1, 2.4, 3.8]; // inharmonic ratios, like a real bell
+        const gains = [1, 0.35, 0.15];
+        partials.forEach((ratio, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq * ratio;
+          gain.gain.setValueAtTime(0.0001, startTime);
+          gain.gain.linearRampToValueAtTime(volume * gains[i], startTime + 0.008);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        });
+      };
+      playBell(1400, now + 0.09, 0.5, 0.22);
+      playBell(1750, now + 0.19, 0.6, 0.20);
     } catch (e) {
       // Browser blocked audio (no prior user interaction) — fail silently
     }
