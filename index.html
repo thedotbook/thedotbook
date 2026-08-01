@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Dot Book — From $1 Million to Trillionaire</title>
+  <title>The Dollar Book — From $1 Million to Trillionaire</title>
 
   <!-- PWA Meta Tags -->
-  <meta name="application-name" content="The Dot Book" />
-  <meta name="description" content="Every dot is $1 million. Where do the world's wealthiest people sit?" />
+  <meta name="application-name" content="The Dollar Book" />
+  <meta name="description" content="Every $ sign is $1 million. Where do the world's wealthiest people sit?" />
   <meta name="theme-color" content="#000000" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="The Dot Book" />
+  <meta name="apple-mobile-web-app-title" content="The Dollar Book" />
   <link rel="apple-touch-icon" href="icon-512.png" />
   <link rel="icon" type="image/png" href="icon-192.png" />
   <link rel="manifest" href="manifest.json" />
@@ -590,7 +590,7 @@
         <div style="position:absolute;left:0;top:0;width:10px;height:100%;background:#888888;border-radius:3px 0 0 3px"></div>
         <!-- Cover — same width as right page of open book -->
         <div style="position:absolute;left:10px;top:0;right:0;height:100%;background:#ffffff;border-radius:0 8px 8px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10%">
-          <div style="font-size:clamp(13px,2.2vw,30px);color:#000000;letter-spacing:5px;text-transform:uppercase;text-align:center;line-height:1.6">The<br>Dot<br>Book</div>
+          <div style="font-size:clamp(13px,2.2vw,30px);color:#000000;letter-spacing:5px;text-transform:uppercase;text-align:center;line-height:1.6">The<br>Dollar<br>Book</div>
           <div style="width:50%;height:1px;background:#cccccc;margin:8% auto"></div>
           <div style="font-size:clamp(7px,1.1vw,14px);color:#444444;letter-spacing:3px;text-transform:uppercase;text-align:center">A Book of Perspective</div>
         </div>
@@ -600,7 +600,7 @@
     <!-- ══ STEP 2: OPEN BOOK (hidden until JS shows it) ══ -->
     <div id="s-open" style="position:absolute;inset:0;z-index:40;opacity:0;transition:opacity 0.6s ease;perspective:1500px">
 
-      <!-- Left side background with dots -->
+      <!-- Left side background texture -->
       <div style="position:absolute;left:0;top:0;width:calc(50% - 5px);height:100%;background:#e8e8e8;border-radius:8px 0 0 8px;overflow:hidden">
         <div style="position:absolute;inset:0;background-image:radial-gradient(circle,#999999 1px,transparent 1px);background-size:14px 14px;opacity:0.9;top:5%;left:5%;right:5%;bottom:5%;position:absolute"></div>
       </div>
@@ -608,7 +608,7 @@
       <!-- Spine -->
       <div style="position:absolute;left:calc(50% - 5px);top:0;width:10px;height:100%;background:#999999;z-index:20"></div>
 
-      <!-- Right side back cover with dots -->
+      <!-- Right side back cover texture -->
       <div style="position:absolute;right:0;top:0;width:calc(50% - 5px);height:100%;background:#dddddd;border-radius:0 8px 8px 0;z-index:1;overflow:hidden">
         <div style="position:absolute;inset:0;background-image:radial-gradient(circle,#999999 1px,transparent 1px);background-size:14px 14px;opacity:0.9;top:5%;left:5%;right:5%;bottom:5%;position:absolute"></div>
       </div>
@@ -627,19 +627,19 @@
       <div class="flip-page" style="z-index:12;animation-delay:1.3s"></div>
       <div class="flip-page" style="z-index:11;animation-delay:1.7s"></div>
 
-      <!-- Front cover white with dots -->
+      <!-- Front cover white texture -->
       <div style="position:absolute;right:0;top:0;width:calc(50% - 5px);height:100%;background:#ffffff;border-radius:0 8px 8px 0;z-index:16;overflow:hidden">
         <div style="position:absolute;inset:0;background-image:radial-gradient(circle,#aaaaaa 1px,transparent 1px);background-size:14px 14px;opacity:0.9;top:5%;left:5%;right:5%;bottom:5%;position:absolute"></div>
       </div>
 
       <!-- LEFT TEXT -->
-      <!-- LEFT TEXT — The Dot Book (on left page) -->
+      <!-- LEFT TEXT — The Dollar Book (on left page) -->
       <div id="left-txt" style="position:absolute;left:0;top:0;width:calc(50% - 5px);height:100%;z-index:30;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.8s ease;box-sizing:border-box;padding:4%">
         <div style="background:#e8e8e8;border:2px solid #777777;padding:6% 8%;text-align:center;width:100%;height:66%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center">
-          <div style="font-size:clamp(12px,2.5vw,36px);color:#000000;letter-spacing:3px;text-transform:uppercase;margin-bottom:6%">The Dot Book</div>
+          <div style="font-size:clamp(12px,2.5vw,36px);color:#000000;letter-spacing:3px;text-transform:uppercase;margin-bottom:6%">The Dollar Book</div>
           <div style="font-size:clamp(7px,1.3vw,16px);color:#666666;letter-spacing:2px;text-transform:uppercase;margin-bottom:4%">A Book of Perspective</div>
           <div style="width:50%;height:1px;background:#888888;margin:0 auto 4%"></div>
-          <div style="font-size:clamp(7px,1.3vw,16px);color:#333333;letter-spacing:1px">Every dot is $1 Million</div>
+          <div style="font-size:clamp(7px,1.3vw,16px);color:#333333;letter-spacing:1px">Every $ sign is $1 Million</div>
         </div>
       </div>
 
@@ -735,9 +735,9 @@
   <!-- Admin access - small subtle dot, top right -->
   <div onclick="adminTap()" style="position:absolute;top:14px;right:14px;width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:1px solid #333333;z-index:100;cursor:pointer"></div>
   <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
-  <h1>The Dot Book</h1>
-  <div class="subtitle">Every dot is $1 Million &middot; Every page holds 3,000 dots &middot; Page 1 to Page 334 = $1 Trillion</div>
-  <div style="margin-top:6px;font-size:12px;color:#888888;font-style:italic">3,000 typed dots is almost exactly a real, standard-sized book page — this could genuinely be printed</div>
+  <h1>The Dollar Book</h1>
+  <div class="subtitle">Every $ sign is $1 Million &middot; Every page holds 3,000 $ signs &middot; Page 1 to Page 334 = $1 Trillion</div>
+  <div style="margin-top:6px;font-size:12px;color:#888888;font-style:italic">3,000 typed $ signs would take about two pages of a standard printed book</div>
   <div id="elon-live-banner" style="margin-top:10px;font-size:13px;color:#aaaaaa;font-style:italic">SpaceX IPO · Nasdaq · 12 Jun 2026 · Ticker: SPCX · World First Trillionaire · Now <span id="elon-live-figure">~$790B</span></div>
 
   <!-- Reveal strip -->
@@ -770,7 +770,7 @@
         These figures are <strong style="color:#ffffff">manually updated periodically</strong> and do <strong style="color:#ffffff">not update automatically</strong>. Actual wealth may differ significantly — particularly for those whose wealth is tied to share prices, which can change daily.<br><br>
         <strong style="color:#ffffff">Historical figures</strong> are inflation-adjusted estimates and are not intended to be precise.<br><br>
         Some entries describe individuals, families, or organisations connected to <strong style="color:#ffffff">legal proceedings, public scandals, or historical events</strong>. These descriptions reflect <strong style="color:#ffffff">publicly reported facts and public record</strong> at the time of publication, presented for educational and historical context. Inclusion in this book does not imply any view about guilt or character beyond what is already a matter of public record.<br><br>
-        The Dot Book is <strong style="color:#ffffff">free to use</strong> and run informally on a <strong style="color:#ffffff">not-for-profit basis</strong>. Any future support goes toward keeping it accurate and online.<br><br>
+        The Dollar Book is <strong style="color:#ffffff">free to use</strong> and run informally on a <strong style="color:#ffffff">not-for-profit basis</strong>. Any future support goes toward keeping it accurate and online.<br><br>
         <strong style="color:#ffffff">Net Zero and climate transition costs</strong> vary enormously between sources and methodologies — credible institutions have produced estimates for the same country differing by a factor of ten or more. Figures here are best-available estimates for comparison and perspective, not precise forecasts.<br><br>
         <strong style="color:#ffffff">Carbon Offset Share</strong> is a deliberately illustrative calculation, not a real allocation or financial mechanism. It simply divides the total value of the world's compliance carbon markets in proportion to each country's Net Zero investment need, to give a sense of scale — this is not how carbon markets actually distribute funds.
       </div>
@@ -893,7 +893,7 @@
   <!-- Table -->
   <div class="table-card">
     <div class="table-header">
-      <div class="table-header-label">The Dot Book</div>
+      <div class="table-header-label">The Dollar Book</div>
       <div style="display:flex;gap:12px;align-items:center">
         <button id="sort-toggle" onclick="toggleSort()" style="background:#333333;color:#ffffff;border:1px solid #555555;padding:5px 12px;border-radius:4px;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">$ Wealth</button>
         <div style="font-size:10px;color:#888888;letter-spacing:1px">Source: Forbes public data · Illustrative only</div>
@@ -915,13 +915,13 @@
 
   <!-- Formula -->
   <footer>
-    The Dot Book<br>
+    The Dollar Book<br>
     Wealth figures sourced from Forbes public data for illustrative purposes only.<br>
     Not financial advice. Figures fluctuate constantly. DYOR.<br>
     Content on scandals or controversies reflects public record at time of publication.<br>
     Free to use, run informally on a not-for-profit basis. Any future support goes toward keeping it accurate and online.<br>
     Net Zero and climate transition figures are best-available estimates — sources vary widely.<br>
-    <span id="admin-trigger" onclick="adminTap()" style="cursor:default;user-select:none;color:inherit">The Dot Book concept © Kevin Cook 2026</span>
+    <span id="admin-trigger" onclick="adminTap()" style="cursor:default;user-select:none;color:inherit">The Dollar Book concept © Kevin Cook 2026</span>
   </footer>
 
 </main>
@@ -1045,7 +1045,7 @@
 
 <script>
   // ══════════════════════════════════════════════════════════════════
-  //  THE DOT BOOK — CELEBRITY / WEALTH DATABASE
+  //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
   //  This is the ONLY place you need to add, edit, or remove a person.
   //  Everything below this block (further down the file) is the app's
   //  working logic — you shouldn't need to touch that to update names.
@@ -6441,7 +6441,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: 'Tell me about ' + name + '. Include: what they are famous for, their estimated net worth in millions of dollars, their nationality, and their Wikipedia URL if you know it. Format your answer as: NAME | WORTH_IN_MILLIONS | CATEGORY | NATIONALITY | WIKIPEDIA_URL | DESCRIPTION. Use | as separator. For category use one of: Music, Film & TV, Sport, Tech & Business, Historical, Royalty & Politics. If you do not know their net worth use 0.',
-          context: 'The user searched for ' + name + ' in The Dot Book wealth app but they were not found in the database.'
+          context: 'The user searched for ' + name + ' in The Dollar Book wealth app but they were not found in the database.'
         })
       });
 
@@ -6482,8 +6482,8 @@
         addAIMessage(
           '<strong style="color:#f9e74a">' + escHtml(foundName) + '</strong><br>' +
           escHtml(desc) + '<br><br>' +
-          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots)</em><br>' : '<em style="color:#ff9999">Wealth unknown — enter value in $ millions below:</em><br><input id="bot-wealth-input" type="number" placeholder="e.g. 500 for $500M" style="background:#000;border:1px solid #555;color:#fff;padding:6px 10px;font-size:13px;border-radius:4px;width:180px;margin:4px 0" /><br>') +
-          '<br><button onclick="botAddToBook(\'' + escHtml(foundName).replace(/'/g,"\\'") + '\', (document.getElementById(\'bot-wealth-input\') ? parseInt(document.getElementById(\'bot-wealth-input\').value)||' + wealth + ' : ' + wealth + '),\'' + escHtml(category).replace(/'/g,"\\'") + '\',\'' + escHtml(nationality).replace(/'/g,"\\'") + '\',\'' + escHtml(wikiUrl).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book</button>',
+          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' $ signs)</em><br>' : '<em style="color:#ff9999">Wealth unknown — enter value in $ millions below:</em><br><input id="bot-wealth-input" type="number" placeholder="e.g. 500 for $500M" style="background:#000;border:1px solid #555;color:#fff;padding:6px 10px;font-size:13px;border-radius:4px;width:180px;margin:4px 0" /><br>') +
+          '<br><button onclick="botAddToBook(\'' + escHtml(foundName).replace(/'/g,"\\'") + '\', (document.getElementById(\'bot-wealth-input\') ? parseInt(document.getElementById(\'bot-wealth-input\').value)||' + wealth + ' : ' + wealth + '),\'' + escHtml(category).replace(/'/g,"\\'") + '\',\'' + escHtml(nationality).replace(/'/g,"\\'") + '\',\'' + escHtml(wikiUrl).replace(/'/g,"\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dollar Book</button>',
           'ai-msg-bot'
         );
       } else {
@@ -6491,8 +6491,8 @@
         const wealth = extractWealth(text) || wikiWealth;
         addAIMessage(
           text + '<br><br>' +
-          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots)</em><br><br>' : '') +
-          '<button onclick="botAddToBook(\'' + escHtml(name).replace(/'/g,"\\'") + '\',' + wealth + ',\'Music\',\'\',\'\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dot Book</button>',
+          (wealth > 0 ? '<em style="color:#aaa">Estimated worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' $ signs)</em><br><br>' : '') +
+          '<button onclick="botAddToBook(\'' + escHtml(name).replace(/'/g,"\\'") + '\',' + wealth + ',\'Music\',\'\',\'\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer;margin-top:4px">➕ Add to The Dollar Book</button>',
           'ai-msg-bot'
         );
       }
@@ -6503,7 +6503,7 @@
     } catch(e) {
       thinking.remove();
       addAIMessage('Could not search for ' + name + '. Please add them manually via the admin panel.', 'ai-msg-bot');
-      document.getElementById('rate-status').textContent = '✗ Not found in Dot Book or AI';
+      document.getElementById('rate-status').textContent = '✗ Not found in Dollar Book or AI';
       setTimeout(() => document.getElementById('rate-status').textContent = '', 5000);
     }
   }
@@ -6513,7 +6513,7 @@
     const key = name.toLowerCase();
 
     // Show saving message in bot panel
-    addAIMessage('Adding ' + escHtml(name) + ' to The Dot Book...', 'ai-msg-thinking');
+    addAIMessage('Adding ' + escHtml(name) + ' to The Dollar Book...', 'ai-msg-thinking');
 
     try {
       // Save to GitHub via Worker
@@ -6541,8 +6541,8 @@
         renderTable();
 
         addAIMessage(
-          '✅ <strong style="color:#f9e74a">' + escHtml(name) + '</strong> has been added to The Dot Book permanently!<br>' +
-          '<em style="color:#aaa">Worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' dots) · ' + escHtml(note) + '</em>',
+          '✅ <strong style="color:#f9e74a">' + escHtml(name) + '</strong> has been added to The Dollar Book permanently!<br>' +
+          '<em style="color:#aaa">Worth: ' + formatWealth(wealth) + ' (' + wealth.toLocaleString() + ' $ signs) · ' + escHtml(note) + '</em>',
           'ai-msg-bot'
         );
       } else {
@@ -6703,7 +6703,7 @@
     else if (page > 334 && page <= 500) note = "★ Beyond the Trillionaire page 334!";
     else if (page > 154 && page <= 267) note = "★★ In the territory of emperors and ancient kings!";
     else if (page > 267) note = "★★★ Beyond the wealth of recorded human history!";
-    else note = (334 - page) + " pages of dots to go before reaching the Trillionaire finish line.";
+    else note = (334 - page) + " pages of $ signs to go before reaching the Trillionaire finish line.";
     document.getElementById('result-note').textContent = note;
 
     // Add Wikipedia link if available
@@ -6726,7 +6726,7 @@
 
     renderTable();
 
-    // Scroll directly to the person's row in The Dot Book — no popup
+    // Scroll directly to the person's row in The Dollar Book — no popup
     setTimeout(() => {
       // First try to find the row in the currently open section
       let found = false;
@@ -6910,7 +6910,7 @@
     else if (page > 334 && page <= 500) note = "★ You are beyond page 334 — into the realm of history greatest fortunes!";
     else if (page > 154 && page <= 267) note = '★★ You are in the territory of emperors and ancient kings — wealth beyond the modern imagination.';
     else if (page > 267) note = '★★★ You are beyond the wealth of recorded human history. Even Augustus Caesar bows to you.';
-    else note = (334 - page) + " pages of dots still to go before reaching the Trillionaire finish line.";
+    else note = (334 - page) + " pages of $ signs still to go before reaching the Trillionaire finish line.";
     document.getElementById('result-note').textContent = note;
 
     // Store share data
@@ -6933,7 +6933,7 @@
     const name = card.dataset.name;
     const page = card.dataset.page;
     const wealth = card.dataset.wealth;
-    const text = `I found my place in The Dot Book 📖\n\n${name} (${wealth}) is on page ${page}${page > 334 ? ' — BEYOND Trillionusk!' : ' of 334'}.\n\nElon Musk becomes the worlds first Trillionaire on 12 June 2026 (SpaceX IPO · Nasdaq · SPCX)\n\nPage 1 = $1 Million · Page 334 = $1 Trillion\nOne dot per million dollars, 3,000 dots per page.\n\nWhere are you in the book? https://thedotbook.github.io/thedotbook/\n\n⚠ For illustration only · Not financial advice · DYOR`;
+    const text = `I found my place in The Dollar Book 📖\n\n${name} (${wealth}) is on page ${page}${page > 334 ? ' — BEYOND Trillionusk!' : ' of 334'}.\n\nElon Musk becomes the worlds first Trillionaire on 12 June 2026 (SpaceX IPO · Nasdaq · SPCX)\n\nPage 1 = $1 Million · Page 334 = $1 Trillion\nOne $ sign per million dollars, 3,000 $ signs per page.\n\nWhere are you in the book? https://thedollarbook.com\n\n⚠ For illustration only · Not financial advice · DYOR`;
 
     navigator.clipboard.writeText(text).then(() => {
       showToast('Copied to clipboard!');
@@ -8012,13 +8012,13 @@
   }
 </script>
 <!-- AI Assistant Chat Bubble -->
-<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:99998;width:52px;height:52px;background:#000000;border:2px solid #ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease;box-shadow:0 0 12px 4px rgba(255,255,255,0.6),0 0 24px 8px rgba(255,255,255,0.2)" title="Ask The Dot Book AI">🤖</div>
+<div id="ai-bubble" onclick="toggleAIPanel()" style="position:fixed;bottom:24px;right:24px;z-index:99998;width:52px;height:52px;background:#000000;border:2px solid #ffffff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;-webkit-tap-highlight-color:transparent;transition:transform 0.2s ease;box-shadow:0 0 12px 4px rgba(255,255,255,0.6),0 0 24px 8px rgba(255,255,255,0.2)" title="Ask The Dollar Book AI">🤖</div>
 
 <div id="ai-panel" style="display:none;position:fixed;bottom:86px;right:16px;left:16px;max-width:400px;margin:0 auto;z-index:99998;background:#111111;border:1px solid #444444;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.8);font-family:Georgia,serif;overflow:hidden">
 
   <!-- Header -->
   <div style="background:#000000;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
-    <div id="ai-context-label" style="color:#ffffff;font-size:12px;letter-spacing:1px">🤖 ASK THE DOT BOOK</div>
+    <div id="ai-context-label" style="color:#ffffff;font-size:12px;letter-spacing:1px">🤖 ASK THE DOLLAR BOOK</div>
     <div onclick="toggleAIPanel()" style="color:#888888;font-size:18px;cursor:pointer;line-height:1;padding:0 2px">✕</div>
   </div>
 
@@ -8145,10 +8145,10 @@
     result.innerHTML = '<em style="color:#aaa">Asking Claude...</em>';
 
     try {
-      const context = 'The user is looking at ' + name + ' in The Dot Book wealth app where every dot = $1 million.';
+      const context = 'The user is looking at ' + name + ' in The Dollar Book wealth app where every $ sign = $1 million.';
       const answer = await callClaude(question, context);
       const db = CELEB_DB[name.toLowerCase()];
-      const dotNote = db ? ' <em style="color:#888">(' + formatWealth(db.wealth) + ' = ' + db.wealth.toLocaleString() + ' dots in The Dot Book)</em>' : '';
+      const dotNote = db ? ' <em style="color:#888">(' + formatWealth(db.wealth) + ' = ' + db.wealth.toLocaleString() + ' $ signs in The Dollar Book)</em>' : '';
       result.innerHTML = '<strong style="color:#f9e74a">' + escHtml(name) + ':</strong> ' + escHtml(answer) + dotNote;
     } catch(e) {
       result.innerHTML = 'Could not connect. Please try again.';
@@ -8160,7 +8160,7 @@
     if (!db || !db.wealth) return '';
     const dots = db.wealth.toLocaleString();
     const formatted = formatWealth(db.wealth);
-    return ' In The Dot Book, ' + name + ' is worth ' + formatted + ' — that is ' + dots + ' dots.';
+    return ' In The Dollar Book, ' + name + ' is worth ' + formatted + ' — that is ' + dots + ' $ signs.';
   }
 
   function answerFromDB(question) {
@@ -8169,12 +8169,12 @@
       const people = Object.entries(CELEB_DB).filter(([k,v]) => v.wealth && !v._subgroup && !k.includes('top20'));
       people.sort((a,b) => b[1].wealth - a[1].wealth);
       const top = people.slice(0,3);
-      const lines = top.map(([k,v]) => (v.name || k.replace(/\b\w/g,c=>c.toUpperCase())) + ' — ' + formatWealth(v.wealth) + ' (' + v.wealth.toLocaleString() + ' dots)');
-      return 'The wealthiest people in The Dot Book are: ' + lines.join(', ') + '. Every dot = $1 million.';
+      const lines = top.map(([k,v]) => (v.name || k.replace(/\b\w/g,c=>c.toUpperCase())) + ' — ' + formatWealth(v.wealth) + ' (' + v.wealth.toLocaleString() + ' $ signs)');
+      return 'The wealthiest people in The Dollar Book are: ' + lines.join(', ') + '. Every $ sign = $1 million.';
     }
     if (q.includes('how many') && (q.includes('entries') || q.includes('people') || q.includes('in the book'))) {
       const count = Object.entries(CELEB_DB).filter(([k,v]) => !v._subgroup && !k.startsWith('_sub')).length;
-      return 'The Dot Book currently has ' + count + ' entries!';
+      return 'The Dollar Book currently has ' + count + ' entries!';
     }
     return null;
   }
@@ -8198,8 +8198,8 @@
 
     // Otherwise call Claude via Worker
     const context = aiCurrentEntity
-      ? 'The user is looking at ' + aiCurrentEntity.name + ' (' + aiCurrentEntity.note + ') in The Dot Book wealth app where every dot = $1 million.'
-      : 'The user is browsing The Dot Book wealth perspective app where every dot = $1 million.';
+      ? 'The user is looking at ' + aiCurrentEntity.name + ' (' + aiCurrentEntity.note + ') in The Dollar Book wealth app where every $ sign = $1 million.'
+      : 'The user is browsing The Dollar Book wealth perspective app where every $ sign = $1 million.';
 
     callClaude(question, context)
       .then(answer => {
