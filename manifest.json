@@ -1,25 +1,21 @@
 {
-  "name": "The Dot Book",
-  "short_name": "Dot Book",
-  "description": "A Book of Perspective — Every dot is $1 Million",
+  "name": "The Dollar Book",
+  "short_name": "Dollar Book",
+  "description": "Every dollar sign is $1 Million. See where the world's wealthiest people, companies, and countries actually sit.",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
