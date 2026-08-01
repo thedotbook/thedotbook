@@ -671,6 +671,8 @@
     border-radius: 0 8px 8px 0;
     transform-origin: left center;
     overflow: hidden;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     animation: pageFlip 0.7s cubic-bezier(0.4,0,0.2,1) both;
   }
   .flip-page::after {
@@ -720,25 +722,52 @@
     setTimeout(() => s.remove(), 800);
   }
 
+  // Simple synthesised "cha-ching" cash register sound — no audio file needed
+  function playCashRegister() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const playBell = (freq, startTime, duration) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.001, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.25, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      };
+      const now = ctx.currentTime;
+      playBell(1500, now, 0.25);
+      playBell(1900, now + 0.12, 0.35);
+    } catch (e) {
+      // Browser blocked audio (no prior user interaction) — fail silently
+    }
+  }
+
   // After 2.5s holding on closed book — open it
   setTimeout(() => {
     document.getElementById('s-closed').style.opacity = '0';
     setTimeout(() => document.getElementById('s-closed').style.display = 'none', 600);
     document.getElementById('s-open').style.opacity = '1';
+    playCashRegister();
 
     // Show text after pages have flipped (pages take ~3.2s)
     setTimeout(() => { document.getElementById('left-txt').style.opacity = '1'; }, 1200);
     setTimeout(() => { document.getElementById('right-txt').style.opacity = '1'; }, 1800);
   }, 1700);
 
-  setTimeout(dismissSplash, 9000);
+  setTimeout(dismissSplash, 4200);
 </script>
 <header>
   <!-- Admin access - small subtle dot, top right -->
   <div onclick="adminTap()" style="position:absolute;top:14px;right:14px;width:14px;height:14px;border-radius:50%;background:#1a1a1a;border:1px solid #333333;z-index:100;cursor:pointer"></div>
-  <div class="eyebrow">A Book of Perspective · Elon Musk becomes Trillionaire 12 June 2026</div>
+  <div class="eyebrow">A Book of Perspective</div>
   <h1>The Dollar Book</h1>
-  <div class="subtitle">Every $ sign is $1 Million &middot; Every page holds 3,000 $ signs &middot; Page 1 to Page 334 = $1 Trillion</div>
+  <div class="subtitle">Elon Musk just became the world's first trillionaire — see exactly where he sits</div>
+  <div style="margin-top:10px;font-size:13px;color:#aaaaaa">Every $ sign is $1 Million &middot; Every page holds 3,000 $ signs &middot; Page 1 to Page 334 = $1 Trillion</div>
   <div style="margin-top:6px;font-size:12px;color:#888888;font-style:italic">3,000 typed $ signs would take about two pages of a standard printed book</div>
   <div id="elon-live-banner" style="margin-top:10px;font-size:13px;color:#aaaaaa;font-style:italic">SpaceX IPO · Nasdaq · 12 Jun 2026 · Ticker: SPCX · World First Trillionaire · Now <span id="elon-live-figure">~$790B</span></div>
 
