@@ -743,7 +743,7 @@
   <h1>The Dollar Book</h1>
   <div class="subtitle">Elon Musk just became the world's first trillionaire — see exactly where he sits</div>
   <div style="margin-top:10px;font-size:13px;color:#aaaaaa">Every $ sign is $1 Million &middot; Every page holds 3,000 $ signs &middot; Page 1 to Page 334 = $1 Trillion</div>
-  <div style="margin-top:6px;font-size:12px;color:#888888;font-style:italic">3,000 typed $ signs would take about two pages of a standard printed book</div>
+  <div style="margin-top:6px;font-size:12px;color:#888888;font-style:italic">Fun fact: if you physically typed out 3,000 $ signs, they'd fill about two sheets of a standard printed book</div>
   <div id="elon-live-banner" style="margin-top:10px;font-size:13px;color:#aaaaaa;font-style:italic">SpaceX IPO · Nasdaq · 12 Jun 2026 · Ticker: SPCX · World First Trillionaire · Now <span id="elon-live-figure">~$790B</span></div>
 
   <!-- Reveal strip -->
@@ -5900,6 +5900,18 @@
     return ACRONYM_FIX[name] || name;
   }
 
+  // Strip club/team/context suffixes from a raw key before displaying it as a
+  // name, so e.g. 'lewis dunk brighton' shows as "Lewis Dunk", not "Lewis Dunk
+  // Brighton" — used everywhere a display name gets built from a raw key.
+  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd)$/i;
+  function cleanDisplayName(key) {
+    let bareKey = key;
+    while (NAME_SUFFIX_PATTERN.test(bareKey)) {
+      bareKey = bareKey.replace(NAME_SUFFIX_PATTERN, '');
+    }
+    return fixAcronyms(bareKey.trim().replace(/\b\w/g, c => c.toUpperCase()));
+  }
+
   let userEntry = null;
   let showAll = false;
 
@@ -5918,10 +5930,10 @@
         seen.set(key, { name: key, _subgroup: val._subgroup, wealth: -Infinity, _isSentinel: true });
       } else if (val._top20) {
         // Top20 entries always get their own slot — use key as-is, strip ' top20' for display only
-        const displayName = fixAcronyms(key.slice(0, -6).replace(/\b\w/g, c => c.toUpperCase()));
+        const displayName = cleanDisplayName(key);
         seen.set(key, { name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: true, _top20Key: key });
       } else {
-        const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
+        const displayName = cleanDisplayName(key);
         seen.set(key, { name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: false });
       }
     }
@@ -5980,7 +5992,7 @@
     if (match && !match._subgroup) {
       const pg = Math.ceil(match.wealth / 3000) || 1;
       const wikiBtn = match.url ? ' <a href="' + match.url + '" target="_blank" style="color:#f9e74a;font-size:11px">↗ Wiki</a>' : '';
-      result.innerHTML = '<span style="color:#fff;font-weight:bold">' + escHtml(matchKey.replace(/\b\w/g, c => c.toUpperCase())) + '</span>'
+      result.innerHTML = '<span style="color:#fff;font-weight:bold">' + escHtml(cleanDisplayName(matchKey)) + '</span>'
         + ' &nbsp;·&nbsp; <span style="background:#fff;color:#000;padding:1px 5px;border-radius:2px;font-size:11px">p.' + pg + '</span>'
         + ' &nbsp;·&nbsp; <span style="color:#888">' + escHtml(match.note) + '</span>'
         + wikiBtn;
@@ -6201,7 +6213,7 @@
           const [nextKey, nextVal] = celebDBEntries[j];
           if (nextVal._subgroup) continue;
           const nextPerson = byName.get(nextKey) || (() => {
-            const dn = nextKey.replace(/\b\w/g, c => c.toUpperCase());
+            const dn = cleanDisplayName(nextKey);
             return byName.get(dn.toLowerCase());
           })();
           if (nextPerson) { pendingSubCat = getCategory(nextPerson); break; }
@@ -6212,7 +6224,7 @@
         activeCat = pendingSubCat;
       } else {
         const person = byName.get(key) || (() => {
-          const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
+          const displayName = cleanDisplayName(key);
           return byName.get(displayName.toLowerCase());
         })();
         if (person) {
@@ -6590,7 +6602,7 @@
 
     if (match) {
       // Use the properly capitalised name from the database key, not raw user input
-      const name = key.replace(/\b\w/g, c => c.toUpperCase());
+      const name = cleanDisplayName(key);
       document.getElementById('club-results-card').style.display = 'none';
       const isHistorical = match.note && match.note.includes('Historical');
       const msg = isHistorical
@@ -6627,7 +6639,7 @@
       // The Beatles' hometown rather than the football club
       if (!noteLower.includes('football')) continue;
       if (noteLower.includes(query)) {
-        const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
+        const displayName = cleanDisplayName(key);
         const dedupeKey = displayName.toLowerCase() + '|' + val.wealth;
         if (seenNames.has(dedupeKey)) continue;
         seenNames.add(dedupeKey);
@@ -6671,7 +6683,7 @@
     const match = CELEB_DB[key];
     if (!match) return;
     document.getElementById('club-results-card').style.display = 'none';
-    const displayName = fixAcronyms(key.replace(/\b\w/g, c => c.toUpperCase()));
+    const displayName = cleanDisplayName(key);
     await calculateFromCeleb(displayName, match);
     document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -8169,18 +8181,54 @@
     return ' In The Dollar Book, ' + name + ' is worth ' + formatted + ' — that is ' + dots + ' $ signs.';
   }
 
+  function findPersonByName(question) {
+    const q = question.toLowerCase().replace(/[^\w\s]/g, ' ');
+    let bestMatch = null;
+    let bestMatchLength = 0;
+    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd)$/i;
+    for (const [key, val] of Object.entries(CELEB_DB)) {
+      if (val._subgroup || key.startsWith('_sub') || !val.wealth) continue;
+      let bareKey = key;
+      while (suffixPattern.test(bareKey)) {
+        bareKey = bareKey.replace(suffixPattern, '');
+      }
+      const words = bareKey.trim().split(' ');
+      if (words.length < 2) continue;
+      for (let len = words.length; len >= 2; len--) {
+        const candidate = words.slice(0, len).join(' ');
+        if (candidate.length < 5) continue;
+        if (q.includes(candidate) && candidate.length > bestMatchLength) {
+          bestMatch = { key, val, matchedName: candidate };
+          bestMatchLength = candidate.length;
+        }
+      }
+    }
+    return bestMatch;
+  }
+
   function answerFromDB(question) {
     const q = question.toLowerCase();
     if (q.includes('wealthiest') || q.includes('richest') || q.includes('most money') || q.includes('most wealthy')) {
       const people = Object.entries(CELEB_DB).filter(([k,v]) => v.wealth && !v._subgroup && !k.includes('top20'));
       people.sort((a,b) => b[1].wealth - a[1].wealth);
       const top = people.slice(0,3);
-      const lines = top.map(([k,v]) => (v.name || k.replace(/\b\w/g,c=>c.toUpperCase())) + ' — ' + formatWealth(v.wealth) + ' (' + v.wealth.toLocaleString() + ' $ signs)');
+      const lines = top.map(([k,v]) => (v.name || cleanDisplayName(k)) + ' — ' + formatWealth(v.wealth) + ' (' + v.wealth.toLocaleString() + ' $ signs)');
       return 'The wealthiest people in The Dollar Book are: ' + lines.join(', ') + '. Every $ sign = $1 million.';
     }
     if (q.includes('how many') && (q.includes('entries') || q.includes('people') || q.includes('in the book'))) {
       const count = Object.entries(CELEB_DB).filter(([k,v]) => !v._subgroup && !k.startsWith('_sub')).length;
       return 'The Dollar Book currently has ' + count + ' entries!';
+    }
+    // Presence/absence lookup questions — always check the real data rather than let the AI guess
+    const isLookupQuestion = q.includes('find') || q.includes('in the book') || q.includes('do you have')
+      || q.includes('is there') || q.includes('couldn\'t') || q.includes('cant') || q.includes('can\'t')
+      || q.includes('not found') || q.includes('why isn') || q.includes('why is') || q.includes('why doesn');
+    if (isLookupQuestion) {
+      const match = findPersonByName(question);
+      if (match) {
+        const displayName = match.val.name || cleanDisplayName(match.matchedName);
+        return 'Yes — ' + displayName + ' is actually already in The Dollar Book, worth ' + formatWealth(match.val.wealth) + ' (' + match.val.wealth.toLocaleString() + ' $ signs). ' + (match.val.note || '');
+      }
     }
     return null;
   }
