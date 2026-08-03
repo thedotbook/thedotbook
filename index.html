@@ -6056,6 +6056,47 @@
   }
   const collapsedSections = new Set(['Individual Wealth', 'Global Perspective']); // start both collapsed
 
+  // Nested Football collapsible sections, within the Sport category
+  let footballCollapsed = true;
+  let footballMensCollapsed = true;
+  let footballWomensCollapsed = true;
+
+  function toggleFootball() {
+    footballCollapsed = !footballCollapsed;
+    document.querySelectorAll('.football-arrow').forEach(function(a) { a.innerHTML = footballCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2').forEach(function(row) { row.classList.toggle('g-hidden', footballCollapsed); });
+    updateFootballVisibility();
+  }
+
+  function toggleFootballGroup(which) {
+    if (which === 'mens') {
+      footballMensCollapsed = !footballMensCollapsed;
+      document.querySelectorAll('.football-arrow-mens').forEach(function(a) { a.innerHTML = footballMensCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      footballWomensCollapsed = !footballWomensCollapsed;
+      document.querySelectorAll('.football-arrow-womens').forEach(function(a) { a.innerHTML = footballWomensCollapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateFootballVisibility();
+  }
+
+  function updateFootballVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      let show = !footballCollapsed;
+      if (show && cat2 === 'football-mens') show = !footballMensCollapsed;
+      if (show && cat2 === 'football-womens') show = !footballWomensCollapsed;
+      row.classList.toggle('g-hidden', !show);
+      if (!show) {
+        // Also re-hide any already-expanded player rows underneath, so they
+        // don't confusingly reappear the next time this section is opened
+        document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
+        const arrow = row.querySelector('.sub-arrow');
+        if (arrow) arrow.textContent = '▶';
+      }
+    });
+  }
+
+
   function toggleSection(sectionName) {
     if (collapsedSections.has(sectionName)) {
       collapsedSections.delete(sectionName);
@@ -6168,6 +6209,13 @@
       document.querySelectorAll('#table-body tr.group-row[data-group="' + groupName + '"]').forEach(r => r.classList.remove('g-hidden'));
       const header = document.querySelector('#table-body tr.group-header[data-group="' + groupName + '"]');
       if (header) { const a = header.querySelector('.g-arrow'); if (a) a.style.transform = 'rotate(0deg)'; }
+      // Opening a category reveals everything with that data-group by default —
+      // re-collapse the nested Football section so it stays tucked away
+      // until specifically clicked, rather than springing open every time.
+      if (footballCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-group="' + groupName + '"]').forEach(r => r.classList.add('g-hidden'));
+      }
+      updateFootballVisibility();
     }
     attachSubgroupListeners();
   }
@@ -6272,11 +6320,20 @@
       blocks.push(block);
       // Sort people within each block by wealth
       for (const b of blocks) b.people.sort((a,b) => sortAlpha ? a.name.localeCompare(b.name) : b.wealth - a.wealth);
-      // Sort blocks alphabetically by subgroup name
+      // Sort blocks alphabetically by subgroup name — but keep all Football
+      // men's subsections together, then all Football women's together,
+      // rather than letting them interleave (e.g. "Arsenal FC" / "Arsenal Women")
+      function footballSortKey(label) {
+        if (!label.startsWith('Football —')) return null;
+        return label.toLowerCase().indexOf('women') !== -1 ? 1 : 0;
+      }
       blocks.sort((a, b) => {
         if (!a.sub && !b.sub) return 0;
         if (!a.sub) return 1;
         if (!b.sub) return -1;
+        const aKey = footballSortKey(a.sub.trim());
+        const bKey = footballSortKey(b.sub.trim());
+        if (aKey !== null && bKey !== null && aKey !== bKey) return aKey - bKey;
         return a.sub.trim().localeCompare(b.sub.trim());
       });
       // Flatten back
@@ -6373,20 +6430,57 @@
             + '<span class="g-count">' + peopleCount + ' people</span>'
             + '</td></tr>';
       let thisSid = -1;
+      let footballGroupState = null; // null | 'mens' | 'womens' — tracks nesting within Sport
       for (const item of items) {
         if (item.type === 'sub') {
           thisSid = subIdx++;
           const isIndented = item.label.startsWith('  ');
           const labelTrimmed = item.label.trim();
-          const yellowSections = ['Football — Ex-Footballers & Personalities', 'Football — Twenty Wealthiest Players', 'Football — UEFA Champions League 2026-27', 'Football — World Cup Players 2026'];
+          const yellowSections = ['Football — Ex-Footballers & Personalities', 'Football — Twenty Wealthiest Players', 'Football — UEFA Champions League 2026-27', 'Football — World Cup Players 2026', 'Football — Current Stars'];
           let subHighlightStyle = '';
           if (yellowSections.indexOf(labelTrimmed) !== -1) {
             subHighlightStyle = 'color:#f5e642;';
           } else if (labelTrimmed.toLowerCase().indexOf('women') !== -1) {
             subHighlightStyle = 'color:#f5a9d0;';
           }
-          html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
-                + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
+
+          const isFootball = labelTrimmed.startsWith('Football —');
+          let supercatAttr = '';
+          if (isFootball) {
+            const isWomens = labelTrimmed.toLowerCase().indexOf('women') !== -1;
+            const thisState = isWomens ? 'womens' : 'mens';
+            const catHiddenClass = hidden ? ' g-hidden' : '';
+            if (footballGroupState === null) {
+              // Entering football for the first time — insert the top-level toggle
+              const arrow1 = footballCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClass + '" data-group="' + escHtml(groupName) + '" onclick="toggleFootball()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="football-arrow sub-arrow">' + arrow1 + '</span> — Football —</td></tr>';
+            }
+            if (footballGroupState !== thisState) {
+              // Entering (or switching into) Men's or Women's Football — insert the nested toggle
+              const which = thisState === 'womens' ? 'womens' : 'mens';
+              const collapsedNow = which === 'womens' ? footballWomensCollapsed : footballMensCollapsed;
+              const arrow2 = collapsedNow ? '&#9658;' : '&#9660;';
+              const label2 = which === 'womens' ? "Women's Football" : "Men's Football";
+              const nestedHiddenClass = (footballCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClass + '" data-group="' + escHtml(groupName) + '" data-parentcat="football" onclick="toggleFootballGroup(\'' + which + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="football-arrow-' + which + '">' + arrow2 + '</span> ' + label2 + '</td></tr>';
+            }
+            footballGroupState = thisState;
+            const rowHidden = hidden || footballCollapsed || (thisState === 'womens' ? footballWomensCollapsed : footballMensCollapsed);
+            supercatAttr = ' data-supercat="football" data-supercat2="football-' + thisState + '"' + (rowHidden ? ' data-football-hidden="1"' : '');
+          } else {
+            footballGroupState = null;
+          }
+
+          if (supercatAttr) {
+            const footballRowHidden = hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed);
+            html += '<tr class="group-row subgroup-label db-sub' + (footballRowHidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '"' + supercatAttr + '>'
+                  + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
+          } else {
+            html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
+                  + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
+          }
         } else if (thisSid >= 0) {
           html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
                 + renderPersonRow(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
