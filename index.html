@@ -7966,10 +7966,10 @@
         const spacexForbesValue = 500000; // Forbes private valuation ~$500B
         const otherAssets = 50000;
         const totalWealth = teslaValue + spacexForbesValue + otherAssets;
+        const display = formatWealth(totalWealth);
 
         if (CELEB_DB['elon musk top20']) {
           CELEB_DB['elon musk top20'].wealth = totalWealth;
-          const display = formatWealth(totalWealth);
           CELEB_DB['elon musk top20'].note = 'Top 20 · Tech · USA · Tesla SpaceX xAI · ' + display + ' · TSLA $' + tslaPrice.toFixed(2) + ' live · SpaceX valued at Forbes estimate · Updates every 5 mins · World first trillionaire June 2026 · Born South Africa';
         }
 
