@@ -7315,14 +7315,26 @@
         }
         return null;
       }
+      // Once exploded, each NFL team block is labelled "NFL — Team Name", which
+      // would sort under "N" — landing the whole section after every football
+      // club (70+ blocks) and MotoGP, far from where "American Football / NFL"
+      // (its original, pre-explosion group name) would alphabetically belong.
+      // Substitute that original label as the sort key so the whole NFL section
+      // clusters together near "Athletics", where it's actually findable —
+      // while still using footballSortKey to keep the catch-all pinned last.
+      function effectiveSortLabel(label) {
+        if (label.startsWith('NFL —')) return 'American Football / NFL — ' + label.slice(6);
+        return label;
+      }
       blocks.sort((a, b) => {
         if (!a.sub && !b.sub) return 0;
         if (!a.sub) return 1;
         if (!b.sub) return -1;
-        const aKey = footballSortKey(a.sub.trim());
-        const bKey = footballSortKey(b.sub.trim());
+        const aTrim = a.sub.trim(), bTrim = b.sub.trim();
+        const aKey = footballSortKey(aTrim);
+        const bKey = footballSortKey(bTrim);
         if (aKey !== null && bKey !== null && aKey !== bKey) return aKey - bKey;
-        return a.sub.trim().localeCompare(b.sub.trim());
+        return effectiveSortLabel(aTrim).localeCompare(effectiveSortLabel(bTrim));
       });
       // Flatten back
       const sorted = [];
@@ -7485,7 +7497,7 @@
               // Same single-level pattern as Rugby (no gender split needed).
               const arrowN = nflCollapsed ? '&#9658;' : '&#9660;';
               html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassN + '" data-group="' + escHtml(groupName) + '" onclick="toggleNFL()" style="cursor:pointer">'
-                    + '<td colspan="3" style="padding-left:20px"><span class="nfl-arrow sub-arrow">' + arrowN + '</span> — NFL —</td></tr>';
+                    + '<td colspan="3" style="padding-left:20px"><span class="nfl-arrow sub-arrow">' + arrowN + '</span> — American Football - NFL —</td></tr>';
               nflGroupEntered = true;
             }
             nflRowHidden = hidden || nflCollapsed;
