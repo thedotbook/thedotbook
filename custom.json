@@ -95,11 +95,6 @@
       "wealth": 95,
       "note": "Music Â· British",
       "url": "https://en.wikipedia.org/wiki/Mark_Knopfler"
-    },
-    "michael jackson": {
-      "wealth": 500,
-      "note": "Music · American",
-      "url": "https://en.wikipedia.org/wiki/Michael_Jackson"
     }
   },
   "removes": [
@@ -112,7 +107,8 @@
     "thomas muller",
     "ishowspeed",
     "dolly parton",
-    "jamie moore"
+    "jamie moore",
+    "michael jackson"
   ],
   "edits": {
     "roman abramovich": {
