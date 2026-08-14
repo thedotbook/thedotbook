@@ -8874,6 +8874,9 @@
     'Antarctica Minerals': 'Antarctica — Minerals', 'Antarctica Gdp': 'Antarctica — GDP',
     'Antarctica Estimated Minerals': 'Antarctica — Estimated Mineral Wealth',
     'Sao Tome And Principe Gdp': 'São Tomé and Príncipe GDP', 'Congo Republic Gdp': 'Congo Republic GDP',
+    'Usa Alaska': 'USA — Alaska Permanent Fund', 'Usa Texas School': 'USA — Texas Permanent School Fund',
+    'Usa Newmexico': 'USA — New Mexico Permanent Fund', 'Usa Texas University': 'USA — Texas Permanent University Fund',
+    'Uae Adia': 'UAE — ADIA', 'Uae Mubadala': 'UAE — Mubadala', 'Uae Dubai': 'UAE — Dubai ICD', 'Uae Adq': 'UAE — ADQ',
   };
   function fixAcronyms(name) {
     return ACRONYM_FIX[name] || name;
@@ -8883,8 +8886,14 @@
   // name, so e.g. 'lewis dunk brighton' shows as "Lewis Dunk", not "Lewis Dunk
   // Brighton" — used everywhere a display name gets built from a raw key.
   const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd)$/i;
+  // Strip the internal 'swf ' key prefix (needed only to keep multiple funds
+  // per country unique in CELEB_DB, e.g. 'swf usa alaska', 'swf china safe')
+  // before displaying/sorting — otherwise every Sovereign Wealth Fund entry
+  // title-cases to "Swf ..." and clusters together under S when A-Z sorted,
+  // instead of alphabetizing by its actual country/fund name.
+  const NAME_PREFIX_PATTERN = /^swf\s+/i;
   function cleanDisplayName(key) {
-    let bareKey = key;
+    let bareKey = key.replace(NAME_PREFIX_PATTERN, '');
     while (NAME_SUFFIX_PATTERN.test(bareKey)) {
       bareKey = bareKey.replace(NAME_SUFFIX_PATTERN, '');
     }
@@ -9857,8 +9866,12 @@
 
           if (supercatAttr) {
             const rowHiddenFinal = isRugby ? rugbyRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : isCounty ? countyRowHidden : isNHL ? nhlRowHidden : isSWF ? swfRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
+            // For SWF country rows, "SWF — Norway" would display as literally
+            // repeating the outer "Sovereign Wealth Funds" heading (SWF is just
+            // its abbreviation) — show only the country name on these rows.
+            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '"' + supercatAttr + '>'
-                  + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
+                  + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           } else {
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
