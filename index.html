@@ -9601,6 +9601,17 @@
           const aKey = footballSortKey(aTrim);
           const bKey = footballSortKey(bTrim);
           if (aKey !== bKey) return aKey - bKey;
+          // Sovereign Wealth Fund countries mostly hold just 1-2 funds each,
+          // so the usual within-block A-Z/Wealth toggle (which only reorders
+          // people inside a subgroup) is barely visible here — most subgroups
+          // have nothing to visibly reorder. In Wealth mode, order the country
+          // blocks themselves by their combined fund total instead, so the
+          // toggle actually does something meaningful for this section.
+          if (aFam === 'swf' && !sortAlpha) {
+            const sum = (blk) => blk.people.reduce((s, p) => s + (p.wealth || 0), 0);
+            const diff = sum(b) - sum(a);
+            if (diff !== 0) return diff;
+          }
         }
         return effectiveSortLabel(aTrim).localeCompare(effectiveSortLabel(bTrim));
       });
