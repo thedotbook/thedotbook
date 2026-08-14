@@ -9335,6 +9335,16 @@
   }
 
   const collapsedGroups = new Set();
+  // Tracks which individual subgroups (e.g. "SWF — Norway", "NHL — Boston
+  // Bruins") the user has manually expanded via toggleSubgroup(). Keyed by
+  // the subgroup's LABEL TEXT, not its numeric sid — sid is just a fresh
+  // incrementing counter assigned during each render walk, so the same
+  // subgroup can land on a different sid after a re-sort (e.g. toggling
+  // A-Z/Wealth reorders blocks). renderTable() does a full tbody.innerHTML
+  // rebuild on every call, which would otherwise silently collapse any
+  // subgroup the user had open — making a sort-order change look like it
+  // did nothing, since the reordered content is now hidden again.
+  const expandedSubgroupLabels = new Set();
 
   let GROUP_ORDER = [
     'My Own Entries',
@@ -9383,6 +9393,10 @@
     const isHidden = people.length > 0 && people[0].style.display === 'none';
     people.forEach(r => { r.style.display = isHidden ? '' : 'none'; });
     if (arrow) arrow.textContent = isHidden ? '▼' : '▶';
+    const subLabel = lbl ? lbl.dataset.sublabel : null;
+    if (subLabel) {
+      if (isHidden) expandedSubgroupLabels.add(subLabel); else expandedSubgroupLabels.delete(subLabel);
+    }
   }
 
 
@@ -9870,10 +9884,10 @@
             // repeating the outer "Sovereign Wealth Funds" heading (SWF is just
             // its abbreviation) — show only the country name on these rows.
             const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : labelTrimmed;
-            html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '"' + supercatAttr + '>'
+            html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           } else {
-            html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '">'
+            html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(labelTrimmed) + ' —</td></tr>';
           }
         } else if (thisSid >= 0) {
@@ -9886,6 +9900,20 @@
     }
     tbody.innerHTML = html;
     attachSubgroupListeners();
+    // Re-open any subgroup the user had manually expanded before this render
+    // (e.g. clicked into "Norway" under Sovereign Wealth Funds). Without this,
+    // a full rebuild — which happens on every renderTable() call, including
+    // from toggleSort() — would silently re-collapse it, making a sort-order
+    // change look like it had no effect since the reordered rows are hidden.
+    if (expandedSubgroupLabels.size > 0) {
+      document.querySelectorAll('#table-body tr.db-sub').forEach(function(lbl) {
+        if (!expandedSubgroupLabels.has(lbl.dataset.sublabel)) return;
+        const sid = lbl.dataset.sid;
+        document.querySelectorAll('#table-body tr.db-person[data-sid="' + sid + '"]').forEach(function(r) { r.style.display = ''; });
+        const arrow = lbl.querySelector('.sub-arrow');
+        if (arrow) arrow.textContent = '▼';
+      });
+    }
   }
 
   function toggleShowAll() { /* no-op */ }
@@ -9903,6 +9931,14 @@
         var arrow = this.querySelector('.sub-arrow');
         people.forEach(function(r) { r.style.display = isHidden ? '' : 'none'; });
         if (arrow) arrow.textContent = isHidden ? '▼' : '▶';
+        // Remember this subgroup's open/closed state by its stable label text
+        // (not sid, which is just a per-render counter) so a full re-render
+        // triggered elsewhere — e.g. toggling the A-Z/Wealth sort — can restore
+        // it, instead of silently collapsing everything back to closed.
+        var subLabel = this.dataset.sublabel;
+        if (subLabel) {
+          if (isHidden) expandedSubgroupLabels.add(subLabel); else expandedSubgroupLabels.delete(subLabel);
+        }
       });
     });
   }
