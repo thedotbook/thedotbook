@@ -9345,19 +9345,43 @@
   }
 
   // Nested Cricket collapsible section, within the Sport category — same
-  // single-level pattern as Rugby/NFL/MLB/NBA above (— County —
-  // toggle, then each county team + England national team).
+  // Nested Cricket collapsible section, within the Sport category. Cricket
+  // itself has THREE children — County Championship, IPL, and England — same
+  // two-level nesting pattern as Football's Men's/Women's split above.
   let cricketCollapsed = true;
+  let cricketCountyCollapsed = true;
+  let cricketIplCollapsed = true;
+  let cricketEnglandCollapsed = true;
 
   function toggleCricket() {
     cricketCollapsed = !cricketCollapsed;
     document.querySelectorAll('.cricket-arrow').forEach(function(a) { a.innerHTML = cricketCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="cricket"]').forEach(function(row) { row.classList.toggle('g-hidden', cricketCollapsed); });
+    updateCricketVisibility();
+  }
+
+  function toggleCricketGroup(which) {
+    if (which === 'county') {
+      cricketCountyCollapsed = !cricketCountyCollapsed;
+      document.querySelectorAll('.cricket-arrow-county').forEach(function(a) { a.innerHTML = cricketCountyCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'ipl') {
+      cricketIplCollapsed = !cricketIplCollapsed;
+      document.querySelectorAll('.cricket-arrow-ipl').forEach(function(a) { a.innerHTML = cricketIplCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      cricketEnglandCollapsed = !cricketEnglandCollapsed;
+      document.querySelectorAll('.cricket-arrow-england').forEach(function(a) { a.innerHTML = cricketEnglandCollapsed ? '&#9658;' : '&#9660;'; });
+    }
     updateCricketVisibility();
   }
 
   function updateCricketVisibility() {
-    document.querySelectorAll('.db-sub[data-supercat="cricket"]').forEach(function(row) {
-      const show = !cricketCollapsed;
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'cricket-county' && cat2 !== 'cricket-ipl' && cat2 !== 'cricket-england') return;
+      let show = !cricketCollapsed;
+      if (show && cat2 === 'cricket-county') show = !cricketCountyCollapsed;
+      if (show && cat2 === 'cricket-ipl') show = !cricketIplCollapsed;
+      if (show && cat2 === 'cricket-england') show = !cricketEnglandCollapsed;
       row.classList.toggle('g-hidden', !show);
       if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
@@ -9381,29 +9405,6 @@
   function updateNHLVisibility() {
     document.querySelectorAll('.db-sub[data-supercat="nhl"]').forEach(function(row) {
       const show = !nhlCollapsed;
-      row.classList.toggle('g-hidden', !show);
-      if (!show) {
-        document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
-        const arrow = row.querySelector('.sub-arrow');
-        if (arrow) arrow.textContent = '▶';
-      }
-    });
-  }
-
-  // Nested IPL collapsible section, within the Sport category — same
-  // single-level pattern as NHL/Cricket-County above (— IPL — toggle,
-  // then each franchise).
-  let iplCollapsed = true;
-
-  function toggleIPL() {
-    iplCollapsed = !iplCollapsed;
-    document.querySelectorAll('.ipl-arrow').forEach(function(a) { a.innerHTML = iplCollapsed ? '&#9658;' : '&#9660;'; });
-    updateIPLVisibility();
-  }
-
-  function updateIPLVisibility() {
-    document.querySelectorAll('.db-sub[data-supercat="ipl"]').forEach(function(row) {
-      const show = !iplCollapsed;
       row.classList.toggle('g-hidden', !show);
       if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
@@ -9550,7 +9551,6 @@
       updateNBAVisibility();
       updateCricketVisibility();
       updateNHLVisibility();
-      updateIPLVisibility();
     }
     attachSubgroupListeners();
   }
@@ -9707,13 +9707,56 @@
         }
         return explodedBlocks;
       }
+      // Cricket needs a 3-way split (County Championship / IPL / England) from
+      // a SINGLE underlying data block, rather than the simple 2-level explode
+      // above — county and IPL entries have been added interleaved throughout
+      // one continuous '_sub_cricket' block across many sessions, so there's no
+      // separate physical marker in the data to key off. Instead, split by note
+      // content: an exact 'IPL' segment routes to a franchise, an exact
+      // 'England' segment (and not IPL) routes to the England team, everything
+      // else falls through to county-name matching as before.
+      function explodeCricketSection(blocks, subLabel, countyKnownSet, iplKnownSet) {
+        const explodedBlocks = [];
+        for (const b of blocks) {
+          if (b.sub === subLabel) {
+            const countyPeople = [], iplPeople = [], englandPeople = [];
+            for (const p of b.people) {
+              const parts = (p.note || '').split(' · ').map(s => s.trim());
+              if (parts.indexOf('IPL') !== -1) iplPeople.push(p);
+              else if (parts.indexOf('England') !== -1) englandPeople.push(p);
+              else countyPeople.push(p);
+            }
+            const byCounty = {}, countyOrder = [];
+            for (const p of countyPeople) {
+              const team = findKnownTeam(p.note, countyKnownSet) || 'International & Retired';
+              if (!byCounty[team]) { byCounty[team] = []; countyOrder.push(team); }
+              byCounty[team].push(p);
+            }
+            countyOrder.sort((x, y) => x === 'International & Retired' ? 1 : y === 'International & Retired' ? -1 : x.localeCompare(y));
+            for (const team of countyOrder) explodedBlocks.push({ sub: 'County — ' + team, people: byCounty[team] });
+
+            const byFranchise = {}, franchiseOrder = [];
+            for (const p of iplPeople) {
+              const team = findKnownTeam(p.note, iplKnownSet) || 'Other IPL';
+              if (!byFranchise[team]) { byFranchise[team] = []; franchiseOrder.push(team); }
+              byFranchise[team].push(p);
+            }
+            franchiseOrder.sort((x, y) => x === 'Other IPL' ? 1 : y === 'Other IPL' ? -1 : x.localeCompare(y));
+            for (const team of franchiseOrder) explodedBlocks.push({ sub: 'IPL — ' + team, people: byFranchise[team] });
+
+            if (englandPeople.length > 0) explodedBlocks.push({ sub: 'England — England', people: englandPeople });
+          } else {
+            explodedBlocks.push(b);
+          }
+        }
+        return explodedBlocks;
+      }
       let explodedBlocks = explodeIntoTeamGroups(blocks, 'Rugby', 'Rugby', KNOWN_RUGBY_CLUBS, 'International Legends & Retired Stars');
       explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'American Football / NFL', 'NFL', KNOWN_NFL_TEAMS, 'Legends & Retired');
       explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'Baseball / MLB', 'MLB', KNOWN_MLB_TEAMS, 'Legends & Retired');
       explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'Basketball', 'NBA', KNOWN_NBA_TEAMS, 'Legends & Retired');
-      explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'Cricket', 'County', KNOWN_COUNTY_TEAMS, 'International & Retired');
+      explodedBlocks = explodeCricketSection(explodedBlocks, 'Cricket', KNOWN_COUNTY_TEAMS, KNOWN_IPL_TEAMS);
       explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'Ice Hockey / NHL', 'NHL', KNOWN_NHL_TEAMS, 'Legends & Retired');
-      explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'IPL', 'IPL', KNOWN_IPL_TEAMS, 'Other IPL');
       explodedBlocks = explodeIntoTeamGroups(explodedBlocks, 'Sovereign Wealth Funds', 'SWF', KNOWN_SWF_COUNTRIES, 'World Total');
       blocks.length = 0;
       for (const b of explodedBlocks) blocks.push(b);
@@ -9752,6 +9795,9 @@
         if (label.startsWith('IPL —')) {
           return label.indexOf('Other IPL') !== -1 ? 1 : 0;
         }
+        if (label.startsWith('England —')) {
+          return 0;
+        }
         return null;
       }
       // Which family a block belongs to. Critical: footballSortKey's 0/1 tier
@@ -9771,26 +9817,30 @@
         if (label.startsWith('NHL —')) return 'nhl';
         if (label.startsWith('SWF —')) return 'swf';
         if (label.startsWith('IPL —')) return 'ipl';
+        if (label.startsWith('England —')) return 'england';
         return null;
       }
-      // Once exploded, each NFL/MLB/NBA/County/NHL/SWF/IPL team block is labelled
-      // "NFL — Team Name", "MLB — Team Name", "NBA — Team Name", "County — Team
-      // Name", "NHL — Team Name", "SWF — Country Name", or "IPL — Franchise Name",
-      // which would sort under "N"/"M"/"C"/"S"/"I" — landing each section far from
-      // where its original, pre-explosion group name ("American Football / NFL",
+      // Once exploded, each NFL/MLB/NBA/County/NHL/SWF/IPL/England team block is
+      // labelled "NFL — Team Name", "MLB — Team Name", "NBA — Team Name",
+      // "County — Team Name", "NHL — Team Name", "SWF — Country Name", "IPL —
+      // Franchise Name", or "England — England", which would sort under
+      // "N"/"M"/"C"/"S"/"I"/"E" — landing each section far from where its
+      // original, pre-explosion group name ("American Football / NFL",
       // "Baseball / MLB", "Basketball", "Cricket", "Ice Hockey / NHL", "Sovereign
       // Wealth Funds") would alphabetically belong. Substitute that original label
       // as the sort key so each section clusters together in its intuitive
       // alphabetical spot — while still using footballSortKey to keep each
-      // section's catch-all pinned last. IPL is deliberately remapped to sort
-      // right alongside County Championship cricket (both "Cricket — ...") since
-      // they're the same sport, rather than floating off separately under "I".
+      // section's catch-all pinned last. County/England/IPL are all deliberately
+      // remapped to sort together under "Cricket — ..." since they're the same
+      // sport, in alphabetical sub-order (County, England, IPL) rather than
+      // floating off separately under "C"/"E"/"I".
       function effectiveSortLabel(label) {
         if (label.startsWith('NFL —')) return 'American Football / NFL — ' + label.slice(6);
         if (label.startsWith('MLB —')) return 'Baseball / MLB — ' + label.slice(6);
         if (label.startsWith('NBA —')) return 'Basketball — ' + label.slice(6);
         if (label.startsWith('County —')) return 'Cricket — 1 County — ' + label.slice(9);
-        if (label.startsWith('IPL —')) return 'Cricket — 2 IPL — ' + label.slice(6);
+        if (label.startsWith('England —')) return 'Cricket — 2 England';
+        if (label.startsWith('IPL —')) return 'Cricket — 3 IPL — ' + label.slice(6);
         if (label.startsWith('NHL —')) return 'Ice Hockey / NHL — ' + label.slice(6);
         if (label.startsWith('SWF —')) return 'Sovereign Wealth Funds — ' + label.slice(6);
         return label;
@@ -9918,9 +9968,9 @@
       let nflGroupEntered = false; // tracks whether the "— NFL —" toggle has been inserted yet
       let mlbGroupEntered = false; // tracks whether the "— MLB —" toggle has been inserted yet
       let nbaGroupEntered = false; // tracks whether the "— NBA —" toggle has been inserted yet
-      let countyGroupEntered = false; // tracks whether the "— Cricket —" toggle has been inserted yet
+      let cricketOuterEntered = false; // tracks whether the "— Cricket —" outer toggle has been inserted yet
+      let cricketGroupState = null; // null | 'county' | 'ipl' | 'england' — tracks nesting within Cricket
       let nhlGroupEntered = false; // tracks whether the "— NHL —" toggle has been inserted yet
-      let iplGroupEntered = false; // tracks whether the "— IPL —" toggle has been inserted yet
       for (const item of items) {
         if (item.type === 'sub') {
           thisSid = subIdx++;
@@ -9943,14 +9993,14 @@
           const isNHL = labelTrimmed.startsWith('NHL —');
           const isSWF = labelTrimmed.startsWith('SWF —');
           const isIPL = labelTrimmed.startsWith('IPL —');
+          const isEngland = labelTrimmed.startsWith('England —');
           let supercatAttr = '';
           let rugbyRowHidden = false;
           let nflRowHidden = false;
           let mlbRowHidden = false;
           let nbaRowHidden = false;
-          let countyRowHidden = false;
+          let cricketRowHidden = false;
           let nhlRowHidden = false;
-          let iplRowHidden = false;
           if (isFootball) {
             const isWomens = labelTrimmed.toLowerCase().indexOf('women') !== -1;
             const thisState = isWomens ? 'womens' : 'mens';
@@ -9976,6 +10026,7 @@
             supercatAttr = ' data-supercat="football" data-supercat2="football-' + thisState + '"' + (rowHidden ? ' data-football-hidden="1"' : '');
           } else if (isRugby) {
             footballGroupState = null;
+            cricketGroupState = null;
             const catHiddenClassR = hidden ? ' g-hidden' : '';
             if (!rugbyGroupEntered) {
               // Entering rugby for the first time this render — insert the top-level toggle.
@@ -9990,6 +10041,7 @@
             supercatAttr = ' data-supercat="rugby"' + (rugbyRowHidden ? ' data-rugby-hidden="1"' : '');
           } else if (isNFL) {
             footballGroupState = null;
+            cricketGroupState = null;
             const catHiddenClassN = hidden ? ' g-hidden' : '';
             if (!nflGroupEntered) {
               // Entering NFL for the first time this render — insert the top-level toggle.
@@ -10003,6 +10055,7 @@
             supercatAttr = ' data-supercat="nfl"' + (nflRowHidden ? ' data-nfl-hidden="1"' : '');
           } else if (isMLB) {
             footballGroupState = null;
+            cricketGroupState = null;
             const catHiddenClassM = hidden ? ' g-hidden' : '';
             if (!mlbGroupEntered) {
               // Entering MLB for the first time this render — insert the top-level toggle.
@@ -10016,6 +10069,7 @@
             supercatAttr = ' data-supercat="mlb"' + (mlbRowHidden ? ' data-mlb-hidden="1"' : '');
           } else if (isNBA) {
             footballGroupState = null;
+            cricketGroupState = null;
             const catHiddenClassB = hidden ? ' g-hidden' : '';
             if (!nbaGroupEntered) {
               // Entering NBA for the first time this render — insert the top-level toggle.
@@ -10027,21 +10081,35 @@
             }
             nbaRowHidden = hidden || nbaCollapsed;
             supercatAttr = ' data-supercat="nba"' + (nbaRowHidden ? ' data-nba-hidden="1"' : '');
-          } else if (isCounty) {
+          } else if (isCounty || isIPL || isEngland) {
+            // Cricket has three children — County Championship, IPL, England —
+            // same two-level nesting pattern as Football's Men's/Women's split.
             footballGroupState = null;
-            const catHiddenClassC = hidden ? ' g-hidden' : '';
-            if (!countyGroupEntered) {
-              // Entering Cricket for the first time this render — insert the top-level toggle.
-              // Same single-level pattern as Rugby/NFL/MLB/NBA (no gender split needed).
+            const thisState = isIPL ? 'ipl' : isEngland ? 'england' : 'county';
+            const catHiddenClass = hidden ? ' g-hidden' : '';
+            if (!cricketOuterEntered) {
+              // Entering Cricket for the first time this render — insert the outer toggle
               const arrowC = cricketCollapsed ? '&#9658;' : '&#9660;';
-              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassC + '" data-group="' + escHtml(groupName) + '" onclick="toggleCricket()" style="cursor:pointer">'
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClass + '" data-group="' + escHtml(groupName) + '" onclick="toggleCricket()" style="cursor:pointer">'
                     + '<td colspan="3" style="padding-left:20px"><span class="cricket-arrow sub-arrow">' + arrowC + '</span> — Cricket —</td></tr>';
-              countyGroupEntered = true;
+              cricketOuterEntered = true;
             }
-            countyRowHidden = hidden || cricketCollapsed;
-            supercatAttr = ' data-supercat="cricket"' + (countyRowHidden ? ' data-cricket-hidden="1"' : '');
+            if (cricketGroupState !== thisState) {
+              // Entering (or switching into) County/IPL/England — insert the nested toggle
+              const collapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : cricketCountyCollapsed;
+              const arrow2 = collapsedNow ? '&#9658;' : '&#9660;';
+              const label2 = thisState === 'ipl' ? 'IPL' : thisState === 'england' ? 'England' : 'County Championship';
+              const nestedHiddenClass = (cricketCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClass + '" data-group="' + escHtml(groupName) + '" data-parentcat="cricket" onclick="toggleCricketGroup(\'' + thisState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="cricket-arrow-' + thisState + '">' + arrow2 + '</span> ' + label2 + '</td></tr>';
+            }
+            cricketGroupState = thisState;
+            const subCollapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : cricketCountyCollapsed;
+            cricketRowHidden = hidden || cricketCollapsed || subCollapsedNow;
+            supercatAttr = ' data-supercat="cricket" data-supercat2="cricket-' + thisState + '"' + (cricketRowHidden ? ' data-cricket-hidden="1"' : '');
           } else if (isNHL) {
             footballGroupState = null;
+            cricketGroupState = null;
             const catHiddenClassH = hidden ? ' g-hidden' : '';
             if (!nhlGroupEntered) {
               // Entering NHL for the first time this render — insert the top-level toggle.
@@ -10053,37 +10121,26 @@
             }
             nhlRowHidden = hidden || nhlCollapsed;
             supercatAttr = ' data-supercat="nhl"' + (nhlRowHidden ? ' data-nhl-hidden="1"' : '');
-          } else if (isIPL) {
-            footballGroupState = null;
-            const catHiddenClassI = hidden ? ' g-hidden' : '';
-            if (!iplGroupEntered) {
-              // Entering IPL for the first time this render — insert the top-level toggle.
-              // Same single-level pattern as Rugby/NFL/MLB/NBA/Cricket/NHL (no gender split needed).
-              const arrowI = iplCollapsed ? '&#9658;' : '&#9660;';
-              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassI + '" data-group="' + escHtml(groupName) + '" onclick="toggleIPL()" style="cursor:pointer">'
-                    + '<td colspan="3" style="padding-left:20px"><span class="ipl-arrow sub-arrow">' + arrowI + '</span> — Cricket - IPL —</td></tr>';
-              iplGroupEntered = true;
-            }
-            iplRowHidden = hidden || iplCollapsed;
-            supercatAttr = ' data-supercat="ipl"' + (iplRowHidden ? ' data-ipl-hidden="1"' : '');
           } else {
             // Sovereign Wealth Funds is its own top-level category (not
             // nested within a broader parent like Sport), so its country
             // groupings render as plain subsections here — no second nested
             // toggle is needed on top of the category's own show/hide toggle.
             footballGroupState = null;
+            cricketGroupState = null;
           }
 
           if (supercatAttr) {
-            const rowHiddenFinal = isRugby ? rugbyRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : isCounty ? countyRowHidden : isNHL ? nhlRowHidden : isIPL ? iplRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
-            // For SWF/IPL rows, "SWF — Norway" or "IPL — Mumbai Indians" would
-            // display as literally repeating the outer heading (SWF/IPL are
-            // just abbreviations of it) — show only the country/franchise name.
-            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : labelTrimmed;
+            const rowHiddenFinal = isRugby ? rugbyRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland) ? cricketRowHidden : isNHL ? nhlRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
+            // For SWF/IPL/County/England rows, the prefix ("SWF —", "IPL —",
+            // "County —", "England —") would display as literally repeating
+            // the just-shown parent heading — show only the country/franchise/
+            // county/team name itself on these inner rows.
+            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           } else {
-            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : labelTrimmed;
+            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           }
