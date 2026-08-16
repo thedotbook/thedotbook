@@ -9621,21 +9621,39 @@
     });
   }
 
-  // Nested Road Racing (cycling teams) collapsible section, within the
-  // Cycling category — same single-level pattern as NHL above (— Road
-  // Racing — toggle, then each team). Sits alongside Cycling's existing
-  // flat "Top 20 by net worth" list, which is unaffected by this.
-  let roadRacingCollapsed = true;
+  // Nested Cycling collapsible section, within the Sport category. Cycling
+  // has two children — the existing "Top 20 by Net Worth" list and "Road
+  // Racing" (explodes into team subsections) — same two-level nesting
+  // pattern as Cricket's County/IPL/England split above.
+  let cyclingCollapsed = true;
+  let cyclingTop20Collapsed = true;
+  let cyclingRoadRacingCollapsed = true;
 
-  function toggleRoadRacing() {
-    roadRacingCollapsed = !roadRacingCollapsed;
-    document.querySelectorAll('.roadracing-arrow').forEach(function(a) { a.innerHTML = roadRacingCollapsed ? '&#9658;' : '&#9660;'; });
-    updateRoadRacingVisibility();
+  function toggleCycling() {
+    cyclingCollapsed = !cyclingCollapsed;
+    document.querySelectorAll('.cycling-arrow').forEach(function(a) { a.innerHTML = cyclingCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="cycling"]').forEach(function(row) { row.classList.toggle('g-hidden', cyclingCollapsed); });
+    updateCyclingVisibility();
   }
 
-  function updateRoadRacingVisibility() {
-    document.querySelectorAll('.db-sub[data-supercat="roadracing"]').forEach(function(row) {
-      const show = !roadRacingCollapsed;
+  function toggleCyclingGroup(which) {
+    if (which === 'roadracing') {
+      cyclingRoadRacingCollapsed = !cyclingRoadRacingCollapsed;
+      document.querySelectorAll('.cycling-arrow-roadracing').forEach(function(a) { a.innerHTML = cyclingRoadRacingCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      cyclingTop20Collapsed = !cyclingTop20Collapsed;
+      document.querySelectorAll('.cycling-arrow-top20').forEach(function(a) { a.innerHTML = cyclingTop20Collapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateCyclingVisibility();
+  }
+
+  function updateCyclingVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'cycling-top20' && cat2 !== 'cycling-roadracing') return;
+      let show = !cyclingCollapsed;
+      if (show && cat2 === 'cycling-top20') show = !cyclingTop20Collapsed;
+      if (show && cat2 === 'cycling-roadracing') show = !cyclingRoadRacingCollapsed;
       row.classList.toggle('g-hidden', !show);
       if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
@@ -9793,7 +9811,7 @@
       updateNBAVisibility();
       updateCricketVisibility();
       updateNHLVisibility();
-      updateRoadRacingVisibility();
+      updateCyclingVisibility();
     }
     attachSubgroupListeners();
   }
@@ -10223,7 +10241,8 @@
       let cricketOuterEntered = false; // tracks whether the "— Cricket —" outer toggle has been inserted yet
       let cricketGroupState = null; // null | 'county' | 'ipl' | 'england' — tracks nesting within Cricket
       let nhlGroupEntered = false; // tracks whether the "— NHL —" toggle has been inserted yet
-      let roadRacingGroupEntered = false; // tracks whether the "— Road Racing —" toggle has been inserted yet
+      let cyclingOuterEntered = false; // tracks whether the outer "— Cycling —" toggle has been inserted yet
+      let cyclingGroupState = null; // null | 'top20' | 'roadracing' — tracks nesting within Cycling
       for (const item of items) {
         if (item.type === 'sub') {
           thisSid = subIdx++;
@@ -10248,6 +10267,7 @@
           const isIPL = labelTrimmed.startsWith('IPL —');
           const isEngland = labelTrimmed.startsWith('England —');
           const isRoadRacing = labelTrimmed.startsWith('Road Racing —');
+          const isCyclingFlat = labelTrimmed === 'Cycling';
           let supercatAttr = '';
           let rugbyRowHidden = false;
           let nflRowHidden = false;
@@ -10255,7 +10275,7 @@
           let nbaRowHidden = false;
           let cricketRowHidden = false;
           let nhlRowHidden = false;
-          let roadRacingRowHidden = false;
+          let cyclingRowHidden = false;
           if (isFootball) {
             const isWomens = labelTrimmed.toLowerCase().indexOf('women') !== -1;
             const thisState = isWomens ? 'womens' : 'mens';
@@ -10282,6 +10302,7 @@
           } else if (isRugby) {
             footballGroupState = null;
             cricketGroupState = null;
+            cyclingGroupState = null;
             const catHiddenClassR = hidden ? ' g-hidden' : '';
             if (!rugbyGroupEntered) {
               // Entering rugby for the first time this render — insert the top-level toggle.
@@ -10297,6 +10318,7 @@
           } else if (isNFL) {
             footballGroupState = null;
             cricketGroupState = null;
+            cyclingGroupState = null;
             const catHiddenClassN = hidden ? ' g-hidden' : '';
             if (!nflGroupEntered) {
               // Entering NFL for the first time this render — insert the top-level toggle.
@@ -10311,6 +10333,7 @@
           } else if (isMLB) {
             footballGroupState = null;
             cricketGroupState = null;
+            cyclingGroupState = null;
             const catHiddenClassM = hidden ? ' g-hidden' : '';
             if (!mlbGroupEntered) {
               // Entering MLB for the first time this render — insert the top-level toggle.
@@ -10325,6 +10348,7 @@
           } else if (isNBA) {
             footballGroupState = null;
             cricketGroupState = null;
+            cyclingGroupState = null;
             const catHiddenClassB = hidden ? ' g-hidden' : '';
             if (!nbaGroupEntered) {
               // Entering NBA for the first time this render — insert the top-level toggle.
@@ -10365,6 +10389,7 @@
           } else if (isNHL) {
             footballGroupState = null;
             cricketGroupState = null;
+            cyclingGroupState = null;
             const catHiddenClassH = hidden ? ' g-hidden' : '';
             if (!nhlGroupEntered) {
               // Entering NHL for the first time this render — insert the top-level toggle.
@@ -10376,20 +10401,33 @@
             }
             nhlRowHidden = hidden || nhlCollapsed;
             supercatAttr = ' data-supercat="nhl"' + (nhlRowHidden ? ' data-nhl-hidden="1"' : '');
-          } else if (isRoadRacing) {
+          } else if (isCyclingFlat || isRoadRacing) {
+            // Cycling has two children — "Top 20 by Net Worth" and "Road
+            // Racing" (which explodes into team subsections) — same
+            // two-level nesting pattern as Cricket's County/IPL/England
+            // split above.
             footballGroupState = null;
             cricketGroupState = null;
-            const catHiddenClassRR = hidden ? ' g-hidden' : '';
-            if (!roadRacingGroupEntered) {
-              // Entering Road Racing for the first time this render — insert the top-level toggle.
-              // Same single-level pattern as Rugby/NFL/MLB/NBA/Cricket/NHL (no gender split needed).
-              const arrowRR = roadRacingCollapsed ? '&#9658;' : '&#9660;';
-              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassRR + '" data-group="' + escHtml(groupName) + '" onclick="toggleRoadRacing()" style="cursor:pointer">'
-                    + '<td colspan="3" style="padding-left:20px"><span class="roadracing-arrow sub-arrow">' + arrowRR + '</span> — Cycling - Road Racing —</td></tr>';
-              roadRacingGroupEntered = true;
+            const thisCyclingState = isRoadRacing ? 'roadracing' : 'top20';
+            const catHiddenClassCY = hidden ? ' g-hidden' : '';
+            if (!cyclingOuterEntered) {
+              const arrowCY = cyclingCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassCY + '" data-group="' + escHtml(groupName) + '" onclick="toggleCycling()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="cycling-arrow sub-arrow">' + arrowCY + '</span> — Cycling —</td></tr>';
+              cyclingOuterEntered = true;
             }
-            roadRacingRowHidden = hidden || roadRacingCollapsed;
-            supercatAttr = ' data-supercat="roadracing"' + (roadRacingRowHidden ? ' data-roadracing-hidden="1"' : '');
+            if (cyclingGroupState !== thisCyclingState) {
+              const collapsedNow = thisCyclingState === 'roadracing' ? cyclingRoadRacingCollapsed : cyclingTop20Collapsed;
+              const arrow2 = collapsedNow ? '&#9658;' : '&#9660;';
+              const label2 = thisCyclingState === 'roadracing' ? 'Road Racing' : 'Top 20 by Net Worth';
+              const nestedHiddenClassCY = (cyclingCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassCY + '" data-group="' + escHtml(groupName) + '" data-parentcat="cycling" onclick="toggleCyclingGroup(\'' + thisCyclingState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="cycling-arrow-' + thisCyclingState + '">' + arrow2 + '</span> ' + label2 + '</td></tr>';
+            }
+            cyclingGroupState = thisCyclingState;
+            const subCollapsedNowCY = thisCyclingState === 'roadracing' ? cyclingRoadRacingCollapsed : cyclingTop20Collapsed;
+            cyclingRowHidden = hidden || cyclingCollapsed || subCollapsedNowCY;
+            supercatAttr = ' data-supercat="cycling" data-supercat2="cycling-' + thisCyclingState + '"' + (cyclingRowHidden ? ' data-cycling-hidden="1"' : '');
           } else {
             // Sovereign Wealth Funds is its own top-level category (not
             // nested within a broader parent like Sport), so its country
@@ -10397,14 +10435,15 @@
             // toggle is needed on top of the category's own show/hide toggle.
             footballGroupState = null;
             cricketGroupState = null;
+            cyclingGroupState = null;
           }
 
           if (supercatAttr) {
-            const rowHiddenFinal = isRugby ? rugbyRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland) ? cricketRowHidden : isNHL ? nhlRowHidden : isRoadRacing ? roadRacingRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
+            const rowHiddenFinal = isRugby ? rugbyRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland) ? cricketRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
             // For SWF/IPL/County/England/Road Racing rows, the prefix would
             // display as literally repeating the just-shown parent heading —
             // show only the country/franchise/county/team name itself.
-            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
+            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isCyclingFlat ? 'Top 20 by Net Worth' : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           } else {
