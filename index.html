@@ -10440,12 +10440,23 @@
 
           if (supercatAttr) {
             const rowHiddenFinal = isRugby ? rugbyRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland) ? cricketRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
+            if (isCyclingFlat) {
+              // The visible, clickable toggle for the flat Top 20 list is the
+              // "Top 20 by Net Worth" db-supersub2 row inserted just above.
+              // This row's only job is to carry data-sid/data-supercat2 so
+              // updateCyclingVisibility() can find and show/hide the 20
+              // people underneath — it must stay out of view itself, or it
+              // shows as a second, duplicate "Top 20 by Net Worth" label
+              // directly beneath the real one.
+              html += '<tr class="db-sub" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + ' style="display:none"></tr>';
+            } else {
             // For SWF/IPL/County/England/Road Racing rows, the prefix would
             // display as literally repeating the just-shown parent heading —
             // show only the country/franchise/county/team name itself.
-            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isCyclingFlat ? 'Top 20 by Net Worth' : labelTrimmed;
+            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
+            }
           } else {
             const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
