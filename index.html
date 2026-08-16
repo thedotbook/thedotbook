@@ -9661,6 +9661,17 @@
     if (person._top20) return 'The Twenty Wealthiest People on Earth';
     const n = (person.note || '').toLowerCase();
     const nm = (person.name || '').toLowerCase();
+    // Explicit "Sport · ..." notes are checked first, before any of the later
+    // substring heuristics below. Without this, a note like "Sport · Cycling ·
+    // Road Racing · ... · UAE Team Emirates XRG · ..." gets miscategorized:
+    // "Emirates" contains "emir" as a substring, which the royalty/monarchy
+    // check further down was matching, silently filing an entire 23-team
+    // cycling section under "Royalty & Politics" instead of "Sport". Since
+    // every Sport entry in this database consistently starts with the
+    // "Sport · " prefix by convention, checking it explicitly and first
+    // sidesteps this whole class of false-positive substring collision for
+    // any current or future entry, not just this one team name.
+    if (n.startsWith('sport ·')) return 'Sport';
     if (n.includes('defence ·') || n.includes('· defence') || n.includes('military ·') || n.includes('· military') || n.includes('nuclear ·') || n.includes('· nuclear') || n.includes('weapons ·') || n.includes('munitions ·')) return 'Defence & Military';
     if (n.includes('fashion ·') || n.includes('· fashion') || n.includes('beauty ·') || n.includes('· beauty') || n.includes('perfume ·') || n.includes('· perfume') || n.includes('cosmetics ·') || n.includes('luxury fashion') || n.includes('clothing ·') || n.includes('· clothing')) return 'Fashion & Beauty';
     if (n.startsWith('country ·') || n.includes('· country ·') || n.includes('countries ·')) return 'Countries of the World';
