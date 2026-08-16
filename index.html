@@ -9655,7 +9655,13 @@
       if (show && cat2 === 'cycling-top20') show = !cyclingTop20Collapsed;
       if (show && cat2 === 'cycling-roadracing') show = !cyclingRoadRacingCollapsed;
       row.classList.toggle('g-hidden', !show);
-      if (!show) {
+      if (cat2 === 'cycling-top20') {
+        // Top 20 is one flat group, not a further breakdown into teams —
+        // its carrier row is permanently invisible (see render loop), so
+        // there's no second row for the user to click the way there is for
+        // Road Racing's teams. Show/hide its people directly, in one step.
+        document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
+      } else if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
         const arrow = row.querySelector('.sub-arrow');
         if (arrow) arrow.textContent = '▶';
