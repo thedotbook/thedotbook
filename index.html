@@ -7859,6 +7859,7 @@
     'piero hincapie arsenal': { wealth: 25,      note: 'Football · Ecuador · Arsenal · Defender · Signed 2026', url: 'https://en.wikipedia.org/wiki/Piero_Hincapi%C3%A9' },
     'oleksandr zinchenko arsenal': { wealth: 10, note: 'Football · Ukraine · Arsenal · £110,000/week · Champions 2026 · Left back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Oleksandr_Zinchenko' },
     'riccardo calafiori arsenal': { wealth: 20, note: 'Football · Italy · Arsenal · £120,000/week · Champions 2026 · Centre back · World Cup 2026 · From Bologna', url: 'https://en.wikipedia.org/wiki/Riccardo_Calafiori' },
+    'arsenal fixtures': { _fixtureList: true, fixtureKey: 'arsenal', wealth: 0, name: '\u26bd Full 2026-27 Fixture List', note: 'Tap to open Arsenal\u2019s full 2026-27 Premier League fixture list', url: '' },
 
     // ── Aston Villa ──────────────────────────────────────
     '_sub_pl_villa':         { _subgroup: 'Football — Aston Villa FC' },
@@ -7961,6 +7962,7 @@
     'pascal gross brighton':    { wealth: 20,  note: 'Football · Germany · Brighton · Midfielder · Long serving Brighton stalwart', url: 'https://en.wikipedia.org/wiki/Pascal_Gro%C3%9F' },
     'ferdi kadioglu brighton':  { wealth: 18,  note: 'Football · Turkey · Brighton · Defender · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ferdi_Kadıoğlu' },
     'diego coppola brighton':   { wealth: 12,  note: 'Football · Italy · Brighton · Centre back · Signed 2026', url: 'https://en.wikipedia.org/wiki/Diego_Coppola' },
+    'brighton fixtures': { _fixtureList: true, fixtureKey: 'brighton', wealth: 0, name: '\u26bd Full 2026-27 Fixture List', note: 'Tap to open Brighton & Hove Albion\u2019s full 2026-27 Premier League fixture list', url: '' },
 
     // ── Chelsea ──────────────────────────────────────────
     '_sub_pl_chelsea':       { _subgroup: 'Football — Chelsea FC' },
@@ -7989,6 +7991,7 @@
     'jadon sancho chelsea':     { wealth: 20,  note: 'Football · England · Chelsea · Winger · World Cup 2026 · From Man Utd loan to permanent · Pace and trickery', url: 'https://en.wikipedia.org/wiki/Jadon_Sancho' },
     'jordan henderson chelsea': { wealth: 25,  note: 'Football · England · Chelsea · Midfielder · Veteran signed 2026 for experience', url: 'https://en.wikipedia.org/wiki/Jordan_Henderson' },
     'morgan rogers chelsea':    { wealth: 35,  note: 'Football · England · Chelsea · Attacking midfielder · Club record signing 2026 · From Aston Villa', url: 'https://en.wikipedia.org/wiki/Morgan_Rogers' },
+    'chelsea fixtures': { _fixtureList: true, fixtureKey: 'chelsea', wealth: 0, name: '\u26bd Full 2026-27 Fixture List', note: 'Tap to open Chelsea\u2019s full 2026-27 Premier League fixture list', url: '' },
 
     // ── Crystal Palace ───────────────────────────────────
     '_sub_pl_palace':        { _subgroup: 'Football — Crystal Palace FC' },
@@ -9239,6 +9242,133 @@
   ];
 
   // Fix acronyms that get mangled by title-case (USA, UK, UAE, DR Congo etc.)
+  // 2026-27 Premier League fixture lists, keyed by club. Sourced from the
+  // official Premier League fixture release (19 June 2026). Each club's
+  // "Full Fixture List" row (added at the end of that club's player list)
+  // looks itself up here by fixtureKey when clicked.
+  const CLUB_FIXTURES = {
+    arsenal: [
+      "Home - Coventry City - Fri 21 Aug",
+      "Away - Aston Villa - Mon 24 Aug",
+      "Home - Chelsea - Sun 6 Sep",
+      "Away - Sunderland - Sat 12 Sep",
+      "Away - Brighton & Hove Albion - Sat 19 Sep",
+      "Home - Leeds United - Sat 10 Oct",
+      "Away - Nottingham Forest - Sat 17 Oct",
+      "Home - Everton - Sat 24 Oct",
+      "Away - Liverpool - Sat 31 Oct",
+      "Home - Hull City - Sat 7 Nov",
+      "Away - Newcastle United - Sat 21 Nov",
+      "Home - Manchester City - Sat 28 Nov",
+      "Away - Brentford - Wed 2 Dec",
+      "Away - Tottenham Hotspur - Sat 5 Dec",
+      "Home - AFC Bournemouth - Sat 12 Dec",
+      "Home - Manchester United - Sat 19 Dec",
+      "Away - Crystal Palace - Sat 26 Dec",
+      "Away - Fulham - Wed 30 Dec",
+      "Home - Ipswich Town - Sat 2 Jan 2027",
+      "Home - Brentford - Wed 6 Jan",
+      "Away - Hull City - Sat 16 Jan",
+      "Home - Newcastle United - Sat 23 Jan",
+      "Away - Manchester City - Sat 30 Jan",
+      "Home - Liverpool - Sat 6 Feb",
+      "Away - Ipswich Town - Wed 10 Feb",
+      "Home - Fulham - Sat 20 Feb",
+      "Away - Manchester United - Sat 27 Feb",
+      "Home - Crystal Palace - Wed 3 Mar",
+      "Away - Chelsea - Sat 13 Mar",
+      "Home - Sunderland - Sat 20 Mar",
+      "Away - Coventry City - Sat 10 Apr",
+      "Home - Aston Villa - Sat 17 Apr",
+      "Away - AFC Bournemouth - Sat 24 Apr",
+      "Home - Tottenham Hotspur - Sat 1 May",
+      "Away - Leeds United - Sat 8 May",
+      "Home - Nottingham Forest - Sat 15 May",
+      "Away - Everton - Sun 23 May",
+      "Home - Brighton & Hove Albion - Sun 30 May",
+    ],
+    chelsea: [
+      "Away - Fulham - Mon 24 Aug",
+      "Home - Brighton & Hove Albion - Sun 30 Aug*",
+      "Away - Arsenal - Sun 6 Sep",
+      "Home - Hull City - Sat 12 Sep",
+      "Away - Brentford - Fri 18 Sep*",
+      "Home - AFC Bournemouth - Sat 10 Oct",
+      "Away - Everton - Sat 17 Oct",
+      "Home - Tottenham Hotspur - Sat 24 Oct",
+      "Home - Manchester United - Sat 31 Oct",
+      "Away - Sunderland - Sat 7 Nov",
+      "Home - Leeds United - Sat 21 Nov",
+      "Away - Nottingham Forest - Sat 28 Nov",
+      "Home - Crystal Palace - Wed 2 Dec",
+      "Home - Liverpool - Sat 5 Dec",
+      "Away - Manchester City - Sat 12 Dec",
+      "Home - Aston Villa - Sat 19 Dec",
+      "Away - Coventry City - Sat 26 Dec",
+      "Away - Ipswich Town - Wed 30 Dec",
+      "Home - Newcastle United - Sat 2 Jan 2027",
+      "Away - Crystal Palace - Wed 6 Jan",
+      "Home - Sunderland - Sat 16 Jan",
+      "Away - Leeds United - Sat 23 Jan",
+      "Home - Nottingham Forest - Sat 30 Jan",
+      "Away - Manchester United - Sat 6 Feb",
+      "Away - Newcastle United - Wed 10 Feb",
+      "Home - Ipswich Town - Sat 20 Feb",
+      "Away - Aston Villa - Sat 27 Feb",
+      "Home - Coventry City - Wed 3 Mar",
+      "Home - Arsenal - Sat 13 Mar",
+      "Away - Hull City - Sat 20 Mar",
+      "Home - Fulham - Sat 10 Apr",
+      "Away - Brighton & Hove Albion - Sat 17 Apr",
+      "Home - Manchester City - Sat 24 Apr",
+      "Away - Liverpool - Sat 1 May",
+      "Away - Tottenham Hotspur - Sat 8 May",
+      "Home - Everton - Sat 15 May",
+      "Away - AFC Bournemouth - Sun 23 May",
+      "Home - Brentford - Sun 30 May",
+    ],
+    brighton: [
+      "Home - Aston Villa - Sun 23 Aug",
+      "Away - Chelsea - Sun 30 Aug*",
+      "Home - Leeds United - Fri/Sat 5 Sep",
+      "Away - Coventry City - Sun 13 Sep",
+      "Home - Arsenal - Sat 19 Sep",
+      "Away - Sunderland - Sat 10 Oct",
+      "Home - Crystal Palace - Sat 17 Oct",
+      "Away - Liverpool - Sat 24 Oct",
+      "Away - Manchester City - Sat 31 Oct",
+      "Home - Brentford - Sat 7 Nov",
+      "Away - Hull City - Sat 21 Nov",
+      "Home - Newcastle United - Sat 28 Nov",
+      "Away - AFC Bournemouth - Wed 2 Dec",
+      "Away - Nottingham Forest - Sat 5 Dec",
+      "Home - Everton - Sat 12 Dec",
+      "Home - Ipswich Town - Sat 19 Dec",
+      "Away - Fulham - Sat 26 Dec",
+      "Away - Tottenham Hotspur - Wed 30 Dec",
+      "Home - Manchester United - Sat 2 Jan 2027",
+      "Home - AFC Bournemouth - Wed 6 Jan",
+      "Away - Brentford - Sat 16 Jan",
+      "Home - Manchester City - Sat 23 Jan",
+      "Away - Newcastle United - Sat 30 Jan",
+      "Home - Hull City - Sat 6 Feb",
+      "Away - Manchester United - Wed 10 Feb",
+      "Home - Tottenham Hotspur - Sat 20 Feb",
+      "Away - Ipswich Town - Sat 27 Feb",
+      "Home - Fulham - Wed 3 Mar",
+      "Away - Leeds United - Sat 13 Mar",
+      "Home - Coventry City - Sat 20 Mar",
+      "Away - Aston Villa - Sat 10 Apr",
+      "Home - Chelsea - Sat 17 Apr",
+      "Away - Everton - Sat 24 Apr",
+      "Home - Nottingham Forest - Sat 1 May",
+      "Home - Sunderland - Sat 8 May",
+      "Away - Crystal Palace - Sat 15 May",
+      "Home - Liverpool - Sun 23 May",
+      "Away - Arsenal - Sun 30 May",
+    ],
+  };
+
   const ACRONYM_FIX = {
     'Usa Gdp': 'USA GDP', 'Usa Mineral': 'USA Mineral', 'Uk Gdp': 'UK GDP',
     'Uae Gdp': 'UAE GDP', 'Dr Congo Gdp': 'DR Congo GDP', 'Dr Congo Mineral': 'DR Congo Mineral',
@@ -10030,7 +10160,15 @@
       blocks.length = 0;
       for (const b of explodedBlocks) blocks.push(b);
       // Sort people within each block by wealth
-      for (const b of blocks) b.people.sort((a,b) => sortAlpha ? a.name.localeCompare(b.name) : b.wealth - a.wealth);
+      for (const b of blocks) b.people.sort((a,b) => {
+        // A club's "Full Fixture List" row should always sit at the bottom
+        // of that club's player list, regardless of A-Z/Wealth sort mode —
+        // it's not a wealth comparison, so it shouldn't shuffle around with
+        // one.
+        if (a._fixtureList && !b._fixtureList) return 1;
+        if (b._fixtureList && !a._fixtureList) return -1;
+        return sortAlpha ? a.name.localeCompare(b.name) : b.wealth - a.wealth;
+      });
       // Sort blocks alphabetically by subgroup name — but keep all Football
       // men's subsections together, then all Football women's together,
       // rather than letting them interleave (e.g. "Arsenal FC" / "Arsenal Women")
@@ -10155,6 +10293,38 @@
     }
 
     return subgroupSequence;
+  }
+
+  // Renders a club's "Full Fixture List" row — a self-contained, click-to-
+  // expand block, separate from the normal wealth-comparison row template
+  // since a fixture list isn't a wealth comparison. Deliberately isolated
+  // from the supercat/nested-toggle machinery used elsewhere in this file —
+  // it only ever needs to work standalone, at the bottom of one already-open
+  // club dropdown, not as its own collapsible category.
+  function renderFixtureRow(person, hidden, groupName) {
+    const key = person.fixtureKey;
+    const fixtures = CLUB_FIXTURES[key] || [];
+    const fixtureListHtml = fixtures.map(function(f) {
+      return '<div style="padding:5px 0;border-bottom:1px solid #222222">' + escHtml(f) + '</div>';
+    }).join('');
+    return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #333333;background:#111111">'
+      + '<td colspan="3" style="padding:12px">'
+      + '<div onclick="toggleFixtureList(\'' + key + '\')" style="cursor:pointer;color:#f9e74a;font-weight:bold;font-size:13px;letter-spacing:0.3px">'
+      + '&#9917; <span id="fixture-arrow-' + key + '">&#9658;</span> Full 2026-27 Fixture List</div>'
+      + '<div id="fixture-list-' + key + '" style="display:none;margin-top:10px;font-size:12px;color:#cccccc;max-height:320px;overflow-y:auto">'
+      + fixtureListHtml
+      + (fixtures.length === 0 ? '<div style="color:#888888;padding:8px 0">Fixtures coming soon.</div>' : '')
+      + '</div>'
+      + '</td></tr>';
+  }
+
+  function toggleFixtureList(key) {
+    const el = document.getElementById('fixture-list-' + key);
+    const arrow = document.getElementById('fixture-arrow-' + key);
+    if (!el) return;
+    const isHidden = el.style.display === 'none';
+    el.style.display = isHidden ? 'block' : 'none';
+    if (arrow) arrow.innerHTML = isHidden ? '&#9660;' : '&#9658;';
   }
 
   function renderPersonRow(person, hidden, groupName) {
@@ -10469,10 +10639,11 @@
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           }
         } else if (thisSid >= 0) {
+          const rowFn = item.person._fixtureList ? renderFixtureRow : renderPersonRow;
           html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
-                + renderPersonRow(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
+                + rowFn(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
         } else {
-          html += renderPersonRow(item.person, hidden, groupName);
+          html += (item.person._fixtureList ? renderFixtureRow : renderPersonRow)(item.person, hidden, groupName);
         }
       }
     }
