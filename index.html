@@ -9560,7 +9560,7 @@
   function toggleFootball() {
     footballCollapsed = !footballCollapsed;
     document.querySelectorAll('.football-arrow').forEach(function(a) { a.innerHTML = footballCollapsed ? '&#9658;' : '&#9660;'; });
-    document.querySelectorAll('.db-supersub2').forEach(function(row) { row.classList.toggle('g-hidden', footballCollapsed); });
+    document.querySelectorAll('.db-supersub2[data-parentcat="football"]').forEach(function(row) { row.classList.toggle('g-hidden', footballCollapsed); });
     updateFootballVisibility();
   }
 
@@ -9935,10 +9935,19 @@
       const header = document.querySelector('#table-body tr.group-header[data-group="' + groupName + '"]');
       if (header) { const a = header.querySelector('.g-arrow'); if (a) a.style.transform = 'rotate(0deg)'; }
       // Opening a category reveals everything with that data-group by default —
-      // re-collapse the nested Football section so it stays tucked away
-      // until specifically clicked, rather than springing open every time.
+      // re-collapse the nested Football/Cricket/Cycling middle toggles so
+      // they stay tucked away until specifically clicked, rather than
+      // springing open every time (each carries the "group-row" class too,
+      // so the generic reveal above would otherwise show them regardless of
+      // their own collapsed state).
       if (footballCollapsed) {
-        document.querySelectorAll('#table-body tr.db-supersub2[data-group="' + groupName + '"]').forEach(r => r.classList.add('g-hidden'));
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="football"]').forEach(r => r.classList.add('g-hidden'));
+      }
+      if (cricketCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="cricket"]').forEach(r => r.classList.add('g-hidden'));
+      }
+      if (cyclingCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="cycling"]').forEach(r => r.classList.add('g-hidden'));
       }
       updateFootballVisibility();
       updateRugbyVisibility();
