@@ -9429,8 +9429,15 @@
         const displayName = cleanDisplayName(key);
         seen.set(key, { name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: true, _top20Key: key });
       } else {
-        const displayName = cleanDisplayName(key);
-        seen.set(key, { name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: false });
+        // A fixture-list entry supplies its own display name directly
+        // (e.g. "⚽ Full 2026-27 Fixture List") rather than deriving one
+        // from its key — and its _fixtureList/fixtureKey flags must survive
+        // this rebuild, or the render loop can never tell it apart from a
+        // normal person and it silently falls back to the ordinary wealth
+        // row template instead of the fixture list.
+        const displayName = val.name || cleanDisplayName(key);
+        const fixtureExtra = val._fixtureList ? { _fixtureList: true, fixtureKey: val.fixtureKey } : {};
+        seen.set(key, Object.assign({ name: displayName, wealth: val.wealth, note: val.note, url: val.url || '', _top20: false }, fixtureExtra));
       }
     }
     let list = Array.from(seen.values());
@@ -9578,6 +9585,7 @@
   function updateFootballVisibility() {
     document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
       const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'football-mens' && cat2 !== 'football-womens') return;
       let show = !footballCollapsed;
       if (show && cat2 === 'football-mens') show = !footballMensCollapsed;
       if (show && cat2 === 'football-womens') show = !footballWomensCollapsed;
@@ -10348,6 +10356,13 @@
     const nameStyle = isManager ? 'text-transform:uppercase;letter-spacing:1px;color:#f9e74a' : '';
     const badgeBg = '#ffffff';
     const badgeShadow = 'none';
+    // The visible note text drops a leading "Football · " — once you've
+    // opened Men's/Women's Football to see this row at all, restating
+    // "Football" on every single line is pure redundancy. The underlying
+    // person.note keeps its original "Football · ..." prefix untouched
+    // (used for data-note below, and for category routing elsewhere), so
+    // this only changes what's shown, not the data itself.
+    const displayNote = (person.note || '').replace(/^Football · /, '');
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #e8e8e8;background:' + rowBg + '">'
       + '<td><span class="page-badge" style="background:' + badgeBg + ';color:#000000;box-shadow:none;font-size:15px" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + pg + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer;' + nameStyle + '" onclick="showWealthPopup(this)">'
@@ -10355,7 +10370,7 @@
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(person.note) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(person.note)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
+      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(displayNote) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(displayNote)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
       + '</tr>';
   }
 
