@@ -7859,7 +7859,7 @@
     'piero hincapie arsenal': { wealth: 25,      note: 'Football · Ecuador · Arsenal · Defender · Signed 2026', url: 'https://en.wikipedia.org/wiki/Piero_Hincapi%C3%A9' },
     'oleksandr zinchenko arsenal': { wealth: 10, note: 'Football · Ukraine · Arsenal · £110,000/week · Champions 2026 · Left back · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Oleksandr_Zinchenko' },
     'riccardo calafiori arsenal': { wealth: 20, note: 'Football · Italy · Arsenal · £120,000/week · Champions 2026 · Centre back · World Cup 2026 · From Bologna', url: 'https://en.wikipedia.org/wiki/Riccardo_Calafiori' },
-    'arsenal fixtures': { _fixtureList: true, fixtureKey: 'arsenal', wealth: 0, name: '\u26bd Full 2026-27 Fixture List', note: 'Tap to open Arsenal\u2019s full 2026-27 Premier League fixture list', url: '' },
+    'arsenal fixtures': { _fixtureList: true, fixtureKey: 'arsenal', wealth: 0, note: 'Tap to open Arsenal\u2019s full 2026-27 Premier League fixture list', url: '' },
 
     // ── Aston Villa ──────────────────────────────────────
     '_sub_pl_villa':         { _subgroup: 'Football — Aston Villa FC' },
@@ -7962,7 +7962,7 @@
     'pascal gross brighton':    { wealth: 20,  note: 'Football · Germany · Brighton · Midfielder · Long serving Brighton stalwart', url: 'https://en.wikipedia.org/wiki/Pascal_Gro%C3%9F' },
     'ferdi kadioglu brighton':  { wealth: 18,  note: 'Football · Turkey · Brighton · Defender · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ferdi_Kadıoğlu' },
     'diego coppola brighton':   { wealth: 12,  note: 'Football · Italy · Brighton · Centre back · Signed 2026', url: 'https://en.wikipedia.org/wiki/Diego_Coppola' },
-    'brighton fixtures': { _fixtureList: true, fixtureKey: 'brighton', wealth: 0, name: '\u26bd Full 2026-27 Fixture List', note: 'Tap to open Brighton & Hove Albion\u2019s full 2026-27 Premier League fixture list', url: '' },
+    'brighton fixtures': { _fixtureList: true, fixtureKey: 'brighton', wealth: 0, note: 'Tap to open Brighton & Hove Albion\u2019s full 2026-27 Premier League fixture list', url: '' },
 
     // ── Chelsea ──────────────────────────────────────────
     '_sub_pl_chelsea':       { _subgroup: 'Football — Chelsea FC' },
@@ -7991,7 +7991,7 @@
     'jadon sancho chelsea':     { wealth: 20,  note: 'Football · England · Chelsea · Winger · World Cup 2026 · From Man Utd loan to permanent · Pace and trickery', url: 'https://en.wikipedia.org/wiki/Jadon_Sancho' },
     'jordan henderson chelsea': { wealth: 25,  note: 'Football · England · Chelsea · Midfielder · Veteran signed 2026 for experience', url: 'https://en.wikipedia.org/wiki/Jordan_Henderson' },
     'morgan rogers chelsea':    { wealth: 35,  note: 'Football · England · Chelsea · Attacking midfielder · Club record signing 2026 · From Aston Villa', url: 'https://en.wikipedia.org/wiki/Morgan_Rogers' },
-    'chelsea fixtures': { _fixtureList: true, fixtureKey: 'chelsea', wealth: 0, name: '\u26bd Full 2026-27 Fixture List', note: 'Tap to open Chelsea\u2019s full 2026-27 Premier League fixture list', url: '' },
+    'chelsea fixtures': { _fixtureList: true, fixtureKey: 'chelsea', wealth: 0, note: 'Tap to open Chelsea\u2019s full 2026-27 Premier League fixture list', url: '' },
 
     // ── Crystal Palace ───────────────────────────────────
     '_sub_pl_palace':        { _subgroup: 'Football — Crystal Palace FC' },
@@ -10650,15 +10650,16 @@
               // directly beneath the real one.
               html += '<tr class="db-sub" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + ' style="display:none"></tr>';
             } else {
-            // For SWF/IPL/County/England/Road Racing rows, the prefix would
-            // display as literally repeating the just-shown parent heading —
-            // show only the country/franchise/county/team name itself.
-            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
+            // For Football/SWF/IPL/County/England/Road Racing rows, the
+            // prefix would display as literally repeating the just-shown
+            // parent heading — show only the club/country/franchise/county/
+            // team name itself.
+            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
             }
           } else {
-            const displayLabel = isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
+            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           }
