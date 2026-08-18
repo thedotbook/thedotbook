@@ -11139,6 +11139,19 @@
       // F1 Teams clusters under "F1 & Motorsport — ..." alongside the existing
       // flat driver list, and World Champions clusters under "Boxing — ..."
       // alongside the existing flat legends list.
+      // Boxing divisions run heaviest to lightest by convention, not
+      // alphabetically — "Bantamweight" sorting before "Heavyweight" would
+      // be actively confusing to anyone who follows the sport. This maps
+      // each division to its standard weight-order rank (01 = heaviest),
+      // zero-padded so it sorts correctly as a string.
+      const BOXING_DIVISION_ORDER = {
+        'Heavyweight': '01', 'Bridgerweight': '02', 'Cruiserweight': '03',
+        'Light Heavyweight': '04', 'Super Middleweight': '05', 'Middleweight': '06',
+        'Super Welterweight': '07', 'Welterweight': '08', 'Super Lightweight': '09',
+        'Lightweight': '10', 'Super Featherweight': '11', 'Featherweight': '12',
+        'Super Bantamweight': '13', 'Bantamweight': '14', 'Super Flyweight': '15',
+        'Flyweight': '16', 'Light Flyweight': '17', 'Minimumweight': '18',
+      };
       function effectiveSortLabel(label) {
         if (label.startsWith('NFL —')) return 'American Football / NFL — ' + label.slice(6);
         if (label.startsWith('MLB —')) return 'Baseball / MLB — ' + label.slice(6);
@@ -11148,7 +11161,11 @@
         if (label.startsWith('IPL —')) return 'Cricket — 3 IPL — ' + label.slice(6);
         if (label.startsWith('Road Racing —')) return 'Cycling — 1 Road Racing — ' + label.slice(14);
         if (label.startsWith('F1 Teams —')) return 'F1 & Motorsport — 1 Teams — ' + label.slice(11);
-        if (label.startsWith('World Champions —')) return 'Boxing — 1 World Champions — ' + label.slice(18);
+        if (label.startsWith('World Champions —')) {
+          const divisionName = label.slice(18);
+          const rank = BOXING_DIVISION_ORDER[divisionName] || '99';
+          return 'Boxing — 1 World Champions — ' + rank + ' ' + divisionName;
+        }
         if (label.startsWith('NHL —')) return 'Ice Hockey / NHL — ' + label.slice(6);
         if (label.startsWith('SWF —')) return 'Sovereign Wealth Funds — ' + label.slice(6);
         return label;
