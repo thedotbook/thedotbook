@@ -12854,8 +12854,13 @@
       const arrowRot = hidden ? 'rotate(-90deg)' : 'rotate(0deg)';
       const safeGroup = groupName.replace(/'/g, "\'");
       const peopleCount = items.filter(i => i.type === 'person').length;
-      // Display group name — plain text, no special styling
-      const displayGroupName = escHtml(groupName);
+      // Display group name — strip the redundant parent-section prefix for
+      // categories whose subgroup names repeat their own section name (e.g.
+      // "Career Guide — Healthcare & Medicine" already sits directly under
+      // the "CAREER GUIDE" banner, so showing "Career Guide —" again here
+      // is pure repetition). Horse Racing has the same self-referential
+      // naming pattern, so gets the same treatment.
+      const displayGroupName = escHtml(groupName.replace(/^Career Guide —\s*/, '').replace(/^Horse Racing —\s*/, ''));
       // Section divider headers handled above
       html += '<tr class="group-header" data-group="' + escHtml(groupName) + '" onclick="toggleGroup(\'' + safeGroup + '\')" style="-webkit-tap-highlight-color:transparent">'
             + '<td colspan="3">'
