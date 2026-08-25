@@ -9470,7 +9470,7 @@
 
     '_sub_careers_manual':  { _subgroup: 'Career Guide — Agriculture & Public Services' },
     'career farm worker':   { wealth: 28,  note: 'Career · Agriculture · UK · Farm Worker (incl. tractor drivers, general/arable staff) · Average around \u00a328,109 · Qualifications: often no formal qualifications required to start - many begin as teenagers on family or local farms \u2192 NVQs/City & Guilds in Agriculture available and useful for progression to farm manager \u2192 tractor/machinery certificates add value \u2192 genuinely essential, physically demanding outdoor work', url: 'https://en.wikipedia.org/wiki/Farmworker' },
-    'career refuse collector': { wealth: 25, note: 'Career · Public Service · UK · Refuse Collector/Council Worker (bin collection, street cleansing) · Entry-level \u00a317,000-\u00a324,000 \u2192 experienced or HGV-licensed drivers \u00a325,000-\u00a333,000+, London higher still · Qualifications: no formal qualifications required to start \u2192 usually employed directly by the local council or a contractor \u2192 gaining an HGV licence while in the job significantly increases pay \u2192 essential public health work, genuinely accessible with no exams needed', url: 'https://en.wikipedia.org/wiki/Waste_collector' },
+    'career refuse collector': { wealth: 25, note: 'Career · Council Services · UK · Refuse Collector/Council Worker (bin collection, street cleansing) · Entry-level \u00a317,000-\u00a324,000 \u2192 experienced or HGV-licensed drivers \u00a325,000-\u00a333,000+, London higher still · Qualifications: no formal qualifications required to start \u2192 usually employed directly by the local council or a contractor \u2192 gaining an HGV licence while in the job significantly increases pay \u2192 essential public health work, genuinely accessible with no exams needed', url: 'https://en.wikipedia.org/wiki/Waste_collector' },
 
     '_sub_careers_sport':   { _subgroup: 'Career Guide — Realistic Professional Sport' },
     'career league two footballer': { wealth: 60, note: 'Career · Sport · UK · League Two Footballer (4th tier) · Realistic comparison to the Premier League stars elsewhere in this app · Average around \u00a3100,000/year (\u00a32,000/week), though young/fringe players can earn as little as \u00a312,000-\u00a325,000 · Pathway: academy from age 8-9 \u2192 scholarship at 16 \u2192 professional contract at 17-18 · Extremely competitive - the overwhelming majority of academy players never turn professional at all', url: 'https://en.wikipedia.org/wiki/EFL_League_Two' },
@@ -12145,7 +12145,23 @@
     // sidesteps this whole class of false-positive substring collision for
     // any current or future entry, not just this one team name.
     if (n.startsWith('sport ·')) return 'Sport';
-    if (n.startsWith('career ·')) return 'Career Guide';
+    if (n.startsWith('career · healthcare')) return 'Career Guide — Healthcare & Medicine';
+    if (n.startsWith('career · trades')) return 'Career Guide — Skilled Trades';
+    if (n.startsWith('career · education')) return 'Career Guide — Education';
+    if (n.startsWith('career · law')) return 'Career Guide — Law & Finance';
+    if (n.startsWith('career · finance')) return 'Career Guide — Law & Finance';
+    if (n.startsWith('career · technology')) return 'Career Guide — Technology';
+    if (n.startsWith('career · business')) return 'Career Guide — Business & Management';
+    if (n.startsWith('career · design')) return 'Career Guide — Design & Construction';
+    if (n.startsWith('career · creative arts')) return 'Career Guide — Realistic Creative Arts';
+    if (n.startsWith('career · creative')) return 'Career Guide — Creative & Hospitality';
+    if (n.startsWith('career · transport')) return 'Career Guide — Transport & Logistics';
+    if (n.startsWith('career · public service')) return 'Career Guide — Emergency & Public Services';
+    if (n.startsWith('career · armed forces')) return 'Career Guide — Armed Forces';
+    if (n.startsWith('career · agriculture')) return 'Career Guide — Agriculture & Public Services';
+    if (n.startsWith('career · council services')) return 'Career Guide — Agriculture & Public Services';
+    if (n.startsWith('career · sport')) return 'Career Guide — Realistic Professional Sport';
+    if (n.startsWith('career ·')) return 'Career Guide'; // safety net for any future career entry that doesn't match a specific subcategory above
     if (n.includes('defence ·') || n.includes('· defence') || n.includes('military ·') || n.includes('· military') || n.includes('nuclear ·') || n.includes('· nuclear') || n.includes('weapons ·') || n.includes('munitions ·')) return 'Defence & Military';
     if (n.includes('fashion ·') || n.includes('· fashion') || n.includes('beauty ·') || n.includes('· beauty') || n.includes('perfume ·') || n.includes('· perfume') || n.includes('cosmetics ·') || n.includes('luxury fashion') || n.includes('clothing ·') || n.includes('· clothing')) return 'Fashion & Beauty';
     if (n.startsWith('country ·') || n.includes('· country ·') || n.includes('countries ·')) return 'Countries of the World';
