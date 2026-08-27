@@ -14005,6 +14005,15 @@
     const hasApprenticeship = /apprenticeship/i.test(q);
     const hasALevel = /a-levels?/i.test(q);
 
+    // Experience-gated: some roles need no specific formal qualification at
+    // all, but require 10+ years of prior career progression first (CEO,
+    // Charity CEO, Ships Captain). These are genuinely NOT accessible to a
+    // school/university leaver even though no degree is technically
+    // "required" - years of built-up experience is a bigger barrier than
+    // any qualification, so these are treated as the most senior tier
+    // regardless of what else matches.
+    const experienceGated = /1[0-9]\+?\s*years?|20\+?\s*years?|15-20|no single fixed route.{0,60}years?/i.test(q);
+
     // Postgraduate: PhD/Doctorate/postdoctoral appearing as a required chain
     // step (arrow-linked), unless hedged as "often ... for research roles",
     // which implies it's an optional extra rather than the baseline for the
@@ -14013,7 +14022,7 @@
     const chainedPostgrad = /(→|->)\s*(a\s)?(phd|doctorate|postdoctoral)|further\s+(master|doctorate)|master'?s\/doctorate/i.test(q);
     const postgradRequired = chainedPostgrad && !hedged;
 
-    if (postgradRequired) return 5;
+    if (postgradRequired || experienceGated) return 5;
     if (hasDegree) return 4;
     if (hasApprenticeship) return 2;
     if (noQualsNeeded) return 1;
@@ -14034,17 +14043,69 @@
     return out;
   }
 
+  // Standard Levenshtein edit distance - used to tolerate small typos in the
+  // job title search (e.g. "electrican" or "docter") without requiring
+  // exact spelling.
+  function levenshteinDistance(a, b) {
+    const matrix = [];
+    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+        }
+      }
+    }
+    return matrix[b.length][a.length];
+  }
+
   function searchCareerByTitle(query) {
     const q = query.toLowerCase().trim();
     if (!q) return [];
-    const results = [];
-    for (const { key, val } of getAllCareerEntries()) {
+    const entries = getAllCareerEntries();
+    let results = [];
+
+    // Pass 1: exact substring match on the job title itself (fast, precise)
+    for (const { key, val } of entries) {
       const displayName = cleanDisplayName(key);
       if (displayName.toLowerCase().includes(q)) {
         results.push({ key, name: displayName, wealth: val.wealth, note: val.note });
       }
     }
+    if (results.length > 0) { results.sort((a, b) => b.wealth - a.wealth); return results; }
+
+    // Pass 2: typo-tolerant fuzzy match on the job title's own words,
+    // allowing a small edit distance so a genuine misspelling ("electrican",
+    // "docter", "nuse") still finds the intended job. Runs before the looser
+    // note-text search below, so a mistyped job name gets corrected to that
+    // job rather than accidentally matching an unrelated one.
+    const maxDistance = q.length <= 4 ? 1 : (q.length <= 8 ? 2 : 3);
+    for (const { key, val } of entries) {
+      const displayName = cleanDisplayName(key);
+      const words = displayName.toLowerCase().split(/\s+/);
+      if (words.some(w => levenshteinDistance(q, w) <= maxDistance)) {
+        results.push({ key, name: displayName, wealth: val.wealth, note: val.note });
+      }
+    }
+    if (results.length > 0) { results.sort((a, b) => b.wealth - a.wealth); return results; }
+
+    // Pass 3: last resort - whole-word match against the note text, so a
+    // search like "teeth" can still find Dentist even though "teeth" never
+    // appears in the job title itself. Uses a word-boundary regex rather
+    // than a plain substring check, since substring matching alone can
+    // false-positive on fragments inside unrelated words (e.g. "nuse"
+    // matching inside "bonuses").
+    const wordBoundary = new RegExp('\\b' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    for (const { key, val } of entries) {
+      if (wordBoundary.test(val.note)) {
+        results.push({ key, name: cleanDisplayName(key), wealth: val.wealth, note: val.note });
+      }
+    }
     results.sort((a, b) => b.wealth - a.wealth);
+    return results;
     return results;
   }
 
