@@ -125,6 +125,23 @@
     .row { display: flex; gap: 10px; }
     .row input { flex: 1; min-width: 0; }
 
+    .cs-tab-btn {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid #333333;
+      border-radius: 4px;
+      color: #999999;
+      cursor: pointer;
+      font-family: Georgia, serif;
+      transition: all 0.2s;
+    }
+    .cs-tab-btn.cs-tab-active {
+      background: rgba(255,255,255,0.15);
+      border-color: #ffffff;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    .cs-mode { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+
     @media (max-width: 600px) {
       .row { flex-wrap: wrap; }
       .row > div:first-child { flex: 1 1 100%; }
@@ -851,6 +868,57 @@
         </select>
       </div>
       <div id="rate-status" style="font-size:11px;color:#333333;text-align:right;margin-top:-6px"></div>
+    </div>
+  </div>
+
+  <!-- Career Guide Search Tool -->
+  <div class="card">
+    <div class="card-label">Career Guide Search</div>
+    <div class="form-group">
+      <div class="row" style="gap:8px">
+        <button id="cs-tab-title" class="cs-tab-btn cs-tab-active" onclick="switchCareerSearchMode('title')" style="flex:1;padding:10px 6px;font-size:12px">Job Title</button>
+        <button id="cs-tab-income" class="cs-tab-btn" onclick="switchCareerSearchMode('income')" style="flex:1;padding:10px 6px;font-size:12px">Income</button>
+        <button id="cs-tab-quals" class="cs-tab-btn" onclick="switchCareerSearchMode('quals')" style="flex:1;padding:10px 6px;font-size:12px">My Qualifications</button>
+      </div>
+
+      <!-- Job Title mode -->
+      <div id="cs-mode-title" class="cs-mode">
+        <div class="row">
+          <input type="text" id="cs-title-input" placeholder="e.g. Electrician, Nurse, Solicitor" style="flex:1" onkeydown="if(event.key==='Enter')runCareerSearch('title')" />
+          <button onclick="runCareerSearch('title')" style="width:auto;padding:12px 14px;flex-shrink:0">🔍</button>
+        </div>
+      </div>
+
+      <!-- Income mode -->
+      <div id="cs-mode-income" class="cs-mode" style="display:none">
+        <div class="row">
+          <input type="number" id="cs-income-min" placeholder="Min £k, e.g. 20" style="flex:1" />
+          <input type="number" id="cs-income-max" placeholder="Max £k, e.g. 50" style="flex:1" />
+        </div>
+        <div class="row">
+          <button onclick="runCareerSearch('income')" style="flex:1">Search by Income</button>
+        </div>
+        <div style="font-size:11px;color:#555555;margin-top:-4px">Enter a salary range in thousands of pounds (£k)</div>
+      </div>
+
+      <!-- Qualifications mode -->
+      <div id="cs-mode-quals" class="cs-mode" style="display:none">
+        <div class="row">
+          <select id="cs-qual-select" style="flex:1">
+            <option value="1">No formal qualifications / GCSEs</option>
+            <option value="2">GCSEs + Apprenticeship</option>
+            <option value="3">A-Levels or equivalent</option>
+            <option value="4">Bachelor's Degree</option>
+            <option value="5">Master's / PhD / Postgraduate</option>
+          </select>
+        </div>
+        <div class="row">
+          <button onclick="runCareerSearch('quals')" style="flex:1">Show Jobs I Qualify For</button>
+        </div>
+        <div style="font-size:11px;color:#555555;margin-top:-4px">Select your highest qualification — we'll show every job genuinely accessible with that level, based on the qualifications route listed for each entry.</div>
+      </div>
+
+      <div id="cs-status" style="font-size:11px;color:#333333;text-align:right;margin-top:-6px"></div>
     </div>
   </div>
 
@@ -9528,6 +9596,7 @@
 
     '_sub_careers_business': { _subgroup: 'Career Guide — Business & Management' },
     'career estate agent':  { wealth: 35,  note: 'Career · Business · UK · Estate Agent · Junior negotiator basic \u00a316,000-\u00a322,000 plus commission (on-target earnings \u00a325,000-\u00a340,000) · Senior negotiator/lister OTE \u00a350,000-\u00a370,000 in busy markets · Branch Manager OTE \u00a365,000 outside London, \u00a388,000 in inner London · Qualifications: no specific qualifications required - GCSEs are enough, communication and sales skills matter most, many enter straight from school', url: 'https://en.wikipedia.org/wiki/Estate_agent' },
+    'career auctioneer':    { wealth: 34,  note: 'Career · Business · UK · Auctioneer · Average around \u00a333,971, typical range \u00a330,614-\u00a338,514 · Property auctioneers commonly work on commission (around 2% + VAT of sale price), only paid when a lot actually sells \u2192 fine art/antiques auctioneers at major houses can earn considerably more through reputation and specialism · Qualifications: no formal qualifications required - GCSEs sufficient, though A-Levels help \u2192 usually builds up through porter/cataloguer roles at an auction house before conducting sales', url: 'https://en.wikipedia.org/wiki/Auctioneer' },
     'career retail manager': { wealth: 33, note: 'Career · Business · UK · Retail/Store Manager · Average around \u00a331,000-\u00a334,000 · Experienced/senior managers \u00a348,000-\u00a354,000, especially in London · Qualifications: no specific qualifications required - GCSEs are enough, usually builds up via retail assistant/supervisor roles first \u2192 genuinely accessible entry point into management without a degree', url: 'https://en.wikipedia.org/wiki/Retail' },
     'career marketing manager': { wealth: 45, note: 'Career · Business · UK · Marketing Manager · Junior \u00a325,000-\u00a332,000 · Typical range \u00a340,000-\u00a350,000 · Senior managers \u00a355,000-\u00a370,000, Marketing Directors \u00a385,000-\u00a3130,000+ · Qualifications: GCSEs \u2192 A-Levels \u2192 degree (marketing/business helps but not always required) \u2192 usually builds up via Marketing Executive/Coordinator roles first \u2192 a CIM qualification or MBA can boost pay', url: 'https://en.wikipedia.org/wiki/Marketing_management' },
     'career hr manager':    { wealth: 45,  note: 'Career · Business · UK · HR Manager · Typical range \u00a340,000-\u00a355,000, London/large organisations \u00a350,000-\u00a365,000 · HR Directors \u00a370,000-\u00a3130,000+ · Qualifications: GCSEs \u2192 A-Levels \u2192 degree (not always required) \u2192 CIPD Level 3, 5 or 7 professional qualifications studied while working, each level adding real salary premium', url: 'https://en.wikipedia.org/wiki/Human_resource_management' },
@@ -9587,6 +9656,7 @@
     'career tv camera operator': { wealth: 55, note: 'Career · Creative · UK · TV Camera Operator · Genuinely freelance-driven work with union (Bectu) recommended day rates, not a fixed salary · Camera assistant on factual/outside broadcast work \u00a3230-\u00a3360/day \u2192 full cameraperson \u00a3350-\u00a3485/day · Actual annual earnings depend heavily on how many days get booked across the year, which varies a lot person to person · Qualifications: no fixed degree route \u2192 many start as camera assistants/runners and work up through experience \u2192 covers everything from studio programmes to live sport and news', url: 'https://en.wikipedia.org/wiki/Camera_operator' },
     'career sound engineer':   { wealth: 30, note: 'Career · Creative · UK · Sound/Recording Engineer (TV, film, radio) · Starting around \u00a320,000 \u2192 with experience \u00a325,000 \u2192 long-term experienced engineers with strong technical skills can exceed \u00a340,000 · Many work freelance, negotiating fees per production · Qualifications: no degree strictly required \u2192 college/HND courses in audio engineering or sound production help \u2192 sets up, operates and maintains the equipment that records and mixes sound for broadcast', url: 'https://en.wikipedia.org/wiki/Audio_engineer' },
     'career photographer':  { wealth: 30,  note: 'Career · Creative · UK · Photographer · Entry-level \u00a321,553 \u2192 UK average \u00a324,350-\u00a329,786 \u2192 wedding/commercial/fashion specialists \u00a340,000-\u00a360,000+, some six-figure earners in London · Genuinely counter-intuitive structural point worth knowing: freelancers average just \u00a318,821, actually LESS than employed staff photographers at \u00a336,248 - the glamorous self-employed image doesn\u2019t match the typical reality until a strong client base is built · Qualifications: no degree required \u2192 short courses/certifications help \u2192 a strong portfolio and specialising in one niche (weddings, sport, products) matter far more than formal qualifications', url: 'https://en.wikipedia.org/wiki/Photographer' },
+    'career set designer':  { wealth: 25,  note: 'Career · Creative · UK · Set Designer (theatre, TV, film) · Starting salaries \u00a315,000-\u00a320,000 \u2192 UK average around \u00a331,478, typical range \u00a324,700-\u00a340,000 \u2192 experienced/senior designers on major productions can reach \u00a353,000-\u00a366,000+ · Genuinely freelance-driven work, paid per production or a weekly rate rather than a fixed salary - unpaid work is common when starting out, and BECTU/Equity publish recommended minimum rates · Qualifications: no fixed degree route \u2192 Theatre/Production/Art & Design degree helps, though many build a portfolio and work up through assistant roles instead', url: 'https://en.wikipedia.org/wiki/Set_construction' },
     'career broadcast engineer': { wealth: 40, note: 'Career · Creative · UK · TV Outside Broadcast Engineer · Starting salaries \u00a322,000-\u00a330,000 (BBC engineering apprenticeship starts \u00a319,500 plus London weighting) \u2192 experienced engineers \u00a330,000-\u00a360,000, senior roles at major broadcasters higher still · Genuinely varied and sometimes demanding work - can involve remote locations, poor weather, and occasionally hazardous assignments like conflict zone reporting · Qualifications: GCSEs incl. sciences \u2192 A-Levels \u2192 HNC/HND or degree in electrical/electronic engineering (though apprenticeship routes also exist) \u2192 sets up and maintains the technical equipment behind live TV broadcasts', url: 'https://en.wikipedia.org/wiki/Broadcast_engineering' },
     'career florist':       { wealth: 26,  note: 'Career · Creative · UK · Florist · Average around \u00a323,400-\u00a329,856, starting pay for junior florists often just \u00a313,000-\u00a318,000 · Genuine nuance: a busy wedding florist doing 30-50 weddings a year can generate \u00a360,000-\u00a3100,000 in gross revenue, but flower costs alone eat 25-35% of that before any other expenses · Qualifications: no formal qualifications required, creativity and people skills matter more \u2192 one of the most accessible creative trades to enter, physically demanding and often poorly paid at entry level', url: 'https://en.wikipedia.org/wiki/Florist' },
     'career croupier':      { wealth: 27,  note: 'Career · Creative · UK · Croupier/Casino Dealer · Average around \u00a320,750-\u00a332,275 depending on source, London new starters around \u00a317,000 rising to \u00a320,000+ within a couple of years \u2192 progression to Inspector can reach \u00a328,000+ plus tips within 5 years · Qualifications: no formal qualifications required \u2192 an NVQ in Gaming exists, but most learn entirely on the job \u2192 shift work including nights, weekends and bank holidays is standard', url: 'https://en.wikipedia.org/wiki/Croupier' },
@@ -11522,7 +11592,14 @@
   };
 
   const ACRONYM_FIX = {
-    'Gp': 'GP',
+    'Gp': 'GP', 'Ai Engineer': 'AI Engineer', 'Army Pti': 'Army PTI', 'Cad Technician': 'CAD Technician',
+    'Ceo': 'CEO', 'Charity Ceo': 'Charity CEO', 'Devops Engineer': 'DevOps Engineer', 'Ev Technician': 'EV Technician',
+    'Fe Lecturer': 'FE Lecturer', 'Fx Trader': 'FX Trader', 'Gp Practice Manager': 'GP Practice Manager',
+    'Hgv Driver': 'HGV Driver', 'Hgv Mechanic': 'HGV Mechanic', 'Hr Manager': 'HR Manager', 'Hvac Engineer': 'HVAC Engineer',
+    'It Support': 'IT Support', 'Mot Tester': 'MOT Tester', 'Mp': 'MP', 'Pr Manager': 'PR Manager',
+    'Qa Tester': 'QA Tester', 'Raf Airman': 'RAF Airman', 'Raf Officer': 'RAF Officer', 'Raf Regiment Gunner': 'RAF Regiment Gunner',
+    'Reme Mechanic': 'REME Mechanic', 'Sen Teaching Assistant': 'SEN Teaching Assistant', 'Senco': 'SENCO',
+    'Ux Designer': 'UX Designer', 'Ux Researcher': 'UX Researcher', 'Tv Camera Operator': 'TV Camera Operator',
     'Usa Gdp': 'USA GDP', 'Usa Mineral': 'USA Mineral', 'Uk Gdp': 'UK GDP',
     'Uae Gdp': 'UAE GDP', 'Dr Congo Gdp': 'DR Congo GDP', 'Dr Congo Mineral': 'DR Congo Mineral',
     'World Gdp Total': 'World GDP Total', 'World Mineral Total': 'World Mineral Total',
@@ -11555,8 +11632,16 @@
   const NAME_PREFIX_PATTERN = /^(swf|career)\s+/i;
   function cleanDisplayName(key) {
     let bareKey = key.replace(NAME_PREFIX_PATTERN, '');
-    while (NAME_SUFFIX_PATTERN.test(bareKey)) {
-      bareKey = bareKey.replace(NAME_SUFFIX_PATTERN, '');
+    // NAME_SUFFIX_PATTERN strips football-club-name suffixes (e.g. a key
+    // like "player name arsenal" -> "Player Name"). It also matches several
+    // generic profession words (manager, engineer, architect, designer,
+    // economist) which are genuine, load-bearing parts of many Career Guide
+    // job titles ("Electrical Engineer", "Warehouse Manager"), so it must
+    // never run on those entries or it truncates the title itself.
+    if (!key.startsWith('career')) {
+      while (NAME_SUFFIX_PATTERN.test(bareKey)) {
+        bareKey = bareKey.replace(NAME_SUFFIX_PATTERN, '');
+      }
     }
     return fixAcronyms(bareKey.trim().replace(/\b\w/g, c => c.toUpperCase()));
   }
@@ -13896,6 +13981,136 @@
     }
     results.sort((a, b) => b.wealth - a.wealth);
     return results.slice(0, 15);
+  }
+
+  // ── CAREER GUIDE SEARCH TOOL ─────────────────────────────
+  // Infers a rough minimum-qualification level from the "Qualifications:"
+  // segment already present in every Career Guide entry's note, rather than
+  // requiring a separate hand-tagged field on all 280+ entries. Levels:
+  // 1 = no formal qualifications / GCSEs, 2 = GCSEs + apprenticeship,
+  // 3 = A-Levels or equivalent, 4 = Bachelor's degree, 5 = Master's/PhD.
+  function inferQualLevel(note) {
+    const qIdx = note.indexOf('Qualifications:');
+    let q = (qIdx >= 0 ? note.slice(qIdx) : note).toLowerCase();
+
+    // Mask negated degree mentions first, so a bare "degree" check afterward
+    // only catches genuine positive requirements, not "no degree needed".
+    q = q.replace(/no degree (is )?(needed|required)/g, '[NODEGREE]');
+    q = q.replace(/degree not always (required|essential)/g, '[NODEGREE]');
+    q = q.replace(/not always essential to start/g, '[NODEGREE]');
+    q = q.replace(/formal teaching qualification not always essential/g, '[NOFORMAL]');
+
+    const hasDegree = /\bdegree\b/i.test(q);
+    const noQualsNeeded = /no (formal )?qualifications (are )?required|\[nodegree\]|\[noformal\]/i.test(q);
+    const hasApprenticeship = /apprenticeship/i.test(q);
+    const hasALevel = /a-levels?/i.test(q);
+
+    // Postgraduate: PhD/Doctorate/postdoctoral appearing as a required chain
+    // step (arrow-linked), unless hedged as "often ... for research roles",
+    // which implies it's an optional extra rather than the baseline for the
+    // entry itself.
+    const hedged = /often (a |needed )?(a )?(master|phd|doctorate)|(master|phd|doctorate).{0,25}(for research|for some|sometimes)/i.test(q);
+    const chainedPostgrad = /(→|->)\s*(a\s)?(phd|doctorate|postdoctoral)|further\s+(master|doctorate)|master'?s\/doctorate/i.test(q);
+    const postgradRequired = chainedPostgrad && !hedged;
+
+    if (postgradRequired) return 5;
+    if (hasDegree) return 4;
+    if (hasApprenticeship) return 2;
+    if (noQualsNeeded) return 1;
+    if (hasALevel) return 3;
+    return 1;
+  }
+
+  // Returns every Career Guide entry as {key, val}, skipping subgroup
+  // marker rows which have no actual person data.
+  function getAllCareerEntries() {
+    const out = [];
+    for (const [key, val] of Object.entries(CELEB_DB)) {
+      if (!key.startsWith('career')) continue;
+      if (val._subgroup) continue;
+      if (!val.note) continue;
+      out.push({ key, val });
+    }
+    return out;
+  }
+
+  function searchCareerByTitle(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) return [];
+    const results = [];
+    for (const { key, val } of getAllCareerEntries()) {
+      const displayName = cleanDisplayName(key);
+      if (displayName.toLowerCase().includes(q)) {
+        results.push({ key, name: displayName, wealth: val.wealth, note: val.note });
+      }
+    }
+    results.sort((a, b) => b.wealth - a.wealth);
+    return results;
+  }
+
+  function searchCareerByIncome(min, max) {
+    const results = [];
+    for (const { key, val } of getAllCareerEntries()) {
+      if (val.wealth >= min && val.wealth <= max) {
+        results.push({ key, name: cleanDisplayName(key), wealth: val.wealth, note: val.note });
+      }
+    }
+    results.sort((a, b) => b.wealth - a.wealth);
+    return results;
+  }
+
+  function searchCareerByQualification(maxLevel) {
+    const results = [];
+    for (const { key, val } of getAllCareerEntries()) {
+      if (inferQualLevel(val.note) <= maxLevel) {
+        results.push({ key, name: cleanDisplayName(key), wealth: val.wealth, note: val.note });
+      }
+    }
+    results.sort((a, b) => b.wealth - a.wealth);
+    return results;
+  }
+
+  function switchCareerSearchMode(mode) {
+    document.querySelectorAll('.cs-tab-btn').forEach(b => b.classList.remove('cs-tab-active'));
+    document.getElementById('cs-tab-' + mode).classList.add('cs-tab-active');
+    document.querySelectorAll('.cs-mode').forEach(m => m.style.display = 'none');
+    document.getElementById('cs-mode-' + mode).style.display = 'flex';
+    document.getElementById('cs-status').textContent = '';
+  }
+
+  function runCareerSearch(mode) {
+    let results = [];
+    let label = '';
+
+    if (mode === 'title') {
+      const q = document.getElementById('cs-title-input').value.trim();
+      if (!q) { document.getElementById('cs-status').textContent = 'Please enter a job title.'; return; }
+      results = searchCareerByTitle(q);
+      label = q;
+    } else if (mode === 'income') {
+      const minV = document.getElementById('cs-income-min').value.trim();
+      const maxV = document.getElementById('cs-income-max').value.trim();
+      const minN = minV === '' ? 0 : parseFloat(minV);
+      const maxN = maxV === '' ? 999999 : parseFloat(maxV);
+      if (isNaN(minN) || isNaN(maxN)) { document.getElementById('cs-status').textContent = 'Please enter valid numbers.'; return; }
+      if (minN > maxN) { document.getElementById('cs-status').textContent = 'Min must be less than max.'; return; }
+      results = searchCareerByIncome(minN, maxN);
+      label = '£' + minN + 'k – £' + (maxN === 999999 ? 'any' : maxN) + 'k';
+    } else if (mode === 'quals') {
+      const lvl = parseInt(document.getElementById('cs-qual-select').value);
+      results = searchCareerByQualification(lvl);
+      const qualNames = { 1: 'No quals/GCSEs', 2: 'GCSEs + Apprenticeship', 3: 'A-Levels', 4: "Bachelor's Degree", 5: "Master's/PhD" };
+      label = 'jobs accessible with ' + qualNames[lvl];
+    }
+
+    if (results.length === 0) {
+      document.getElementById('cs-status').textContent = 'No matching jobs found — try widening your search.';
+      document.getElementById('club-results-card').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('cs-status').textContent = '';
+    showClubResults(label, results);
   }
 
   // Display a list of club/team search results for the user to pick from
