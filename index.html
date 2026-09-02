@@ -2905,10 +2905,9 @@
     'queen letizia':           { wealth: 500,    note: 'Royalty · Spain', url: 'https://en.wikipedia.org/wiki/Queen_Letizia' },
     'king albert ii':          { wealth: 500,    note: 'Royalty · Belgium', url: 'https://en.wikipedia.org/wiki/King_Albert_Ii' },
     'king carl xvi':           { wealth: 70,     note: 'Royalty · Sweden', url: 'https://en.wikipedia.org/wiki/King_Carl_Xvi' },
-    'king harald':             { wealth: 30,     note: 'Royalty · Norway', url: 'https://en.wikipedia.org/wiki/King_Harald' },
     'emperor naruhito':        { wealth: 40,     note: 'Royalty · Japan · Emperor', url: 'https://en.wikipedia.org/wiki/Emperor_Naruhito' },
     'crown princess victoria': { wealth: 40,     note: 'Royalty · Sweden · Heir to the Swedish throne', url: 'https://en.wikipedia.org/wiki/Victoria,_Crown_Princess_of_Sweden' },
-    'crown prince haakon':     { wealth: 20,     note: 'Royalty · Norway · Heir to the Norwegian throne', url: 'https://en.wikipedia.org/wiki/Haakon,_Crown_Prince_of_Norway' },
+    'king haakon viii':        { wealth: 20,     note: 'Royalty · Norway · Became King on the death of his father, King Harald V, 28 Aug 2026 · Wife Crown Princess Mette-Marit becomes Queen Consort', url: 'https://en.wikipedia.org/wiki/Haakon_VIII' },
     'princess mary denmark':   { wealth: 1200,   note: 'Royalty · Denmark/Australia · Queen consort · Australian born', url: 'https://en.wikipedia.org/wiki/Queen_Mary_of_Denmark' },
     'queen sofia spain':       { wealth: 2600,   note: 'Royalty · Spain/Greece · Mother of King Felipe', url: 'https://en.wikipedia.org/wiki/Sof%C3%ADa_of_Greece_and_Denmark' },
     'prince albert monaco':    { wealth: 1000,   note: 'Royalty · Monaco · Sovereign Prince · Son of Grace Kelly', url: 'https://en.wikipedia.org/wiki/Albert_II,_Prince_of_Monaco' },
@@ -9386,6 +9385,7 @@
     'kenny rogers':            { wealth: 250,    note: 'Music · Country Music · USA · Historical', url: 'https://en.wikipedia.org/wiki/Kenny_Rogers' },
     'roger moore':         { wealth: 110,    note: 'Film · UK · Historical · James Bond · Died 2017 · Estate', url: 'https://en.wikipedia.org/wiki/Roger_Moore' },
     'queen elizabeth ii':      { wealth: 500,    note: 'Royalty · UK · Historical · Queen 1952-2022 · Died Sept 2022', url: 'https://en.wikipedia.org/wiki/Queen_Elizabeth_Ii' },
+    'king harald v':           { wealth: 30,     note: 'Royalty · Norway · Historical · King 1991-2026 · Europe\u2019s oldest monarch · Fled to the US as a child during Nazi occupation · Died Aug 28, 2026 aged 89, Oslo', url: 'https://en.wikipedia.org/wiki/Harald_V_of_Norway' },
     'marilyn monroe':      { wealth: 27,     note: 'Historical · Film · Icon · USA · Died 1962', url: 'https://en.wikipedia.org/wiki/Marilyn_Monroe' },
     'bruce lee':           { wealth: 10,     note: 'Historical · Film · Martial Arts · USA · Hong Kong · Died 1973', url: 'https://en.wikipedia.org/wiki/Bruce_Lee' },
     'tony bennett':            { wealth: 200,    note: 'Historical · Music · Pop · USA · I Left My Heart in San Francisco · 20 Grammys · Sang with Lady Gaga · Died July 2023 aged 96 · Crooner legend', url: 'https://en.wikipedia.org/wiki/Tony_Bennett' },
@@ -11588,6 +11588,7 @@
   };
 
   const ACRONYM_FIX = {
+    'King Carl Xvi': 'King Carl XVI', 'King Haakon Viii': 'King Haakon VIII',
     'Gp': 'GP', 'Ai Engineer': 'AI Engineer', 'Army Pti': 'Army PTI', 'Cad Technician': 'CAD Technician',
     'Ceo': 'CEO', 'Charity Ceo': 'Charity CEO', 'Devops Engineer': 'DevOps Engineer', 'Ev Technician': 'EV Technician',
     'Fe Lecturer': 'FE Lecturer', 'Fx Trader': 'FX Trader', 'Gp Practice Manager': 'GP Practice Manager',
@@ -15566,12 +15567,79 @@
   setTimeout(updateElonWealth, 3000);
   setInterval(updateElonWealth, 300000);
 
-  // ── END LIVE TRACKER ────────────────────────────────────
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      for (let registration of registrations) {
-        registration.unregister();
+  // ── LIVE BEZOS & ZUCKERBERG WEALTH TRACKER ──────────────
+  // Separate from updateElonWealth above (left completely untouched) so
+  // this new feature carries zero risk to the proven, working Musk tracker.
+  // Uses the new 'livewealth' Worker action added specifically for this.
+  async function updateBezosZuckWealth() {
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'livewealth' })
+      });
+      const data = await res.json();
+      const amznPrice = data.amzn || 0;
+      const metaPrice = data.meta || 0;
+
+      // Jeff Bezos: 884.83M Amazon shares (most recent available count,
+      // reflecting his ongoing scheduled share sales) + a fixed estimate
+      // for Blue Origin, the Washington Post and other holdings outside
+      // Amazon stock — the same "live stock + fixed other assets" approach
+      // already used for Musk above.
+      if (amznPrice > 0) {
+        const bezosShares = 884830000;
+        const bezosStockValue = Math.round((amznPrice * bezosShares) / 1000000);
+        const bezosOtherAssets = 15000; // Blue Origin, Washington Post, other — fixed estimate
+        const bezosTotal = bezosStockValue + bezosOtherAssets;
+        if (CELEB_DB['jeff bezos top20']) {
+          CELEB_DB['jeff bezos top20'].wealth = bezosTotal;
+          CELEB_DB['jeff bezos top20'].note = 'Top 20 · Tech · USA · Amazon Blue Origin Washington Post · ' + formatWealth(bezosTotal) + ' · AMZN $' + amznPrice.toFixed(2) + ' live · Updates every 5 mins · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez';
+        }
       }
+
+      // Mark Zuckerberg: 342.75M Meta shares (Class A + Class B combined,
+      // per SEC filings) + a small fixed estimate for other assets, since
+      // his wealth is much more purely Meta-stock-driven than Bezos's.
+      if (metaPrice > 0) {
+        const zuckShares = 342750000;
+        const zuckStockValue = Math.round((metaPrice * zuckShares) / 1000000);
+        const zuckOtherAssets = 3000; // real estate, other minor holdings
+        const zuckTotal = zuckStockValue + zuckOtherAssets;
+        if (CELEB_DB['mark zuckerberg top20']) {
+          CELEB_DB['mark zuckerberg top20'].wealth = zuckTotal;
+          CELEB_DB['mark zuckerberg top20'].note = 'Top 20 · Tech · USA · Meta Facebook Instagram WhatsApp · ' + formatWealth(zuckTotal) + ' · META $' + metaPrice.toFixed(2) + ' live · Updates every 5 mins · Founded Facebook Harvard 2004 · MMA fighter';
+        }
+      }
+
+      console.log('Bezos/Zuckerberg live wealth updated: AMZN $' + amznPrice.toFixed(2) + ', META $' + metaPrice.toFixed(2));
+
+      // Full table re-render is isolated so a failure here can never block
+      // the wealth updates above, which already succeeded.
+      try {
+        renderTable();
+      } catch (renderErr) {
+        console.log('Bezos/Zuckerberg wealth updated but table re-render failed: ' + renderErr.message);
+      }
+    } catch(e) {
+      console.log('Live Bezos/Zuckerberg wealth update unavailable — using static figures');
+    }
+  }
+
+  setTimeout(updateBezosZuckWealth, 4000);
+  setInterval(updateBezosZuckWealth, 300000);
+  // ── END BEZOS & ZUCKERBERG LIVE TRACKER ─────────────────
+
+  // ── END LIVE TRACKER ────────────────────────────────────
+  // Register the service worker to enable installability and offline
+  // support. Uses a network-first strategy (see sw.js) so users always see
+  // the latest content when online - the cache is only a fallback for
+  // when they're genuinely offline.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch((err) => {
+        console.log('Service worker registration failed:', err.message);
+      });
     });
   }
 </script>
