@@ -11853,7 +11853,7 @@
     }
     renderTable();
   }
-  const collapsedSections = new Set(['Individual Wealth', 'Global Perspective', 'Career Guide']); // start all three collapsed
+  const collapsedSections = new Set(['Individual Wealth', 'Global Perspective', 'Career Guide', 'Politics']); // start all four collapsed
 
   // Nested Football collapsible sections, within the Sport category
   let footballCollapsed = true;
@@ -12496,7 +12496,18 @@
     if (n.startsWith('career · council services')) return 'Career Guide — Agriculture & Public Services';
     if (n.startsWith('career · sport')) return 'Career Guide — Realistic Professional Sport';
     if (n.startsWith('career ·')) return 'Career Guide'; // safety net for any future career entry that doesn't match a specific subcategory above
-    if (n.startsWith('politics · party ·')) return 'World Political Parties';
+    if (n.startsWith('politics · party ·')) {
+      // Each country gets its own distinct category, exactly like Career
+      // Guide's "Career Guide — Healthcare & Medicine" etc. This matters
+      // structurally: SECTION_DIVIDERS entries render their header then
+      // skip straight to the next group, so nothing can be assigned
+      // directly to the bare 'Politics' category itself, or it would never
+      // render. Parses the country name straight out of the note text
+      // rather than needing a separate lookup table.
+      const parts = person.note.split('·').map(s => s.trim());
+      const country = parts[2] || 'Other';
+      return 'Politics — ' + country;
+    }
     if (n.includes('defence ·') || n.includes('· defence') || n.includes('military ·') || n.includes('· military') || n.includes('nuclear ·') || n.includes('· nuclear') || n.includes('weapons ·') || n.includes('munitions ·')) return 'Defence & Military';
     if (n.includes('fashion ·') || n.includes('· fashion') || n.includes('beauty ·') || n.includes('· beauty') || n.includes('perfume ·') || n.includes('· perfume') || n.includes('cosmetics ·') || n.includes('luxury fashion') || n.includes('clothing ·') || n.includes('· clothing')) return 'Fashion & Beauty';
     if (n.startsWith('country ·') || n.includes('· country ·') || n.includes('countries ·')) return 'Countries of the World';
@@ -12592,10 +12603,12 @@
     'Global Perspective',
     'Nations & Natural Wealth', 'Sovereign Wealth Funds', 'Net Zero', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics',
     'Career Guide',
-    'Career Guide — Healthcare & Medicine', 'Career Guide — Skilled Trades', 'Career Guide — Education', 'Career Guide — Law & Finance', 'Career Guide — Technology', 'Career Guide — Business & Management', 'Career Guide — Design & Construction', 'Career Guide — Creative & Hospitality', 'Career Guide — Transport & Logistics', 'Career Guide — Emergency & Public Services', 'Career Guide — Armed Forces', 'Career Guide — Agriculture & Public Services', 'Career Guide — Realistic Professional Sport', 'Career Guide — Realistic Creative Arts'
+    'Career Guide — Healthcare & Medicine', 'Career Guide — Skilled Trades', 'Career Guide — Education', 'Career Guide — Law & Finance', 'Career Guide — Technology', 'Career Guide — Business & Management', 'Career Guide — Design & Construction', 'Career Guide — Creative & Hospitality', 'Career Guide — Transport & Logistics', 'Career Guide — Emergency & Public Services', 'Career Guide — Armed Forces', 'Career Guide — Agriculture & Public Services', 'Career Guide — Realistic Professional Sport', 'Career Guide — Realistic Creative Arts',
+    'Politics',
+    'Politics — United Kingdom', 'Politics — United States', 'Politics — Germany', 'Politics — France'
   ];
 
-  const SECTION_DIVIDERS = new Set(['Individual Wealth', 'Global Perspective', 'Career Guide']);
+  const SECTION_DIVIDERS = new Set(['Individual Wealth', 'Global Perspective', 'Career Guide', 'Politics']);
 
   function toggleGroup(groupName) {
     const isOpen = !collapsedGroups.has(groupName);
@@ -12902,7 +12915,7 @@
       // which always sorts alphabetically by job title regardless of the
       // app's global A-Z/Wealth toggle, since browsing careers by name is
       // more useful here than ranking them by salary.
-      const forceAlpha = cat.startsWith('Career Guide');
+      const forceAlpha = cat.startsWith('Career Guide') || cat.startsWith('Politics');
       for (const b of blocks) b.people.sort((a,b) => {
         // A club's "Full Fixture List" row should always sit at the bottom
         // of that club's player list, regardless of A-Z/Wealth sort mode —
@@ -13211,7 +13224,7 @@
       // the "CAREER GUIDE" banner, so showing "Career Guide —" again here
       // is pure repetition). Horse Racing has the same self-referential
       // naming pattern, so gets the same treatment.
-      const displayGroupName = escHtml(groupName.replace(/^Career Guide —\s*/, '').replace(/^Horse Racing —\s*/, ''));
+      const displayGroupName = escHtml(groupName.replace(/^Career Guide —\s*/, '').replace(/^Horse Racing —\s*/, '').replace(/^Politics —\s*/, ''));
       // Section divider headers handled above
       html += '<tr class="group-header" data-group="' + escHtml(groupName) + '" onclick="toggleGroup(\'' + safeGroup + '\')" style="-webkit-tap-highlight-color:transparent">'
             + '<td colspan="3">'
