@@ -15538,8 +15538,23 @@
             }
           }
 
-          // If no matching subgroup found, just add at end
-          if (!inserted) CELEB_DB[key] = val;
+          // If no matching subgroup found, still add it - but insert a
+          // small marker immediately before it first. This forces its
+          // category to be worked out fresh from its own note text (see
+          // buildOrderedEntries, which always recalculates category from
+          // whichever real person immediately follows a marker), rather
+          // than silently inheriting whatever category the last real
+          // subgroup in the whole file happens to be. Without this, an
+          // entry added with no matching subgroup - or a corrupted note
+          // that no longer matches any category rule - would silently
+          // attach itself to an unrelated section purely because of where
+          // it landed in the file, which is exactly what happened before
+          // this fix existed.
+          if (!inserted) {
+            const markerKey = '_sub_custom_fallback_' + key.replace(/[^a-z0-9]/gi, '_');
+            CELEB_DB[markerKey] = { _subgroup: 'Community Added' };
+            CELEB_DB[key] = val;
+          }
         }
       }
     } catch(e) {
