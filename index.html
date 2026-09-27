@@ -939,8 +939,8 @@
     <button id="save-my-entry-btn" class="add-to-list-btn" onclick="saveCurrentResultAsMyEntry()" style="display:none;margin-top:8px">📖 Save as My Own Entry (permanent)</button>
   </div>
 
-  <!-- My Own Entries — hidden from main view but JS still works -->
-  <div class="watchlist-card" id="my-entries-card" style="display:none">
+  <!-- My Own Entries -->
+  <div class="watchlist-card" id="my-entries-card">
     <div class="watchlist-header">
       <span class="watchlist-label">My Own Entries</span>
       <span style="font-size:11px;color:#555555;cursor:pointer" onclick="document.getElementById('my-entries-help').style.display = document.getElementById('my-entries-help').style.display === 'none' ? 'block' : 'none'">ⓘ what's this?</span>
@@ -11707,13 +11707,16 @@
       }
     }
     let list = Array.from(seen.values());
-    // userEntry no longer added to table - search result shown in result card only
-    // Add the user's own permanently-saved entries (My Own Entries)
-    const myEntries = loadMyEntries();
-    for (const e of myEntries) {
-      list = list.filter(p => p.name.toLowerCase() !== e.name.toLowerCase());
-      list.push({ name: e.name, wealth: e.wealth, note: e.note, url: '', _myEntry: true });
-    }
+    // My Own Entries deliberately do NOT get merged into this list. They
+    // already have their own dedicated display via renderMyEntries() (the
+    // "Your Entries" section, with its own remove buttons). Including them
+    // here too used to be possible, but it's fragile: an entry with no
+    // custom note defaults to "Added by you" as its category, which isn't
+    // in the page's fixed section order and so gets tacked onto the very
+    // end of the whole list - easy to mistake as belonging to whatever
+    // section happens to be last. With many people (school children in
+    // particular) adding their own entries, that fallback isn't safe to
+    // rely on, so My Entries are kept entirely separate from this table.
     return list.filter(p => !p._isSentinel).sort((a, b) => a.wealth - b.wealth);
   }
 
