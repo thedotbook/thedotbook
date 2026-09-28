@@ -13938,6 +13938,12 @@
         const wikiUrl     = parts[4] || '';
         const desc        = parts[5] || text;
 
+        // The AI may have recognised someone who IS in the book (e.g. a
+        // misspelling, or a name in a different form). Don't offer to add
+        // them again - point to the existing entry instead.
+        const existingKey = findEntryByDisplayName(foundName) || findEntryByWikiUrl(wikiUrl);
+        if (existingKey) { showAlreadyInBook(existingKey); return; }
+
         // If wealth is 0 try to extract from description or full text, then fall back to wikiWealth
         if (wealth === 0) wealth = extractWealth(desc) || extractWealth(text) || wikiWealth;
 
@@ -13949,7 +13955,12 @@
           'ai-msg-bot'
         );
       } else {
-        // Unstructured response — extract wealth from text and show add button
+        // Unstructured response. If it links to a Wikipedia article for someone
+        // already in the book, point to that entry instead of offering to add.
+        const linkInText = (text.match(/https?:\/\/en\.wikipedia\.org\/wiki\/[^\s)|<]+/) || [])[0];
+        const existingKey = findEntryByWikiUrl(linkInText);
+        if (existingKey) { showAlreadyInBook(existingKey); return; }
+        // Extract wealth from text and show add button
         const wealth = extractWealth(text) || wikiWealth;
         addAIMessage(
           text + '<br><br>' +
@@ -13979,6 +13990,18 @@
     if (CELEB_DB[key]) { CELEB_DB[key] = val; return; }
     CELEB_DB['_sub_custom_fallback_' + key.replace(/[^a-z0-9]/gi, '_')] = { _subgroup: 'Community Added' };
     CELEB_DB[key] = val;
+  }
+
+  // Shown by the bot when the person it found is already in the book
+  function showAlreadyInBook(key) {
+    const nm = cleanDisplayName(key);
+    addAIMessage(
+      '✓ <strong style="color:#f9e74a">' + escHtml(nm) + '</strong> is already in The Dollar Book.<br><br>' +
+      '<button onclick="selectClubResult(\'' + escHtml(key).replace(/'/g, "\\'") + '\')" style="background:#ffffff;color:#000000;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer">Show me ' + escHtml(nm) + '</button>',
+      'ai-msg-bot'
+    );
+    document.getElementById('rate-status').textContent = '✓ ' + nm + ' is already in the book';
+    setTimeout(() => document.getElementById('rate-status').textContent = '', 5000);
   }
 
   async function botAddToBook(name, wealth, category, nationality, wikiUrl) {
@@ -14049,12 +14072,99 @@
     addAIMessage('Admin panel pre-filled with "' + escHtml(name) + '" — complete the details and tap Add.', 'ai-msg-bot');
   }
 
+  // ── Name lookup helpers ─────────────────────────────────
+  // Finds entries by the name they are DISPLAYED as (ignoring capitals,
+  // accents and punctuation) rather than by their internal key, and by their
+  // Wikipedia article. If the same name appears in more than one list, the
+  // wealthiest entry wins. Rebuilt automatically whenever the database
+  // changes size (e.g. after admin additions load).
+  let displayNameIndex = null, urlTitleIndex = null, nameIndexSize = -1;
+  function ensureNameIndexes() {
+    const size = Object.keys(CELEB_DB).length;
+    if (displayNameIndex && nameIndexSize === size) return;
+    displayNameIndex = new Map(); urlTitleIndex = new Map(); nameIndexSize = size;
+    const better = (map, k, key, v) => { const prev = map.get(k); if (!prev || (v.wealth || 0) > (CELEB_DB[prev].wealth || 0)) map.set(k, key); };
+    for (const [k, v] of Object.entries(CELEB_DB)) {
+      if (!v || v._subgroup || v._fixtureList || !v.note || k.startsWith('_')) continue;
+      if (/^(career|politics|religion|swf)\s/.test(k)) continue;
+      const n = normPersonName(cleanDisplayName(k));
+      if (n) better(displayNameIndex, n, k, v);
+      const t = wikiTitleFromUrl(v.url);
+      if (t) better(urlTitleIndex, t, k, v);
+    }
+  }
+  function findEntryByDisplayName(typed) {
+    const want = normPersonName(typed);
+    if (!want) return null;
+    ensureNameIndexes();
+    return displayNameIndex.get(want) || null;
+  }
+  function findEntryByWikiUrl(url) {
+    const t = wikiTitleFromUrl(url);
+    if (!t) return null;
+    ensureNameIndexes();
+    return urlTitleIndex.get(t) || null;
+  }
+
+  // Suggestions for a name that didn't match exactly: names containing every
+  // word typed (e.g. "gervais" -> Ricky Gervais), and near-misses that look
+  // like a typo (e.g. "Ricky Gervaise"). Returns results in the same shape
+  // the results list uses.
+  function findSuggestions(typed, limit) {
+    const want = normPersonName(typed);
+    if (want.length < 4) return [];
+    ensureNameIndexes();
+    const tokens = want.split(' ').filter(Boolean);
+    const maxDist = want.length <= 5 ? 1 : (want.length <= 12 ? 2 : 3);
+    const scored = [];
+    for (const [n, key] of displayNameIndex) {
+      const nameTokens = n.split(' ');
+      let score = null;
+      if (tokens.every(t => nameTokens.some(nt => nt.startsWith(t)))) score = 0;
+      else if (Math.abs(n.length - want.length) <= maxDist) {
+        const d = levenshteinDistance(want, n);
+        if (d <= maxDist) score = d;
+      }
+      if (score === null && tokens.length === 1 && tokens[0].length >= 5) {
+        const md = tokens[0].length <= 8 ? 1 : 2;
+        if (nameTokens.some(nt => Math.abs(nt.length - tokens[0].length) <= md && levenshteinDistance(tokens[0], nt) <= md)) score = 1;
+      }
+      if (score !== null) scored.push({ key: key, score: score, wealth: CELEB_DB[key].wealth || 0 });
+    }
+    scored.sort((a, b) => a.score - b.score || b.wealth - a.wealth);
+    return scored.slice(0, limit).map(x => ({ key: x.key, name: cleanDisplayName(x.key), wealth: x.wealth, note: CELEB_DB[x.key].note }));
+  }
+
+  let lastTypedQuery = '';
+  function showSuggestions(raw, suggestions) {
+    lastTypedQuery = raw;
+    showClubResults(raw, suggestions);
+    document.getElementById('club-results-label').textContent =
+      'No exact match for "' + raw + '" — did you mean… (' + suggestions.length + ')';
+    document.getElementById('rate-status').textContent = 'Not an exact match — did you mean one of these?';
+    document.getElementById('club-results-list').insertAdjacentHTML('beforeend',
+      '<div style="padding:14px 16px;text-align:center"><button onclick="askAIAnyway()" style="background:#333333;color:#ffffff;border:none;padding:8px 16px;border-radius:6px;font-size:12px;cursor:pointer;width:auto;letter-spacing:0;text-transform:none">None of these — ask the AI instead</button></div>');
+  }
+  function askAIAnyway() {
+    document.getElementById('club-results-card').style.display = 'none';
+    document.getElementById('rate-status').textContent = '🤖 Asking the AI...';
+    botSearchAndOffer(lastTypedQuery);
+  }
+
   async function lookupCelebrity() {
     const raw = document.getElementById('name-input').value.trim();
     if (!raw) { alert('Please enter a name to find.'); return; }
 
-    const key = raw.toLowerCase().trim();
-    const match = CELEB_DB[key];
+    let key = raw.toLowerCase().trim();
+    let match = CELEB_DB[key];
+    // Many entries are stored under a key with an extra tag on the end (for
+    // example "jeff bezos top20" or "rembrandt artist"), so typing the plain
+    // name would miss them and wrongly send the search to the AI bot. If the
+    // exact key isn't found, also try matching the name as it is displayed.
+    if (!match) {
+      const viaDisplayName = findEntryByDisplayName(raw);
+      if (viaDisplayName) { key = viaDisplayName; match = CELEB_DB[viaDisplayName]; }
+    }
 
     if (match) {
       // Use the properly capitalised name from the database key, not raw user input
@@ -14073,10 +14183,17 @@
       if (clubMatches.length > 0) {
         showClubResults(raw, clubMatches);
       } else {
-        document.getElementById('club-results-card').style.display = 'none';
-        document.getElementById('rate-status').textContent = '🤖 Not found — asking the AI...';
-        // Auto-trigger bot search for this person
-        botSearchAndOffer(raw);
+        // No exact match and not a club: offer close matches (typos, surnames)
+        // before troubling the AI
+        const suggestions = findSuggestions(raw, 8);
+        if (suggestions.length > 0) {
+          showSuggestions(raw, suggestions);
+        } else {
+          document.getElementById('club-results-card').style.display = 'none';
+          document.getElementById('rate-status').textContent = '🤖 Not found — asking the AI...';
+          // Auto-trigger bot search for this person
+          botSearchAndOffer(raw);
+        }
       }
     }
   }
