@@ -13851,7 +13851,7 @@
   }
 
     function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // Celebrity search
@@ -13958,6 +13958,17 @@
     }
   }
 
+  // Adds an entry that has no section of its own (e.g. someone the bot just
+  // found). A marker goes in immediately before it, which makes the page work
+  // out its category fresh from its own note - instead of silently inheriting
+  // whichever section happens to be last in the database. Same protection as
+  // the custom.json loader.
+  function insertLooseEntry(key, val) {
+    if (CELEB_DB[key]) { CELEB_DB[key] = val; return; }
+    CELEB_DB['_sub_custom_fallback_' + key.replace(/[^a-z0-9]/gi, '_')] = { _subgroup: 'Community Added' };
+    CELEB_DB[key] = val;
+  }
+
   async function botAddToBook(name, wealth, category, nationality, wikiUrl) {
     const note = category + ' · ' + nationality;
     const key = name.toLowerCase();
@@ -13972,6 +13983,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'add',
+          password: adminSessionPw,
           name: name,
           wealth: wealth,
           note: note,
@@ -13987,7 +13999,7 @@
 
       if (result.success) {
         // Add to local database immediately so they appear now
-        CELEB_DB[key] = { wealth: wealth, note: note, url: wikiUrl };
+        insertLooseEntry(key, { wealth: wealth, note: note, url: wikiUrl });
         renderTable();
 
         addAIMessage(
@@ -13996,16 +14008,16 @@
           'ai-msg-bot'
         );
       } else {
-        // Show exact error so we can diagnose
-        addAIMessage('⚠ Error: ' + (result.message || 'Unknown error') + '<br><em style="color:#888">Adding locally for this session only.</em>', 'ai-msg-bot');
-        CELEB_DB[key] = { wealth: wealth, note: note, url: wikiUrl };
+        // Refused (e.g. not the site owner) or failed - still show it for this visit
+        addAIMessage('ℹ ' + escHtml(result.message || 'Could not save permanently') + '<br><em style="color:#888">Added for this visit only — it will not be saved for others.</em>', 'ai-msg-bot');
+        insertLooseEntry(key, { wealth: wealth, note: note, url: wikiUrl });
         renderTable();
       }
     } catch(e) {
       const thinking = document.querySelector('.ai-msg-thinking:last-child');
       if (thinking) thinking.remove();
       addAIMessage('⚠ Connection error. Added locally for this session only.', 'ai-msg-bot');
-      CELEB_DB[key] = { wealth: wealth, note: note, url: wikiUrl };
+      insertLooseEntry(key, { wealth: wealth, note: note, url: wikiUrl });
       renderTable();
     }
   }
@@ -14834,6 +14846,10 @@
   const GITHUB_REPO = 'thedotbook';
   const GITHUB_FILE = 'custom.json';
   let adminLoggedIn = false;
+  // Held in memory only while the admin is logged in (never saved anywhere),
+  // and sent with bot "Add to The Dollar Book" requests so only the owner
+  // can publish permanent entries. Cleared on logout.
+  let adminSessionPw = '';
   let adminHoldTimer = null;
   let adminHoldStarted = false;
 
@@ -14903,6 +14919,7 @@
       const data = await resp.json();
       if (data.ok) {
         adminLoggedIn = true;
+        adminSessionPw = pw;
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-panel').style.display = 'block';
         document.getElementById('pending-count').textContent = Object.keys(pendingAdds).length + pendingRemovals.length + Object.keys(pendingEdits).length;
@@ -14924,6 +14941,7 @@
     document.getElementById('admin-password').value = '';
     if (!adminLoggedIn) return;
     adminLoggedIn = false;
+    adminSessionPw = '';
     document.getElementById('admin-login').style.display = 'block';
     document.getElementById('admin-panel').style.display = 'none';
   }
@@ -15205,7 +15223,7 @@
       }
 
       // Update local CELEB_DB immediately
-      CELEB_DB[key] = { wealth, note, url, subgroup };
+      insertLooseEntry(key, { wealth, note, url, subgroup });
       CUSTOM_DATA.adds[key] = { wealth, note, url, subgroup };
 
       status.textContent = '✅ ' + name + ' saved! Live in ~2 mins';
