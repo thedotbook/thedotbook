@@ -811,55 +811,27 @@
 
 <main>
 
-  <!-- Calculator -->
-  <div class="card">
-    <div class="card-label">Find a Celebrity</div>
-    <div class="form-group">
-      <div class="row">
-        <div style="flex:1;position:relative;display:flex;align-items:center">
-          <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Rod Stewart, Ronaldo" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
-          <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#555555;line-height:1;user-select:none" title="Clear">✕</span>
-        </div>
-        <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
-        <button id="mic-btn" onclick="toggleSpeech()" title="Speak a name" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0;background:transparent;border:1.5px solid #333333;border-radius:6px;color:#555555;cursor:pointer;transition:all 0.2s">🎤</button>
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="table-header-label">The Dollar Book</div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button id="sort-toggle" onclick="toggleSort()" style="background:#333333;color:#ffffff;border:1px solid #555555;padding:5px 12px;border-radius:4px;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">$ Wealth</button>
+        <div style="font-size:10px;color:#888888;letter-spacing:1px">Source: Forbes public data · Illustrative only</div>
+        <div id="entry-count"></div>
       </div>
-      <div class="row">
-        <select id="currency-select" style="flex:2">
-          <option value="USD">🇺🇸 USD — US Dollar</option>
-          <option value="BTC">₿ BTC — Bitcoin</option>
-          <option value="ETH">Ξ ETH — Ethereum</option>
-          <option value="GBP">🇬🇧 GBP — British Pound</option>
-          <option value="EUR">🇪🇺 EUR — Euro</option>
-          <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
-          <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
-          <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
-          <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
-          <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
-          <option value="INR">🇮🇳 INR — Indian Rupee</option>
-          <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
-          <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
-          <option value="KRW">🇰🇷 KRW — South Korean Won</option>
-          <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
-          <option value="HKD">🇭🇰 HKD — Hong Kong Dollar</option>
-          <option value="NOK">🇳🇴 NOK — Norwegian Krone</option>
-          <option value="SEK">🇸🇪 SEK — Swedish Krona</option>
-          <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
-          <option value="ZAR">🇿🇦 ZAR — South African Rand</option>
-          <option value="AED">🇦🇪 AED — UAE Dirham</option>
-          <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
-          <option value="TRY">🇹🇷 TRY — Turkish Lira</option>
-          <option value="THB">🇹🇭 THB — Thai Baht</option>
-          <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
-          <option value="IDR">🇮🇩 IDR — Indonesian Rupiah</option>
-        </select>
-        <select id="unit-select" style="flex:1">
-          <option value="millions">Millions</option>
-          <option value="billions">Billions</option>
-          <option value="trillions">Trillions</option>
-        </select>
-      </div>
-      <div id="rate-status" style="font-size:11px;color:#333333;text-align:right;margin-top:-6px"></div>
     </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Page#</th>
+          <th>NAME</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="show-more" id="show-more-btn" onclick="toggleShowAll()" style="display:none"></div>
   </div>
 
   <!-- Career Guide Search Tool -->
@@ -913,6 +885,57 @@
     </div>
   </div>
 
+  <!-- Calculator -->
+  <div class="card">
+    <div class="card-label">Find a Celebrity</div>
+    <div class="form-group">
+      <div class="row">
+        <div style="flex:1;position:relative;display:flex;align-items:center">
+          <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Rod Stewart, Ronaldo" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
+          <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#555555;line-height:1;user-select:none" title="Clear">✕</span>
+        </div>
+        <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
+        <button id="mic-btn" onclick="toggleSpeech()" title="Speak a name" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0;background:transparent;border:1.5px solid #333333;border-radius:6px;color:#555555;cursor:pointer;transition:all 0.2s">🎤</button>
+      </div>
+      <div class="row">
+        <select id="currency-select" style="flex:2">
+          <option value="USD">🇺🇸 USD — US Dollar</option>
+          <option value="BTC">₿ BTC — Bitcoin</option>
+          <option value="ETH">Ξ ETH — Ethereum</option>
+          <option value="GBP">🇬🇧 GBP — British Pound</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+          <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+          <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+          <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+          <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+          <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
+          <option value="INR">🇮🇳 INR — Indian Rupee</option>
+          <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
+          <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
+          <option value="KRW">🇰🇷 KRW — South Korean Won</option>
+          <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+          <option value="HKD">🇭🇰 HKD — Hong Kong Dollar</option>
+          <option value="NOK">🇳🇴 NOK — Norwegian Krone</option>
+          <option value="SEK">🇸🇪 SEK — Swedish Krona</option>
+          <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
+          <option value="ZAR">🇿🇦 ZAR — South African Rand</option>
+          <option value="AED">🇦🇪 AED — UAE Dirham</option>
+          <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
+          <option value="TRY">🇹🇷 TRY — Turkish Lira</option>
+          <option value="THB">🇹🇭 THB — Thai Baht</option>
+          <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
+          <option value="IDR">🇮🇩 IDR — Indonesian Rupiah</option>
+        </select>
+        <select id="unit-select" style="flex:1">
+          <option value="millions">Millions</option>
+          <option value="billions">Billions</option>
+          <option value="trillions">Trillions</option>
+        </select>
+      </div>
+      <div id="rate-status" style="font-size:11px;color:#333333;text-align:right;margin-top:-6px"></div>
+    </div>
+  </div>
+
   <!-- Result -->
   <div id="result-card">
     <span onclick="clearResult()" style="position:absolute;top:10px;right:12px;cursor:pointer;font-size:20px;color:#ffffff;line-height:1" title="Clear result">✕</span>
@@ -961,29 +984,6 @@
     <div id="watchlist-body">
       <div class="watchlist-empty">⭐ Your saved celebrities will appear here.<br><span style="font-size:11px;color:#888888">Search for a name above, then tap ★ Add to My List</span></div>
     </div>
-  </div>
-
-  <!-- Table -->
-  <div class="table-card">
-    <div class="table-header">
-      <div class="table-header-label">The Dollar Book</div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <button id="sort-toggle" onclick="toggleSort()" style="background:#333333;color:#ffffff;border:1px solid #555555;padding:5px 12px;border-radius:4px;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase">$ Wealth</button>
-        <div style="font-size:10px;color:#888888;letter-spacing:1px">Source: Forbes public data · Illustrative only</div>
-        <div id="entry-count"></div>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Page#</th>
-          <th>NAME</th>
-          <th>Source</th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-    </table>
-    <div class="show-more" id="show-more-btn" onclick="toggleShowAll()" style="display:none"></div>
   </div>
 
   <!-- Formula -->
@@ -12737,6 +12737,10 @@
       updateIndyCarVisibility();
       updateNASCARVisibility();
       updateWRCVisibility();
+      // Horse Racing was missing from this list, so opening Sport revealed
+      // all twelve of its sub-sections at once instead of keeping them
+      // tucked under the "— Horse Racing —" toggle until it is clicked.
+      updateHorseRacingVisibility();
     }
     attachSubgroupListeners();
   }
@@ -14437,6 +14441,9 @@
     });
 
     document.getElementById('club-results-card').style.display = 'block';
+    // Bring the results into view - on a phone they can otherwise appear
+    // just below the visible screen, so it looks as if nothing happened.
+    document.getElementById('club-results-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     document.getElementById('rate-status').textContent =
       '✓ Found ' + results.length + ' match' + (results.length === 1 ? '' : 'es') + ' — tap a name for details';
     setTimeout(() => document.getElementById('rate-status').textContent = '', 5000);
