@@ -1028,6 +1028,23 @@
         <div id="token-status" style="font-size:12px;color:#888888;margin-top:8px"></div>
       </div>
 
+      <!-- RECENT DEATHS CHECK -->
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#aaaaaa;margin-bottom:8px;letter-spacing:1px">CHECK FOR RECENT DEATHS</div>
+        <div style="font-size:12px;color:#888888;margin-bottom:10px;line-height:1.5">Compares Wikipedia's list of recent deaths with everyone in the book and flags matches. It only flags &mdash; nothing is changed automatically, so you can check each one first.</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <select id="deaths-window" style="flex:1;background:#000;border:1px solid #555;color:#ffffff;padding:10px;font-size:13px;border-radius:4px">
+            <option value="14">Last 14 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="60">Last 60 days</option>
+          </select>
+          <button id="deaths-btn" onclick="runDeathsCheck()" style="flex:1;background:#333;color:#fff;border:none;padding:10px;cursor:pointer;border-radius:4px;font-size:13px">Check now</button>
+        </div>
+        <div id="deaths-status" style="font-size:12px;color:#888888;min-height:16px"></div>
+        <div id="deaths-last" style="font-size:11px;color:#666666;margin-top:4px"></div>
+        <div id="deaths-results"></div>
+      </div>
+
       <!-- SEARCH & ADD -->
       <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:16px;margin-bottom:16px">
         <div style="font-size:11px;color:#aaaaaa;margin-bottom:12px;letter-spacing:1px">ADD OR REMOVE</div>
@@ -14898,6 +14915,161 @@
     localStorage.removeItem('dotbook_pendingRemovals');
     localStorage.removeItem('dotbook_pendingEdits');
   }
+
+  // ── RECENT DEATHS CHECK (admin tool) ──────────────────────
+  // Flags people in the book who appear in Wikipedia's recent deaths so the
+  // owner can review and update them. It NEVER changes anything by itself:
+  // Wikipedia/Wikidata can contain mistakes or vandalism, and a wrong "died"
+  // note on a living person must not publish automatically.
+  let lastDeathsText = '';
+
+  // "https://en.wikipedia.org/wiki/Harald_V_of_Norway" -> "harald v of norway"
+  function wikiTitleFromUrl(u) {
+    const m = /\/wiki\/([^?#]+)/.exec(u || '');
+    if (!m) return '';
+    let t = m[1];
+    try { t = decodeURIComponent(t); } catch (e) {}
+    return t.replace(/_/g, ' ').trim().toLowerCase();
+  }
+
+  function normPersonName(s) {
+    return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  // Matches a list of recent deaths [{title, died, desc}] against the book.
+  //  high   = the book's Wikipedia link is this exact article
+  //  medium = same full name as the article title
+  //  low    = same name once a "(footballer)"-style tag is removed, only for
+  //           entries with no Wikipedia link (often a different person)
+  function matchDeathsToBook(deaths) {
+    const byUrl = new Map(), byName = new Map();
+    for (const [key, val] of Object.entries(CELEB_DB)) {
+      if (!val || val._subgroup || val._fixtureList || !val.note) continue;
+      if (/^(career|politics|religion|swf)\s/.test(key)) continue;
+      // Skip anyone the book already treats as deceased or historical
+      if (/\bDied\b/.test(val.note) || / estate$/.test(key) || getCategory(val) === 'Historical') continue;
+      const entry = { key: key, name: cleanDisplayName(key), url: val.url || '' };
+      const ut = wikiTitleFromUrl(entry.url);
+      if (ut) { if (!byUrl.has(ut)) byUrl.set(ut, []); byUrl.get(ut).push(entry); }
+      const nn = normPersonName(entry.name);
+      if (nn) { if (!byName.has(nn)) byName.set(nn, []); byName.get(nn).push(entry); }
+    }
+    const seen = new Set();
+    const out = { high: [], medium: [], low: [] };
+    const add = (level, entry, death) => {
+      if (seen.has(entry.key)) return;
+      seen.add(entry.key);
+      out[level].push({ entry: entry, death: death });
+    };
+    for (const d of deaths) {
+      const lower = d.title.toLowerCase();
+      if (byUrl.has(lower)) { byUrl.get(lower).forEach(e => add('high', e, d)); continue; }
+      const nn = normPersonName(d.title);
+      if (byName.has(nn)) { byName.get(nn).forEach(e => add('medium', e, d)); continue; }
+      const stripped = normPersonName(d.title.replace(/\s*\([^)]*\)\s*$/, ''));
+      if (stripped && stripped !== nn && byName.has(stripped)) {
+        byName.get(stripped).filter(e => !e.url).forEach(e => add('low', e, d));
+      }
+    }
+    return out;
+  }
+
+  // One request to Wikidata for everyone with an English Wikipedia article
+  // who died in the last N days.
+  async function fetchRecentDeaths(days) {
+    const since = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
+    const query =
+      'SELECT ?title ?dod ?desc WHERE {' +
+      ' ?person wdt:P31 wd:Q5 ; wdt:P570 ?dod .' +
+      ' FILTER(?dod >= "' + since + 'T00:00:00Z"^^xsd:dateTime)' +
+      ' ?article schema:about ?person ; schema:isPartOf <https://en.wikipedia.org/> ; schema:name ?title .' +
+      ' OPTIONAL { ?person schema:description ?desc . FILTER(LANG(?desc) = "en") }' +
+      '} ORDER BY DESC(?dod) LIMIT 3000';
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 55000);
+    try {
+      const res = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(query), { signal: ctrl.signal });
+      if (!res.ok) throw new Error('Wikipedia data service returned ' + res.status);
+      const data = await res.json();
+      const seenTitles = new Set(), list = [];
+      for (const b of (data.results && data.results.bindings) || []) {
+        const title = b.title && b.title.value;
+        if (!title || seenTitles.has(title)) continue;
+        seenTitles.add(title);
+        list.push({ title: title, died: (b.dod && b.dod.value || '').slice(0, 10), desc: (b.desc && b.desc.value) || '' });
+      }
+      return list;
+    } finally { clearTimeout(timer); }
+  }
+
+  function deathItemHtml(it) {
+    const wiki = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(it.death.title.replace(/ /g, '_'));
+    return '<div style="border-top:1px solid #333;padding:8px 0">' +
+      '<div style="color:#ffffff;font-size:13px"><strong>' + escHtml(it.entry.name) + '</strong> &mdash; died ' + escHtml(it.death.died) + '</div>' +
+      (it.death.desc ? '<div style="color:#aaaaaa;font-size:12px">' + escHtml(it.death.desc) + '</div>' : '') +
+      '<div style="font-size:11px;color:#888888">In the book as: ' + escHtml(it.entry.key) +
+      ' &middot; <a href="' + escHtml(wiki) + '" target="_blank" rel="noopener" style="color:#99ccff">Check on Wikipedia &#8599;</a></div></div>';
+  }
+
+  function renderDeathsResults(m, total, days) {
+    const status = document.getElementById('deaths-status');
+    const out = document.getElementById('deaths-results');
+    const strong = m.high.length + m.medium.length;
+    let html = '', text = '';
+    const section = (title, items, note) => {
+      if (!items.length) return;
+      html += '<div style="margin-top:12px;font-size:11px;letter-spacing:1px;color:#f9e74a">' + title + ' (' + items.length + ')</div>';
+      if (note) html += '<div style="font-size:11px;color:#777777;margin:2px 0 4px">' + note + '</div>';
+      items.forEach(it => { html += deathItemHtml(it); text += it.entry.name + ' - died ' + it.death.died + ' - book entry: ' + it.entry.key + '\n'; });
+    };
+    section('LIKELY MATCHES', m.high, 'The book\'s Wikipedia link is this exact person.');
+    section('POSSIBLE MATCHES', m.medium, 'Same name only - check it is the same person.');
+    section('WEAKER MATCHES', m.low, 'Probably a different person with the same name.');
+    lastDeathsText = text;
+    status.style.color = strong ? '#f9e74a' : '#88ff88';
+    status.textContent = 'Checked ' + total.toLocaleString() + ' recent deaths from the last ' + days + ' days against the book: ' +
+      (strong || m.low.length ? strong + ' to review' + (m.low.length ? ' (+' + m.low.length + ' weaker)' : '') : 'nobody in the book found.');
+    if (text) html += '<button onclick="copyDeathsList()" style="margin-top:12px;background:#333;color:#fff;border:none;padding:8px 12px;cursor:pointer;border-radius:4px;font-size:12px">Copy this list</button>' +
+      '<div style="font-size:11px;color:#666666;margin-top:8px">Matching uses each person\'s Wikipedia link first, then their name, so someone whose link points to a redirect page could be missed.</div>';
+    out.innerHTML = html;
+  }
+
+  function copyDeathsList() {
+    const done = () => { const s = document.getElementById('deaths-status'); if (s) s.textContent = 'List copied.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(lastDeathsText).then(done, () => {});
+  }
+
+  async function runDeathsCheck() {
+    const status = document.getElementById('deaths-status');
+    const out = document.getElementById('deaths-results');
+    const btn = document.getElementById('deaths-btn');
+    const days = parseInt(document.getElementById('deaths-window').value, 10) || 30;
+    out.innerHTML = '';
+    status.style.color = '#888888';
+    status.textContent = 'Asking Wikipedia\'s data service... this can take up to a minute.';
+    if (btn) btn.disabled = true;
+    try {
+      const deaths = await fetchRecentDeaths(days);
+      renderDeathsResults(matchDeathsToBook(deaths), deaths.length, days);
+      try { localStorage.setItem('dotbook_lastDeathsCheck', new Date().toISOString()); } catch (e) {}
+      showLastDeathsCheck();
+    } catch (e) {
+      status.style.color = '#ff9999';
+      status.textContent = 'Could not complete the check (' + (e.name === 'AbortError' ? 'it timed out' : e.message) + '). Please try again in a minute.';
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function showLastDeathsCheck() {
+    const el = document.getElementById('deaths-last');
+    if (!el) return;
+    let iso = null;
+    try { iso = localStorage.getItem('dotbook_lastDeathsCheck'); } catch (e) {}
+    el.textContent = iso ? 'Last checked on this device: ' + new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  }
+  showLastDeathsCheck();
 
   async function adminLogin() {
     const pw = document.getElementById('admin-password').value;
