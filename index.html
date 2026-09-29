@@ -11883,9 +11883,10 @@
     const wealthM = parseFloat(span.dataset.wealth);
     const note = span.dataset.note;
     const url = span.dataset.url;
+    const isCareerEntry = (note || '').startsWith('Career ·');
     const hc = getHomeCurrency(note, name);
-    const usd = formatWealth(wealthM);
-    const local = hc && hc !== 'USD' ? formatInHomeCurrency(wealthM, hc) : null;
+    const usd = isCareerEntry ? '\u00a3' + Math.round(wealthM).toLocaleString() + ',000/year' : formatWealth(wealthM);
+    const local = !isCareerEntry && hc && hc !== 'USD' ? formatInHomeCurrency(wealthM, hc) : null;
     const pg = getPage(wealthM);
 
     let html = '<div id="wealth-popup-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="document.getElementById(\'wealth-popup-overlay\').remove()">';
@@ -11893,7 +11894,10 @@
     html += '<div style="font-size:20px;color:#ffffff;font-weight:bold;margin-bottom:8px">' + escHtml(name) + '</div>';
     html += '<div style="font-size:28px;font-weight:bold;color:#ffffff;margin-bottom:4px">' + usd + '</div>';
     if (local) html += '<div style="font-size:14px;color:#aaa;margin-bottom:4px">' + local + '</div>';
-    html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 334</div>';
+    // Career Guide's "wealth" is a salary in thousands of pounds, not net
+    // worth in millions of dollars, so the book's page-number concept
+    // simply doesn't apply here - showing one would be actively misleading.
+    if (!isCareerEntry) html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 334</div>';
     if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">Wikipedia &#8599;</a><br>';
     html += '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:12px">';
     html += '<table style="width:100%;border-collapse:collapse"><tr>';
@@ -13230,7 +13234,17 @@
   }
 
   function renderPersonRow(person, hidden, groupName) {
-    const pg = getPage(person.wealth);
+    // Career Guide's "wealth" field means something completely different
+    // from everywhere else in the book - thousands of pounds of annual
+    // salary, not millions of dollars of net worth. Treating it the normal
+    // way would show a meaningless "page" (e.g. a bricklayer on \u00a336,000/year
+    // landing on the same page as a multi-millionaire) and a wildly
+    // misleading "$36M" if tapped. Detected by the note prefix, which every
+    // Career Guide entry has, rather than by groupName, so this also works
+    // correctly from the search results list where groupName isn't passed.
+    const isCareerEntry = (person.note || '').startsWith('Career ·');
+    const pg = isCareerEntry ? null : getPage(person.wealth);
+    const careerBadgeText = isCareerEntry ? '\u00a3' + Math.round(person.wealth) + 'k' : null;
     const isUser = person.isUser;
     const isMusk = person.name === 'Elon Musk';
     const isKevin = person.name === 'Kevin Cook' && !isUser;
@@ -13249,7 +13263,7 @@
     // this only changes what's shown, not the data itself.
     const displayNote = (person.note || '').replace(/^Football · /, '');
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #e8e8e8;background:' + rowBg + '">'
-      + '<td><span class="page-badge" style="background:' + badgeBg + ';color:#000000;box-shadow:none;font-size:15px" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + pg + '</span></td>'
+      + '<td><span class="page-badge" style="background:' + (isCareerEntry ? '#2a2a2a' : badgeBg) + ';color:' + (isCareerEntry ? '#f9e74a' : '#000000') + ';box-shadow:none;font-size:' + (isCareerEntry ? '13px' : '15px') + '" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + (isCareerEntry ? careerBadgeText : pg) + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer;' + nameStyle + '" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
@@ -14480,6 +14494,12 @@
     const wm = match.wealth;
     const page = getPage(wm);
     const pct = Math.min(100, Math.max(0.3, ((page / 334) * 100).toFixed(1)));
+    // Career Guide's "wealth" is a salary in thousands of pounds, not net
+    // worth in millions of dollars - the book's page/progress-bar concept
+    // doesn't apply to it at all. Detected via the note, which every
+    // Career Guide entry starts with "Career \u00b7", same check used in
+    // renderPersonRow and showWealthPopup.
+    const isCareerEntry = (match.note || '').startsWith('Career \u00b7');
 
     const card = document.getElementById('result-card');
     card.style.display = 'block';
@@ -14490,27 +14510,43 @@
     // This person is already in the built-in book — no need to save manually
     document.getElementById('save-my-entry-btn').style.display = 'none';
 
-    document.getElementById('result-page').textContent = page;
-    const pageOfText = page > 334 ? 'beyond page 334' : 'of 334';
-    document.getElementById('result-page-of').textContent = pageOfText;
-    const beyondTag = page > 334 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 334';
-    const hc = getHomeCurrency(match.note, name);
-    const hcDisplay = hc ? formatInHomeCurrency(wm, hc) : formatWealth(wm);
-    document.getElementById('result-text').innerHTML =
-      '<strong>' + escHtml(name) + '</strong> appears on page ' + page
-      + beyondTag
-      + '<br><span style="font-size:13px;color:#aaaaaa">' + hcDisplay + '</span>';
+    const progressTrack = document.querySelector('#result-card .progress-track');
+    const progressLabels = document.querySelector('#result-card .progress-labels');
 
-    document.getElementById('progress-fill').style.width = pct + '%';
+    if (isCareerEntry) {
+      const salaryText = '\u00a3' + Math.round(wm).toLocaleString() + 'k';
+      document.getElementById('result-page').textContent = salaryText;
+      document.getElementById('result-page-of').textContent = 'per year';
+      document.getElementById('result-text').innerHTML =
+        '<strong>' + escHtml(name) + '</strong> — average salary around \u00a3' + Math.round(wm).toLocaleString() + ',000/year';
+      if (progressTrack) progressTrack.style.display = 'none';
+      if (progressLabels) progressLabels.style.display = 'none';
+      document.getElementById('result-note').textContent = '';
+    } else {
+      if (progressTrack) progressTrack.style.display = '';
+      if (progressLabels) progressLabels.style.display = '';
+      document.getElementById('result-page').textContent = page;
+      const pageOfText = page > 334 ? 'beyond page 334' : 'of 334';
+      document.getElementById('result-page-of').textContent = pageOfText;
+      const beyondTag = page > 334 ? ' <span style="font-size:12px;color:#ffffff">&#9733; Beyond Musk!</span>' : ' of 334';
+      const hc = getHomeCurrency(match.note, name);
+      const hcDisplay = hc ? formatInHomeCurrency(wm, hc) : formatWealth(wm);
+      document.getElementById('result-text').innerHTML =
+        '<strong>' + escHtml(name) + '</strong> appears on page ' + page
+        + beyondTag
+        + '<br><span style="font-size:13px;color:#aaaaaa">' + hcDisplay + '</span>';
 
-    let note = "";
-    if (page === 1) note = "On page 1 — alongside hundreds of other celebrities!";
-    else if (page === 334) note = "Page 334 — Trillionaire target! SpaceX IPO 12 June 2026";
-    else if (page > 334 && page <= 500) note = "★ Beyond the Trillionaire page 334!";
-    else if (page > 154 && page <= 267) note = "★★ In the territory of emperors and ancient kings!";
-    else if (page > 267) note = "★★★ Beyond the wealth of recorded human history!";
-    else note = (334 - page) + " pages of $ signs to go before reaching the Trillionaire finish line.";
-    document.getElementById('result-note').textContent = note;
+      document.getElementById('progress-fill').style.width = pct + '%';
+
+      let note = "";
+      if (page === 1) note = "On page 1 — alongside hundreds of other celebrities!";
+      else if (page === 334) note = "Page 334 — Trillionaire target! SpaceX IPO 12 June 2026";
+      else if (page > 334 && page <= 500) note = "★ Beyond the Trillionaire page 334!";
+      else if (page > 154 && page <= 267) note = "★★ In the territory of emperors and ancient kings!";
+      else if (page > 267) note = "★★★ Beyond the wealth of recorded human history!";
+      else note = (334 - page) + " pages of $ signs to go before reaching the Trillionaire finish line.";
+      document.getElementById('result-note').textContent = note;
+    }
 
     // Add Wikipedia link if available
     const wikiDiv = document.getElementById('result-wiki');
@@ -14523,7 +14559,7 @@
     }
 
     // Store plain text wealth (no HTML)
-    const wealthPlain = formatWealth(wm);
+    const wealthPlain = isCareerEntry ? ('\u00a3' + Math.round(wm).toLocaleString() + ',000/year') : formatWealth(wm);
     card.dataset.name = name;
     card.dataset.page = page;
     card.dataset.wealth = wealthPlain;
