@@ -1148,7 +1148,6 @@
   const CELEB_DB = {
     // ── UK POLITICS ────────────────────────────────────
     '_sub_ukpolitics':     { _subgroup: 'UK Politics' },
-    'margaret thatcher':   { wealth: 10,     note: 'Politics · UK · First female UK Prime Minister · 1979-1990 · Iron Lady · Died 2013', url: 'https://en.wikipedia.org/wiki/Margaret_Thatcher' },
     'nigel farage':        { wealth: 4,      note: 'Politics · Reform UK', url: 'https://en.wikipedia.org/wiki/Nigel_Farage' },
     'boris johnson':       { wealth: 4,      note: 'Politics · Media · UK · RTD', url: 'https://en.wikipedia.org/wiki/Boris_Johnson' },
     'rishi sunak':         { wealth: 800,    note: 'Politics · Finance · UK · Akshata Murty heiress', url: 'https://en.wikipedia.org/wiki/Rishi_Sunak' },
@@ -2644,11 +2643,12 @@
     'world gdp total':       { wealth: 123580000, note: 'Nation · GDP · World Total 2025 · IMF · $123.6 Trillion', url: 'https://en.wikipedia.org/wiki/Gross_world_product' },
     'world mineral total':   { wealth: 500000000, note: 'Nation · Natural Wealth · Estimated total global mineral wealth · $500 Trillion · All nations combined', url: 'https://en.wikipedia.org/wiki/Natural_resources' },
 
-    '_sub_uktv':           { _subgroup: 'UK TV & Comedy' },
+    '_sub_uktv_memoriam':  { _subgroup: 'UK TV & Comedy — In Memoriam' },
     'michael parkinson':   { wealth: 20,     note: 'TV · Media · UK · Parkinson · Died 2023', url: 'https://en.wikipedia.org/wiki/Michael_Parkinson' },
     'bruce forsyth':       { wealth: 15,     note: 'TV · Presenter · UK · Strictly · Died 2017', url: 'https://en.wikipedia.org/wiki/Bruce_Forsyth' },
     'terry wogan':         { wealth: 20,     note: 'TV · Presenter · UK · Died 2016', url: 'https://en.wikipedia.org/wiki/Terry_Wogan' },
     'len goodman':         { wealth: 20,     note: 'TV · Presenter · UK · Strictly · Died 2023', url: 'https://en.wikipedia.org/wiki/Len_Goodman' },
+    '_sub_uktv_living':    { _subgroup: 'UK TV & Comedy' },
     'ricky gervais':       { wealth: 130,    note: 'Comedy · TV · UK · The Office', url: 'https://en.wikipedia.org/wiki/Ricky_Gervais' },
     'peter kay':           { wealth: 50,     note: 'Comedy · TV · UK', url: 'https://en.wikipedia.org/wiki/Peter_Kay' },
     'lee evans':           { wealth: 70,     note: 'Comedy · UK · Retired', url: 'https://en.wikipedia.org/wiki/Lee_Evans' },
@@ -2939,7 +2939,6 @@
     'king salman':             { wealth: 18000,  note: 'Royalty · Saudi Arabia · King', url: 'https://en.wikipedia.org/wiki/King_Salman' },
     'king abdulaziz':          { wealth: 18000,  note: 'Royalty · Saudi Arabia · Founding King · Died 1953, wealth figure reflects historical legacy', url: 'https://en.wikipedia.org/wiki/King_Abdulaziz' },
     'alwaleed bin talal':      { wealth: 8900,   note: 'Royalty · Saudi Arabia · Kingdom Holding', url: 'https://en.wikipedia.org/wiki/Alwaleed_Bin_Talal' },
-    'sheikh khalifa':          { wealth: 15000,  note: 'Royalty · UAE · Abu Dhabi · Died May 2022', url: 'https://en.wikipedia.org/wiki/Sheikh_Khalifa' },
     'sheikh mansour':          { wealth: 30000,  note: 'Royalty · UAE · Man City owner', url: 'https://en.wikipedia.org/wiki/Sheikh_Mansour' },
     'sheikh tamim':            { wealth: 2000,   note: 'Royalty · Qatar · Emir', url: 'https://en.wikipedia.org/wiki/Sheikh_Tamim' },
     'hassanal bolkiah':        { wealth: 28000,  note: 'Royalty · Brunei · Sultan', url: 'https://en.wikipedia.org/wiki/Hassanal_Bolkiah' },
@@ -2973,7 +2972,6 @@
     'grand duke henri luxembourg': { wealth: 4000, note: 'Royalty · Luxembourg · One of wealthiest European royal families', url: 'https://en.wikipedia.org/wiki/Henri,_Grand_Duke_of_Luxembourg' },
     'king philippe belgium':  { wealth: 12,      note: 'Royalty · Belgium · Current King since 2013', url: 'https://en.wikipedia.org/wiki/Philippe_of_Belgium' },
     'queen mathilde belgium':  { wealth: 12,      note: 'Royalty · Belgium · Queen consort', url: 'https://en.wikipedia.org/wiki/Mathilde_of_Belgium' },
-    'king constantine ii greece': { wealth: 300, note: 'Royalty · Greece · Last King of Greece · Monarchy abolished 1973 · Died 2023', url: 'https://en.wikipedia.org/wiki/Constantine_II_of_Greece' },
     'prince pavlos greece':   { wealth: 100,     note: 'Royalty · Greece · Crown Prince of the former Greek monarchy', url: 'https://en.wikipedia.org/wiki/Pavlos,_Crown_Prince_of_Greece' },
     // ── ATHLETICS ────────────────────────────────────────
     '_sub_athletics':      { _subgroup: 'Athletics' },
@@ -4259,7 +4257,6 @@
     'lebron james':        { wealth: 1400,   note: 'Sport · Basketball · Business · USA · Philadelphia 76ers · Forbes 2026 · First active NBA billionaire, signed July 2026 as "last decision"', url: 'https://en.wikipedia.org/wiki/LeBron_James' },
     'michael jordan':      { wealth: 3600,   note: 'Sport · Basketball · Business · USA · 6x NBA champion · RTD', url: 'https://en.wikipedia.org/wiki/Michael_Jordan' },
     'magic johnson':       { wealth: 1200,   note: 'Sport · Basketball · Business · USA · RTD', url: 'https://en.wikipedia.org/wiki/Magic_Johnson' },
-    'kobe bryant':         { wealth: 600,    note: 'Sport · Basketball · USA · 5x NBA champion · Died 2020', url: 'https://en.wikipedia.org/wiki/Kobe_Bryant' },
     'shaquille oneal':     { wealth: 400,    note: 'Sport · Basketball · Business · USA · RTD', url: 'https://en.wikipedia.org/wiki/Shaquille_O%27Neal' },
     'stephen curry':       { wealth: 160,    note: 'Sport · Basketball · USA · Golden State Warriors · 4x NBA champion', url: 'https://en.wikipedia.org/wiki/Stephen_Curry' },
     'jimmy butler':        { wealth: 60,     note: 'Sport · Basketball · USA · Golden State Warriors · Forward, recovering from ACL tear', url: 'https://en.wikipedia.org/wiki/Jimmy_Butler' },
@@ -4490,7 +4487,6 @@
     'alijah martin':       { wealth: 1,      note: 'Sport · Basketball · USA · Toronto Raptors · Guard', url: 'https://en.wikipedia.org/wiki/Alijah_Martin' },
     'jonathan mogbo':      { wealth: 2,      note: 'Sport · Basketball · USA · Toronto Raptors · Forward', url: 'https://en.wikipedia.org/wiki/Jonathan_Mogbo' },
     'kawhi leonard':       { wealth: 80,     note: 'Sport · Basketball · USA · Toronto Raptors · Forward, traded back from LA Clippers 2026', url: 'https://en.wikipedia.org/wiki/Kawhi_Leonard' },
-    'junior bridgeman':    { wealth: 600,    note: 'Sport · Basketball · Business · USA · Restaurant empire · Died 2022', url: 'https://en.wikipedia.org/wiki/Junior_Bridgeman' },
     'shai gilgeous-alexander': { wealth: 30, note: 'Sport · Basketball · USA · Oklahoma City Thunder · NBA MVP 2025 & 2026', url: 'https://en.wikipedia.org/wiki/Shai_Gilgeous-Alexander' },
     'chet holmgren':       { wealth: 15,     note: 'Sport · Basketball · USA · Oklahoma City Thunder · Centre, All-NBA', url: 'https://en.wikipedia.org/wiki/Chet_Holmgren' },
     'jalen williams':      { wealth: 15,     note: 'Sport · Basketball · USA · Oklahoma City Thunder · Forward, All-NBA', url: 'https://en.wikipedia.org/wiki/Jalen_Williams' },
@@ -4822,6 +4818,10 @@
     'vasilije micic':      { wealth: 2,      note: 'Sport · Basketball · Serbia · Phoenix Suns · Guard', url: 'https://en.wikipedia.org/wiki/Vasilije_Miciс' },
     'malcolm hill':        { wealth: 1,      note: 'Sport · Basketball · USA · Phoenix Suns · Forward', url: 'https://en.wikipedia.org/wiki/Malcolm_Hill' },
     'drew timme':          { wealth: 1,      note: 'Sport · Basketball · USA · Charlotte Hornets · Forward', url: 'https://en.wikipedia.org/wiki/Drew_Timme' },
+
+    '_sub_basketball_memoriam': { _subgroup: 'Basketball — In Memoriam' },
+    'kobe bryant':         { wealth: 600,    note: 'Sport · Basketball · USA · 5x NBA champion · Died 2020', url: 'https://en.wikipedia.org/wiki/Kobe_Bryant' },
+    'junior bridgeman':    { wealth: 600,    note: 'Sport · Basketball · Business · USA · Restaurant empire · Died 2022', url: 'https://en.wikipedia.org/wiki/Junior_Bridgeman' },
     // ── BOXING ─────────────────────────────────────────
     '_sub_boxing':         { _subgroup: 'Boxing' },
     'floyd mayweather':    { wealth: 450,    note: 'Sport · Boxing · USA · 50-0 undefeated · RTD', url: 'https://en.wikipedia.org/wiki/Floyd_Mayweather' },
@@ -5726,8 +5726,6 @@
     'adrian lewis':            { wealth: 5,      note: 'Sport · Darts · UK · 2x World Champion', url: 'https://en.wikipedia.org/wiki/Adrian_Lewis' },
     'raymond van barneveld':   { wealth: 8,      note: 'Sport · Darts · Netherlands · 5x World Champion · Barney · RTD', url: 'https://en.wikipedia.org/wiki/Raymond_van_Barneveld' },
     'dennis priestley':        { wealth: 4,      note: 'Sport · Darts · UK · 2x World Champion in different formats · RTD', url: 'https://en.wikipedia.org/wiki/Dennis_Priestley' },
-    'eric bristow':            { wealth: 4,      note: 'Sport · Darts · UK · 5x World Champion · The Crafty Cockney · Darts pioneer · Died 2018', url: 'https://en.wikipedia.org/wiki/Eric_Bristow' },
-    'jocky wilson':            { wealth: 2,      note: 'Sport · Darts · Scotland · 2x World Champion · Died 2012', url: 'https://en.wikipedia.org/wiki/Jocky_Wilson' },
     'john lowe darts':         { wealth: 5,      note: 'Sport · Darts · UK · 3x World Champion · Old Stoneface · RTD', url: 'https://en.wikipedia.org/wiki/John_Lowe_(darts_player)' },
     'james wade':              { wealth: 5,      note: 'Sport · Darts · UK · Multiple major title winner · The Machine', url: 'https://en.wikipedia.org/wiki/James_Wade' },
     'rob cross':               { wealth: 5,      note: 'Sport · Darts · UK · World Champion 2018 · Voltage', url: 'https://en.wikipedia.org/wiki/Rob_Cross' },
@@ -5735,12 +5733,14 @@
     'bobby george':            { wealth: 3,      note: 'Sport · Darts · UK · 1980 World Championship runner-up · RTD · Darts personality and commentator', url: 'https://en.wikipedia.org/wiki/Bobby_George' },
     'keith deller':            { wealth: 3,      note: 'Sport · Darts · UK · 1983 World Champion as a qualifier · RTD · Famous upset victory', url: 'https://en.wikipedia.org/wiki/Keith_Deller' },
     'wayne mardle':            { wealth: 3,      note: 'Sport · Darts · UK · World Championship semi-finalist · RTD · Popular commentator known as Hawaii 501', url: 'https://en.wikipedia.org/wiki/Wayne_Mardle' },
+
+    '_sub_darts_memoriam':      { _subgroup: 'Darts — In Memoriam' },
+    'eric bristow':            { wealth: 4,      note: 'Sport · Darts · UK · 5x World Champion · The Crafty Cockney · Darts pioneer · Died 2018', url: 'https://en.wikipedia.org/wiki/Eric_Bristow' },
+    'jocky wilson':            { wealth: 2,      note: 'Sport · Darts · Scotland · 2x World Champion · Died 2012', url: 'https://en.wikipedia.org/wiki/Jocky_Wilson' },
     // ── F1 & MOTORSPORT ─────────────────────────────────
     '_sub_f1':             { _subgroup: 'F1 & Motorsport' },
     // ── FORMULA 1 ────────────────────────────────────────
-    'niki lauda':          { wealth: 200,    note: 'Sport · F1 · Austria · 3x World Champion · Died 2019', url: 'https://en.wikipedia.org/wiki/Niki_Lauda' },
     'alain prost':         { wealth: 100,    note: 'Sport · F1 · France · 4x World Champion · The Professor · Still alive, F1 steward and pundit', url: 'https://en.wikipedia.org/wiki/Alain_Prost' },
-    'ayrton senna':        { wealth: 400,    note: 'Sport · F1 · Brazil · 3x World Champion · Estate · Died 1994', url: 'https://en.wikipedia.org/wiki/Ayrton_Senna' },
     'lewis hamilton':      { wealth: 550,    note: 'Sport · F1 · UK · 7x World Champion · Ferrari 2025', url: 'https://en.wikipedia.org/wiki/Lewis_Hamilton' },
     'michael schumacher':  { wealth: 600,    note: 'Sport · F1 · Germany · 7x World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Michael_Schumacher' },
     'jenson button':       { wealth: 150,    note: 'Sport · F1 · UK · 2009 World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Jenson_Button' },
@@ -5759,6 +5759,10 @@
     'eddie irvine':        { wealth: 120,    note: 'Sport · F1 · UK · Property tycoon · RTD', url: 'https://en.wikipedia.org/wiki/Eddie_Irvine' },
     'mario andretti':      { wealth: 130,    note: 'Sport · F1 · IndyCar · USA · 1978 F1 champion · RTD', url: 'https://en.wikipedia.org/wiki/Mario_Andretti' },
     'jackie stewart':      { wealth: 100,    note: 'Sport · F1 · UK · 3x World Champion · Safety campaigner · RTD', url: 'https://en.wikipedia.org/wiki/Jackie_Stewart' },
+
+    '_sub_f1_memoriam':    { _subgroup: 'F1 & Motorsport — In Memoriam' },
+    'niki lauda':          { wealth: 200,    note: 'Sport · F1 · Austria · 3x World Champion · Died 2019', url: 'https://en.wikipedia.org/wiki/Niki_Lauda' },
+    'ayrton senna':        { wealth: 400,    note: 'Sport · F1 · Brazil · 3x World Champion · Estate · Died 1994', url: 'https://en.wikipedia.org/wiki/Ayrton_Senna' },
     'jack brabham':        { wealth: 30,     note: 'Sport · F1 · Australia · 3x World Champion · Only driver to win in his own car · Died 2014', url: 'https://en.wikipedia.org/wiki/Jack_Brabham' },
     'james hunt':          { wealth: 20,     note: 'Sport · F1 · UK · 1976 World Champion · Subject of film Rush · Died 1993', url: 'https://en.wikipedia.org/wiki/James_Hunt' },
 
@@ -5809,16 +5813,18 @@
     'damon bradshaw':      { wealth: 3,      note: 'Sport · Motorcycling · USA · RTD · Dominant late 1980s-90s racer', url: 'https://en.wikipedia.org/wiki/Damon_Bradshaw' },
     'tim ferry':           { wealth: 3,      note: 'Sport · Motorcycling · USA · Ferry Man · RTD · Multiple time AMA podium finisher', url: 'https://en.wikipedia.org/wiki/Tim_Ferry' },
     'marvin musquin':      { wealth: 8,      note: 'Sport · Motorcycling · France · RTD · Multiple championship contender', url: 'https://en.wikipedia.org/wiki/Marvin_Musquin' },
-    'barry sheene motorcycling': { wealth: 10, note: 'Sport · Motorcycling · UK · 2x 500cc World Champion (1976, 1977) · Remains Britain\u2019s last premier-class Grand Prix world champion · Died 2003, aged 52', url: 'https://en.wikipedia.org/wiki/Barry_Sheene' },
     'kevin schwantz':      { wealth: 8,      note: 'Sport · Motorcycling · USA · 1993 500cc World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Kevin_Schwantz' },
     'wayne rainey':        { wealth: 8,      note: 'Sport · Motorcycling · USA · 3x 500cc World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Wayne_Rainey' },
     'kenny roberts':       { wealth: 10,     note: 'Sport · Motorcycling · USA · 3x 500cc World Champion · King Kenny · RTD', url: 'https://en.wikipedia.org/wiki/Kenny_Roberts' },
     'freddie spencer':     { wealth: 8,      note: 'Sport · Motorcycling · USA · 3x 500cc World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Freddie_Spencer' },
     'giacomo agostini':    { wealth: 15,     note: 'Sport · Motorcycling · Italy · Most successful rider in Grand Prix history with 15 World Championships · RTD', url: 'https://en.wikipedia.org/wiki/Giacomo_Agostini' },
-    'mike hailwood':       { wealth: 10,     note: 'Sport · Motorcycling · UK · 9x World Champion · Isle of Man TT legend · Died 1981', url: 'https://en.wikipedia.org/wiki/Mike_Hailwood' },
-    'angel nieto':         { wealth: 10,     note: 'Sport · Motorcycling · Spain · 13x World Champion across smaller classes · Died 2017', url: 'https://en.wikipedia.org/wiki/%C3%81ngel_Nieto' },
     'dani pedrosa':        { wealth: 30,     note: 'Sport · Motorcycling · Spain · 3x World Champion in smaller classes · Multiple MotoGP podiums · RTD', url: 'https://en.wikipedia.org/wiki/Dani_Pedrosa' },
     'andrea dovizioso':    { wealth: 20,     note: 'Sport · Motorcycling · Italy · Multiple race winner and championship runner-up · RTD', url: 'https://en.wikipedia.org/wiki/Andrea_Dovizioso' },
+
+    '_sub_motorcycling_memoriam': { _subgroup: 'Motorcycling — In Memoriam' },
+    'barry sheene motorcycling': { wealth: 10, note: 'Sport · Motorcycling · UK · 2x 500cc World Champion (1976, 1977) · Remains Britain\u2019s last premier-class Grand Prix world champion · Died 2003, aged 52', url: 'https://en.wikipedia.org/wiki/Barry_Sheene' },
+    'mike hailwood':       { wealth: 10,     note: 'Sport · Motorcycling · UK · 9x World Champion · Isle of Man TT legend · Died 1981', url: 'https://en.wikipedia.org/wiki/Mike_Hailwood' },
+    'angel nieto':         { wealth: 10,     note: 'Sport · Motorcycling · Spain · 13x World Champion across smaller classes · Died 2017', url: 'https://en.wikipedia.org/wiki/%C3%81ngel_Nieto' },
 
     '_sub_motogpteams':    { _subgroup: 'MotoGP' },
     'marc marquez':        { wealth: 80,     note: 'Sport · MotoGP · Spain · Ducati Lenovo Team · Reigning World Champion, 7th title', url: 'https://en.wikipedia.org/wiki/Marc_M%C3%A0rquez' },
@@ -5893,14 +5899,16 @@
     'dario franchitti':    { wealth: 50,     note: 'Sport · IndyCar · Scotland · 3x IndyCar champion · 3x Indy 500 winner · RTD', url: 'https://en.wikipedia.org/wiki/Dario_Franchitti' },
     'helio castroneves':   { wealth: 20,     note: 'Sport · IndyCar · Brazil · 4x Indy 500 winner', url: 'https://en.wikipedia.org/wiki/Helio_Castroneves' },
     'rick mears':          { wealth: 40,     note: 'Sport · IndyCar · USA · 4x Indy 500 winner · 3x IndyCar champion · RTD', url: 'https://en.wikipedia.org/wiki/Rick_Mears' },
-    'al unser':            { wealth: 30,     note: 'Sport · IndyCar · USA · 4x Indy 500 winner · Died 2021', url: 'https://en.wikipedia.org/wiki/Al_Unser' },
     'al unser jr':         { wealth: 20,     note: 'Sport · IndyCar · USA · 2x Indy 500 winner · Part of racing dynasty · RTD', url: 'https://en.wikipedia.org/wiki/Al_Unser_Jr.' },
-    'bobby unser':         { wealth: 20,     note: 'Sport · IndyCar · USA · 3x Indy 500 winner · Died 2021', url: 'https://en.wikipedia.org/wiki/Bobby_Unser' },
     'aj foyt':             { wealth: 60,     note: 'Sport · IndyCar · USA · 4x Indy 500 winner · RTD · First to win Indy 500 Daytona 500 and Le Mans · Now team owner', url: 'https://en.wikipedia.org/wiki/A._J._Foyt' },
     'tony kanaan':         { wealth: 25,     note: 'Sport · IndyCar · Brazil · 2013 Indy 500 winner · 2004 IndyCar champion · RTD', url: 'https://en.wikipedia.org/wiki/Tony_Kanaan' },
     'juan pablo montoya':  { wealth: 80,     note: 'Sport · IndyCar · Colombia · 2x Indy 500 winner · RTD · Also F1 race winner', url: 'https://en.wikipedia.org/wiki/Juan_Pablo_Montoya' },
     'simon pagenaud':      { wealth: 15,     note: 'Sport · IndyCar · France · 2019 Indy 500 winner · 2016 IndyCar champion', url: 'https://en.wikipedia.org/wiki/Simon_Pagenaud' },
     'colton herta':        { wealth: 10,     note: 'Sport · IndyCar · USA · Youngest ever IndyCar race winner', url: 'https://en.wikipedia.org/wiki/Colton_Herta' },
+
+    '_sub_indycar_memoriam': { _subgroup: 'IndyCar & Indy 500 — In Memoriam' },
+    'al unser':            { wealth: 30,     note: 'Sport · IndyCar · USA · 4x Indy 500 winner · Died 2021', url: 'https://en.wikipedia.org/wiki/Al_Unser' },
+    'bobby unser':         { wealth: 20,     note: 'Sport · IndyCar · USA · 3x Indy 500 winner · Died 2021', url: 'https://en.wikipedia.org/wiki/Bobby_Unser' },
     'dan wheldon':         { wealth: 20,     note: 'Sport · IndyCar · UK · 2x Indy 500 winner · Killed in 2011 season finale crash', url: 'https://en.wikipedia.org/wiki/Dan_Wheldon' },
 
     '_sub_indycarteams':   { _subgroup: 'IndyCar Teams' },
@@ -5931,8 +5939,6 @@
 
     // ── WRC RALLY ─────────────────────────────────────────
     '_sub_wrc':            { _subgroup: 'WRC Rally' },
-    'colin mcrae':         { wealth: 10,     note: 'Sport · WRC · Scotland · 1995 World Rally champion · Estate · Died 2007', url: 'https://en.wikipedia.org/wiki/Colin_McRae' },
-    'richard burns':       { wealth: 5,      note: 'Sport · WRC · UK · 2001 World Rally champion · Estate · Died 2005', url: 'https://en.wikipedia.org/wiki/Richard_Burns' },
     'sebastien loeb':      { wealth: 55,     note: 'Sport · WRC · France · 9x World Rally champion · Record holder · RTD from full-time WRC', url: 'https://en.wikipedia.org/wiki/S%C3%A9bastien_Loeb' },
     'carlos sainz sr':     { wealth: 30,     note: 'Sport · WRC · Spain · 2x World Rally champion · El Matador · RTD', url: 'https://en.wikipedia.org/wiki/Carlos_Sainz_(rally_driver)' },
     'marcus gronholm':     { wealth: 10,     note: 'Sport · WRC · Finland · 2x World Rally champion · RTD', url: 'https://en.wikipedia.org/wiki/Marcus_Gr%C3%B6nholm' },
@@ -5942,13 +5948,17 @@
     'walter rohrl':        { wealth: 15,     note: 'Sport · WRC · Germany · 2x World Rally champion · RTD · Also Porsche test driver legend', url: 'https://en.wikipedia.org/wiki/Walter_R%C3%B6hrl' },
     'ari vatanen':         { wealth: 10,     note: 'Sport · WRC · Finland · 1981 World Rally champion · RTD · Also politician', url: 'https://en.wikipedia.org/wiki/Ari_Vatanen' },
     'petter solberg':      { wealth: 20,     note: 'Sport · WRC · Norway · 2003 World Rally champion · RTD · Father of Toyota driver Oliver Solberg', url: 'https://en.wikipedia.org/wiki/Petter_Solberg' },
-    'hannu mikkola':       { wealth: 10,     note: 'Sport · WRC · Finland · 1983 World Rally champion · Rally pioneer · Died 2021', url: 'https://en.wikipedia.org/wiki/Hannu_Mikkola' },
-    'bjorn waldegard':     { wealth: 8,      note: 'Sport · WRC · Sweden · 1979 World Rally champion · First ever WRC champion · Died 2014', url: 'https://en.wikipedia.org/wiki/Bj%C3%B6rn_Waldeg%C3%A5rd' },
     'miki biasion':        { wealth: 8,      note: 'Sport · WRC · Italy · 2x World Rally champion with Lancia · RTD', url: 'https://en.wikipedia.org/wiki/Miki_Biasion' },
     'didier auriol':       { wealth: 8,      note: 'Sport · WRC · France · 1994 World Rally champion · RTD', url: 'https://en.wikipedia.org/wiki/Didier_Auriol' },
     'markku alen':         { wealth: 8,      note: 'Sport · WRC · Finland · Most rally wins without a title · RTD', url: 'https://en.wikipedia.org/wiki/Markku_Al%C3%A9n' },
     'kris meeke':          { wealth: 5,      note: 'Sport · WRC · UK/Northern Ireland · Multiple WRC rally winner', url: 'https://en.wikipedia.org/wiki/Kris_Meeke' },
     'jari-matti latvala':  { wealth: 8,      note: 'Sport · WRC · Finland · Multiple rally winner · RTD from driving · Now Toyota Gazoo Racing WRT team principal', url: 'https://en.wikipedia.org/wiki/Jari-Matti_Latvala' },
+
+    '_sub_wrc_memoriam':   { _subgroup: 'WRC Rally — In Memoriam' },
+    'colin mcrae':         { wealth: 10,     note: 'Sport · WRC · Scotland · 1995 World Rally champion · Estate · Died 2007', url: 'https://en.wikipedia.org/wiki/Colin_McRae' },
+    'richard burns':       { wealth: 5,      note: 'Sport · WRC · UK · 2001 World Rally champion · Estate · Died 2005', url: 'https://en.wikipedia.org/wiki/Richard_Burns' },
+    'hannu mikkola':       { wealth: 10,     note: 'Sport · WRC · Finland · 1983 World Rally champion · Rally pioneer · Died 2021', url: 'https://en.wikipedia.org/wiki/Hannu_Mikkola' },
+    'bjorn waldegard':     { wealth: 8,      note: 'Sport · WRC · Sweden · 1979 World Rally champion · First ever WRC champion · Died 2014', url: 'https://en.wikipedia.org/wiki/Bj%C3%B6rn_Waldeg%C3%A5rd' },
 
     '_sub_wrcteams':       { _subgroup: 'WRC Teams' },
     'sebastien ogier':     { wealth: 20,     note: 'Sport · WRC Teams · Toyota Gazoo Racing WRT · France · 9x World Rally champion · Part-time programme 2026', url: 'https://en.wikipedia.org/wiki/S%C3%A9bastien_Ogier' },
@@ -6848,12 +6858,10 @@
     'herb kohl':               { wealth: 500,    note: 'Sport · NBA · Politics · USA · Former Milwaukee Bucks owner and US Senator · Died 2023', url: 'https://en.wikipedia.org/wiki/Herb_Kohl' },
     // ── RUGBY ────────────────────────────────────────────
     '_sub_rugby':          { _subgroup: 'Rugby' },
-    'jonah lomu':          { wealth: 1,      note: 'Sport · Rugby · New Zealand · Rugby World Cup icon · Died 2015', url: 'https://en.wikipedia.org/wiki/Jonah_Lomu' },
     'jonny wilkinson':     { wealth: 15,     note: 'Sport · Rugby · UK · World Cup winner 2003 · The Drop Goal · RTD', url: 'https://en.wikipedia.org/wiki/Jonny_Wilkinson' },
     'martin johnson':      { wealth: 10,     note: 'Sport · Rugby · UK · World Cup winning captain · RTD', url: 'https://en.wikipedia.org/wiki/Martin_Johnson' },
     'brian odriscoll':     { wealth: 15,     note: 'Sport · Rugby · Ireland · RTD', url: 'https://en.wikipedia.org/wiki/Brian_Odriscoll' },
     'gareth edwards':      { wealth: 8,      note: 'Sport · Rugby · Wales · RTD', url: 'https://en.wikipedia.org/wiki/Gareth_Edwards' },
-    'phil bennett':        { wealth: 3,      note: 'Sport · Rugby · Wales · Died 2022', url: 'https://en.wikipedia.org/wiki/Phil_Bennett' },
     'jeremy guscott':      { wealth: 5,      note: 'Sport · Rugby · UK · RTD', url: 'https://en.wikipedia.org/wiki/Jeremy_Guscott' },
     'clive woodward':      { wealth: 5,      note: 'Sport · Rugby · UK · Sir Clive · World Cup winning coach 2003 · RTD', url: 'https://en.wikipedia.org/wiki/Clive_Woodward' },
     'jason leonard':       { wealth: 3,      note: 'Sport · Rugby · UK · RTD', url: 'https://en.wikipedia.org/wiki/Jason_Leonard' },
@@ -7275,6 +7283,10 @@
     'luke james rugby':    { wealth: 3,      note: 'Sport · Rugby · England · Sale Sharks · Fullback · 2026-27 season', url: 'https://en.wikipedia.org/wiki/Luke_James_(rugby_union)' },
     'george ford':         { wealth: 10,     note: 'Sport · Rugby · England · Sale Sharks · Fly-half · Over 100 England caps', url: 'https://en.wikipedia.org/wiki/George_Ford_(rugby_union)' },
 
+    '_sub_rugby_memoriam': { _subgroup: 'Rugby — In Memoriam' },
+    'jonah lomu':          { wealth: 1,      note: 'Sport · Rugby · New Zealand · Rugby World Cup icon · Died 2015', url: 'https://en.wikipedia.org/wiki/Jonah_Lomu' },
+    'phil bennett':        { wealth: 3,      note: 'Sport · Rugby · Wales · Died 2022', url: 'https://en.wikipedia.org/wiki/Phil_Bennett' },
+
     '_sub_rugbyleague':    { _subgroup: 'Rugby League' },
     'matt peet':           { wealth: 2,      note: 'Sport · Rugby League · MANAGER · England · MATT PEET · Wigan Warriors · Head coach', url: 'https://en.wikipedia.org/wiki/Matt_Peet' },
     'jai field':           { wealth: 3,      note: 'Sport · Rugby League · Australia · Wigan Warriors · Fullback', url: 'https://en.wikipedia.org/wiki/Jai_Field' },
@@ -7496,9 +7508,7 @@
     'neil robertson':          { wealth: 5,      note: 'Sport · Snooker · Australia · 2010 World Champion', url: 'https://en.wikipedia.org/wiki/Neil_Robertson' },
     'dennis taylor':           { wealth: 3,      note: 'Sport · Snooker · UK · 1985 World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Dennis_Taylor' },
     'steve davis':             { wealth: 12,     note: 'Sport · Snooker · UK · 6x World Champion · Dominant 1980s player · RTD', url: 'https://en.wikipedia.org/wiki/Steve_Davis' },
-    'alex higgins':            { wealth: 4,      note: 'Sport · Snooker · Northern Ireland · 2x World Champion · Hurricane · Died 2010', url: 'https://en.wikipedia.org/wiki/Alex_Higgins' },
     'jimmy white':             { wealth: 6,      note: 'Sport · Snooker · UK · 6x World Championship runner-up · Whirlwind · RTD', url: 'https://en.wikipedia.org/wiki/Jimmy_White' },
-    'ray reardon':             { wealth: 5,      note: 'Sport · Snooker · Wales · 6x World Champion · Died 2024', url: 'https://en.wikipedia.org/wiki/Ray_Reardon' },
     'terry griffiths':        { wealth: 4,      note: 'Sport · Snooker · Wales · 1979 World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Terry_Griffiths' },
     'ken doherty':             { wealth: 5,      note: 'Sport · Snooker · Ireland · 1997 World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Ken_Doherty' },
     'peter ebdon':             { wealth: 4,      note: 'Sport · Snooker · UK · 2002 World Champion · RTD', url: 'https://en.wikipedia.org/wiki/Peter_Ebdon' },
@@ -7507,6 +7517,10 @@
     'luca brecel':             { wealth: 4,      note: 'Sport · Snooker · Belgium · 2023 World Champion · First mainland European champion', url: 'https://en.wikipedia.org/wiki/Luca_Brecel' },
     'ding junhui':             { wealth: 8,      note: 'Sport · Snooker · China · Multiple ranking title winner · China snooker pioneer', url: 'https://en.wikipedia.org/wiki/Ding_Junhui' },
     'marco fu':                { wealth: 4,      note: 'Sport · Snooker · Hong Kong · Multiple ranking title winner · RTD', url: 'https://en.wikipedia.org/wiki/Marco_Fu' },
+
+    '_sub_snooker_memoriam':   { _subgroup: 'Snooker — In Memoriam' },
+    'alex higgins':            { wealth: 4,      note: 'Sport · Snooker · Northern Ireland · 2x World Champion · Hurricane · Died 2010', url: 'https://en.wikipedia.org/wiki/Alex_Higgins' },
+    'ray reardon':             { wealth: 5,      note: 'Sport · Snooker · Wales · 6x World Champion · Died 2024', url: 'https://en.wikipedia.org/wiki/Ray_Reardon' },
     // ── TENNIS ──────────────────────────────────────────
     '_sub_tennis':         { _subgroup: 'Tennis' },
     'naomi osaka':         { wealth: 60,     note: 'Sport · Tennis · Japan · 4x Grand Slam singles champion', url: 'https://en.wikipedia.org/wiki/Naomi_Osaka' },
@@ -7704,12 +7718,9 @@
     'gregory porter':          { wealth: 5,      note: 'Music · Jazz · Soul · USA · Liquid Spirit · Take Me to the Alley · 2 Grammys · Signature cap · Born Sacramento 1971 · First jazz artist BBC Sound of 2014', url: 'https://en.wikipedia.org/wiki/Gregory_Porter' },
     'kurt elling':             { wealth: 3,      note: 'Music · Jazz · USA · Vocalist · 2 Grammys · Voted best male jazz vocalist multiple times · Chicago born · Most decorated vocalist in jazz poll history', url: 'https://en.wikipedia.org/wiki/Kurt_Elling' },
     'pat metheny':             { wealth: 20,     note: 'Music · Jazz · USA · Guitar · 20 Grammys · Most Grammy winning jazz artist · Pat Metheny Group · Born Lee Summit Missouri 1954', url: 'https://en.wikipedia.org/wiki/Pat_Metheny' },
-    'chick corea':             { wealth: 10,     note: 'Music · Jazz · USA · Piano · Return to Forever · 27 Grammys · Born Chelsea Massachusetts 1941 · Died 2021 · Fusion pioneer', url: 'https://en.wikipedia.org/wiki/Chick_Corea' },
-    'jack dejohnette':         { wealth: 5,      note: 'Music · Jazz · USA · Drums · Miles Davis band · ECM Records · One of greatest jazz drummers ever · Died Oct 2025', url: 'https://en.wikipedia.org/wiki/Jack_DeJohnette' },
     'branford marsalis':       { wealth: 10,     note: 'Music · Jazz · USA · Saxophone · Brother of Wynton · Tonight Show bandleader · Sting touring band · 3 Grammys · Born New Orleans 1960', url: 'https://en.wikipedia.org/wiki/Branford_Marsalis' },
     'ron carter':              { wealth: 8,      note: 'Music · Jazz · USA · Bass · Most recorded jazz bassist ever · 2200+ albums · Miles Davis Quintet · 1 Grammy · Born Ferndale Michigan 1937', url: 'https://en.wikipedia.org/wiki/Ron_Carter' },
     'keith jarrett':           { wealth: 8,      note: 'Music · Jazz · USA · Piano · Koln Concert best selling jazz album ever · Born Allentown Pennsylvania 1945 · Suffered strokes 2018', url: 'https://en.wikipedia.org/wiki/Keith_Jarrett' },
-    'wayne shorter':           { wealth: 5,      note: 'Music · Jazz · USA · Saxophone · Weather Report · Miles Davis · 11 Grammys · Born Newark 1933 · Died 2023 aged 89', url: 'https://en.wikipedia.org/wiki/Wayne_Shorter' },
     'joshua redman':           { wealth: 5,      note: 'Music · Jazz · USA · Saxophone · Son of Dewey Redman · Harvard graduate · San Francisco Jazz Collective · Born Berkeley 1969', url: 'https://en.wikipedia.org/wiki/Joshua_Redman' },
     'christian mcbride':       { wealth: 5,      note: 'Music · Jazz · USA · Bass · 7 Grammys · Artistic Director Newport Jazz Festival · Born Philadelphia 1972 · Most in demand bassist', url: 'https://en.wikipedia.org/wiki/Christian_McBride' },
     'esperanza spalding':      { wealth: 5,      note: 'Music · Jazz · USA · Bass · Vocalist · 4 Grammys · Beat Justin Bieber for Best New Artist 2011 · Born Portland Oregon 1984', url: 'https://en.wikipedia.org/wiki/Esperanza_Spalding' },
@@ -7721,10 +7732,11 @@
 
 
 
-    '_sub_comedy':              { _subgroup: 'Comedy' },
+    '_sub_comedy_memoriam':     { _subgroup: 'Comedy — In Memoriam' },
     'bob monkhouse':       { wealth: 8,      note: 'Comedy · TV · UK · Died 2003', url: 'https://en.wikipedia.org/wiki/Bob_Monkhouse' },
     'sid james':           { wealth: 5,      note: 'Comedy · Film · UK · Carry On series · Died 1976', url: 'https://en.wikipedia.org/wiki/Sid_James' },
     'victoria wood':       { wealth: 20,     note: 'Comedy · TV · UK · Estate · Died 2016', url: 'https://en.wikipedia.org/wiki/Victoria_Wood' },
+    '_sub_comedy_living':       { _subgroup: 'Comedy' },
     'john mulaney':        { wealth: 15,     note: 'Comedy · Stand-Up · USA · Former SNL writer · Created character Stefon · Kid Gorgeous Emmy winner', url: 'https://en.wikipedia.org/wiki/John_Mulaney' },
     'bo burnham':          { wealth: 4,      note: 'Comedy · Stand-Up · USA · Rose to fame on YouTube · Directed and starred in Inside 2021', url: 'https://en.wikipedia.org/wiki/Bo_Burnham' },
     'ali wong':            { wealth: 10,     note: 'Comedy · Stand-Up · USA · Baby Cobra Netflix special · Emmy and Golden Globe winner for Beef', url: 'https://en.wikipedia.org/wiki/Ali_Wong' },
@@ -7871,8 +7883,6 @@
     'jerry yang':               { wealth: 2000,   note: 'Billionaire · USA/Taiwan · Jerry Yang · $2B · Yahoo co-founder 1995 · Turned down $44B Microsoft offer in 2008 · Stanford PhD dropout · Born Taiwan came to USA aged 10', url: 'https://en.wikipedia.org/wiki/Jerry_Yang' },
     'jimmy wales':              { wealth: 1.5,    note: 'Billionaire · USA · Jimmy Wales · Wikipedia founder 2001 · Free knowledge for everyone · Worth almost nothing despite founding one of world most visited websites · Chose not to monetise', url: 'https://en.wikipedia.org/wiki/Jimmy_Wales' },
     // ── Adobe — For Curiosity and Your Grandson ───────────
-    'john warnock billionaire': { wealth: 1000,   note: 'Billionaire · USA · John Warnock · $1B · Adobe Systems co-founder 1982 · Invented PDF and PostScript · PDF now used by billions of people daily · Died 2023 aged 82 · Changed how world shares documents forever', url: 'https://en.wikipedia.org/wiki/John_Warnock' },
-    'chuck geschke billionaire': { wealth: 1000,  note: 'Billionaire · USA · Chuck Geschke · Adobe co-founder with John Warnock 1982 · Invented PostScript and PDF at Xerox PARC · Adobe now worth $250B · Died 2021 aged 81 · Stanford PhD', url: 'https://en.wikipedia.org/wiki/Charles_Geschke' },
     'shantanu narayen billionaire': { wealth: 1500, note: 'Billionaire · USA/India · Shantanu Narayen · $1.5B · Adobe CEO since 2007 · Photoshop Illustrator Acrobat Premiere Creative Cloud · Born Hyderabad India · Transformed Adobe into $250B subscription powerhouse', url: 'https://en.wikipedia.org/wiki/Shantanu_Narayen' },
 
     '_sub_dragons':             { _subgroup: 'Dragons & Entrepreneurs' },
@@ -8065,6 +8075,7 @@
     'bobby charlton':      { wealth: 15,     note: 'Football · UK · Sir Bobby · Man Utd · 1966 World Cup · Died 2023', url: 'https://en.wikipedia.org/wiki/Bobby_Charlton' },
     'george best':         { wealth: 1,      note: 'Football · UK · Man Utd icon · Died 2005', url: 'https://en.wikipedia.org/wiki/George_Best' },
     'kevin keegan':        { wealth: 40,     note: 'Football · UK · England captain · Twice European Player of the Year 1978 1979 · Liverpool Hamburg · England manager · The Mighty Mouse · Died aged 75 after cancer battle', url: 'https://en.wikipedia.org/wiki/Kevin_Keegan' },
+    'diogo jota tribute':  { wealth: 30,     note: 'Football · Portugal · Liverpool · Died July 2025 in a road traffic accident, aged 28 · Won Premier League title that season · Squad number 20 retired by the club in tribute', url: 'https://en.wikipedia.org/wiki/Diogo_Jota' },
     'thierry henry':       { wealth: 130,    note: 'Football · France · Current club: Retired · Arsenal legend · France manager', url: 'https://en.wikipedia.org/wiki/Thierry_Henry' },
     'gareth bale':         { wealth: 115,    note: 'Football · Wales · Current club: Retired', url: 'https://en.wikipedia.org/wiki/Gareth_Bale' },
     'andres iniesta':      { wealth: 100,    note: 'Football · Spain · Current club: Retired', url: 'https://en.wikipedia.org/wiki/Andres_Iniesta' },
@@ -8394,7 +8405,6 @@
     'joao cancelo':        { wealth: 30,     note: 'Football · Portugal · World Cup 2026', url: 'https://en.wikipedia.org/wiki/João_Cancelo' },
     'rafael leao':         { wealth: 25,     note: 'Football · Portugal · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Rafael_Leão' },
     'pedro neto':          { wealth: 15,     note: 'Football · Portugal · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Pedro_Neto' },
-    'diogo jota':          { wealth: 20,     note: 'Football · Portugal · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Diogo_Jota' },
 
     // Qatar
     'akram afif':          { wealth: 5,      note: 'Football · Qatar · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Akram_Afif' },
@@ -8696,7 +8706,6 @@
     'ryan gravenberch liverpool': { wealth: 20, note: 'Football · Netherlands · Liverpool · Midfielder · Champions League · World Cup 2026 · From Bayern Munich', url: 'https://en.wikipedia.org/wiki/Ryan_Gravenberch' },
     'ibrahima konate liverpool': { wealth: 20,  note: 'Football · France · Liverpool · Centre back · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Ibrahima_Konate' },
     'conor bradley liverpool': { wealth: 8,     note: 'Football · Northern Ireland · Liverpool · Right back · Champions League · World Cup 2026', url: 'https://en.wikipedia.org/wiki/Conor_Bradley' },
-    'diogo jota liverpool':  { wealth: 30,      note: 'Football · Portugal · Liverpool · Died July 2025 in a road traffic accident, aged 28 · Won Premier League title that season · Squad number 20 retired by the club in tribute', url: 'https://en.wikipedia.org/wiki/Diogo_Jota' },
     'sergio arribas liverpool': { wealth: 20, note: 'Football · Spain · Liverpool · Attacking midfielder · Signed 2026 from Almeria', url: 'https://en.wikipedia.org/wiki/Sergio_Arribas' },
     'victor munoz liverpool': { wealth: 20,     note: 'Football · Spain · Liverpool · Winger · Signed 2026 from Osasuna · World Cup 2026 squad', url: 'https://en.wikipedia.org/wiki/V%C3%ADctor_Mu%C3%B1oz_(footballer,_born_2005)' },
 
@@ -9388,6 +9397,11 @@
     // Deceased Celebrities & Estates
     '_sub_hist_entertainment': { _subgroup: 'Deceased Celebrities & Estates' },
     'alexei navalny':      { wealth: 1,      note: 'Historical · Politics · Russia · Opposition leader · Anti-corruption campaigner · Died Feb 2024 prison', url: 'https://en.wikipedia.org/wiki/Alexei_Navalny' },
+    'margaret thatcher':   { wealth: 10,     note: 'Politics · UK · Historical · First female UK Prime Minister · 1979-1990 · Iron Lady · Died 2013', url: 'https://en.wikipedia.org/wiki/Margaret_Thatcher' },
+    'john warnock billionaire': { wealth: 1000,   note: 'Historical · Billionaire · USA · John Warnock · $1B · Adobe Systems co-founder 1982 · Invented PDF and PostScript · PDF now used by billions of people daily · Died 2023 aged 82 · Changed how world shares documents forever', url: 'https://en.wikipedia.org/wiki/John_Warnock' },
+    'chuck geschke billionaire': { wealth: 1000,  note: 'Historical · Billionaire · USA · Chuck Geschke · Adobe co-founder with John Warnock 1982 · Invented PostScript and PDF at Xerox PARC · Adobe now worth $250B · Died 2021 aged 81 · Stanford PhD', url: 'https://en.wikipedia.org/wiki/Charles_Geschke' },
+    'sheikh khalifa':          { wealth: 15000,  note: 'Royalty · UAE · Historical · Abu Dhabi · Died May 2022', url: 'https://en.wikipedia.org/wiki/Sheikh_Khalifa' },
+    'king constantine ii greece': { wealth: 300, note: 'Royalty · Greece · Historical · Last King of Greece · Monarchy abolished 1973 · Died 2023', url: 'https://en.wikipedia.org/wiki/Constantine_II_of_Greece' },
     'grace kelly':             { wealth: 10,     note: 'Royalty · Monaco · Historical · Film', url: 'https://en.wikipedia.org/wiki/Grace_Kelly' },
     'kenny rogers':            { wealth: 250,    note: 'Music · Country Music · USA · Historical', url: 'https://en.wikipedia.org/wiki/Kenny_Rogers' },
     'roger moore':         { wealth: 110,    note: 'Film · UK · Historical · James Bond · Died 2017 · Estate', url: 'https://en.wikipedia.org/wiki/Roger_Moore' },
@@ -9454,6 +9468,9 @@
     'jim morrison estate':   { wealth: 10,     note: 'Historical · Music · Estate · USA · The Doors · Light My Fire · Riders on the Storm · The Lizard King · Died 1971 aged 27 · 27 Club · Buried Paris', url: 'https://en.wikipedia.org/wiki/Jim_Morrison' },
     'janis joplin estate':   { wealth: 5,      note: 'Historical · Music · Estate · USA · Me and Bobby McGee · Piece of My Heart · Greatest white blues singer ever · Died 1970 aged 27 · 27 Club', url: 'https://en.wikipedia.org/wiki/Janis_Joplin' },
     'joe strummer estate':   { wealth: 5,      note: 'Historical · Music · Estate · UK · The Clash · London Calling · Should I Stay or Should I Go · Punk icon · Died 2002 aged 50 · Heart attack', url: 'https://en.wikipedia.org/wiki/Joe_Strummer' },
+    'chick corea estate':      { wealth: 10,     note: 'Historical · Music · Estate · USA · Jazz · Piano · Return to Forever · 27 Grammys · Born Chelsea Massachusetts 1941 · Died 2021 · Fusion pioneer', url: 'https://en.wikipedia.org/wiki/Chick_Corea' },
+    'jack dejohnette estate':  { wealth: 5,      note: 'Historical · Music · Estate · USA · Jazz · Drums · Miles Davis band · ECM Records · One of greatest jazz drummers ever · Died Oct 2025', url: 'https://en.wikipedia.org/wiki/Jack_DeJohnette' },
+    'wayne shorter estate':    { wealth: 5,      note: 'Historical · Music · Estate · USA · Jazz · Saxophone · Weather Report · Miles Davis · 11 Grammys · Born Newark 1933 · Died 2023 aged 89', url: 'https://en.wikipedia.org/wiki/Wayne_Shorter' },
 
     // ══════════════════ CAREER GUIDE — WHAT COULD YOU EARN? ══════════════════
     // Real UK salary data for real jobs, alongside the qualifications needed.
