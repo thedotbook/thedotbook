@@ -14448,12 +14448,19 @@
     } else if (mode === 'income') {
       const minV = document.getElementById('cs-income-min').value.trim();
       const maxV = document.getElementById('cs-income-max').value.trim();
-      const minN = minV === '' ? 0 : parseFloat(minV);
-      const maxN = maxV === '' ? 999999 : parseFloat(maxV);
+      let minN = minV === '' ? 0 : parseFloat(minV);
+      let maxN = maxV === '' ? 999999 : parseFloat(maxV);
       if (isNaN(minN) || isNaN(maxN)) { document.getElementById('cs-status').textContent = 'Please enter valid numbers.'; return; }
+      // No Career Guide salary exceeds \u00a3520k, so anyone typing the full
+      // figure (e.g. 35000 meaning \u00a335,000) rather than thousands (35) would
+      // otherwise silently get zero results. Auto-detect and convert rather
+      // than relying on the small placeholder text being read correctly.
+      let autoConverted = false;
+      if (minN >= 1000) { minN = minN / 1000; autoConverted = true; }
+      if (maxN >= 1000 && maxN !== 999999) { maxN = maxN / 1000; autoConverted = true; }
       if (minN > maxN) { document.getElementById('cs-status').textContent = 'Min must be less than max.'; return; }
       results = searchCareerByIncome(minN, maxN);
-      label = '£' + minN + 'k – £' + (maxN === 999999 ? 'any' : maxN) + 'k';
+      label = '£' + minN + 'k – £' + (maxN === 999999 ? 'any' : maxN) + 'k' + (autoConverted ? ' (read as thousands)' : '');
     } else if (mode === 'quals') {
       const lvl = parseInt(document.getElementById('cs-qual-select').value);
       results = searchCareerByQualification(lvl);
