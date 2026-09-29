@@ -13270,15 +13270,29 @@
     // (used for data-note below, and for category routing elsewhere), so
     // this only changes what's shown, not the data itself.
     const displayNote = (person.note || '').replace(/^Football · /, '');
-    return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:1px solid #e8e8e8;background:' + rowBg + '">'
+    // Career Guide's descriptions run 200-400+ characters - far too long
+    // for the Source column's fixed ~80px width even with wrapping turned
+    // on (that just produces a single absurdly tall, narrow column of
+    // text). A dedicated full-width row underneath solves this properly
+    // without touching the table's column widths for the other 7,500+
+    // entries, whose notes are short enough to work fine as-is.
+    const careerDetailRow = isCareerEntry
+      ? '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="background:' + rowBg + '">'
+        + '<td colspan="3" style="padding:0 8px 12px 8px;font-size:12px;color:#aaaaaa;line-height:1.5;white-space:normal;border-bottom:1px solid #e8e8e8">' + escHtml(displayNote) + '</td>'
+        + '</tr>'
+      : '';
+    return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:' + (isCareerEntry ? 'none' : '1px solid #e8e8e8') + ';background:' + rowBg + '">'
       + '<td><span class="page-badge" style="background:' + (isCareerEntry ? '#2a2a2a' : badgeBg) + ';color:' + (isCareerEntry ? '#f9e74a' : '#000000') + ';box-shadow:none;font-size:' + (isCareerEntry ? '13px' : '15px') + '" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + (isCareerEntry ? careerBadgeText : pg) + '</span></td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer;' + nameStyle + '" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
-      + '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(displayNote) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(displayNote)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
-      + '</tr>';
+      + (isCareerEntry
+        ? '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : '') + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
+        : '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(displayNote) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(displayNote)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>')
+      + '</tr>'
+      + careerDetailRow;
   }
 
   function renderTable() {
