@@ -11899,6 +11899,14 @@
     // simply doesn't apply here - showing one would be actively misleading.
     if (!isCareerEntry) html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 334</div>';
     if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">Wikipedia &#8599;</a><br>';
+    if (isCareerEntry) {
+      // Strip the leading "Career · Category · UK · Job Title ·" - the job
+      // title's already the heading above, so just the useful part (salary
+      // detail and qualifications route) remains.
+      const parts = note.split('\u00b7').map(s => s.trim());
+      const description = parts.slice(4).join(' \u00b7 ');
+      if (description) html += '<div style="font-size:13px;color:#ccc;text-align:left;line-height:1.6;margin-bottom:16px;border-top:1px solid #333;padding-top:12px">' + escHtml(description) + '</div>';
+    }
     html += '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:12px">';
     html += '<table style="width:100%;border-collapse:collapse"><tr>';
     html += '<td style="width:100%"><input id="popup-ai-input" type="text" autocomplete="off" autocorrect="off" placeholder="Ask about ' + escHtml(name) + '..." style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:7px 10px;font-size:12px;border-radius:5px;outline:none;box-sizing:border-box;font-family:Georgia,serif" /></td>';
@@ -14521,7 +14529,12 @@
         '<strong>' + escHtml(name) + '</strong> — average salary around \u00a3' + Math.round(wm).toLocaleString() + ',000/year';
       if (progressTrack) progressTrack.style.display = 'none';
       if (progressLabels) progressLabels.style.display = 'none';
-      document.getElementById('result-note').textContent = '';
+      // Show the useful part of the description (salary detail and
+      // qualifications route) here instead of leaving it blank - stripping
+      // the leading "Career · Category · UK · Job Title ·" since the job
+      // title is already the heading above.
+      const parts = (match.note || '').split('\u00b7').map(s => s.trim());
+      document.getElementById('result-note').textContent = parts.slice(4).join(' \u00b7 ');
     } else {
       if (progressTrack) progressTrack.style.display = '';
       if (progressLabels) progressLabels.style.display = '';
