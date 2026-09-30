@@ -1044,6 +1044,23 @@
         <div id="deaths-results"></div>
       </div>
 
+      <!-- TRANSFER CHECK -->
+      <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#aaaaaa;margin-bottom:8px;letter-spacing:1px">CHECK PREMIER LEAGUE TRANSFERS</div>
+        <div style="font-size:12px;color:#888888;margin-bottom:10px;line-height:1.5">Compares Wikipedia's data on recent club moves with which Premier League club each player sits under in the book, and flags anyone that doesn't match. It only flags &mdash; nothing is changed automatically, and transfer data can lag real life, so check each one before changing anything.</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <select id="transfers-window" style="flex:1;background:#000;border:1px solid #555;color:#ffffff;padding:10px;font-size:13px;border-radius:4px">
+            <option value="2026-07-01">Since 1 Jul 2026</option>
+            <option value="2026-08-01" selected>Since 1 Aug 2026 (transfer window)</option>
+            <option value="2026-01-01">Since 1 Jan 2026</option>
+          </select>
+          <button id="transfers-btn" onclick="runTransfersCheck()" style="flex:1;background:#333;color:#fff;border:none;padding:10px;cursor:pointer;border-radius:4px;font-size:13px">Check now</button>
+        </div>
+        <div id="transfers-status" style="font-size:12px;color:#888888;min-height:16px"></div>
+        <div id="transfers-last" style="font-size:11px;color:#666666;margin-top:4px"></div>
+        <div id="transfers-results"></div>
+      </div>
+
       <!-- SEARCH & ADD -->
       <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:16px;margin-bottom:16px">
         <div style="font-size:11px;color:#aaaaaa;margin-bottom:12px;letter-spacing:1px">ADD OR REMOVE</div>
@@ -15280,6 +15297,161 @@
     el.textContent = iso ? 'Last checked on this device: ' + new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
   }
   showLastDeathsCheck();
+
+  // ── PREMIER LEAGUE TRANSFER CHECK (admin tool) ─────────────
+  // Flags players whose Wikidata-listed current club doesn't match which
+  // club section they sit under in the book. It NEVER changes anything by
+  // itself - transfer data on Wikidata can lag real life by days or weeks,
+  // so this is a starting point for review, not a source of truth. Uses
+  // the same "flag, don't auto-change" approach as the Recent Deaths Check.
+  let lastTransfersText = '';
+
+  function normClubName(s) {
+    return String(s || '').toLowerCase()
+      .replace(/f\.?c\.?|a\.?f\.?c\.?/g, '')
+      .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  // Maps each player currently in a "Football — [Club] FC" section to which
+  // club that is, by walking the database in order and tracking whichever
+  // Premier League club marker was most recently seen - the same underlying
+  // approach the page itself uses to work out which section an entry is in.
+  function getPlayersCurrentClubs() {
+    const map = new Map();
+    let currentClub = null;
+    for (const [key, val] of Object.entries(CELEB_DB)) {
+      if (val._subgroup) {
+        const m = /^Football — (.+ (?:FC|AFC))$/.exec(val._subgroup);
+        currentClub = m ? m[1] : null;
+        continue;
+      }
+      if (currentClub && val && val.note && !val._fixtureList) map.set(key, currentClub);
+    }
+    return map;
+  }
+
+  // Matches recent transfers [{title, club, since}] against the book.
+  //  mismatch = the book's Wikipedia link is this exact player, AND they
+  //             currently sit under a different Premier League club section
+  function matchTransfersToBook(transfers) {
+    const byUrl = new Map();
+    const clubMap = getPlayersCurrentClubs();
+    for (const [key, val] of Object.entries(CELEB_DB)) {
+      if (!val || val._subgroup || val._fixtureList || !val.note) continue;
+      const ut = wikiTitleFromUrl(val.url);
+      if (!ut) continue;
+      if (!byUrl.has(ut)) byUrl.set(ut, []);
+      byUrl.get(ut).push({ key: key, name: cleanDisplayName(key), url: val.url, bookClub: clubMap.get(key) || null });
+    }
+    const seen = new Set();
+    const out = [];
+    for (const t of transfers) {
+      const entries = byUrl.get(t.title.toLowerCase());
+      if (!entries) continue;
+      for (const entry of entries) {
+        if (!entry.bookClub) continue; // not a PL player in the book at all - nothing to compare
+        if (seen.has(entry.key)) continue;
+        if (normClubName(entry.bookClub) === normClubName(t.club)) continue; // already matches - no flag needed
+        seen.add(entry.key);
+        out.push({ entry: entry, transfer: t });
+      }
+    }
+    return out;
+  }
+
+  // One request to Wikidata for Premier League players whose club
+  // membership started on or after the given date, with no end date
+  // recorded - i.e. their current club, as far as Wikidata has it.
+  async function fetchRecentTransfers(sinceDate) {
+    const query =
+      'SELECT ?title ?clubLabel ?start WHERE {' +
+      ' ?player p:P54 ?statement .' +
+      ' ?statement ps:P54 ?club ; pq:P580 ?start .' +
+      ' FILTER NOT EXISTS { ?statement pq:P582 ?end }' +
+      ' ?club wdt:P118 wd:Q9448 .' +
+      ' ?club rdfs:label ?clubLabel . FILTER(LANG(?clubLabel) = "en")' +
+      ' FILTER(?start >= "' + sinceDate + 'T00:00:00Z"^^xsd:dateTime)' +
+      ' ?article schema:about ?player ; schema:isPartOf <https://en.wikipedia.org/> ; schema:name ?title .' +
+      '} ORDER BY DESC(?start) LIMIT 800';
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 55000);
+    try {
+      const res = await fetch('https://query.wikidata.org/sparql?format=json&query=' + encodeURIComponent(query), { signal: ctrl.signal });
+      if (!res.ok) throw new Error('Wikipedia data service returned ' + res.status);
+      const data = await res.json();
+      const list = [];
+      for (const b of (data.results && data.results.bindings) || []) {
+        const title = b.title && b.title.value;
+        const club = b.clubLabel && b.clubLabel.value;
+        if (!title || !club) continue;
+        list.push({ title: title, club: club, since: (b.start && b.start.value || '').slice(0, 10) });
+      }
+      return list;
+    } finally { clearTimeout(timer); }
+  }
+
+  function transferItemHtml(it) {
+    const wiki = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(it.transfer.title.replace(/ /g, '_'));
+    return '<div style="border-top:1px solid #333;padding:8px 0">' +
+      '<div style="color:#ffffff;font-size:13px"><strong>' + escHtml(it.entry.name) + '</strong></div>' +
+      '<div style="color:#aaaaaa;font-size:12px">Book currently shows: <strong style="color:#fff">' + escHtml(it.entry.bookClub) + '</strong> &nbsp;&middot;&nbsp; Wikidata says: <strong style="color:#f9e74a">' + escHtml(it.transfer.club) + '</strong> (since ' + escHtml(it.transfer.since) + ')</div>' +
+      '<div style="font-size:11px;color:#888888">In the book as: ' + escHtml(it.entry.key) +
+      ' &middot; <a href="' + escHtml(wiki) + '" target="_blank" rel="noopener" style="color:#99ccff">Check on Wikipedia &#8599;</a></div></div>';
+  }
+
+  function renderTransfersResults(mismatches, total, sinceDate) {
+    const status = document.getElementById('transfers-status');
+    const out = document.getElementById('transfers-results');
+    let html = '', text = '';
+    if (mismatches.length) {
+      html += '<div style="margin-top:12px;font-size:11px;letter-spacing:1px;color:#f9e74a">POSSIBLE MISMATCHES (' + mismatches.length + ')</div>';
+      html += '<div style="font-size:11px;color:#777777;margin:2px 0 4px">Only shown when the book\'s own Wikipedia link is this exact player - check each before changing anything.</div>';
+      mismatches.forEach(it => { html += transferItemHtml(it); text += it.entry.name + ' - book: ' + it.entry.bookClub + ' - Wikidata: ' + it.transfer.club + ' (since ' + it.transfer.since + ') - book entry: ' + it.entry.key + '\n'; });
+    }
+    lastTransfersText = text;
+    status.style.color = mismatches.length ? '#f9e74a' : '#88ff88';
+    status.textContent = 'Checked ' + total.toLocaleString() + ' Premier League club moves since ' + sinceDate + ': ' +
+      (mismatches.length ? mismatches.length + ' to review' : 'everyone checked matches the book.');
+    if (text) html += '<button onclick="copyTransfersList()" style="margin-top:12px;background:#333;color:#fff;border:none;padding:8px 12px;cursor:pointer;border-radius:4px;font-size:12px">Copy this list</button>' +
+      '<div style="font-size:11px;color:#666666;margin-top:8px">Only flags players who already have a matching Wikipedia link in the book - loan moves and data lag on Wikidata can both affect results, so this is a starting point, not a final answer.</div>';
+    out.innerHTML = html;
+  }
+
+  function copyTransfersList() {
+    const done = () => { const s = document.getElementById('transfers-status'); if (s) s.textContent = 'List copied.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(lastTransfersText).then(done, () => {});
+  }
+
+  async function runTransfersCheck() {
+    const status = document.getElementById('transfers-status');
+    const out = document.getElementById('transfers-results');
+    const btn = document.getElementById('transfers-btn');
+    const sinceDate = document.getElementById('transfers-window').value || '2026-08-01';
+    out.innerHTML = '';
+    status.style.color = '#888888';
+    status.textContent = 'Asking Wikipedia\'s data service... this can take up to a minute.';
+    if (btn) btn.disabled = true;
+    try {
+      const transfers = await fetchRecentTransfers(sinceDate);
+      renderTransfersResults(matchTransfersToBook(transfers), transfers.length, sinceDate);
+      try { localStorage.setItem('dotbook_lastTransfersCheck', new Date().toISOString()); } catch (e) {}
+      showLastTransfersCheck();
+    } catch (e) {
+      status.style.color = '#ff9999';
+      status.textContent = 'Could not complete the check (' + (e.name === 'AbortError' ? 'it timed out' : e.message) + '). Please try again in a minute.';
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function showLastTransfersCheck() {
+    const el = document.getElementById('transfers-last');
+    if (!el) return;
+    let iso = null;
+    try { iso = localStorage.getItem('dotbook_lastTransfersCheck'); } catch (e) {}
+    el.textContent = iso ? 'Last checked on this device: ' + new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  }
+  showLastTransfersCheck();
 
   async function adminLogin() {
     const pw = document.getElementById('admin-password').value;
