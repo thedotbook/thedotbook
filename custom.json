@@ -1,45 +1,10 @@
 {
   "adds": {
-    "clive myrie": {
-      "wealth": 3,
-      "note": "Film & TV",
-      "url": ""
-    },
-    "kimi antonelli": {
-      "wealth": 3,
-      "note": "Sport · F1 & Motorsport",
-      "url": "https://en.wikipedia.org/wiki/Kimi_Antonelli",
-      "subgroup": "F1 & Motorsport"
-    },
-    "oliver bearman": {
-      "wealth": 3,
-      "note": "Sport · F1 & Motorsport",
-      "url": "https://en.wikipedia.org/wiki/Oliver_Bearman",
-      "subgroup": "F1 & Motorsport"
-    },
     "carlos sainz jr": {
       "wealth": 5,
       "note": "Sport · F1 & Motorsport",
       "url": "https://en.wikipedia.org/wiki/Carlos_Sainz_Jr",
       "subgroup": "F1 & Motorsport"
-    },
-    "rory mcilroy": {
-      "wealth": 300,
-      "note": "Sport · Golf",
-      "url": "https://en.wikipedia.org/wiki/Rory_McIlroy",
-      "subgroup": "Golf"
-    },
-    "phil mickelson": {
-      "wealth": 400,
-      "note": "Sport · Golf",
-      "url": "https://en.wikipedia.org/wiki/Phil_Mickelson",
-      "subgroup": "Golf"
-    },
-    "augustus caesar": {
-      "wealth": 4600000,
-      "note": "Historical · Royals & Emperors",
-      "url": "https://en.wikipedia.org/wiki/Augustus",
-      "subgroup": "Royals & Emperors"
     },
     "jordan speith": {
       "wealth": 120,
@@ -74,32 +39,32 @@
     "bob dylan": {
       "wealth": 500,
       "note": "Music · American singer-songwriter · Nobel Prize in Literature 2016 · Legendary folk and rock icon",
-      "url": "https://en.wikipedia.org/wiki/Bob_Dylan"
+      "url": "https://en.wikipedia.org/wiki/Bob_Dylan",
+      "subgroup": "Pop & Rock"
     },
     "john stith pemberton": {
       "wealth": 2,
       "note": "Historical · American pharmacist who invented Coca-Cola in 1886",
-      "url": "https://en.wikipedia.org/wiki/John_Stith_Pemberton"
-    },
-    "andrew carnegie": {
-      "wealth": 310000,
-      "note": "Historical · Scottish-American industrialist and philanthropist · Steel magnate",
-      "url": "https://en.wikipedia.org/wiki/Andrew_Carnegie"
+      "url": "https://en.wikipedia.org/wiki/John_Stith_Pemberton",
+      "subgroup": "American Industrialists"
     },
     "paul simon": {
       "wealth": 100,
       "note": "Music · American singer-songwriter · Simon & Garfunkel and solo career",
-      "url": "https://en.wikipedia.org/wiki/Paul_Simon"
+      "url": "https://en.wikipedia.org/wiki/Paul_Simon",
+      "subgroup": "Pop & Rock"
     },
     "mark knopfler": {
       "wealth": 95,
       "note": "Music · British singer-songwriter · Dire Straits frontman and guitarist",
-      "url": "https://en.wikipedia.org/wiki/Mark_Knopfler"
+      "url": "https://en.wikipedia.org/wiki/Mark_Knopfler",
+      "subgroup": "Pop & Rock"
     },
     "ian rush": {
       "wealth": 30,
       "note": "Sport · Welsh footballer · Liverpool and Wales record goalscorer",
-      "url": "https://en.wikipedia.org/wiki/Ian_Rush"
+      "url": "https://en.wikipedia.org/wiki/Ian_Rush",
+      "subgroup": "Football — Ex-Footballers & Personalities"
     }
   },
   "removes": [
