@@ -9810,6 +9810,22 @@
     'career working musician': { wealth: 21, note: 'Career · Creative Arts · UK · Working Musician · Realistic comparison to music superstars elsewhere in this app · The UK Musicians\u2019 Census (nearly 6,000 musicians surveyed) found average income FROM MUSIC WORK is just \u00a320,700/year, well below the UK average salary of \u00a333,402 · 43% earn under \u00a314,000/year from music alone · Most professional musicians (70%) hold a degree, yet over half need a second income source to sustain a music career', url: 'https://en.wikipedia.org/wiki/Musicians%27_Union' },
 
     // ══════════════════════════════════════════════════════
+    // CAREER GUIDE — TAX: a simple reference table showing how UK Income
+    // Tax and National Insurance actually work, in the same "badge" style
+    // as every other Career Guide entry. Standard 2025/26 England/Wales/NI
+    // employee rates - deliberately kept simple, with no Scottish rates,
+    // student loan or pension adjustments. This is what the "Net" figure
+    // shown next to every job's salary elsewhere in Career Guide is
+    // calculated from (see the ukTakeHomePay() function).
+    // ══════════════════════════════════════════════════════
+    '_sub_careers_tax':      { _subgroup: 'Career Guide — Tax' },
+    'career personal allowance': { wealth: 12.57, note: 'Career · Tax · UK · Personal Allowance · \u00a30 to \u00a312,570 · 0% Income Tax · Everyone gets this much tax-free each year before Income Tax starts to apply · Tapered away \u00a31 for every \u00a32 earned above \u00a3100,000, gone completely by \u00a3125,140', url: 'https://en.wikipedia.org/wiki/Personal_allowance' },
+    'career basic rate': { wealth: 50.27, note: 'Career · Tax · UK · Basic Rate · \u00a312,571 to \u00a350,270 · 20% Income Tax · The rate most UK taxpayers pay on their income within this band', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
+    'career higher rate': { wealth: 125.14, note: 'Career · Tax · UK · Higher Rate · \u00a350,271 to \u00a3125,140 · 40% Income Tax · Applies once total income passes \u00a350,270 - this is where Career Guide\u2019s higher-paid roles start losing a much bigger share', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
+    'career additional rate': { wealth: 125.14, note: 'Career · Tax · UK · Additional Rate · Over \u00a3125,140 · 45% Income Tax · The UK\u2019s top rate of Income Tax, on everything earned above this threshold', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
+    'career national insurance': { wealth: 50.27, note: 'Career · Tax · UK · National Insurance (Employee) · 8% on earnings between \u00a312,570 and \u00a350,270, then 2% above that · Paid on top of Income Tax straight out of every payslip, and funds the NHS and the State Pension', url: 'https://en.wikipedia.org/wiki/National_Insurance' },
+
+    // ══════════════════════════════════════════════════════
     // WORLD POLITICAL PARTIES — simple, school-friendly guide to major
     // parties by country, sorted by each country's GDP per capita (in
     // thousands of dollars) rather than personal wealth, since parties
@@ -9884,6 +9900,41 @@
   // Page badge colour scale — white text on all, distinct readable colours
   // p1-p33: soft blue  p34-p66: teal  p67-p100: green  p101-p167: amber
   // p168-p200: orange  p201-p250: coral  p251-p1000: red  p1000+: gold (Musk)
+  // Simple UK take-home pay calculator — standard England/Wales/NI employee
+  // rates for the 2025/26 tax year. Deliberately kept simple, as asked:
+  // no student loan, pension, Scottish rates or other adjustments, just
+  // Income Tax and National Insurance on a single PAYE salary. Input and
+  // output are both in thousands of pounds, matching how Career Guide
+  // already stores its "wealth" field.
+  function ukTakeHomePay(grossK) {
+    const gross = grossK * 1000;
+    const personalAllowanceFull = 12570;
+    // Personal Allowance tapers away £1 for every £2 earned over £100,000,
+    // gone entirely by £125,140.
+    let personalAllowance = personalAllowanceFull;
+    if (gross > 100000) {
+      personalAllowance = Math.max(0, personalAllowanceFull - Math.floor((gross - 100000) / 2));
+    }
+    // Income Tax: 20% basic, 40% higher, 45% additional.
+    let incomeTax = 0;
+    const basicBandTop = 50270, higherBandTop = 125140;
+    const taxable = Math.max(0, gross - personalAllowance);
+    const basicPortion = Math.min(taxable, Math.max(0, basicBandTop - personalAllowance));
+    incomeTax += basicPortion * 0.20;
+    const higherPortion = Math.min(Math.max(0, taxable - basicPortion), Math.max(0, higherBandTop - basicBandTop));
+    incomeTax += higherPortion * 0.40;
+    const additionalPortion = Math.max(0, taxable - basicPortion - higherPortion);
+    incomeTax += additionalPortion * 0.45;
+    // National Insurance: 0% to £12,570, 8% up to £50,270, 2% above.
+    let ni = 0;
+    const niPortion1 = Math.min(Math.max(0, gross - 12570), Math.max(0, 50270 - 12570));
+    ni += niPortion1 * 0.08;
+    const niPortion2 = Math.max(0, gross - 50270);
+    ni += niPortion2 * 0.02;
+    const net = gross - incomeTax - ni;
+    return { netK: Math.round(net / 1000), taxK: Math.round(incomeTax / 1000), niK: Math.round(ni / 1000) };
+  }
+
   function getPageColor(page) {
     return '#000000';
   }
@@ -12596,6 +12647,7 @@
     if (n.startsWith('career · agriculture')) return 'Career Guide — Agriculture & Public Services';
     if (n.startsWith('career · council services')) return 'Career Guide — Agriculture & Public Services';
     if (n.startsWith('career · sport')) return 'Career Guide — Realistic Professional Sport';
+    if (n.startsWith('career · tax')) return 'Career Guide — Tax';
     if (n.startsWith('career ·')) return 'Career Guide'; // safety net for any future career entry that doesn't match a specific subcategory above
     if (n.startsWith('politics · party ·')) {
       // Each country gets its own distinct category, exactly like Career
@@ -12713,7 +12765,7 @@
     'Global Perspective',
     'Nations & Natural Wealth', 'Sovereign Wealth Funds', 'Net Zero', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics',
     'Career Guide',
-    'Career Guide — Healthcare & Medicine', 'Career Guide — Skilled Trades', 'Career Guide — Education', 'Career Guide — Law & Finance', 'Career Guide — Technology', 'Career Guide — Business & Management', 'Career Guide — Design & Construction', 'Career Guide — Creative & Hospitality', 'Career Guide — Transport & Logistics', 'Career Guide — Emergency & Public Services', 'Career Guide — Armed Forces', 'Career Guide — Agriculture & Public Services', 'Career Guide — Realistic Professional Sport', 'Career Guide — Realistic Creative Arts',
+    'Career Guide — Healthcare & Medicine', 'Career Guide — Skilled Trades', 'Career Guide — Education', 'Career Guide — Law & Finance', 'Career Guide — Technology', 'Career Guide — Business & Management', 'Career Guide — Design & Construction', 'Career Guide — Creative & Hospitality', 'Career Guide — Transport & Logistics', 'Career Guide — Emergency & Public Services', 'Career Guide — Armed Forces', 'Career Guide — Agriculture & Public Services', 'Career Guide — Realistic Professional Sport', 'Career Guide — Realistic Creative Arts', 'Career Guide — Tax',
     'Politics',
     'Politics — United Kingdom', 'Politics — United States', 'Politics — Germany', 'Politics — France',
     'Religion',
@@ -13265,8 +13317,14 @@
     // Career Guide entry has, rather than by groupName, so this also works
     // correctly from the search results list where groupName isn't passed.
     const isCareerEntry = (person.note || '').startsWith('Career ·');
+    // Tax band reference entries ("Career · Tax · ...") describe a threshold
+    // or rate, not a salary - showing a "take-home pay" badge next to e.g.
+    // "Higher Rate · £50,271 to £125,140" would be meaningless.
+    const isTaxBandEntry = (person.note || '').startsWith('Career · Tax ·');
     const pg = isCareerEntry ? null : getPage(person.wealth);
     const careerBadgeText = isCareerEntry ? '\u00a3' + Math.round(person.wealth) + 'k' : null;
+    const careerNet = (isCareerEntry && !isTaxBandEntry) ? ukTakeHomePay(person.wealth) : null;
+    const careerNetBadgeText = careerNet ? '\u00a3' + careerNet.netK + 'k' : null;
     const isUser = person.isUser;
     const isMusk = person.name === 'Elon Musk';
     const isKevin = person.name === 'Kevin Cook' && !isUser;
@@ -13296,7 +13354,9 @@
         + '</tr>'
       : '';
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:' + (isCareerEntry ? 'none' : '1px solid #e8e8e8') + ';background:' + rowBg + '">'
-      + '<td><span class="page-badge" style="background:' + (isCareerEntry ? '#2a2a2a' : badgeBg) + ';color:' + (isCareerEntry ? '#f9e74a' : '#000000') + ';box-shadow:none;font-size:' + (isCareerEntry ? '13px' : '15px') + '" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + (isCareerEntry ? careerBadgeText : pg) + '</span></td>'
+      + '<td' + (careerNet ? ' style="white-space:normal"' : '') + '><span class="page-badge" style="background:' + (isCareerEntry ? '#2a2a2a' : badgeBg) + ';color:' + (isCareerEntry ? '#f9e74a' : '#000000') + ';box-shadow:none;font-size:' + (isCareerEntry ? '13px' : '15px') + (careerNet ? ';display:block;margin-bottom:3px' : '') + '" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + (isCareerEntry ? careerBadgeText : pg) + '</span>'
+      + (careerNet ? '<span class="page-badge" title="Take-home pay after Income Tax and National Insurance" style="background:#1a2a3a;color:#6bb3f9;box-shadow:none;font-size:13px;display:block">' + careerNetBadgeText + '</span>' : '')
+      + '</td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer;' + nameStyle + '" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
       + (isUser ? '<span class="you-tag">&#9664; YOU</span>' : '')
@@ -15561,7 +15621,7 @@
   }
 
   const SUBGROUPS = {
-    'Career Guide': ['Career Guide — Healthcare & Medicine','Career Guide — Skilled Trades','Career Guide — Education','Career Guide — Law & Finance','Career Guide — Technology','Career Guide — Business & Management','Career Guide — Design & Construction','Career Guide — Creative & Hospitality','Career Guide — Transport & Logistics','Career Guide — Emergency & Public Services','Career Guide — Armed Forces','Career Guide — Agriculture & Public Services','Career Guide — Realistic Professional Sport','Career Guide — Realistic Creative Arts'],
+    'Career Guide': ['Career Guide — Healthcare & Medicine','Career Guide — Skilled Trades','Career Guide — Education','Career Guide — Law & Finance','Career Guide — Technology','Career Guide — Business & Management','Career Guide — Design & Construction','Career Guide — Creative & Hospitality','Career Guide — Transport & Logistics','Career Guide — Emergency & Public Services','Career Guide — Armed Forces','Career Guide — Agriculture & Public Services','Career Guide — Realistic Professional Sport','Career Guide — Realistic Creative Arts','Career Guide — Tax'],
     'Film & TV': ['Hollywood Actors','UK Actors','Bollywood','Directors & Producers','US TV & Comedy','UK TV & Comedy','Presenters & Reality TV','Authors'],
     'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values','Deceased Celebrities & Estates','Comedy','Authors'],
     'Music': ['Music Groups — Top 50 by Value','Pop & Rock','Hip-Hop & R&B','Country','Classical & Crossover','Comedy','Authors','K-pop','Jazz — Living Artists'],
