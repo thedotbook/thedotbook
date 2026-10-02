@@ -7983,11 +7983,11 @@
 
     // ── TOP 20 RICHEST LIVING PEOPLE ON EARTH (2025 est.) ──
     'elon musk top20':     { wealth: 984000, note: 'Top 20 · Tech · USA · Tesla SpaceX xAI · $984B · Forbes real-time, 2 Oct 2026 · World first trillionaire June 2026 · Born South Africa', url: 'https://en.wikipedia.org/wiki/Elon_Musk', _top20: true },
+    'jeff bezos top20':    { wealth: 390750, note: 'Top 20 · Tech · USA · Amazon, Blue Origin, Prometheus, Washington Post · $390.8B · AMZN shares + Blue Origin $140B valuation (~93% stake after its first outside funding round) + Prometheus AI startup $41B valuation stake + accumulated cash, 2 Oct 2026 · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez', url: 'https://en.wikipedia.org/wiki/Jeff_Bezos', _top20: true },
     'larry page top20':    { wealth: 281300, note: 'Top 20 · Tech · USA · Google Alphabet · $281.3B · Forbes real-time, 2 Oct 2026 · Co-founded Google 1998 · Stanford PhD dropout', url: 'https://en.wikipedia.org/wiki/Larry_Page', _top20: true },
     'michael dell top20':  { wealth: 274700,  note: 'Top 20 · Tech · USA · Dell Technologies · $274.7B · Forbes real-time, 2 Oct 2026 · Founded Dell 1984 age 19 from university dorm · Still CEO 40 years later', url: 'https://en.wikipedia.org/wiki/Michael_Dell', _top20: true },
     'sergey brin top20':   { wealth: 258900,  note: 'Top 20 · Tech · USA · Google Alphabet · $258.9B · Forbes real-time, 2 Oct 2026 · Co-founded Google 1998 · Born Moscow Russia', url: 'https://en.wikipedia.org/wiki/Sergey_Brin', _top20: true },
     'mark zuckerberg top20':{ wealth: 249600, note: 'Top 20 · Tech · USA · Meta Facebook Instagram WhatsApp · $249.6B · Forbes real-time, 2 Oct 2026 · Founded Facebook Harvard 2004 · MMA fighter', url: 'https://en.wikipedia.org/wiki/Mark_Zuckerberg', _top20: true },
-    'jeff bezos top20':    { wealth: 237300, note: 'Top 20 · Tech · USA · Amazon Blue Origin Washington Post · $237.3B · Calculated from 884.8M AMZN shares at current price, plus fixed estimate for other assets, 2 Oct 2026 · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez', url: 'https://en.wikipedia.org/wiki/Jeff_Bezos', _top20: true },
     'jensen huang top20':  { wealth: 202600,  note: 'Top 20 · Tech · USA · Nvidia · $202.6B · Forbes real-time, 2 Oct 2026 · AI chip king · Born Taiwan · Leather jacket icon · Co-founded Nvidia 1993', url: 'https://en.wikipedia.org/wiki/Jensen_Huang', _top20: true },
     'larry ellison top20': { wealth: 184200, note: 'Top 20 · Tech · USA · Oracle · $184.2B · Forbes real-time, 2 Oct 2026 · Co-founded Oracle 1977 · Owns 98% of Lanai Hawaii island', url: 'https://en.wikipedia.org/wiki/Larry_Ellison', _top20: true },
     'steve ballmer top20': { wealth: 160000, note: 'Top 20 · Tech · USA · Microsoft LA Clippers · $160B · Forbes real-time, 2 Oct 2026 · CEO Microsoft 2000-2014 · Bought Clippers $2B 2014', url: 'https://en.wikipedia.org/wiki/Steve_Ballmer', _top20: true },
@@ -16265,18 +16265,29 @@
       const metaPrice = data.meta || 0;
 
       // Jeff Bezos: 884.83M Amazon shares (most recent available count,
-      // reflecting his ongoing scheduled share sales) + a fixed estimate
-      // for Blue Origin, the Washington Post and other holdings outside
-      // Amazon stock — the same "live stock + fixed other assets" approach
-      // already used for Musk above.
+      // reflecting his ongoing scheduled share sales) + a fixed estimate for
+      // everything outside Amazon stock — the same "live stock + fixed other
+      // assets" approach already used for Musk above. The fixed portion was
+      // updated 2 Oct 2026 after Blue Origin's first-ever outside funding
+      // round confirmed a $140B valuation (Bloomberg/CNBC/WSJ) - Bezos no
+      // longer owns 100% but retains roughly 93% after that dilution
+      // (~$130B). Also added his stake in Prometheus, the AI startup he
+      // co-founded and co-leads, now valued at $41B after its Series B
+      // (CNBC/Axios/GeekWire all confirm), plus accumulated cash from his
+      // long-running scheduled Amazon share sales. The old $15B estimate
+      // only ever covered Blue Origin at its pre-funding-round value, so it
+      // had fallen a long way behind reality.
       if (amznPrice > 0) {
         const bezosShares = 884830000;
         const bezosStockValue = Math.round((amznPrice * bezosShares) / 1000000);
-        const bezosOtherAssets = 15000; // Blue Origin, Washington Post, other — fixed estimate
-        const bezosTotal = bezosStockValue + bezosOtherAssets;
+        const bezosBlueOrigin = 130000;  // $140B valuation, ~93% stake after Jul/Sep 2026 outside funding round
+        const bezosPrometheus = 12200;   // $41B valuation, estimated stake as largest backer across both rounds
+        const bezosCash = 25700;         // accumulated proceeds from scheduled AMZN share sales
+        const bezosOtherAssets = 750;    // Washington Post, Koru yacht, other
+        const bezosTotal = bezosStockValue + bezosBlueOrigin + bezosPrometheus + bezosCash + bezosOtherAssets;
         if (CELEB_DB['jeff bezos top20']) {
           CELEB_DB['jeff bezos top20'].wealth = bezosTotal;
-          CELEB_DB['jeff bezos top20'].note = 'Top 20 · Tech · USA · Amazon Blue Origin Washington Post · ' + formatWealth(bezosTotal) + ' · AMZN $' + amznPrice.toFixed(2) + ' live · Updates every 5 mins · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez';
+          CELEB_DB['jeff bezos top20'].note = 'Top 20 · Tech · USA · Amazon, Blue Origin, Prometheus, Washington Post · ' + formatWealth(bezosTotal) + ' · AMZN $' + amznPrice.toFixed(2) + ' live, Blue Origin $140B valuation, Prometheus $41B valuation · Founded Amazon 1994 in garage · Fiancee Lauren Sanchez';
         }
       }
 
