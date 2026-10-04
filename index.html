@@ -3,6 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SCHOOL MODE: switched on by opening the site with ?school=1 (and remembered on that
+       device); switched off again with ?school=0. In school mode there is no AI chat, no
+       voice input, no live exchange-rate/crypto lookups, no Wikipedia status check and no
+       admin prompt, so nothing a pupil types is ever sent to an AI service. The decision is
+       made here, ahead of everything else, so the controls never flash up on screen. -->
+  <script>
+    (function () {
+      var on = false;
+      try {
+        var q = new URLSearchParams(location.search).get('school');
+        if (q === '1' || q === 'true' || q === '') { on = true; try { localStorage.setItem('dotbook_school', '1'); } catch (e) {} }
+        else if (q === '0' || q === 'false') { on = false; try { localStorage.removeItem('dotbook_school'); } catch (e) {} }
+        else { on = localStorage.getItem('dotbook_school') === '1'; }
+      } catch (e) {}
+      window.SCHOOL_MODE = on;
+      if (on) document.documentElement.classList.add('school-mode');
+    })();
+  </script>
+  <style>
+    #school-banner { display: none; }
+    html.school-mode #school-banner { display: block; }
+    html.school-mode #ai-bubble,
+    html.school-mode #ai-panel,
+    html.school-mode #mic-btn,
+    html.school-mode button[title="Search for a connection"] { display: none !important; }
+  </style>
   <title>The Dollar Book — From $1 Million to Trillionaire</title>
 
   <!-- PWA Meta Tags -->
@@ -826,6 +852,9 @@
       <div onclick="closeDisclaimerPopup()" style="position:absolute;top:12px;right:16px;color:#ffffff;font-size:22px;cursor:pointer;line-height:1;font-weight:bold">✕</div>
     </div>
   </div>
+  <div id="school-banner" style="margin:10px auto 0;max-width:480px;font-size:11px;letter-spacing:1px;color:#aaaaaa;border:1px solid #333333;border-radius:6px;padding:6px 12px;background:#0d0d0d">
+    🏫 SCHOOL MODE &nbsp;·&nbsp; no AI chat &nbsp;·&nbsp; no voice input &nbsp;·&nbsp; <a href="schools.html" style="color:#ffffff;text-decoration:underline">for teachers</a>
+  </div>
 </header>
 
 <main>
@@ -1013,6 +1042,7 @@
     Free to use, run informally on a not-for-profit basis. Any future support goes toward keeping it accurate and online.<br>
     Net Zero and climate transition figures are best-available estimates — sources vary widely.<br>
     <a href="privacy.html" style="color:#888888;text-decoration:underline">Privacy Policy &amp; Corrections</a><br>
+    <a href="schools.html" style="color:#888888;text-decoration:underline">For schools &amp; teachers</a><br>
     <span id="admin-trigger" onclick="adminTap()" style="cursor:default;user-select:none;color:inherit">The Dollar Book concept © Kevin Cook 2026</span>
   </footer>
 
@@ -9990,18 +10020,19 @@
     // ══════════════════════════════════════════════════════
     // CAREER GUIDE — TAX: a simple reference table showing how UK Income
     // Tax and National Insurance actually work, in the same "badge" style
-    // as every other Career Guide entry. Standard 2025/26 England/Wales/NI
+    // as every other Career Guide entry. Standard 2026/27 England/Wales/NI
     // employee rates - deliberately kept simple, with no Scottish rates,
     // student loan or pension adjustments. This is what the "Net" figure
     // shown next to every job's salary elsewhere in Career Guide is
     // calculated from (see the ukTakeHomePay() function).
     // ══════════════════════════════════════════════════════
     '_sub_careers_tax':      { _subgroup: 'Career Guide — Tax' },
-    'career personal allowance': { wealth: 12.57, note: 'Career · Tax · UK · Personal Allowance · \u00a30 to \u00a312,570 · 0% Income Tax · Everyone gets this much tax-free each year before Income Tax starts to apply · Tapered away \u00a31 for every \u00a32 earned above \u00a3100,000, gone completely by \u00a3125,140', url: 'https://en.wikipedia.org/wiki/Personal_allowance' },
-    'career basic rate': { wealth: 50.27, note: 'Career · Tax · UK · Basic Rate · \u00a312,571 to \u00a350,270 · 20% Income Tax · The rate most UK taxpayers pay on their income within this band', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
-    'career higher rate': { wealth: 125.14, note: 'Career · Tax · UK · Higher Rate · \u00a350,271 to \u00a3125,140 · 40% Income Tax · Applies once total income passes \u00a350,270 - this is where Career Guide\u2019s higher-paid roles start losing a much bigger share', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
-    'career additional rate': { wealth: 125.14, note: 'Career · Tax · UK · Additional Rate · Over \u00a3125,140 · 45% Income Tax · The UK\u2019s top rate of Income Tax, on everything earned above this threshold', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
-    'career national insurance': { wealth: 50.27, note: 'Career · Tax · UK · National Insurance (Employee) · 8% on earnings between \u00a312,570 and \u00a350,270, then 2% above that · Paid on top of Income Tax straight out of every payslip, and funds the NHS and the State Pension', url: 'https://en.wikipedia.org/wiki/National_Insurance' },
+    'career personal allowance': { wealth: 12.57, note: 'Career · Tax · UK · Personal Allowance · \u00a30 to \u00a312,570 · 0% Income Tax · Everyone gets this much tax-free each year before Income Tax starts to apply · Tapered away \u00a31 for every \u00a32 earned above \u00a3100,000, gone completely by \u00a3125,140 · 2026/27 · Frozen at this level since 2021', url: 'https://en.wikipedia.org/wiki/Personal_allowance' },
+    'career basic rate': { wealth: 50.27, note: 'Career · Tax · UK · Basic Rate · \u00a312,571 to \u00a350,270 · 20% Income Tax · The rate most UK taxpayers pay on their income within this band · 2026/27 · Scotland sets its own Income Tax bands', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
+    'career higher rate': { wealth: 125.14, note: 'Career · Tax · UK · Higher Rate · \u00a350,271 to \u00a3125,140 · 40% Income Tax · Applies once total income passes \u00a350,270 - this is where Career Guide\u2019s higher-paid roles start losing a much bigger share · 2026/27', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
+    'career additional rate': { wealth: 125.14, note: 'Career · Tax · UK · Additional Rate · Over \u00a3125,140 · 45% Income Tax · The UK\u2019s top rate of Income Tax, on everything earned above this threshold · 2026/27', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
+    'career national insurance': { wealth: 50.27, note: 'Career · Tax · UK · National Insurance (Employee) · 8% on earnings between \u00a312,570 and \u00a350,270, then 2% above that · Paid on top of Income Tax straight out of every payslip, and funds the NHS and the State Pension · 2026/27 · The same rates apply across the whole UK, including Scotland', url: 'https://en.wikipedia.org/wiki/National_Insurance' },
+    'career tax code':               { wealth: 12.57, note: 'Career · Tax · UK · Tax Code (1257L) · The standard tax code for 2026/27 · Your employer uses it to work out how much of your pay is tax-free: take the number and multiply by 10 (1257 \u00d7 10 = \u00a312,570, the Personal Allowance) · The letter L means you get the standard allowance · Codes ending W1, M1 or X are temporary emergency codes · You can find yours on your payslip or in your HMRC personal tax account', url: 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_Kingdom' },
 
     // ══════════════════════════════════════════════════════
     // WORLD POLITICAL PARTIES — simple, school-friendly guide to major
@@ -10079,11 +10110,15 @@
   // p1-p33: soft blue  p34-p66: teal  p67-p100: green  p101-p167: amber
   // p168-p200: orange  p201-p250: coral  p251-p1000: red  p1000+: gold (Musk)
   // Simple UK take-home pay calculator — standard England/Wales/NI employee
-  // rates for the 2025/26 tax year. Deliberately kept simple, as asked:
+  // rates for the 2026/27 tax year (6 Apr 2026 - 5 Apr 2027); checked against GOV.UK on
+  // 4 Oct 2026 - Income Tax bands and employee NI are identical to 2025/26 because the
+  // thresholds are frozen. Update UK_TAX_YEAR and recheck the numbers each April.
+  // Deliberately kept simple, as asked:
   // no student loan, pension, Scottish rates or other adjustments, just
   // Income Tax and National Insurance on a single PAYE salary. Input and
   // output are both in thousands of pounds, matching how Career Guide
   // already stores its "wealth" field.
+  const UK_TAX_YEAR = '2026/27';
   function ukTakeHomePay(grossK) {
     const gross = grossK * 1000;
     const personalAllowanceFull = 12570;
@@ -10093,16 +10128,17 @@
     if (gross > 100000) {
       personalAllowance = Math.max(0, personalAllowanceFull - Math.floor((gross - 100000) / 2));
     }
-    // Income Tax: 20% basic, 40% higher, 45% additional.
+    // Income Tax: 20% basic, 40% higher, 45% additional. The bands apply to TAXABLE
+    // income (pay minus Personal Allowance): 20% on the first £37,700, 40% up to
+    // £125,140, 45% above. (An earlier version measured the basic band from total pay,
+    // which made it too wide once the Personal Allowance starts tapering above
+    // £100,000 and overstated take-home pay by £1-3k for salaries over that.)
     let incomeTax = 0;
-    const basicBandTop = 50270, higherBandTop = 125140;
+    const basicBandWidth = 37700, additionalThreshold = 125140;
     const taxable = Math.max(0, gross - personalAllowance);
-    const basicPortion = Math.min(taxable, Math.max(0, basicBandTop - personalAllowance));
-    incomeTax += basicPortion * 0.20;
-    const higherPortion = Math.min(Math.max(0, taxable - basicPortion), Math.max(0, higherBandTop - basicBandTop));
-    incomeTax += higherPortion * 0.40;
-    const additionalPortion = Math.max(0, taxable - basicPortion - higherPortion);
-    incomeTax += additionalPortion * 0.45;
+    incomeTax += Math.min(taxable, basicBandWidth) * 0.20;
+    incomeTax += Math.min(Math.max(0, taxable - basicBandWidth), additionalThreshold - basicBandWidth) * 0.40;
+    incomeTax += Math.max(0, taxable - additionalThreshold) * 0.45;
     // National Insurance: 0% to £12,570, 8% up to £50,270, 2% above.
     let ni = 0;
     const niPortion1 = Math.min(Math.max(0, gross - 12570), Math.max(0, 50270 - 12570));
@@ -10112,6 +10148,60 @@
     const net = gross - incomeTax - ni;
     return { netK: Math.round(net / 1000), taxK: Math.round(incomeTax / 1000), niK: Math.round(ni / 1000) };
   }
+
+  // ── Source links: Wikipedia, with automatic failover ─────────────────
+  // Nearly every entry links to its Wikipedia page. All of those links are
+  // built through sourceUrl() below, so the book is never tied to one site:
+  //   'wikipedia' - link straight to Wikipedia (normal)
+  //   'archive'   - link to the Internet Archive's saved copy of the same page
+  //   'search'    - link to a web search for the person/topic instead
+  //   'auto'      - (default) use Wikipedia, but if it can't be reached when
+  //                 the page loads, switch to 'archive' by itself.
+  // To force a mode for everyone, change SOURCE_LINK_MODE and re-upload.
+  // Only the stored links are affected - none of the book's own data, notes
+  // or figures depend on Wikipedia being available.
+  const SOURCE_LINK_MODE = 'auto';
+  let wikiReachable = true;
+
+  function sourceMode() {
+    return SOURCE_LINK_MODE === 'auto' ? (wikiReachable ? 'wikipedia' : 'archive') : SOURCE_LINK_MODE;
+  }
+  function sourceUrl(url) {
+    if (!url) return url;
+    const mode = sourceMode();
+    if (mode === 'wikipedia' || !/^https?:\/\/[a-z-]+\.wikipedia\.org\//i.test(url)) return url;
+    if (mode === 'archive') return 'https://web.archive.org/web/' + url;
+    // 'search': rebuild a readable search from the article title
+    let title = url.split('/wiki/')[1] || url;
+    title = title.split('#')[0].split('?')[0];
+    try { title = decodeURIComponent(title); } catch (e) {}
+    return 'https://duckduckgo.com/?q=' + encodeURIComponent(title.replace(/_/g, ' '));
+  }
+  function sourceLabel()        { const m = sourceMode(); return m === 'archive' ? 'Wikipedia (archived)' : m === 'search' ? 'Web search' : 'Wikipedia'; }
+  function sourceShortLabel()   { const m = sourceMode(); return m === 'archive' ? 'Archive' : m === 'search' ? 'Search' : 'Wiki'; }
+  function sourceProfileLabel() { const m = sourceMode(); return m === 'archive' ? 'View archived Wikipedia profile' : m === 'search' ? 'Search the web for this person' : 'View Wikipedia profile'; }
+
+  // In 'auto' mode, quietly check once per visit that Wikipedia is up. A
+  // closed, blocked or failing Wikipedia switches every link over and redraws
+  // the table. Runs a few seconds after load so it never slows the page.
+  setTimeout(function checkWikipediaReachable() {
+    if (SOURCE_LINK_MODE !== 'auto' || window.SCHOOL_MODE) return;
+    let cached = null;
+    try { cached = sessionStorage.getItem('dotbook_wikiOk'); } catch (e) {}
+    const down = function () {
+      wikiReachable = false;
+      try { sessionStorage.setItem('dotbook_wikiOk', '0'); } catch (e) {}
+      if (typeof renderTable === 'function') renderTable();
+    };
+    if (cached === '1') return;
+    if (cached === '0') { wikiReachable = false; return; }
+    const ctrl = new AbortController();
+    const timer = setTimeout(function () { ctrl.abort(); }, 8000);
+    fetch('https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&format=json&origin=*', { signal: ctrl.signal, cache: 'no-store' })
+      .then(function (res) { if (res.ok) { try { sessionStorage.setItem('dotbook_wikiOk', '1'); } catch (e) {} } else { down(); } })
+      .catch(down)
+      .finally(function () { clearTimeout(timer); });
+  }, 3000);
 
   function getPageColor(page) {
     return '#000000';
@@ -12046,6 +12136,7 @@
 
 
   function searchFromRow(name, btn) {
+    if (window.SCHOOL_MODE) return;
     const target = btn || event.target;
     const container = target.closest('td') || target.parentElement;
 
@@ -12117,7 +12208,7 @@
     result.style.display = 'block';
     if (match && !match._subgroup) {
       const pg = Math.ceil(match.wealth / 3000) || 1;
-      const wikiBtn = match.url ? ' <a href="' + match.url + '" target="_blank" style="color:#f9e74a;font-size:11px">↗ Wiki</a>' : '';
+      const wikiBtn = match.url ? ' <a href="' + sourceUrl(match.url) + '" target="_blank" style="color:#f9e74a;font-size:11px">↗ ' + sourceShortLabel() + '</a>' : '';
       result.innerHTML = '<span style="color:#fff;font-weight:bold">' + escHtml(cleanDisplayName(matchKey)) + '</span>'
         + ' &nbsp;·&nbsp; <span style="background:#fff;color:#000;padding:1px 5px;border-radius:2px;font-size:11px">p.' + pg + '</span>'
         + ' &nbsp;·&nbsp; <span style="color:#888">' + escHtml(match.note) + '</span>'
@@ -12150,7 +12241,7 @@
     // worth in millions of dollars, so the book's page-number concept
     // simply doesn't apply here - showing one would be actively misleading.
     if (!isCareerEntry) html += '<div style="font-size:13px;color:#aaa;margin-bottom:16px">Page <strong style="color:#fff">' + pg + '</strong> of 334</div>';
-    if (url) html += '<a href="' + url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">Wikipedia &#8599;</a><br>';
+    if (url) html += '<a href="' + sourceUrl(url) + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-bottom:16px">' + sourceLabel() + ' &#8599;</a><br>';
     if (isCareerEntry) {
       // Strip the leading "Career · Category · UK · Job Title ·" - the job
       // title's already the heading above, so just the useful part (salary
@@ -12159,6 +12250,7 @@
       const description = parts.slice(4).join(' \u00b7 ');
       if (description) html += '<div style="font-size:13px;color:#ccc;text-align:left;line-height:1.6;margin-bottom:16px;border-top:1px solid #333;padding-top:12px">' + escHtml(description) + '</div>';
     }
+    if (!window.SCHOOL_MODE) {
     html += '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:12px">';
     html += '<table style="width:100%;border-collapse:collapse"><tr>';
     html += '<td style="width:100%"><input id="popup-ai-input" type="text" autocomplete="off" autocorrect="off" placeholder="Ask about ' + escHtml(name) + '..." style="width:100%;background:#000;border:1px solid #555;color:#fff;padding:7px 10px;font-size:12px;border-radius:5px;outline:none;box-sizing:border-box;font-family:Georgia,serif" /></td>';
@@ -12166,6 +12258,7 @@
     html += '</tr></table>';
     html += '<div id="popup-ai-result" style="margin-top:8px;font-size:12px;color:#ccc;text-align:left;line-height:1.6;display:none"></div>';
     html += '</div>';
+    }
     html += '<button onclick="document.getElementById(\'wealth-popup-overlay\').remove()" style="background:#222;border:1px solid #444;border-radius:4px;padding:8px 24px;color:#fff;font-family:Georgia,serif;font-size:12px;cursor:pointer">Close</button>';
     html += '</div></div>';
 
@@ -13542,7 +13635,7 @@
       : '';
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:' + (isCareerEntry ? 'none' : '1px solid #e8e8e8') + ';background:' + rowBg + '">'
       + '<td' + (careerNet ? ' style="white-space:normal"' : '') + '><span class="page-badge" style="background:' + (isCareerEntry ? '#2a2a2a' : badgeBg) + ';color:' + (isCareerEntry ? '#f9e74a' : '#000000') + ';box-shadow:none;font-size:' + (isCareerEntry ? '13px' : '15px') + (careerNet ? ';display:block;margin-bottom:3px' : '') + '" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + (isCareerEntry ? careerBadgeText : pg) + '</span>'
-      + (careerNet ? '<span class="page-badge" title="Take-home pay after Income Tax and National Insurance" style="background:#1a2a3a;color:#6bb3f9;box-shadow:none;font-size:13px;display:block">' + careerNetBadgeText + '</span>' : '')
+      + (careerNet ? '<span class="page-badge" title="Take-home pay after Income Tax and National Insurance (' + UK_TAX_YEAR + ', England, Wales and Northern Ireland)" style="background:#1a2a3a;color:#6bb3f9;box-shadow:none;font-size:13px;display:block">' + careerNetBadgeText + '</span>' : '')
       + '</td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer;' + nameStyle + '" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
@@ -13550,8 +13643,8 @@
       + '<span style="font-size:11px;color:#666666;margin-left:4px">&#9432;</span>'
       + '</td>'
       + (isCareerEntry
-        ? '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : '') + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
-        : '<td>' + (person.url ? '<a href="' + person.url + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(displayNote) + '</a> <a href="' + person.url + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(displayNote)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>')
+        ? '<td>' + (person.url ? '<a href="' + sourceUrl(person.url) + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : '') + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>'
+        : '<td>' + (person.url ? '<a href="' + sourceUrl(person.url) + '" target="_blank" rel="noopener" style="color:#aaaaaa;text-decoration:none;border-bottom:1px dotted #555555">' + escHtml(displayNote) + '</a> <a href="' + sourceUrl(person.url) + '" target="_blank" rel="noopener" style="display:inline-block;color:#000000;background:#f9e74a;font-weight:bold;font-size:13px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;vertical-align:middle">&#8599;</a>' : escHtml(displayNote)) + ' <button onclick="searchFromRow(\'' + escHtml(person.name).replace(/'/g,"\\'") + '\')" title="Search for a connection" style="display:inline-block;background:#333333;color:#ffffff;border:none;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;cursor:pointer;vertical-align:middle;margin-left:2px">&#128269;</button></td>')
       + '</tr>'
       + careerDetailRow;
   }
@@ -14205,6 +14298,11 @@
   }
 
   async function botSearchAndOffer(name) {
+    // School mode: never send a name to the AI service - just say it isn't in the book.
+    if (window.SCHOOL_MODE) {
+      document.getElementById('rate-status').textContent = '\u201c' + name + '\u201d isn\u2019t in the book. Check the spelling, or ask your teacher.';
+      return;
+    }
     // Open the AI panel and show it's searching
     aiPanelOpen = true;
     document.getElementById('ai-panel').style.display = 'block';
@@ -14323,6 +14421,7 @@
   }
 
   async function botAddToBook(name, wealth, category, nationality, wikiUrl) {
+    if (window.SCHOOL_MODE) return;
     const note = category + ' · ' + nationality;
     const key = name.toLowerCase();
 
@@ -14460,7 +14559,7 @@
     document.getElementById('club-results-label').textContent =
       'No exact match for "' + raw + '" — did you mean… (' + suggestions.length + ')';
     document.getElementById('rate-status').textContent = 'Not an exact match — did you mean one of these?';
-    document.getElementById('club-results-list').insertAdjacentHTML('beforeend',
+    if (!window.SCHOOL_MODE) document.getElementById('club-results-list').insertAdjacentHTML('beforeend',
       '<div style="padding:14px 16px;text-align:center"><button onclick="askAIAnyway()" style="background:#333333;color:#ffffff;border:none;padding:8px 16px;border-radius:6px;font-size:12px;cursor:pointer;width:auto;letter-spacing:0;text-transform:none">None of these — ask the AI instead</button></div>');
   }
   function askAIAnyway() {
@@ -14508,7 +14607,7 @@
           showSuggestions(raw, suggestions);
         } else {
           document.getElementById('club-results-card').style.display = 'none';
-          document.getElementById('rate-status').textContent = '🤖 Not found — asking the AI...';
+          document.getElementById('rate-status').textContent = window.SCHOOL_MODE ? 'Searching\u2026' : '🤖 Not found — asking the AI...';
           // Auto-trigger bot search for this person
           botSearchAndOffer(raw);
         }
@@ -14847,7 +14946,7 @@
     const wikiDiv = document.getElementById('result-wiki');
     if (wikiDiv) {
       if (match.url) {
-        wikiDiv.innerHTML = '<a href="' + match.url + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-top:10px">View Wikipedia profile &#8599;</a>';
+        wikiDiv.innerHTML = '<a href="' + sourceUrl(match.url) + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:13px;border-radius:20px;padding:8px 18px;text-decoration:none;margin-top:10px">' + sourceProfileLabel() + ' &#8599;</a>';
       } else {
         wikiDiv.innerHTML = '';
       }
@@ -14966,7 +15065,7 @@
       // Silently use hardcoded fallback rates — no error shown
     }
   }
-  fetchRates(); // background update — never blocks UI
+  if (!window.SCHOOL_MODE) fetchRates(); // background update — never blocks UI (off in school mode: built-in rates are used)
 
 
 
@@ -15218,7 +15317,7 @@
     }
     card.style.display = 'block';
     body.innerHTML = list.map(e => {
-      const wikiBtn = e.url ? '<a href="' + escHtml(e.url) + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;flex-shrink:0">&#8599;</a>' : '';
+      const wikiBtn = e.url ? '<a href="' + escHtml(sourceUrl(e.url)) + '" target="_blank" rel="noopener" style="display:inline-block;background:#f9e74a;color:#000000;font-weight:bold;font-size:11px;border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;text-decoration:none;flex-shrink:0">&#8599;</a>' : '';
       const safeName = escHtml(e.name).replace(/'/g, "\\'");
       return '<div class="watchlist-item">'
         + '<span class="watchlist-badge" style="background:#ffffff;color:#000000">p.' + e.page + '</span>'
@@ -15285,6 +15384,7 @@
   let isListening = false;
 
   function toggleSpeech() {
+    if (window.SCHOOL_MODE) return;   // voice input sends audio to the browser maker's speech service
     if (isListening) { stopSpeech(); return; }
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       showToast('Speech not supported on this browser');
@@ -15351,6 +15451,7 @@
   }
 
   function openAdminPrompt() {
+    if (window.SCHOOL_MODE) return;   // no admin access from a school-mode device; use ?school=0 to leave school mode
     cancelAdminHold();
     document.getElementById('admin-overlay').style.display = 'block';
     const saved = localStorage.getItem('dotbook_token');
@@ -16657,6 +16758,7 @@
   let aiCurrentEntity = null; // Tracks selected entity
 
   function toggleAIPanel() {
+    if (window.SCHOOL_MODE) return;
     aiPanelOpen = !aiPanelOpen;
     document.getElementById('ai-panel').style.display = aiPanelOpen ? 'block' : 'none';
     document.getElementById('ai-bubble').style.transform = aiPanelOpen ? 'scale(0.9)' : 'scale(1)';
@@ -16708,6 +16810,7 @@
   }
 
   async function sendPopupAI(name) {
+    if (window.SCHOOL_MODE) return;
     const input = document.getElementById('popup-ai-input');
     const result = document.getElementById('popup-ai-result');
     const question = input.value.trim();
@@ -16832,6 +16935,7 @@
   }
 
   function sendAIMessage() {
+    if (window.SCHOOL_MODE) return;
     const input = document.getElementById('ai-input');
     const question = input.value.trim();
     if (!question) return;
