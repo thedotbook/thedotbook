@@ -13052,11 +13052,44 @@
     'Religion — Christianity', 'Religion — Islam', 'Religion — Hinduism', 'Religion — Buddhism', 'Religion — Sikhism', 'Religion — Judaism'
   ];
 
+  // A phone can take a moment to open a heading, and a second impatient tap used to queue up and then
+  // immediately close it again. Ignore a repeat tap on the same heading made within 0.8 seconds of the
+  // first (event.timeStamp is when the finger touched, not when the page got round to handling it).
+  let lastHeadingTap = { text: '', time: -9999 };
+  document.addEventListener('click', function (e) {
+    const row = e.target && e.target.closest ? e.target.closest('#table-body tr.group-header, #table-body tr.db-sub, #table-body tr[onclick^="toggle"]') : null;
+    if (!row) return;
+    const text = (row.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+    if (text === lastHeadingTap.text && e.timeStamp - lastHeadingTap.time < 800) {
+      e.stopPropagation(); e.preventDefault(); return;
+    }
+    lastHeadingTap = { text: text, time: e.timeStamp };
+  }, true);
+
   const SECTION_DIVIDERS = new Set(['Individual Wealth', 'Global Perspective', 'Career Guide', 'Politics', 'Religion']);
+
+  // Which (open-section) group holds a person with this display name? First match in book order,
+  // the same row the old whole-page scan would have found first.
+  function groupHoldingName(name) {
+    const ordered = buildOrderedEntries();
+    let currentSection = null;
+    for (const g of GROUP_ORDER) {
+      if (SECTION_DIVIDERS.has(g)) { currentSection = g; continue; }
+      if (currentSection && collapsedSections.has(currentSection)) continue;
+      const items = ordered[g];
+      if (!items) continue;
+      for (const it of items) { if (it.type === 'person' && it.person.name === name) return g; }
+    }
+    return null;
+  }
 
   function toggleGroup(groupName) {
     const isOpen = !collapsedGroups.has(groupName);
     for (const g of GROUP_ORDER) collapsedGroups.add(g);
+    // Build the rows for the group being opened (every other group stays heading-only).
+    if (!isOpen) collapsedGroups.delete(groupName);
+    renderTable();
+    if (!isOpen) collapsedGroups.add(groupName);   // the original reveal code below deletes it again
     document.querySelectorAll('#table-body tr.group-row').forEach(r => r.classList.add('g-hidden'));
     document.querySelectorAll('#table-body tr.group-header .g-arrow').forEach(a => a.style.transform = 'rotate(-90deg)');
     if (!isOpen) {
@@ -13712,6 +13745,10 @@
             + displayGroupName
             + '<span class="g-count">' + peopleCount + ' people</span>'
             + '</td></tr>';
+      // Rows of a collapsed group are not built at all (only its heading). Building every hidden row
+      // made each tap rebuild 70,000+ page elements - a 3-7 second freeze on a phone. toggleGroup()
+      // builds the rows of a group at the moment it is opened.
+      const groupBodyStart = html.length;
       let thisSid = -1;
       let footballGroupState = null; // null | 'mens' | 'womens' — tracks nesting within Sport
       let rugbyGroupEntered = false; // tracks whether the "— Rugby —" toggle has been inserted yet
@@ -14221,12 +14258,14 @@
           }
         } else if (thisSid >= 0) {
           const rowFn = item.person._fixtureList ? renderFixtureRow : renderPersonRow;
-          html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
+          if (!hidden) html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
                 + rowFn(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
         } else {
-          html += (item.person._fixtureList ? renderFixtureRow : renderPersonRow)(item.person, hidden, groupName);
+          // (rows of a collapsed group are discarded below, so don't spend time building them)
+          if (!hidden) html += (item.person._fixtureList ? renderFixtureRow : renderPersonRow)(item.person, hidden, groupName);
         }
       }
+      if (hidden) html = html.slice(0, groupBodyStart);
     }
     tbody.innerHTML = html;
     attachSubgroupListeners();
@@ -14966,6 +15005,9 @@
     setTimeout(() => {
       // First try to find the row in the currently open section
       let found = false;
+      // Rows of closed groups aren't in the page, so open the group that holds this person first.
+      const holdingGroup = groupHoldingName(name);
+      if (holdingGroup && collapsedGroups.has(holdingGroup)) toggleGroup(holdingGroup);
       const rows = document.querySelectorAll('#table-body tr.group-row, #table-body tr.db-person');
       for (const row of rows) {
         const nameSpan = row.querySelector('[data-name]');
@@ -16766,6 +16808,7 @@
   }
 
   function setAIEntity(name, note) {
+    if (window.SCHOOL_MODE) return;
     aiCurrentEntity = { name, note };
     // Update header label
     document.getElementById('ai-context-label').textContent = '🤖 ' + name.toUpperCase();
@@ -16800,6 +16843,7 @@
   const WORKER_URL = 'https://crimson-sky-6107.cook18404.workers.dev/';
 
   async function callClaude(question, context) {
+    if (window.SCHOOL_MODE) throw new Error('AI chat is switched off in school mode');
     const response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
