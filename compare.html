@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compare Countries — The Dollar Book</title>
+  <meta name="description" content="Which country pays the most for the same job? Compare gross pay, take-home pay and buying power across 18 countries." />
+  <link rel="canonical" href="https://thedollarbook.com/compare.html" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root { --bg:#000; --panel:#111; --panel2:#1a1a1a; --line:#2e2e2e; --text:#fff; --muted:#a8a8a8; --faint:#6d6d6d; --gold:#f9e74a; --blue:#6bb3f9; --blueBg:#1a2a3a; --red:#ff9d8a; --green:#8fd694; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { margin:0; background:var(--bg); color:var(--text); }
+    body { font-family:Georgia,'Times New Roman',serif; line-height:1.45; padding:0 16px 48px; }
+    .wrap { max-width:640px; margin:0 auto; }
+    a { color:inherit; }
+    button, select { font-family:inherit; }
+    :focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    header { padding:22px 0 14px; text-align:center; }
+    .back { display:inline-block; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); text-decoration:none; margin-bottom:14px; }
+    .back:hover { color:var(--gold); }
+    h1 { font-size:26px; font-weight:normal; letter-spacing:1px; margin:0 0 4px; }
+    .tag { font-size:13px; color:var(--muted); font-style:italic; margin:0; }
+    select { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 30px 11px 12px; font-size:15px; width:100%; appearance:none; -webkit-appearance:none; font-weight:bold;
+      background-image:linear-gradient(45deg,transparent 50%,#aaa 50%),linear-gradient(135deg,#aaa 50%,transparent 50%); background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%; background-size:5px 5px,5px 5px; background-repeat:no-repeat; }
+    .seg { display:flex; margin-top:8px; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .seg button { flex:1; background:transparent; color:var(--muted); border:0; padding:9px 4px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; }
+    .seg button[aria-selected=true] { background:var(--text); color:#000; font-weight:bold; }
+    .hint { font-size:12px; color:var(--muted); margin:10px 0 4px; min-height:34px; }
+    .top { border:1px solid var(--gold); border-radius:10px; padding:10px 12px; margin:10px 0 6px; font-size:14px; }
+    .top b { color:var(--gold); font-weight:normal; }
+    .r { display:grid; grid-template-columns:28px 1fr auto; gap:2px 10px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line); }
+    .rk { color:var(--faint); font-size:12px; text-align:right; }
+    .nm { font-size:15px; }
+    .nm small { color:var(--faint); font-size:11px; margin-left:6px; }
+    .v { font-size:15px; font-variant-numeric:tabular-nums; text-align:right; }
+    .v small { display:block; font-size:11px; color:var(--faint); }
+    .bw { grid-column:2 / 4; height:5px; background:var(--panel2); border-radius:3px; overflow:hidden; margin-top:2px; }
+    .bw i { display:block; height:100%; background:var(--blue); border-radius:3px; }
+    .q { display:inline-block; font-size:10px; letter-spacing:1px; text-transform:uppercase; border:1px solid; border-radius:4px; padding:0 5px; margin-left:6px; vertical-align:1px; }
+    .q.s { color:var(--green); border-color:var(--green); } .q.e { color:var(--blue); border-color:var(--blue); } .q.x { color:var(--red); border-color:var(--red); }
+    .none { color:var(--faint); font-size:13px; padding:10px 0; }
+    .note { font-size:12px; color:var(--muted); margin-top:18px; border-top:1px solid var(--line); padding-top:12px; }
+    .note p { margin:0 0 8px; }
+    .legend { font-size:12px; color:var(--muted); margin:6px 0 0; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="careers.html">&larr; Career Guide</a>
+    <h1>Compare Countries</h1>
+    <p class="tag">Same job, 18 countries. A rough picture, not a league table.</p>
+  </header>
+  <label for="job" class="hint" style="display:block;margin-top:0">Pick a job</label>
+  <select id="job" aria-label="Job"></select>
+  <div class="seg" role="tablist" aria-label="Measure">
+    <button role="tab" id="m-gross" aria-selected="true">Gross pay</button>
+    <button role="tab" id="m-net" aria-selected="false">Take-home</button>
+    <button role="tab" id="m-ppp" aria-selected="false">Buying power</button>
+  </div>
+  <p class="hint" id="hint"></p>
+  <div id="top"></div>
+  <div id="list" aria-live="polite"></div>
+  <p class="legend"><span class="q s">Sourced</span> national or government pay data &nbsp; <span class="q e">ERI</span> modelled salary-site figure &nbsp; <span class="q x">Estimate</span> rough guess</p>
+  <div class="note">
+    <p><b>How to read this.</b> Every figure is converted to pounds at the European Central Bank rates of 14 October 2026. Take-home pay uses each country's 2026 tax rules for a single person on one job. Buying power adjusts take-home pay for local prices using World Bank 2024 purchasing-power data (private consumption), shown as pounds at UK prices.</p>
+    <p><b>Be careful with it.</b> The pay figures come from different kinds of source, which the tags show. Estimates and modelled figures can move a country up or down the list. Exchange rates change daily, and price data is from 2024. Averages, medians and different working hours are not perfectly comparable.</p>
+  </div>
+</div>
+<script>
+(function () {
+  var PACKS = [{ code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=5aef7e7f' },
+    { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=0d1b989b' },
+    { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=82a20c55' },
+    { code: 'JP', name: 'Japan',          flag: '🇯🇵', file: 'careers_jp.js?v=d0ce0ea2' },
+    { code: 'DE', name: 'Germany',        flag: '🇩🇪', file: 'careers_de.js?v=d1500c23' },
+    { code: 'FR', name: 'France',         flag: '🇫🇷', file: 'careers_fr.js?v=94639d5e' },
+    { code: 'IT', name: 'Italy',          flag: '🇮🇹', file: 'careers_it.js?v=cb43f545' },
+    { code: 'AU', name: 'Australia',      flag: '🇦🇺', file: 'careers_au.js?v=8edf3201' },
+    { code: 'NZ', name: 'New Zealand',    flag: '🇳🇿', file: 'careers_nz.js?v=7e79db0d' },
+    { code: 'IE', name: 'Ireland',        flag: '🇮🇪', file: 'careers_ie.js?v=bf96433a' },
+    { code: 'EE', name: 'Estonia', flag: '🇪🇪', file: 'careers_ee.js?v=c8297cdd' },
+    { code: 'LV', name: 'Latvia', flag: '🇱🇻', file: 'careers_lv.js?v=ba09b355' },
+    { code: 'LT', name: 'Lithuania', flag: '🇱🇹', file: 'careers_lt.js?v=c9558a89' },
+    { code: 'PL', name: 'Poland', flag: '🇵🇱', file: 'careers_pl.js?v=828fee29' },
+    { code: 'SE', name: 'Sweden', flag: '🇸🇪', file: 'careers_se.js?v=92b6579b' },
+    { code: 'NO', name: 'Norway', flag: '🇳🇴', file: 'careers_no.js?v=47ca5be5' },
+    { code: 'DK', name: 'Denmark', flag: '🇩🇰', file: 'careers_dk.js?v=51f258af' },
+    { code: 'FI', name: 'Finland', flag: '🇫🇮', file: 'careers_fi.js?v=0e36b221' }];
+  var MAP = {"Registered Nurse":{"UK":"Registered Nurse","US":"Registered Nurse","CA":"Registered Nurse","JP":"Registered Nurse","DE":"Registered Nurse","FR":"Registered Nurse","IT":"Nurse","AU":"Registered Nurse","NZ":"Registered Nurse","IE":"Registered Nurse","EE":"Registered Nurse","LV":"Registered Nurse","LT":"Registered Nurse","PL":"Registered Nurse","SE":"Registered Nurse","NO":"Registered Nurse","DK":"Registered Nurse","FI":"Registered Nurse"},"General Practitioner":{"UK":"GP","US":"Physicians and Surgeons","CA":"Family Doctor","JP":"Doctor","DE":"Doctor","AU":"General Practitioner","NZ":"General Practitioner","IE":"General Practitioner","EE":"General Practitioner","LV":"General Practitioner","LT":"General Practitioner","PL":"General Practitioner","SE":"General Practitioner","NO":"General Practitioner","DK":"General Practitioner","FI":"General Practitioner"},"Pharmacist":{"UK":"Pharmacist","US":"Pharmacist","CA":"Pharmacist","JP":"Pharmacist","DE":"Pharmacist","FR":"Pharmacist","AU":"Pharmacist","NZ":"Pharmacist","IE":"Pharmacist","EE":"Pharmacist","LV":"Pharmacist","LT":"Pharmacist","PL":"Pharmacist","SE":"Pharmacist","NO":"Pharmacist","DK":"Pharmacist","FI":"Pharmacist"},"Dentist":{"UK":"Dentist","US":"Dentist","CA":"Dentist","JP":"Dentist","DE":"Dentist","FR":"Dentist","AU":"Dentist","NZ":"Dentist","IE":"Dentist","EE":"Dentist","LV":"Dentist","LT":"Dentist","PL":"Dentist","SE":"Dentist","NO":"Dentist","DK":"Dentist","FI":"Dentist"},"Paramedic":{"UK":"Paramedic","US":"Paramedic / EMT","CA":"Paramedic","JP":"Paramedic","DE":"Paramedic","FR":"Ambulance Paramedic","AU":"Paramedic","NZ":"Paramedic","IE":"Paramedic","EE":"Paramedic","LV":"Paramedic","LT":"Paramedic","PL":"Paramedic","SE":"Paramedic","NO":"Paramedic","DK":"Paramedic","FI":"Paramedic"},"Physiotherapist":{"UK":"Physiotherapist","US":"Physical Therapist","CA":"Physiotherapist","JP":"Physiotherapist","DE":"Physiotherapist","FR":"Physiotherapist","AU":"Physiotherapist","NZ":"Physiotherapist","IE":"Physiotherapist","EE":"Physiotherapist","LV":"Physiotherapist","LT":"Physiotherapist","PL":"Physiotherapist","SE":"Physiotherapist","NO":"Physiotherapist","DK":"Physiotherapist","FI":"Physiotherapist"},"Veterinarian":{"UK":"Veterinary Surgeon","US":"Veterinarian","CA":"Veterinarian","JP":"Veterinarian","DE":"Veterinarian","FR":"Veterinarian","AU":"Veterinarian","NZ":"Veterinarian","IE":"Veterinarian","EE":"Veterinarian","LV":"Veterinarian","LT":"Veterinarian","PL":"Veterinarian","SE":"Veterinarian","NO":"Veterinarian","DK":"Veterinarian","FI":"Veterinarian"},"Care Assistant":{"UK":"Care Worker/Support Worker","US":"Home Health and Personal Care Aides","CA":"Home Support Worker","JP":"Care Worker","DE":"Care Worker","FR":"Care Assistant","IT":"Healthcare Assistant (OSS)","AU":"Aged or Disabled Carer","NZ":"Care Assistant","IE":"Care Assistant","EE":"Care Assistant","LV":"Care Assistant","LT":"Care Assistant","PL":"Care Assistant","SE":"Care Assistant","NO":"Care Assistant","DK":"Care Assistant","FI":"Care Assistant"},"Primary School Teacher":{"UK":"Primary School Teacher","US":"Elementary School Teacher","CA":"Elementary School Teacher","JP":"Elementary School Teacher","DE":"Primary School Teacher","FR":"Primary School Teacher","IT":"Primary School Teacher","AU":"Primary School Teacher","NZ":"Primary School Teacher","IE":"Primary School Teacher","EE":"Primary School Teacher","LV":"Primary School Teacher","LT":"Primary School Teacher","PL":"Primary School Teacher","SE":"Primary School Teacher","NO":"Primary School Teacher","DK":"Primary School Teacher","FI":"Primary School Teacher"},"Secondary School Teacher":{"UK":"Secondary School Teacher","US":"High School Teacher","CA":"Secondary School Teacher","JP":"High School Teacher","DE":"Secondary School Teacher","FR":"Secondary School Teacher","IT":"High School Teacher","AU":"Secondary School Teacher","NZ":"Secondary School Teacher","IE":"Secondary School Teacher","EE":"Secondary School Teacher","LV":"Secondary School Teacher","LT":"Secondary School Teacher","PL":"Secondary School Teacher","SE":"Secondary School Teacher","NO":"Secondary School Teacher","DK":"Secondary School Teacher","FI":"Secondary School Teacher"},"Early Childhood Assistant":{"UK":"Teaching Assistant","US":"Childcare Worker","CA":"Early Childhood Educator Assistant","JP":"Childcare Worker","DE":"Nursery Teacher","FR":"Childminder","AU":"Early Childhood Educator Assistant","NZ":"Early Childhood Assistant","IE":"Early Childhood Assistant","EE":"Early Childhood Assistant","LV":"Early Childhood Assistant","LT":"Early Childhood Assistant","PL":"Early Childhood Assistant","SE":"Early Childhood Assistant","NO":"Early Childhood Assistant","DK":"Early Childhood Assistant","FI":"Early Childhood Assistant"},"Electrician":{"UK":"Electrician","US":"Electrician","CA":"Electrician","JP":"Electrician","DE":"Electrician","FR":"Electrician","IT":"Electrician","AU":"Electrician","NZ":"Electrician","IE":"Electrician","EE":"Electrician","LV":"Electrician","LT":"Electrician","PL":"Electrician","SE":"Electrician","NO":"Electrician","DK":"Electrician","FI":"Electrician"},"Plumber":{"UK":"Plumber/Gas Engineer","US":"Plumber / Pipefitter","CA":"Plumber","JP":"Plumber","DE":"Plumber","FR":"Plumber","IT":"Plumber","AU":"Plumber","NZ":"Plumber","IE":"Plumber","EE":"Plumber","LV":"Plumber","LT":"Plumber","PL":"Plumber","SE":"Plumber","NO":"Plumber","DK":"Plumber","FI":"Plumber"},"Carpenter":{"UK":"Carpenter/Joiner","US":"Carpenter","CA":"Carpenter","JP":"Carpenter","DE":"Carpenter","AU":"Carpenter","NZ":"Carpenter","IE":"Carpenter","EE":"Carpenter","LV":"Carpenter","LT":"Carpenter","PL":"Carpenter","SE":"Carpenter","NO":"Carpenter","DK":"Carpenter","FI":"Carpenter"},"Tool and Die Maker":{"UK":"Toolmaker / Tool and Die Maker","US":"Tool and Die Maker","CA":"Tool and Die Maker","JP":"Tool and Die Maker","DE":"Tool and Die Maker","FR":"Tool and Die Maker","IT":"Tool and Die Maker","AU":"Tool and Die Maker","NZ":"Tool and Die Maker","IE":"Tool and Die Maker","EE":"Tool and Die Maker","LV":"Tool and Die Maker","LT":"Tool and Die Maker","PL":"Tool and Die Maker","SE":"Tool and Die Maker","NO":"Tool and Die Maker","DK":"Tool and Die Maker","FI":"Tool and Die Maker"},"Welder":{"UK":"Welder","US":"Welder","CA":"Welder","JP":"Welder","DE":"Welder","FR":"Welder","AU":"Welder","NZ":"Welder","IE":"Welder","EE":"Welder","LV":"Welder","LT":"Welder","PL":"Welder","SE":"Welder","NO":"Welder","DK":"Welder","FI":"Welder"},"Motor Mechanic":{"UK":"Car/Vehicle Mechanic","US":"Auto Mechanic","CA":"Automotive Service Technician","JP":"Car Mechanic","DE":"Car Mechanic","FR":"Car Mechanic","IT":"Mechanic","AU":"Motor Mechanic","NZ":"Motor Mechanic","IE":"Motor Mechanic","EE":"Motor Mechanic","LV":"Motor Mechanic","LT":"Motor Mechanic","PL":"Motor Mechanic","SE":"Motor Mechanic","NO":"Motor Mechanic","DK":"Motor Mechanic","FI":"Motor Mechanic"},"Heavy-Duty Equipment Technician":{"UK":"HGV Mechanic/Technician","US":"Diesel Mechanic","CA":"Heavy-Duty Equipment Technician","AU":"Heavy-Duty Equipment Technician","NZ":"Heavy-Duty Equipment Technician","IE":"Heavy-Duty Equipment Technician","EE":"Heavy-Duty Equipment Technician","LV":"Heavy-Duty Equipment Technician","LT":"Heavy-Duty Equipment Technician","PL":"Heavy-Duty Equipment Technician","SE":"Heavy-Duty Equipment Technician","NO":"Heavy-Duty Equipment Technician","DK":"Heavy-Duty Equipment Technician","FI":"Heavy-Duty Equipment Technician"},"Lawyer":{"UK":"Solicitor","US":"Lawyer","CA":"Lawyer","JP":"Lawyer","DE":"Lawyer","FR":"Lawyer","AU":"Lawyer","NZ":"Lawyer","IE":"Lawyer","EE":"Lawyer","LV":"Lawyer","LT":"Lawyer","PL":"Lawyer","SE":"Lawyer","NO":"Lawyer","DK":"Lawyer","FI":"Lawyer"},"Accountant":{"UK":"Chartered Accountant","US":"Accountant / Auditor","CA":"Accountant","JP":"Accountant","DE":"Accountant","FR":"Accountant","AU":"Accountant","NZ":"Accountant","IE":"Accountant","EE":"Accountant","LV":"Accountant","LT":"Accountant","PL":"Accountant","SE":"Accountant","NO":"Accountant","DK":"Accountant","FI":"Accountant"},"Police Officer":{"UK":"Police Officer","US":"Police Officer","CA":"Police Officer","DE":"Police Officer","FR":"Police Officer","AU":"Police Officer","NZ":"Police Officer","IE":"Police Officer","EE":"Police Officer","LV":"Police Officer","LT":"Police Officer","PL":"Police Officer","SE":"Police Officer","NO":"Police Officer","DK":"Police Officer","FI":"Police Officer"},"Firefighter":{"UK":"Firefighter","US":"Firefighter","CA":"Firefighter","JP":"Firefighter","DE":"Firefighter","FR":"Firefighter","AU":"Firefighter","NZ":"Firefighter","IE":"Firefighter","EE":"Firefighter","LV":"Firefighter","LT":"Firefighter","PL":"Firefighter","SE":"Firefighter","NO":"Firefighter","DK":"Firefighter","FI":"Firefighter"},"Social Worker":{"UK":"Social Worker","US":"Social Worker","CA":"Social Worker","JP":"Social Worker","DE":"Social Worker","FR":"Social Worker","AU":"Social Worker","NZ":"Social Worker","IE":"Social Worker","EE":"Social Worker","LV":"Social Worker","LT":"Social Worker","PL":"Social Worker","SE":"Social Worker","NO":"Social Worker","DK":"Social Worker","FI":"Social Worker"},"Security Guard":{"US":"Security Guard","CA":"Security Guard","JP":"Security Guard","DE":"Security Guard","FR":"Security Guard","IT":"Security Guard","AU":"Security Guard","NZ":"Security Guard","IE":"Security Guard","EE":"Security Guard","LV":"Security Guard","LT":"Security Guard","PL":"Security Guard","SE":"Security Guard","NO":"Security Guard","DK":"Security Guard","FI":"Security Guard"},"Software Developer":{"UK":"Software Developer/Engineer","US":"Software Developer","CA":"Software Developer","JP":"Software Developer","DE":"Software Developer","FR":"Software Developer","IT":"Software Developer","AU":"Software Developer","NZ":"Software Developer","IE":"Software Developer","EE":"Software Developer","LV":"Software Developer","LT":"Software Developer","PL":"Software Developer","SE":"Software Developer","NO":"Software Developer","DK":"Software Developer","FI":"Software Developer"},"Civil Engineer":{"UK":"Civil Engineer","US":"Civil Engineer","CA":"Civil Engineer","JP":"Civil Engineer","DE":"Civil Engineer","AU":"Civil Engineer","NZ":"Civil Engineer","IE":"Civil Engineer","EE":"Civil Engineer","LV":"Civil Engineer","LT":"Civil Engineer","PL":"Civil Engineer","SE":"Civil Engineer","NO":"Civil Engineer","DK":"Civil Engineer","FI":"Civil Engineer"},"Mechanical Engineer":{"UK":"Mechanical Engineer","US":"Mechanical Engineer","CA":"Mechanical Engineer","JP":"Mechanical Engineer","DE":"Mechanical Engineer","AU":"Mechanical Engineer","NZ":"Mechanical Engineer","IE":"Mechanical Engineer","EE":"Mechanical Engineer","LV":"Mechanical Engineer","LT":"Mechanical Engineer","PL":"Mechanical Engineer","SE":"Mechanical Engineer","NO":"Mechanical Engineer","DK":"Mechanical Engineer","FI":"Mechanical Engineer"},"Electrical Engineer":{"UK":"Electrical Engineer","US":"Electrical Engineer","CA":"Electrical Engineer","JP":"Electrical Engineer","DE":"Electrical Engineer","AU":"Electrical Engineer","NZ":"Electrical Engineer","IE":"Electrical Engineer","EE":"Electrical Engineer","LV":"Electrical Engineer","LT":"Electrical Engineer","PL":"Electrical Engineer","SE":"Electrical Engineer","NO":"Electrical Engineer","DK":"Electrical Engineer","FI":"Electrical Engineer"},"Architect":{"UK":"Architect","US":"Architect","CA":"Architect","JP":"Architect","DE":"Architect","FR":"Architect","AU":"Architect","NZ":"Architect","IE":"Architect","EE":"Architect","LV":"Architect","LT":"Architect","PL":"Architect","SE":"Architect","NO":"Architect","DK":"Architect","FI":"Architect"},"Graphic Designer":{"UK":"Graphic Designer","US":"Graphic Designer","CA":"Graphic Designer","JP":"Graphic Designer","DE":"Graphic Designer","FR":"Graphic Designer","AU":"Graphic Designer","NZ":"Graphic Designer","IE":"Graphic Designer","EE":"Graphic Designer","LV":"Graphic Designer","LT":"Graphic Designer","PL":"Graphic Designer","SE":"Graphic Designer","NO":"Graphic Designer","DK":"Graphic Designer","FI":"Graphic Designer"},"Journalist":{"UK":"Journalist","US":"Journalist / Reporter","CA":"Journalist","JP":"Journalist","DE":"Journalist","FR":"Journalist","AU":"Journalist","NZ":"Journalist","IE":"Journalist","EE":"Journalist","LV":"Journalist","LT":"Journalist","PL":"Journalist","SE":"Journalist","NO":"Journalist","DK":"Journalist","FI":"Journalist"},"Chef":{"UK":"Chef","US":"Chef / Head Cook","CA":"Chef","JP":"Chef","DE":"Chef","AU":"Chef","NZ":"Chef","IE":"Chef","EE":"Chef","LV":"Chef","LT":"Chef","PL":"Chef","SE":"Chef","NO":"Chef","DK":"Chef","FI":"Chef"},"Cook":{"US":"Cook","CA":"Cook","FR":"Cook","IT":"Cook","AU":"Cook","NZ":"Cook","IE":"Cook","EE":"Cook","LV":"Cook","LT":"Cook","PL":"Cook","SE":"Cook","NO":"Cook","DK":"Cook","FI":"Cook"},"Waiter":{"UK":"Waiter/Waitress","US":"Waiter / Waitress","CA":"Food and Beverage Server","JP":"Waiter","DE":"Waiter","FR":"Waiter","IT":"Waiter","AU":"Waiter","NZ":"Waiter","IE":"Waiter","EE":"Waiter","LV":"Waiter","LT":"Waiter","PL":"Waiter","SE":"Waiter","NO":"Waiter","DK":"Waiter","FI":"Waiter"},"Marketing Manager":{"UK":"Marketing Manager","US":"Marketing Manager","CA":"Marketing Manager","AU":"Marketing Manager","NZ":"Marketing Manager","IE":"Marketing Manager","EE":"Marketing Manager","LV":"Marketing Manager","LT":"Marketing Manager","PL":"Marketing Manager","SE":"Marketing Manager","NO":"Marketing Manager","DK":"Marketing Manager","FI":"Marketing Manager"},"Real Estate Agent":{"UK":"Estate Agent","US":"Real Estate Agent","CA":"Real Estate Agent","JP":"Real Estate Agent","DE":"Real Estate Agent","FR":"Real Estate Agent","AU":"Real Estate Agent","NZ":"Real Estate Agent","IE":"Real Estate Agent","EE":"Real Estate Agent","LV":"Real Estate Agent","LT":"Real Estate Agent","PL":"Real Estate Agent","SE":"Real Estate Agent","NO":"Real Estate Agent","DK":"Real Estate Agent","FI":"Real Estate Agent"},"Retail Salesperson":{"US":"Retail Salesperson","CA":"Retail Salesperson","JP":"Retail Salesperson","DE":"Retail Salesperson","FR":"Shop Assistant","IT":"Shop Assistant","AU":"Retail Salesperson","NZ":"Retail Salesperson","IE":"Retail Salesperson","EE":"Retail Salesperson","LV":"Retail Salesperson","LT":"Retail Salesperson","PL":"Retail Salesperson","SE":"Retail Salesperson","NO":"Retail Salesperson","DK":"Retail Salesperson","FI":"Retail Salesperson"},"Cashier":{"US":"Cashier","CA":"Cashier","DE":"Cashier","FR":"Cashier","AU":"Cashier","NZ":"Cashier","IE":"Cashier","EE":"Cashier","LV":"Cashier","LT":"Cashier","PL":"Cashier","SE":"Cashier","NO":"Cashier","DK":"Cashier","FI":"Cashier"},"Administrative Clerk":{"CA":"Administrative Clerk","JP":"Office Clerk","DE":"Office Clerk","FR":"Secretary","IT":"Admin Clerk","AU":"Administrative Clerk","NZ":"Administrative Clerk","IE":"Administrative Clerk","EE":"Administrative Clerk","LV":"Administrative Clerk","LT":"Administrative Clerk","PL":"Administrative Clerk","SE":"Administrative Clerk","NO":"Administrative Clerk","DK":"Administrative Clerk","FI":"Administrative Clerk"},"Truck Driver":{"UK":"HGV/Lorry Driver","US":"Truck Driver","CA":"Truck Driver","JP":"Truck Driver","DE":"Truck Driver","FR":"Truck Driver","AU":"Truck Driver","NZ":"Truck Driver","IE":"Truck Driver","EE":"Truck Driver","LV":"Truck Driver","LT":"Truck Driver","PL":"Truck Driver","SE":"Truck Driver","NO":"Truck Driver","DK":"Truck Driver","FI":"Truck Driver"},"Bus Driver":{"UK":"Bus Driver","US":"Bus Driver","CA":"Transit Bus Driver","JP":"Bus Driver","DE":"Bus and Tram Driver","AU":"Bus Driver","NZ":"Bus Driver","IE":"Bus Driver","EE":"Bus Driver","LV":"Bus Driver","LT":"Bus Driver","PL":"Bus Driver","SE":"Bus Driver","NO":"Bus Driver","DK":"Bus Driver","FI":"Bus Driver"},"Airline Pilot":{"UK":"Commercial Airline Pilot","US":"Airline Pilot","CA":"Airline Pilot","JP":"Airline Pilot","AU":"Airline Pilot","NZ":"Airline Pilot","IE":"Airline Pilot","EE":"Airline Pilot","LV":"Airline Pilot","LT":"Airline Pilot","PL":"Airline Pilot","SE":"Airline Pilot","NO":"Airline Pilot","DK":"Airline Pilot","FI":"Airline Pilot"},"Cleaner":{"US":"Janitor / Building Cleaner","CA":"Janitor / Custodian","JP":"Building Cleaner","DE":"Cleaner","FR":"Cleaner","IT":"Cleaner","AU":"Cleaner","NZ":"Cleaner","IE":"Cleaner","EE":"Cleaner","LV":"Cleaner","LT":"Cleaner","PL":"Cleaner","SE":"Cleaner","NO":"Cleaner","DK":"Cleaner","FI":"Cleaner"}};
+  var JOBS = ["Accountant", "Administrative Clerk", "Airline Pilot", "Architect", "Bus Driver", "Care Assistant", "Carpenter", "Cashier", "Chef", "Civil Engineer", "Cleaner", "Cook", "Dentist", "Early Childhood Assistant", "Electrical Engineer", "Electrician", "Firefighter", "General Practitioner", "Graphic Designer", "Heavy-Duty Equipment Technician", "Journalist", "Lawyer", "Marketing Manager", "Mechanical Engineer", "Motor Mechanic", "Paramedic", "Pharmacist", "Physiotherapist", "Plumber", "Police Officer", "Primary School Teacher", "Real Estate Agent", "Registered Nurse", "Retail Salesperson", "Secondary School Teacher", "Security Guard", "Social Worker", "Software Developer", "Tool and Die Maker", "Truck Driver", "Veterinarian", "Waiter", "Welder"];
+  // 1 EUR = x local currency (ECB reference rates, 14 Oct 2026)
+  var PER_EUR = { GBP: 0.84385, USD: 1.1195, CAD: 1.5918, AUD: 1.5971, NZD: 1.9941, JPY: 177.39, PLN: 4.3658, SEK: 11.158, NOK: 10.6035, DKK: 7.4754, EUR: 1 };
+  var CUR = { UK:'GBP', US:'USD', CA:'CAD', AU:'AUD', NZ:'NZD', JP:'JPY', PL:'PLN', SE:'SEK', NO:'NOK', DK:'DKK' };
+  // World Bank PPP conversion factor, private consumption, 2024 (local currency per international $)
+  var PPP = { AU:1.427398, CA:1.240903, DE:0.701547, DK:6.764411, EE:0.646078, FI:0.788236, FR:0.716934, UK:0.682739, IE:0.88195, IT:0.625157, JP:99.384798, LT:0.526455, LV:0.533129, NO:9.540077, NZ:1.499938, PL:2.008043, SE:8.577614, US:1 };
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { job: JOBS[0], m: 'gross' };
+  try { var sj = localStorage.getItem('dotbook_cmp_job'); if (sj && JOBS.indexOf(sj) >= 0) state.job = sj; } catch (e) {}
+  function cur(code) { return CUR[code] || 'EUR'; }
+  function gbp(code, localUnits) { return localUnits * PER_EUR.GBP / PER_EUR[cur(code)]; }
+  function fmtGBP(x) { return '£' + Math.round(x).toLocaleString('en-GB'); }
+  function fmtLocal(p, x) { var pk = window.CareerPacks[p.code] || {}; var s = p.code === 'CA' ? 'C$' : (pk.sym || ''); return s + Math.round(x).toLocaleString('en-GB'); }
+  function quality(j) {
+    var t = (j.d && j.d[0]) || '';
+    if (/ERI/.test(t)) return ['e', 'ERI'];
+    if (/estimate|Approximate/i.test(t)) return ['x', 'Estimate'];
+    return ['s', 'Sourced'];
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function render() {
+    var rows = [], missing = [];
+    PACKS.forEach(function (p) {
+      var pack = window.CareerPacks[p.code]; if (!pack) return;
+      var title = MAP[state.job] && MAP[state.job][p.code];
+      var job = title && pack.jobs.filter(function (j) { return j.t === title; })[0];
+      if (!job) { missing.push(p); return; }
+      var th = pack.takeHome(job.k);
+      var gross = job.k * 1000, net = th.net;
+      var local = state.m === 'gross' ? gross : net;
+      var val = gbp(p.code, local);
+      if (state.m === 'ppp') val = net / PPP[p.code] * PPP.UK;
+      rows.push({ p: p, val: val, local: local, q: quality(job) });
+    });
+    rows.sort(function (a, b) { return b.val - a.val; });
+    var max = rows.length ? rows[0].val : 1, h = '';
+    rows.forEach(function (r, i) {
+      h += '<div class="r"><span class="rk">' + (i + 1) + '</span><span class="nm">' + r.p.flag + ' ' + esc(r.p.name) + '<span class="q ' + r.q[0] + '">' + r.q[1] + '</span></span>' +
+        '<span class="v">' + fmtGBP(r.val) + (state.m === 'ppp' ? '' : '<small>' + esc(fmtLocal(r.p, r.local)) + '</small>') + '</span>' +
+        '<span class="bw"><i style="width:' + Math.max(2, r.val / max * 100).toFixed(1) + '%"></i></span></div>';
+    });
+    $('list').innerHTML = h;
+    var t = '';
+    if (rows.length > 1) {
+      var lo = rows[rows.length - 1];
+      t = '<div class="top">Highest here: <b>' + esc(rows[0].p.name) + '</b> at ' + fmtGBP(rows[0].val) + ' a year. Lowest: ' + esc(lo.p.name) + ' at ' + fmtGBP(lo.val) + '. The top is about ' + (rows[0].val / lo.val).toFixed(1) + ' times the bottom.' + (rows[0].q[0] === 'x' ? ' Note: the top figure is only a rough estimate.' : rows[0].q[0] === 'e' ? ' Note: the top figure is a modelled ERI estimate.' : '') + '</div>';
+    }
+    $('top').innerHTML = t;
+    if (missing.length) $('list').innerHTML += '<div class="none">No matching job in the guide for: ' + missing.map(function (p) { return p.flag + ' ' + esc(p.name); }).join(', ') + '.</div>';
+    $('hint').textContent = state.m === 'gross' ? 'Yearly pay before tax, in pounds. Local amount underneath.' : state.m === 'net' ? 'Yearly pay after income tax and employee contributions, in pounds. Local amount underneath.' : 'Take-home pay adjusted for local prices: what it is worth if you spent it at UK prices.';
+  }
+  function setM(m) { state.m = m; ['gross', 'net', 'ppp'].forEach(function (k) { $('m-' + k).setAttribute('aria-selected', String(k === m)); }); render(); }
+  var sel = $('job');
+  JOBS.forEach(function (j) { var o = document.createElement('option'); o.value = j; o.textContent = j; if (j === state.job) o.selected = true; sel.appendChild(o); });
+  sel.addEventListener('change', function () { state.job = sel.value; try { localStorage.setItem('dotbook_cmp_job', state.job); } catch (e) {} render(); });
+  ['gross', 'net', 'ppp'].forEach(function (k) { $('m-' + k).addEventListener('click', function () { setM(k); }); });
+  var pending = PACKS.length;
+  $('list').innerHTML = '<div class="none">Loading countries…</div>';
+  PACKS.forEach(function (p) {
+    var s = document.createElement('script'); s.src = p.file;
+    s.onload = s.onerror = function () { if (--pending === 0) render(); };
+    document.head.appendChild(s);
+  });
+  window.CareerPacks = window.CareerPacks || {};
+
+})();
+</script>
+</body>
+</html>
