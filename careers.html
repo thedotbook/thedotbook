@@ -138,7 +138,8 @@
   // To add a country, add a line here and a careers_xx.js file (same format as careers_uk.js).
   var PACKS = [
     { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=f53daea6' },
-    { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=cf2cba02' }
+    { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=cf2cba02' },
+    { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=970c6e0e' }
   ];
   window.CareerPacks = window.CareerPacks || {};
   var $ = function (id) { return document.getElementById(id); };
@@ -240,7 +241,7 @@
     h += '<p class="note">Estimate for ' + esc(p.taxYear) + '. ' + esc(p.assume) + ' The employer’s own share is never taken from your pay.</p>';
     h += '<div class="links">';
     if (j.u) h += '<a class="more" href="' + esc(link(j.u)) + '" target="_blank" rel="noopener">' + esc(linkLabel(j.u)) + ' &#8599;</a>';
-    if (j.b) h += '<a class="more alt" href="' + esc(j.b) + '" target="_blank" rel="noopener">US Bureau of Labor Statistics &#8599;</a>';
+    if (j.b) h += '<a class="more alt" href="' + esc(j.b) + '" target="_blank" rel="noopener">' + esc(p.officialLabel || (p.code === 'US' ? 'US Bureau of Labor Statistics' : 'Official source')) + ' &#8599;</a>';
     h += '</div>';
     return h;
   }
