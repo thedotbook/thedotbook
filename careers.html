@@ -86,7 +86,9 @@
     .kv.rule { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 7px; }
     .neg { color: var(--red); } .net { color: var(--blue); font-weight: bold; }
     .note { font-size: 11px; color: var(--faint); margin-top: 8px; line-height: 1.5; }
-    .more { display: inline-block; margin-top: 12px; background: var(--gold); color: #000; text-decoration: none; font-weight: bold; font-size: 12px; border-radius: 999px; padding: 7px 14px; }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .more.alt { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+    .more { display: inline-block; margin-top: 0; background: var(--gold); color: #000; text-decoration: none; font-weight: bold; font-size: 12px; border-radius: 999px; padding: 7px 14px; }
 
     .tax { border-bottom: 1px solid var(--line); padding: 13px 2px; display: flex; gap: 12px; }
     .tax .b { flex: 0 0 74px; align-self: flex-start; background: #2a2a2a; color: var(--gold); font-size: 12px; }
@@ -136,7 +138,7 @@
   // To add a country, add a line here and a careers_xx.js file (same format as careers_uk.js).
   var PACKS = [
     { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=f53daea6' },
-    { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=852afac9' }
+    { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=cf2cba02' }
   ];
   window.CareerPacks = window.CareerPacks || {};
   var $ = function (id) { return document.getElementById(id); };
@@ -150,7 +152,7 @@
   // Wikipedia links fall back to the Internet Archive copy if Wikipedia can't be reached.
   (function () { var i = new Image(); i.onerror = function () { wikiOK = false; if (state.open >= 0) render(); }; i.src = 'https://en.wikipedia.org/static/favicon/wikipedia.ico?' + Date.now(); })();
   function link(u) { return (!wikiOK && /wikipedia\.org/.test(u)) ? 'https://web.archive.org/web/' + u : u; }
-  function linkLabel(u) { return /wikipedia\.org/.test(u) ? (wikiOK ? 'Read more on Wikipedia' : 'Read more (archived Wikipedia)') : 'Read more'; }
+  function linkLabel(u) { return /wikipedia\.org/.test(u) ? (wikiOK ? 'Wikipedia' : 'Wikipedia (archived)') : 'Read more'; }
 
   // ---------- country + pack loading ----------
   function packInfo(c) { for (var i = 0; i < PACKS.length; i++) if (PACKS[i].code === c) return PACKS[i]; return PACKS[0]; }
@@ -236,7 +238,10 @@
     h += '<h3>The employer also pays, on top</h3>' + el;
     h += '<div class="kv rule"><span><b>Extra cost to the employer</b></span><span><b>' + d0(er) + '</b></span></div>';
     h += '<p class="note">Estimate for ' + esc(p.taxYear) + '. ' + esc(p.assume) + ' The employer’s own share is never taken from your pay.</p>';
+    h += '<div class="links">';
     if (j.u) h += '<a class="more" href="' + esc(link(j.u)) + '" target="_blank" rel="noopener">' + esc(linkLabel(j.u)) + ' &#8599;</a>';
+    if (j.b) h += '<a class="more alt" href="' + esc(j.b) + '" target="_blank" rel="noopener">US Bureau of Labor Statistics &#8599;</a>';
+    h += '</div>';
     return h;
   }
   function renderJobs() {
