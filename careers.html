@@ -139,7 +139,8 @@
   var PACKS = [
     { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=5aef7e7f' },
     { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=0d1b989b' },
-    { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=82a20c55' }
+    { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=82a20c55' },
+    { code: 'JP', name: 'Japan',          flag: '🇯🇵', file: 'careers_jp.js?v=d0ce0ea2' }
   ];
   window.CareerPacks = window.CareerPacks || {};
   var $ = function (id) { return document.getElementById(id); };
@@ -169,7 +170,7 @@
   }
   function pack() { return window.CareerPacks[state.country]; }
   function money(k) { return pack().sym + Math.round(k * 1000).toLocaleString(); }
-  function badge(k) { return pack().sym + Math.round(k) + 'k'; }
+  function badge(k) { return pack().badgeM ? pack().sym + (k / 1000).toFixed(1) + 'm' : pack().sym + Math.round(k) + 'k'; }
   function d0(n) { return pack().sym + Math.round(n).toLocaleString(); }
 
   function chooseCountry(code) {
@@ -253,7 +254,7 @@
     list.forEach(function (o) {
       var j = o.j, open = state.open === o.i;
       html += '<div class="job' + (open ? ' open' : '') + '" data-i="' + o.i + '">'
-        + '<button class="job-head" aria-expanded="' + open + '"><span class="badges"><span class="b b-gross">' + badge(j.k) + '</span><span class="b b-net">' + pack().sym + j._net + 'k</span></span>'
+        + '<button class="job-head" aria-expanded="' + open + '"><span class="badges"><span class="b b-gross">' + badge(j.k) + '</span><span class="b b-net">' + badge(j._net) + '</span></span>'
         + '<span class="jt"><span class="name">' + esc(j.t) + '</span>' + (j.s ? '<span class="sub">' + esc(j.s) + '</span>' : '') + '</span><span class="chev">&#9654;</span></button>'
         + '<div class="job-body"' + (open ? '' : ' hidden') + '>' + (open ? bodyHtml(j) : '') + '</div></div>';
     });
