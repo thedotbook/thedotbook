@@ -882,61 +882,6 @@
     <div class="show-more" id="show-more-btn" onclick="toggleShowAll()" style="display:none"></div>
   </div>
 
-  <!-- Career Guide Search Tool -->
-  <div class="card">
-    <div class="card-label">Career Guide Search</div>
-    <div class="row" style="gap:8px;margin-bottom:10px">
-      <button id="cc-btn-uk" class="cs-tab-btn cs-tab-active" onclick="setCareerCountry('UK')" style="flex:1;padding:8px 6px;font-size:12px">&#127468;&#127463; UK jobs (&pound;)</button>
-      <button id="cc-btn-us" class="cs-tab-btn" onclick="setCareerCountry('US')" style="flex:1;padding:8px 6px;font-size:12px">&#127482;&#127480; US jobs ($)</button>
-    </div>
-    <div class="form-group">
-      <div class="row" style="gap:8px">
-        <button id="cs-tab-title" class="cs-tab-btn cs-tab-active" onclick="switchCareerSearchMode('title')" style="flex:1;padding:10px 6px;font-size:12px">Job Title</button>
-        <button id="cs-tab-income" class="cs-tab-btn" onclick="switchCareerSearchMode('income')" style="flex:1;padding:10px 6px;font-size:12px">Income</button>
-        <button id="cs-tab-quals" class="cs-tab-btn" onclick="switchCareerSearchMode('quals')" style="flex:1;padding:10px 6px;font-size:12px">My Qualifications</button>
-      </div>
-
-      <!-- Job Title mode -->
-      <div id="cs-mode-title" class="cs-mode">
-        <div class="row">
-          <input type="text" id="cs-title-input" placeholder="e.g. Electrician, Nurse, Solicitor" style="flex:1" onkeydown="if(event.key==='Enter')runCareerSearch('title')" />
-          <button onclick="runCareerSearch('title')" style="width:auto;padding:12px 14px;flex-shrink:0">🔍</button>
-        </div>
-      </div>
-
-      <!-- Income mode -->
-      <div id="cs-mode-income" class="cs-mode" style="display:none">
-        <div class="row">
-          <input type="number" id="cs-income-min" placeholder="Min £k, e.g. 20" style="flex:1" />
-          <input type="number" id="cs-income-max" placeholder="Max £k, e.g. 50" style="flex:1" />
-        </div>
-        <div class="row">
-          <button onclick="runCareerSearch('income')" style="flex:1;color:#ffffff">Search by Income</button>
-        </div>
-        <div id="cs-income-hint" style="font-size:11px;color:#555555;margin-top:-4px">Enter a salary range in thousands of pounds (£k)</div>
-      </div>
-
-      <!-- Qualifications mode -->
-      <div id="cs-mode-quals" class="cs-mode" style="display:none">
-        <div class="row">
-          <select id="cs-qual-select" style="flex:1">
-            <option value="1">No formal qualifications / GCSEs</option>
-            <option value="2">GCSEs + Apprenticeship</option>
-            <option value="3">A-Levels or equivalent</option>
-            <option value="4">Bachelor's Degree</option>
-            <option value="5">Master's / PhD / Postgraduate</option>
-          </select>
-        </div>
-        <div class="row">
-          <button onclick="runCareerSearch('quals')" style="flex:1;color:#ffffff">Show Jobs I Qualify For</button>
-        </div>
-        <div style="font-size:11px;color:#555555;margin-top:-4px">Select your highest qualification — we'll show every job genuinely accessible with that level, based on the qualifications route listed for each entry.</div>
-      </div>
-
-      <div id="cs-status" style="font-size:11px;color:#333333;text-align:right;margin-top:-6px"></div>
-    </div>
-  </div>
-
   <!-- Calculator -->
   <div class="card">
     <div class="card-label">Find a Celebrity</div>
@@ -1203,60 +1148,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=2f68342f"></script>
-<script>
-  // Career Guide country: UK (default) or US. Chosen with the UK/US buttons in the
-  // Career Guide Search card, or with ?country=us / ?country=uk on the address.
-  // Remembered on this device. The US job list lives in its own file, which is
-  // only downloaded when US is chosen, so UK visitors never pay for it.
-  var COUNTRY = 'UK';
-  try {
-    var qc = new URLSearchParams(location.search).get('country');
-    if (qc) localStorage.setItem('dotbook_country', qc.toUpperCase() === 'US' ? 'US' : 'UK');
-    COUNTRY = localStorage.getItem('dotbook_country') === 'US' ? 'US' : 'UK';
-  } catch (e) { COUNTRY = /[?&]country=us/i.test(location.search) ? 'US' : 'UK'; }
-  if (COUNTRY === 'US') document.write('<script src="careers_us.js?v=c6024d94"><\/script>');
-</script>
-<script>
-  // US mode: swap the UK Career Guide block inside the database for the US one.
-  // The block runs from the first Career Guide heading to the last Career Guide
-  // entry (the UK Tax Code), so everything else in the database is untouched.
-  if (COUNTRY === 'US') {
-    if (typeof US_CAREER_BLOCK === 'undefined') {
-      COUNTRY = 'UK';   // US file did not load (offline?) - fall back to the UK list
-    } else {
-      (function () {
-        var keys = Object.keys(CELEB_DB);
-        var first = keys.indexOf('_sub_careers_health');
-        var last = keys.indexOf('career tax code');
-        if (first < 0 || last < first) { COUNTRY = 'UK'; return; }
-        var entries = keys.map(function (k) { return [k, CELEB_DB[k]]; });
-        var merged = entries.slice(0, first).concat(Object.entries(US_CAREER_BLOCK), entries.slice(last + 1));
-        keys.forEach(function (k) { delete CELEB_DB[k]; });
-        merged.forEach(function (e) { CELEB_DB[e[0]] = e[1]; });
-      })();
-    }
-  }
-  var CAREER_SYM = COUNTRY === 'US' ? '$' : '£';
-  // Full yearly figure: US pay is shown exactly (e.g. $58,640); UK pay is stored in whole thousands.
-  function careerSalaryFull(k) { return COUNTRY === 'US' ? CAREER_SYM + Math.round(k * 1000).toLocaleString() : CAREER_SYM + Math.round(k).toLocaleString() + ',000'; }
-  function setCareerCountry(c) {
-    try { localStorage.setItem('dotbook_country', c); } catch (e) {}
-    var u = new URL(location.href); u.searchParams.delete('country'); location.href = u.toString();
-  }
-  function applyCountryUI() {
-    var us = COUNTRY === 'US';
-    var bu = document.getElementById('cc-btn-us'), bk = document.getElementById('cc-btn-uk');
-    if (bu && bk) { bu.classList.toggle('cs-tab-active', us); bk.classList.toggle('cs-tab-active', !us); }
-    if (!us) return;
-    var q = document.getElementById('cs-tab-quals'); if (q) q.style.display = 'none';
-    var mn = document.getElementById('cs-income-min'); if (mn) mn.placeholder = 'Min $k, e.g. 40';
-    var mx = document.getElementById('cs-income-max'); if (mx) mx.placeholder = 'Max $k, e.g. 90';
-    var t = document.getElementById('cs-title-input'); if (t) t.placeholder = 'e.g. Electrician, Nurse, Lawyer';
-    var hint = document.getElementById('cs-income-hint'); if (hint) hint.textContent = 'Enter a salary range in thousands of dollars ($k)';
-  }
-  document.addEventListener('DOMContentLoaded', applyCountryUI);
-</script>
+<script src="data.js?v=ab4656a4"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -1315,54 +1207,6 @@
     ni += niPortion2 * 0.02;
     const net = gross - incomeTax - ni;
     return { netK: Math.round(net / 1000), taxK: Math.round(incomeTax / 1000), niK: Math.round(ni / 1000) };
-  }
-
-  // ── US take-home pay (single person, one job, standard deduction) ──────
-  // What an employer MUST withhold from each paycheque: federal income tax, the
-  // employee's Social Security and Medicare, and (in most states) state income tax.
-  // Separately the employer pays its own matching Social Security/Medicare plus
-  // federal unemployment tax (FUTA) - never taken from the worker's pay.
-  // 2026 figures: IRS Rev. Proc. 2025-32 (standard deduction $16,100, brackets below),
-  // SSA wage base $184,500. Input and output are in thousands of dollars.
-  // Deliberately simple, as with the UK version: no pension, health insurance,
-  // dependants or credits. State tax is a flat typical estimate (US_STATE_RATE).
-  const US_TAX_YEAR = '2026';
-  const US_STATE_RATE = 0.04;
-  function usTakeHomePay(grossK) {
-    const gross = grossK * 1000;
-    const bands = [[12400, 0.10], [50400, 0.12], [105700, 0.22], [201775, 0.24], [256225, 0.32], [640600, 0.35], [Infinity, 0.37]];
-    const taxable = Math.max(0, gross - 16100);
-    let fed = 0, prev = 0;
-    for (const b of bands) { if (taxable > prev) fed += (Math.min(taxable, b[0]) - prev) * b[1]; prev = b[0]; }
-    const ss = Math.min(gross, 184500) * 0.062;
-    const med = gross * 0.0145 + Math.max(0, gross - 200000) * 0.009;
-    const state = gross * US_STATE_RATE;
-    const net = gross - fed - ss - med - state;
-    const erFica = Math.min(gross, 184500) * 0.062 + gross * 0.0145;
-    const futa = gross > 0 ? 42 : 0;   // 0.6% of the first $7,000
-    return { netK: Math.round(net / 1000), gross: gross, fed: fed, ss: ss, med: med, state: state, net: net, erFica: erFica, futa: futa };
-  }
-  function careerTakeHome(grossK) { return COUNTRY === 'US' ? usTakeHomePay(grossK) : ukTakeHomePay(grossK); }
-  // The "where the pay goes" panel shown when a US job is opened.
-  function usBreakdownHtml(grossK) {
-    const t = usTakeHomePay(grossK);
-    const d = function (n) { return '$' + Math.round(n).toLocaleString(); };
-    const row = function (label, val, color, rule) {
-      return '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0;' + (rule ? 'border-top:1px solid #333;margin-top:4px;padding-top:8px;' : '') + '"><span style="color:#ccc">' + label + '</span><span style="color:' + (color || '#fff') + ';white-space:nowrap">' + val + '</span></div>';
-    };
-    const kept = t.fed + t.ss + t.med + t.state;
-    let h = '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:16px;text-align:left;font-size:12px">';
-    h += '<div style="font-size:12px;color:#f9e74a;font-weight:bold;margin-bottom:6px">What your employer must hold back (estimate, ' + US_TAX_YEAR + ', single person)</div>';
-    h += row('Pay before tax', d(t.gross));
-    h += row('Federal income tax', '&minus; ' + d(t.fed), '#ff9d8a');
-    h += row('Social Security (6.2%)', '&minus; ' + d(t.ss), '#ff9d8a');
-    h += row('Medicare (1.45%)', '&minus; ' + d(t.med), '#ff9d8a');
-    h += row('State income tax (typical ' + Math.round(US_STATE_RATE * 100) + '%, varies)', '&minus; ' + d(t.state), '#ff9d8a');
-    h += row('<strong>Held back in total</strong>', '<strong>' + d(kept) + '</strong>', '#ff9d8a', true);
-    h += row('<strong>Take-home pay</strong>', '<strong>' + d(t.net) + '</strong>', '#6bb3f9');
-    h += '<div style="font-size:11px;color:#999;line-height:1.5;margin-top:8px">The employer also pays about ' + d(t.erFica + t.futa) + ' of its own on top (matching Social Security and Medicare, plus federal unemployment tax). That is never taken from your pay, but it is part of what you cost the employer. Nine states charge no state income tax on wages.</div>';
-    h += '</div>';
-    return h;
   }
 
   // ── Source links: Wikipedia, with automatic failover ─────────────────
@@ -3444,7 +3288,7 @@
     const url = span.dataset.url;
     const isCareerEntry = (note || '').startsWith('Career ·');
     const hc = getHomeCurrency(note, name);
-    const usd = isCareerEntry ? careerSalaryFull(wealthM) + '/year' : formatWealth(wealthM);
+    const usd = isCareerEntry ? '\u00a3' + Math.round(wealthM).toLocaleString() + ',000/year' : formatWealth(wealthM);
     const local = !isCareerEntry && hc && hc !== 'USD' ? formatInHomeCurrency(wealthM, hc) : null;
     const pg = getPage(wealthM);
 
@@ -3465,7 +3309,6 @@
       const parts = note.split('\u00b7').map(s => s.trim());
       const description = parts.slice(4).join(' \u00b7 ');
       if (description) html += '<div style="font-size:13px;color:#ccc;text-align:left;line-height:1.6;margin-bottom:16px;border-top:1px solid #333;padding-top:12px">' + escHtml(description) + '</div>';
-      if (COUNTRY === 'US' && !note.startsWith('Career \u00b7 Tax \u00b7')) html += usBreakdownHtml(wealthM);
     }
     if (!window.SCHOOL_MODE) {
     html += '<div style="border-top:1px solid #333;padding-top:12px;margin-bottom:12px">';
@@ -4101,6 +3944,9 @@
     });
   }
 
+
+  // The Career Guide now lives on its own page (careers.html) with a country picker.
+  function openCareerGuide() { location.href = 'careers.html'; }
 
   function toggleSection(sectionName) {
     if (collapsedSections.has(sectionName)) {
@@ -4852,9 +4698,9 @@
     // "Higher Rate · £50,271 to £125,140" would be meaningless.
     const isTaxBandEntry = (person.note || '').startsWith('Career · Tax ·');
     const pg = isCareerEntry ? null : getPage(person.wealth);
-    const careerBadgeText = isCareerEntry ? ((COUNTRY === 'US' && isTaxBandEntry && typeof US_TAX_BADGES !== 'undefined' && US_TAX_BADGES[person.name]) || (CAREER_SYM + Math.round(person.wealth) + 'k')) : null;
-    const careerNet = (isCareerEntry && !isTaxBandEntry) ? careerTakeHome(person.wealth) : null;
-    const careerNetBadgeText = careerNet ? CAREER_SYM + careerNet.netK + 'k' : null;
+    const careerBadgeText = isCareerEntry ? '\u00a3' + Math.round(person.wealth) + 'k' : null;
+    const careerNet = (isCareerEntry && !isTaxBandEntry) ? ukTakeHomePay(person.wealth) : null;
+    const careerNetBadgeText = careerNet ? '\u00a3' + careerNet.netK + 'k' : null;
     const isUser = person.isUser;
     const isMusk = person.name === 'Elon Musk';
     const isKevin = person.name === 'Kevin Cook' && !isUser;
@@ -4885,7 +4731,7 @@
       : '';
     return '<tr class="group-row' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" style="border-bottom:' + (isCareerEntry ? 'none' : '1px solid #e8e8e8') + ';background:' + rowBg + '">'
       + '<td' + (careerNet ? ' style="white-space:normal"' : '') + '><span class="page-badge" style="background:' + (isCareerEntry ? '#2a2a2a' : badgeBg) + ';color:' + (isCareerEntry ? '#f9e74a' : '#000000') + ';box-shadow:none;font-size:' + (isCareerEntry ? '13px' : '15px') + (careerNet ? ';display:block;margin-bottom:3px' : '') + '" oncontextmenu="event.preventDefault();openAdminPrompt()" ontouchstart="startAdminHold(event)" ontouchend="cancelAdminHold()" onmousedown="startAdminHold(event)" onmouseup="cancelAdminHold()" onmouseleave="cancelAdminHold()">' + (isCareerEntry ? careerBadgeText : pg) + '</span>'
-      + (careerNet ? '<span class="page-badge" title="' + (COUNTRY === 'US' ? 'Estimated take-home pay after federal tax, Social Security, Medicare and a typical state tax (' + US_TAX_YEAR + '). Tap the job for the breakdown.' : 'Take-home pay after Income Tax and National Insurance (' + UK_TAX_YEAR + ', England, Wales and Northern Ireland)') + '" style="background:#1a2a3a;color:#6bb3f9;box-shadow:none;font-size:13px;display:block">' + careerNetBadgeText + '</span>' : '')
+      + (careerNet ? '<span class="page-badge" title="Take-home pay after Income Tax and National Insurance (' + UK_TAX_YEAR + ', England, Wales and Northern Ireland)" style="background:#1a2a3a;color:#6bb3f9;box-shadow:none;font-size:13px;display:block">' + careerNetBadgeText + '</span>' : '')
       + '</td>'
       + '<td class="name-cell" style="color:' + nameColor + ';font-weight:' + nameBold + ';cursor:pointer;' + nameStyle + '" onclick="showWealthPopup(this)">'
       + '<span data-name="' + escHtml(person.name) + '" data-wealth="' + person.wealth + '" data-note="' + escHtml(person.note) + '" data-url="' + escHtml(person.url || '') + '">' + escHtml(person.name) + '</span>'
@@ -4931,12 +4777,14 @@
       if (SECTION_DIVIDERS.has(groupName)) {
         currentSection = groupName;
         const secCollapsed = collapsedSections.has(groupName);
-        const secArrow = secCollapsed ? '&#9660;' : '&#9650;';
+        const isCG = groupName === 'Career Guide';
+        const secArrow = isCG ? '&#8599;' : (secCollapsed ? '&#9660;' : '&#9650;');
         const safeSec = groupName.replace(/'/g, "\'");
-        html += '<tr onclick="toggleSection(\'' + safeSec + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent"><td colspan="3" style="background:#000000;color:#ffffff;padding:14px 16px;font-size:12px;letter-spacing:5px;text-transform:uppercase;text-align:center;border-top:2px solid #ffffff;border-bottom:2px solid #ffffff;user-select:none">'
+        html += '<tr onclick="' + (isCG ? 'openCareerGuide()' : 'toggleSection(\'' + safeSec + '\')') + '" style="cursor:pointer;-webkit-tap-highlight-color:transparent"><td colspan="3" style="background:#000000;color:#ffffff;padding:14px 16px;font-size:12px;letter-spacing:5px;text-transform:uppercase;text-align:center;border-top:2px solid #ffffff;border-bottom:2px solid #ffffff;user-select:none">'
               + '<span style="margin-right:10px;font-size:10px;opacity:0.7">' + secArrow + '</span>'
               + escHtml(groupName)
               + '<span style="margin-left:10px;font-size:10px;opacity:0.7">' + secArrow + '</span>'
+              + (isCG ? '<span style="display:block;margin-top:5px;font-size:11px;letter-spacing:1px;text-transform:none;opacity:0.6">Jobs, pay and take-home pay \u00b7 UK, US and more</span>' : '')
               + '</td></tr>';
         continue;
       }
@@ -6076,7 +5924,7 @@
       if (maxN >= 1000 && maxN !== 999999) { maxN = maxN / 1000; autoConverted = true; }
       if (minN > maxN) { document.getElementById('cs-status').textContent = 'Min must be less than max.'; return; }
       results = searchCareerByIncome(minN, maxN);
-      label = CAREER_SYM + minN + 'k – ' + CAREER_SYM + (maxN === 999999 ? 'any' : maxN) + 'k' + (autoConverted ? ' (read as thousands)' : '');
+      label = '£' + minN + 'k – £' + (maxN === 999999 ? 'any' : maxN) + 'k' + (autoConverted ? ' (read as thousands)' : '');
     } else if (mode === 'quals') {
       const lvl = parseInt(document.getElementById('cs-qual-select').value);
       results = searchCareerByQualification(lvl);
@@ -6159,11 +6007,11 @@
     const progressLabels = document.querySelector('#result-card .progress-labels');
 
     if (isCareerEntry) {
-      const salaryText = CAREER_SYM + Math.round(wm).toLocaleString() + 'k';
+      const salaryText = '\u00a3' + Math.round(wm).toLocaleString() + 'k';
       document.getElementById('result-page').textContent = salaryText;
       document.getElementById('result-page-of').textContent = 'per year';
       document.getElementById('result-text').innerHTML =
-        '<strong>' + escHtml(name) + '</strong> — average salary around ' + careerSalaryFull(wm) + '/year';
+        '<strong>' + escHtml(name) + '</strong> — average salary around \u00a3' + Math.round(wm).toLocaleString() + ',000/year';
       if (progressTrack) progressTrack.style.display = 'none';
       if (progressLabels) progressLabels.style.display = 'none';
       // Show the useful part of the description (salary detail and
@@ -6209,7 +6057,7 @@
     }
 
     // Store plain text wealth (no HTML)
-    const wealthPlain = isCareerEntry ? (careerSalaryFull(wm) + '/year') : formatWealth(wm);
+    const wealthPlain = isCareerEntry ? ('\u00a3' + Math.round(wm).toLocaleString() + ',000/year') : formatWealth(wm);
     card.dataset.name = name;
     card.dataset.page = page;
     card.dataset.wealth = wealthPlain;

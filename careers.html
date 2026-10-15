@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career Guide — The Dollar Book</title>
+  <meta name="description" content="What real jobs pay, what you keep after tax, and what your employer has to hold back. Pick a country and explore the jobs." />
+  <link rel="canonical" href="https://thedollarbook.com/careers.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Dollar Book" />
+  <meta property="og:title" content="Career Guide — The Dollar Book" />
+  <meta property="og:description" content="What real jobs pay, what you keep after tax, and what your employer has to hold back. Pick a country and explore." />
+  <meta property="og:url" content="https://thedollarbook.com/careers.html" />
+  <meta property="og:image" content="https://thedollarbook.com/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #000000; --panel: #111111; --panel2: #1a1a1a; --line: #2e2e2e;
+      --text: #ffffff; --muted: #a8a8a8; --faint: #6d6d6d;
+      --gold: #f9e74a; --blue: #6bb3f9; --blueBg: #1a2a3a; --red: #ff9d8a;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); }
+    body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.45; padding: 0 16px 48px; }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    a { color: inherit; }
+    button, select, input { font-family: inherit; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    header { padding: 22px 0 14px; text-align: center; }
+    .back { display: inline-block; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); text-decoration: none; margin-bottom: 14px; }
+    .back:hover { color: var(--gold); }
+    h1 { font-size: 26px; font-weight: normal; letter-spacing: 1px; margin: 0 0 4px; }
+    .tag { font-size: 13px; color: var(--muted); font-style: italic; margin: 0; }
+
+    .bar { padding: 10px 0 8px; border-bottom: 1px solid var(--line); }
+    .row { display: flex; gap: 8px; }
+    select, input[type=search] {
+      background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 8px;
+      padding: 11px 12px; font-size: 15px; min-width: 0; width: 100%;
+    }
+    select { appearance: none; -webkit-appearance: none; padding-right: 30px;
+      background-image: linear-gradient(45deg, transparent 50%, #aaa 50%), linear-gradient(135deg, #aaa 50%, transparent 50%);
+      background-position: calc(100% - 17px) 52%, calc(100% - 12px) 52%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+    #country { flex: 1.35; font-weight: bold; }
+    #sort { flex: 1; font-size: 13px; }
+    .row2 { margin-top: 8px; }
+    input[type=search]::placeholder { color: var(--faint); }
+
+    .seg { display: flex; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    .seg button { flex: 1; background: transparent; color: var(--muted); border: 0; padding: 9px 6px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+    .seg button[aria-selected=true] { background: var(--text); color: #000; font-weight: bold; }
+
+    .chips { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip { flex: 0 0 auto; background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+    .chip[aria-pressed=true] { background: var(--gold); color: #000; border-color: var(--gold); font-weight: bold; }
+    .chip small { opacity: .65; margin-left: 4px; }
+
+    .meta { font-size: 11px; color: var(--faint); margin: 12px 0 8px; letter-spacing: .5px; }
+
+    .job { border-bottom: 1px solid var(--line); }
+    .job-head { width: 100%; display: flex; align-items: center; gap: 12px; background: transparent; border: 0; color: inherit; text-align: left; padding: 12px 2px; cursor: pointer; }
+    .badges { display: flex; flex-direction: column; gap: 3px; flex: 0 0 66px; }
+    .b { display: block; text-align: center; font-size: 13px; border-radius: 5px; padding: 2px 6px; font-variant-numeric: tabular-nums; }
+    .b-gross { background: #2a2a2a; color: var(--gold); }
+    .b-net { background: var(--blueBg); color: var(--blue); }
+    .jt { flex: 1; min-width: 0; }
+    .jt .name { display: block; font-size: 16px; }
+    .jt .sub { display: block; font-size: 12px; color: var(--faint); margin-top: 1px; }
+    .chev { color: var(--faint); font-size: 12px; transition: transform .15s; }
+    .job.open .chev { transform: rotate(90deg); color: var(--gold); }
+    .job-body { padding: 2px 4px 18px 80px; font-size: 13px; color: #d0d0d0; }
+    .job-body[hidden] { display: none; }
+    .job-body h3 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: normal; margin: 14px 0 6px; }
+    .job-body h3:first-child { margin-top: 2px; }
+    .job-body p { margin: 0 0 6px; }
+    .pay { font-size: 20px; color: var(--text); margin: 0 0 4px; }
+    .pay small { font-size: 12px; color: var(--muted); }
+    .kv { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 3px 0; font-size: 13px; }
+    .kv span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .kv.rule { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 7px; }
+    .neg { color: var(--red); } .net { color: var(--blue); font-weight: bold; }
+    .note { font-size: 11px; color: var(--faint); margin-top: 8px; line-height: 1.5; }
+    .more { display: inline-block; margin-top: 12px; background: var(--gold); color: #000; text-decoration: none; font-weight: bold; font-size: 12px; border-radius: 999px; padding: 7px 14px; }
+
+    .tax { border-bottom: 1px solid var(--line); padding: 13px 2px; display: flex; gap: 12px; }
+    .tax .b { flex: 0 0 74px; align-self: flex-start; background: #2a2a2a; color: var(--gold); font-size: 12px; }
+    .tax h4 { margin: 0 0 3px; font-weight: normal; font-size: 15px; }
+    .tax p { margin: 0; font-size: 12.5px; color: var(--muted); }
+    .tax a { color: var(--gold); text-decoration: none; }
+
+    .empty { text-align: center; color: var(--muted); padding: 34px 10px; font-size: 14px; }
+    .foot { margin-top: 26px; font-size: 11px; color: var(--faint); line-height: 1.6; text-align: center; }
+    .foot b { color: var(--muted); font-weight: normal; }
+    @media (max-width: 380px) { .job-body { padding-left: 4px; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="index.html">&larr; The Dollar Book</a>
+    <h1>Career Guide</h1>
+    <p class="tag">What jobs pay, what you keep, and what your employer must hold back</p>
+  </header>
+
+  <div class="bar">
+    <div class="row">
+      <select id="country" aria-label="Country"></select>
+      <select id="sort" aria-label="Sort jobs">
+        <option value="az">A &ndash; Z</option>
+        <option value="hi">Highest pay</option>
+        <option value="lo">Lowest pay</option>
+      </select>
+    </div>
+    <div class="row row2"><input id="q" type="search" placeholder="Search jobs, e.g. nurse, electrician" autocomplete="off" aria-label="Search jobs" /></div>
+    <div class="seg" role="tablist">
+      <button id="tab-jobs" role="tab" aria-selected="true">Jobs</button>
+      <button id="tab-tax" role="tab" aria-selected="false">Tax</button>
+    </div>
+  </div>
+
+  <div id="chips" class="chips" aria-label="Job categories"></div>
+  <div id="meta" class="meta"></div>
+  <main id="list" aria-live="polite"></main>
+  <div id="foot" class="foot"></div>
+</div>
+
+<script>
+(function () {
+  // Country packs. Each one is a separate file that is only downloaded when chosen.
+  // To add a country, add a line here and a careers_xx.js file (same format as careers_uk.js).
+  var PACKS = [
+    { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=f53daea6' },
+    { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=852afac9' }
+  ];
+  window.CareerPacks = window.CareerPacks || {};
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { country: 'UK', cat: 'All', q: '', sort: 'az', view: 'jobs', open: -1 };
+  var wikiOK = true;
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function store(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+  // Wikipedia links fall back to the Internet Archive copy if Wikipedia can't be reached.
+  (function () { var i = new Image(); i.onerror = function () { wikiOK = false; if (state.open >= 0) render(); }; i.src = 'https://en.wikipedia.org/static/favicon/wikipedia.ico?' + Date.now(); })();
+  function link(u) { return (!wikiOK && /wikipedia\.org/.test(u)) ? 'https://web.archive.org/web/' + u : u; }
+  function linkLabel(u) { return /wikipedia\.org/.test(u) ? (wikiOK ? 'Read more on Wikipedia' : 'Read more (archived Wikipedia)') : 'Read more'; }
+
+  // ---------- country + pack loading ----------
+  function packInfo(c) { for (var i = 0; i < PACKS.length; i++) if (PACKS[i].code === c) return PACKS[i]; return PACKS[0]; }
+  function ensurePack(code) {
+    return new Promise(function (res, rej) {
+      if (window.CareerPacks[code]) return res(window.CareerPacks[code]);
+      var s = document.createElement('script');
+      s.src = packInfo(code).file;
+      s.onload = function () { window.CareerPacks[code] ? res(window.CareerPacks[code]) : rej(); };
+      s.onerror = function () { rej(); };
+      document.head.appendChild(s);
+    });
+  }
+  function pack() { return window.CareerPacks[state.country]; }
+  function money(k) { return pack().sym + Math.round(k * 1000).toLocaleString(); }
+  function badge(k) { return pack().sym + Math.round(k) + 'k'; }
+  function d0(n) { return pack().sym + Math.round(n).toLocaleString(); }
+
+  function chooseCountry(code) {
+    state.country = code; state.cat = 'All'; state.open = -1;
+    store('dotbook_country', code);
+    $('list').innerHTML = '<div class="empty">Loading&hellip;</div>';
+    ensurePack(code).then(function () { prep(); render(); })
+      .catch(function () { $('list').innerHTML = '<div class="empty">Could not load the ' + esc(packInfo(code).name) + ' jobs. Check your connection and try again.</div>'; });
+  }
+
+  // Pre-compute take-home for every job once per country.
+  function prep() {
+    var p = pack();
+    if (p._ready) return;
+    p.jobs.forEach(function (j) { j._th = p.takeHome(j.k); j._net = Math.round(j._th.net / 1000); j._lc = (j.t + ' ' + (j.s || '') + ' ' + j.c).toLowerCase(); });
+    p._ready = true;
+  }
+
+  // ---------- rendering ----------
+  function setSeg() {
+    $('tab-jobs').setAttribute('aria-selected', state.view === 'jobs');
+    $('tab-tax').setAttribute('aria-selected', state.view === 'tax');
+    $('sort').style.display = state.view === 'jobs' ? '' : 'none';
+    $('q').parentNode.style.display = state.view === 'jobs' ? '' : 'none';
+    $('chips').style.display = state.view === 'jobs' ? '' : 'none';
+  }
+  function filtered() {
+    var p = pack(), q = state.q.trim().toLowerCase(), words = q ? q.split(/\s+/) : [];
+    var out = p.jobs.map(function (j, i) { return { j: j, i: i }; }).filter(function (o) {
+      if (state.cat !== 'All' && o.j.c !== state.cat) return false;
+      for (var w = 0; w < words.length; w++) if (o.j._lc.indexOf(words[w]) < 0) return false;
+      return true;
+    });
+    out.sort(function (a, b) {
+      if (state.sort === 'hi') return b.j.k - a.j.k || a.j.t.localeCompare(b.j.t);
+      if (state.sort === 'lo') return a.j.k - b.j.k || a.j.t.localeCompare(b.j.t);
+      return a.j.t.localeCompare(b.j.t);
+    });
+    return out;
+  }
+  function renderChips() {
+    var p = pack(), counts = {}, order = [];
+    p.jobs.forEach(function (j) { if (!counts[j.c]) { counts[j.c] = 0; order.push(j.c); } counts[j.c]++; });
+    order.sort();
+    var html = '<button class="chip" aria-pressed="' + (state.cat === 'All') + '" data-cat="All">All<small>' + p.jobs.length + '</small></button>';
+    order.forEach(function (c) { html += '<button class="chip" aria-pressed="' + (state.cat === c) + '" data-cat="' + esc(c) + '">' + esc(c) + '<small>' + counts[c] + '</small></button>'; });
+    $('chips').innerHTML = html;
+  }
+  function bodyHtml(j) {
+    var p = pack(), th = j._th, h = '';
+    h += '<p class="pay">' + money(j.k) + ' <small>a year (typical)</small></p>';
+    var about = [], quals = [];
+    j.d.forEach(function (s) { (/^Qualifications:/.test(s) ? quals : about).push(s); });
+    if (about.length) { about.forEach(function (s) { h += '<p>' + esc(s) + '</p>'; }); }
+    if (quals.length) {
+      h += '<h3>How to get in</h3>';
+      quals.forEach(function (s) { h += '<p>' + esc(s.replace(/^Qualifications:\s*/, '')) + '</p>'; });
+    }
+    h += '<h3>' + esc(p.holdTitle) + '</h3>';
+    h += '<div class="kv"><span>Pay before tax</span><span>' + d0(th.gross) + '</span></div>';
+    var held = 0;
+    th.lines.forEach(function (l) { held += l.a; h += '<div class="kv"><span>' + esc(l.l) + '</span><span class="neg">&minus; ' + d0(l.a) + '</span></div>'; });
+    h += '<div class="kv rule"><span><b>Held back in total</b></span><span class="neg"><b>' + d0(held) + '</b></span></div>';
+    h += '<div class="kv"><span><b>Take-home pay</b></span><span class="net">' + d0(th.net) + '</span></div>';
+    var er = 0, el = '';
+    th.employer.forEach(function (l) { er += l.a; el += '<div class="kv"><span>' + esc(l.l) + '</span><span>' + d0(l.a) + '</span></div>'; });
+    h += '<h3>The employer also pays, on top</h3>' + el;
+    h += '<div class="kv rule"><span><b>Extra cost to the employer</b></span><span><b>' + d0(er) + '</b></span></div>';
+    h += '<p class="note">Estimate for ' + esc(p.taxYear) + '. ' + esc(p.assume) + ' The employer’s own share is never taken from your pay.</p>';
+    if (j.u) h += '<a class="more" href="' + esc(link(j.u)) + '" target="_blank" rel="noopener">' + esc(linkLabel(j.u)) + ' &#8599;</a>';
+    return h;
+  }
+  function renderJobs() {
+    var list = filtered();
+    $('meta').textContent = list.length + (list.length === 1 ? ' job' : ' jobs') + ' · yellow = pay before tax · blue = take-home';
+    if (!list.length) { $('list').innerHTML = '<div class="empty">No jobs match that search. Try a shorter word, or choose “All”.</div>'; return; }
+    var html = '';
+    list.forEach(function (o) {
+      var j = o.j, open = state.open === o.i;
+      html += '<div class="job' + (open ? ' open' : '') + '" data-i="' + o.i + '">'
+        + '<button class="job-head" aria-expanded="' + open + '"><span class="badges"><span class="b b-gross">' + badge(j.k) + '</span><span class="b b-net">' + pack().sym + j._net + 'k</span></span>'
+        + '<span class="jt"><span class="name">' + esc(j.t) + '</span>' + (j.s ? '<span class="sub">' + esc(j.s) + '</span>' : '') + '</span><span class="chev">&#9654;</span></button>'
+        + '<div class="job-body"' + (open ? '' : ' hidden') + '>' + (open ? bodyHtml(j) : '') + '</div></div>';
+    });
+    $('list').innerHTML = html;
+  }
+  function renderTax() {
+    var p = pack();
+    $('meta').textContent = p.name + ' · ' + p.taxYear + ' tax rules';
+    var html = '';
+    p.tax.forEach(function (t) {
+      html += '<div class="tax"><span class="b">' + esc(t.b) + '</span><div><h4>' + esc(t.t) + '</h4><p>' + esc(t.d) + (t.u ? ' <a href="' + esc(link(t.u)) + '" target="_blank" rel="noopener">Source &#8599;</a>' : '') + '</p></div></div>';
+    });
+    $('list').innerHTML = html;
+  }
+  function render() {
+    setSeg();
+    var p = pack();
+    if (!p) return;
+    renderChips();
+    if (state.view === 'jobs') renderJobs(); else renderTax();
+    $('foot').innerHTML = '<b>' + esc(p.name) + '</b><br>' + esc(p.source) + '<br>Estimates for learning, not financial advice.';
+  }
+
+  // ---------- events ----------
+  var cs = $('country');
+  PACKS.forEach(function (p) { var o = document.createElement('option'); o.value = p.code; o.textContent = p.flag + '  ' + p.name; cs.appendChild(o); });
+  cs.addEventListener('change', function () { chooseCountry(cs.value); history.replaceState(null, '', '?country=' + cs.value.toLowerCase()); });
+  $('sort').addEventListener('change', function () { state.sort = this.value; state.open = -1; render(); });
+  var tmr;
+  $('q').addEventListener('input', function () { var v = this.value; clearTimeout(tmr); tmr = setTimeout(function () { state.q = v; state.open = -1; render(); }, 120); });
+  $('chips').addEventListener('click', function (e) { var b = e.target.closest('.chip'); if (!b) return; state.cat = b.dataset.cat; state.open = -1; render(); });
+  $('tab-jobs').addEventListener('click', function () { state.view = 'jobs'; render(); });
+  $('tab-tax').addEventListener('click', function () { state.view = 'tax'; render(); window.scrollTo(0, 0); });
+  $('list').addEventListener('click', function (e) {
+    var h = e.target.closest('.job-head'); if (!h) return;
+    var row = h.parentNode, i = parseInt(row.dataset.i, 10);
+    state.open = state.open === i ? -1 : i;
+    renderJobs();
+    var r = document.querySelector('.job.open'); if (r) { var top = r.getBoundingClientRect().top; if (top < 10) window.scrollBy(0, top - 10); }
+  });
+
+  // ---------- start ----------
+  var want = null;
+  try { want = new URLSearchParams(location.search).get('country'); } catch (e) {}
+  want = (want || load('dotbook_country') || 'UK').toUpperCase();
+  if (!PACKS.some(function (p) { return p.code === want; })) want = 'UK';
+  cs.value = want;
+  chooseCountry(want);
+})();
+</script>
+</body>
+</html>
