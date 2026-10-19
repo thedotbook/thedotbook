@@ -1282,6 +1282,7 @@
   function formatWealth(wm) {
     if (wm >= 1000000) return '$' + (wm / 1000000).toFixed(2) + 'T';
     if (wm >= 1000)    return '$' + (wm / 1000).toFixed(1) + 'B';
+    if (wm < 1) return '$' + Math.round(wm * 1000000).toLocaleString();   // per-person figures are stored in $M, so show them in dollars
     return '$' + wm.toLocaleString() + 'M';
   }
 
