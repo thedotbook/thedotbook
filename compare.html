@@ -65,6 +65,7 @@
   <p class="hint" id="hint"></p>
   <div id="top"></div>
   <div id="list" aria-live="polite"></div>
+  <div id="notes"></div>
   <p class="legend"><span class="q s">Sourced</span> national or government pay data &nbsp; <span class="q e">ERI</span> modelled salary-site figure &nbsp; <span class="q x">Estimate</span> rough guess</p>
   <div class="note">
     <p><b>How to read this.</b> Every figure is converted to pounds at the European Central Bank rates of 14 October 2026. Take-home pay uses each country's 2026 tax rules for a single person on one job. Buying power adjusts take-home pay for local prices using World Bank 2024 purchasing-power data (private consumption), shown as pounds at UK prices.</p>
@@ -75,7 +76,7 @@
 (function () {
   var PACKS = [{ code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=5aef7e7f' },
     { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=0d1b989b' },
-    { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=82a20c55' },
+    { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=8a8d2f1b' },
     { code: 'JP', name: 'Japan',          flag: '🇯🇵', file: 'careers_jp.js?v=d0ce0ea2' },
     { code: 'DE', name: 'Germany',        flag: '🇩🇪', file: 'careers_de.js?v=d1500c23' },
     { code: 'FR', name: 'France',         flag: '🇫🇷', file: 'careers_fr.js?v=94639d5e' },
@@ -111,6 +112,7 @@
     if (/estimate|Approximate/i.test(t)) return ['x', 'Estimate'];
     return ['s', 'Sourced'];
   }
+  var NOTES = { 'Airline Pilot': { US: 'US: BLS median for airline pilots, co-pilots and flight engineers, junior and senior together.', CA: 'Canada: median for all full-year, full-time pilots, flight engineers and flying instructors (2021 Census, 2020 income), a wider group that pulls pay down.' } };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function render() {
     var rows = [], missing = [];
@@ -140,6 +142,9 @@
       t = '<div class="top">Highest here: <b>' + esc(rows[0].p.name) + '</b> at ' + fmtGBP(rows[0].val) + ' a year. Lowest: ' + esc(lo.p.name) + ' at ' + fmtGBP(lo.val) + '. The top is about ' + (rows[0].val / lo.val).toFixed(1) + ' times the bottom.' + (rows[0].q[0] === 'x' ? ' Note: the top figure is only a rough estimate.' : rows[0].q[0] === 'e' ? ' Note: the top figure is a modelled ERI estimate.' : '') + '</div>';
     }
     $('top').innerHTML = t;
+    var nt = NOTES[state.job], nh = '';
+    if (nt) rows.forEach(function (r) { if (nt[r.p.code]) nh += '<li>' + r.p.flag + ' ' + esc(nt[r.p.code]) + '</li>'; });
+    $('notes').innerHTML = nh ? '<p class="legend" style="margin-top:12px"><b>Why the gap can look bigger than it is:</b></p><ul class="legend" style="margin:4px 0 0 18px;padding:0">' + nh + '</ul>' : '';
     if (missing.length) $('list').innerHTML += '<div class="none">No matching job in the guide for: ' + missing.map(function (p) { return p.flag + ' ' + esc(p.name); }).join(', ') + '.</div>';
     $('hint').textContent = state.m === 'gross' ? 'Yearly pay before tax, in pounds. Local amount underneath.' : state.m === 'net' ? 'Yearly pay after income tax and employee contributions, in pounds. Local amount underneath.' : 'Take-home pay adjusted for local prices: what it is worth if you spent it at UK prices.';
   }
