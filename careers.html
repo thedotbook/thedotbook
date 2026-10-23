@@ -107,6 +107,10 @@
     .pc .big { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 16px; padding: 8px 0 2px; border-top: 1px solid var(--line); margin-top: 6px; }
     .pc .big b { color: var(--gold); font-weight: normal; font-variant-numeric: tabular-nums; }
     .pc .note { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+    .pc .tbl { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+    .pc .tbl td { padding: 7px 0; border-top: 1px solid var(--line); vertical-align: top; }
+    .pc .tbl td:last-child { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .pc .tbl tr.best td:last-child b { color: var(--gold); font-weight: normal; }
     .foot { margin-top: 26px; font-size: 11px; color: var(--faint); line-height: 1.6; text-align: center; }
     .foot b { color: var(--muted); font-weight: normal; }
     @media (max-width: 380px) { .job-body { padding-left: 4px; } }
@@ -148,7 +152,7 @@
   // Country packs. Each one is a separate file that is only downloaded when chosen.
   // To add a country, add a line here and a careers_xx.js file (same format as careers_uk.js).
   var PACKS = [
-    { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=5aef7e7f' },
+    { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', file: 'careers_uk.js?v=865aa81a' },
     { code: 'US', name: 'United States',  flag: '🇺🇸', file: 'careers_us.js?v=0d1b989b' },
     { code: 'CA', name: 'Canada',         flag: '🇨🇦', file: 'careers_ca.js?v=8a8d2f1b' },
     { code: 'JP', name: 'Japan',          flag: '🇯🇵', file: 'careers_jp.js?v=d0ce0ea2' },
@@ -367,6 +371,44 @@
     ['pc-amt', 'pc-sp', 'pc-yrs', 'pc-other'].forEach(function (id) { $(id).addEventListener('input', upd); });
     upd();
   }
+
+  // ---------- unmarried couple: joint home and savings ----------
+  var cps = { home: 800000, other: 200000 };
+  function cpCalc() {
+    var NRB = 325000, RNRB = 175000, R = 0.4, J = cps.home + cps.other, half = J / 2, hh = cps.home / 2;
+    var ihtOf = function (estate, nrb, homeVal, rnrbMax) { return R * Math.max(0, estate - nrb - Math.min(rnrbMax, homeVal)); };
+    var a1 = R * Math.max(0, half - NRB), a2 = ihtOf(J - a1, NRB, cps.home, RNRB);
+    var b1 = ihtOf(half, NRB, hh, RNRB), b2 = ihtOf(half, NRB, hh, RNRB);
+    var c2 = ihtOf(J, 2 * NRB, cps.home, 2 * RNRB);
+    return { a: [a1, a2], b: [b1, b2], c: [0, c2] };
+  }
+  function cpDraw() {
+    var r = cpCalc(), m = function (n) { return '£' + Math.round(n).toLocaleString('en-GB'); };
+    var rows = [
+      ['Unmarried: everything passes to the partner', r.a, ''],
+      ['Unmarried: each leaves their half to the child', r.b, ' (the partner no longer owns that half)'],
+      ['Married or civil partners, for comparison', r.c, '']
+    ];
+    var tot = rows.map(function (x) { return x[1][0] + x[1][1]; }), best = Math.min.apply(null, tot), h = '<table class="tbl"><tbody>';
+    rows.forEach(function (x, i) {
+      h += '<tr' + (tot[i] === best ? ' class="best"' : '') + '><td>' + esc(x[0]) + '<br><span style="color:var(--faint);font-size:11px">First death ' + m(x[1][0]) + ' · second death ' + m(x[1][1]) + esc(x[2]) + '</span></td><td><b>' + m(tot[i]) + '</b></td></tr>';
+    });
+    $('cp-out').innerHTML = h + '</tbody></table><p class="note">Total inheritance tax over both deaths. The home goes to the child at the end. Values are assumed not to change, and pensions are not included (use the calculator above).</p>';
+  }
+  function cpBuild() {
+    return '<div class="pc"><h4>Living together but not married</h4><p class="sub">Joint home and savings, owned half each, with one adult child to inherit. Shows the inheritance tax over both deaths.</p>'
+      + '<div class="two"><div><label for="cp-home">Home value (£)</label><input type="number" id="cp-home" min="0" step="10000" inputmode="numeric"></div>'
+      + '<div><label for="cp-other">Other joint assets (£)</label><input type="number" id="cp-other" min="0" step="10000" inputmode="numeric"></div></div>'
+      + '<div class="out" id="cp-out" aria-live="polite"></div>'
+      + '<p class="note">An illustration, not tax advice. Uses a £325,000 nil-rate band and a £175,000 residence nil-rate band each, at 40%. It leaves out the £2m taper, debts, gifts and trusts. Ask a solicitor how your home should be owned.</p></div>';
+  }
+  function cpWire() {
+    var num = function (id, d) { var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : d; };
+    $('cp-home').value = cps.home; $('cp-other').value = cps.other;
+    var upd = function () { cps.home = num('cp-home', 0); cps.other = num('cp-other', 0); cpDraw(); };
+    ['cp-home', 'cp-other'].forEach(function (id) { $(id).addEventListener('input', upd); });
+    upd();
+  }
   function renderTax() {
     var p = pack();
     $('meta').textContent = p.name + ' · ' + p.taxYear + ' tax rules';
@@ -374,9 +416,9 @@
     p.tax.forEach(function (t) {
       html += '<div class="tax"><span class="b">' + esc(t.b) + '</span><div><h4>' + esc(t.t) + '</h4><p>' + esc(t.d) + (t.u ? ' <a href="' + esc(link(t.u)) + '" target="_blank" rel="noopener">Source &#8599;</a>' : '') + '</p></div></div>';
     });
-    if (p.code === 'UK') html = pcBuild() + html;
+    if (p.code === 'UK') html = pcBuild() + cpBuild() + html;
     $('list').innerHTML = html;
-    if (p.code === 'UK') pcWire();
+    if (p.code === 'UK') { pcWire(); cpWire(); }
   }
   function render() {
     setSeg();
