@@ -97,6 +97,16 @@
     .tax a { color: var(--gold); text-decoration: none; }
 
     .empty { text-align: center; color: var(--muted); padding: 34px 10px; font-size: 14px; }
+    .pc { margin: 4px 0 16px; padding: 14px; border: 1px solid var(--gold); border-radius: 10px; background: var(--panel); }
+    .pc h4 { margin: 0 0 2px; font-weight: normal; font-size: 16px; color: var(--gold); }
+    .pc .sub { margin: 0 0 10px; font-size: 12px; color: var(--muted); }
+    .pc label { display: block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 10px 0 4px; }
+    .pc select, .pc input[type=number] { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 15px; font-family: inherit; }
+    .pc .two { display: flex; gap: 8px; } .pc .two > div { flex: 1; }
+    .pc .out { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+    .pc .big { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 16px; padding: 8px 0 2px; border-top: 1px solid var(--line); margin-top: 6px; }
+    .pc .big b { color: var(--gold); font-weight: normal; font-variant-numeric: tabular-nums; }
+    .pc .note { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
     .foot { margin-top: 26px; font-size: 11px; color: var(--faint); line-height: 1.6; text-align: center; }
     .foot b { color: var(--muted); font-weight: normal; }
     @media (max-width: 380px) { .job-body { padding-left: 4px; } }
@@ -275,6 +285,88 @@
     });
     $('list').innerHTML = html;
   }
+
+  // ---------- UK pension & inheritance tax calculator (rules from 6 April 2027) ----------
+  var pcs = { type: 'dc', scen: 'none', age: 'over', rate: 0.45, amt: 1000000, sp: 50, yrs: 10, other: 0 };
+  function pcCalc() {
+    var NRB = 325000, R = 0.4, S = pcs, o = { lines: [], big: null, notes: [] };
+    var money = function (n) { return '£' + Math.round(n).toLocaleString('en-GB'); };
+    var less = function (n) { return Math.round(n) > 0 ? '-' + money(n) : '£0'; };
+    function stack(value, nrb) {
+      var tot = value + S.other, ihtAll = Math.max(0, tot - nrb) * R;
+      var ihtP = tot > 0 ? ihtAll * value / tot : 0;
+      var taxable = value - ihtP;
+      var itax = S.age === 'over' ? taxable * S.rate : 0;
+      return { ihtP: ihtP, itax: itax, net: taxable - itax, taxable: taxable };
+    }
+    var value, label;
+    if (S.type === 'dc') { value = S.amt; label = 'Pension pot'; }
+    else { value = S.amt * (S.sp / 100) * S.yrs; label = 'Guaranteed payments (' + money(S.amt * S.sp / 100) + ' a year for ' + S.yrs + ' years)'; }
+    if (S.type === 'db' && S.scen === 'spouse') {
+      var pa = S.amt * S.sp / 100;
+      o.lines.push(['Spouse or partner pension', money(pa) + ' a year']);
+      o.lines.push(['Inheritance tax', '£0']);
+      o.lines.push(['Income tax on it (' + Math.round(S.rate * 100) + '%)', '-' + money(pa * S.rate) + ' a year']);
+      o.big = ['Spouse keeps, each year', money(pa * (1 - S.rate))];
+      o.notes.push('A dependants’ scheme pension is left out of inheritance tax. It stops when the spouse dies, so nothing is left to inherit, unless a guarantee period is still running.');
+      return o;
+    }
+    var r;
+    if (S.type === 'dc' && S.scen === 'spouse') {
+      r = stack(value, 2 * NRB);
+      o.lines.push(['First death: inheritance tax', '£0 (spouse exemption)']);
+      o.lines.push(['Spouse inherits the pot', money(value)]);
+      o.lines.push(['Later, when the spouse dies, assuming the pot is untouched', '']);
+      o.notes.push('Uses both nil-rate bands (£650,000) at the second death. Anything the spouse spends or gives away changes the result.');
+    } else {
+      r = stack(value, NRB);
+      o.lines.push([label, money(value)]);
+      if (S.other > 0) o.lines.push(['Other estate assets', money(S.other)]);
+    }
+    o.lines.push(['Inheritance tax on the pension', less(r.ihtP)]);
+    o.lines.push(['Income tax (' + (S.age === 'over' ? Math.round(S.rate * 100) + '% for death at 75 or over' : 'none for death under 75') + ')', less(r.itax)]);
+    o.big = ['Family keeps', money(r.net)];
+    o.notes.push('Income tax is not charged on the part of the pot used to pay inheritance tax. Beneficiaries who take the money over several years may pay a lower rate.');
+    if (S.type === 'db') o.notes.push('Guaranteed payments are valued here at their full total, with no discount. Check how your scheme pays a guarantee.');
+    return o;
+  }
+  function pcDraw() {
+    var o = pcCalc(), h = '';
+    o.lines.forEach(function (l) { h += '<div class="kv"><span>' + esc(l[0]) + '</span><span>' + esc(l[1]) + '</span></div>'; });
+    h += '<div class="big"><span>' + esc(o.big[0]) + '</span><b>' + esc(o.big[1]) + '</b></div>';
+    o.notes.forEach(function (n) { h += '<p class="note">' + esc(n) + '</p>'; });
+    $('pc-out').innerHTML = h;
+    $('pc-dbx').style.display = pcs.type === 'db' ? '' : 'none';
+    $('pc-amt-l').textContent = pcs.type === 'dc' ? 'Pension pot (£)' : 'Yearly pension (£)';
+    $('pc-dbx2').style.display = (pcs.type === 'db' && pcs.scen === 'none') ? '' : 'none';
+  }
+  function pcBuild() {
+    var h = '<div class="pc"><h4>Pensions and inheritance tax</h4><p class="sub">For deaths from 6 April 2027, unused pensions are counted in the estate. A rough guide for the UK.</p>'
+      + '<label for="pc-type">Type of pension</label><select id="pc-type"><option value="dc">Defined contribution (a pot)</option><option value="db">Defined benefit (a yearly pension)</option></select>'
+      + '<label for="pc-scen">Who is left</label><select id="pc-scen"><option value="none">Both die, or no spouse</option><option value="spouse">Spouse or partner survives</option></select>'
+      + '<div class="two"><div><label for="pc-age">Age at death</label><select id="pc-age"><option value="over">75 or over</option><option value="under">Under 75</option></select></div>'
+      + '<div><label for="pc-rate">Heirs’ income tax</label><select id="pc-rate"><option value="0.2">20%</option><option value="0.4">40%</option><option value="0.45" selected>45%</option></select></div></div>'
+      + '<label for="pc-amt" id="pc-amt-l">Pension pot (£)</label><input type="number" id="pc-amt" min="0" step="1000" inputmode="numeric" value="1000000">'
+      + '<div id="pc-dbx" style="display:none"><div class="two"><div><label for="pc-sp">Spouse share (%)</label><input type="number" id="pc-sp" min="0" max="100" value="50" inputmode="numeric"></div>'
+      + '<div id="pc-dbx2"><label for="pc-yrs">Guaranteed years</label><input type="number" id="pc-yrs" min="0" max="30" value="10" inputmode="numeric"></div></div></div>'
+      + '<label for="pc-other">Other estate, e.g. house and savings (£)</label><input type="number" id="pc-other" min="0" step="1000" inputmode="numeric" value="0">'
+      + '<div class="out" id="pc-out" aria-live="polite"></div>'
+      + '<p class="note">An illustration, not tax advice. Uses a £325,000 nil-rate band and 40% inheritance tax. It does not include the residence nil-rate band. Source: Finance Act 2026.</p></div>';
+    return h;
+  }
+  function pcWire() {
+    var num = function (id, def) { var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : def; };
+    var upd = function () {
+      pcs.type = $('pc-type').value; pcs.scen = $('pc-scen').value; pcs.age = $('pc-age').value; pcs.rate = parseFloat($('pc-rate').value);
+      pcs.amt = num('pc-amt', 0); pcs.sp = Math.min(100, num('pc-sp', 50)); pcs.yrs = num('pc-yrs', 10); pcs.other = num('pc-other', 0);
+      pcDraw();
+    };
+    $('pc-type').value = pcs.type; $('pc-scen').value = pcs.scen; $('pc-age').value = pcs.age; $('pc-rate').value = String(pcs.rate);
+    $('pc-amt').value = pcs.amt; $('pc-sp').value = pcs.sp; $('pc-yrs').value = pcs.yrs; $('pc-other').value = pcs.other;
+    ['pc-type', 'pc-scen', 'pc-age', 'pc-rate'].forEach(function (id) { $(id).addEventListener('change', upd); });
+    ['pc-amt', 'pc-sp', 'pc-yrs', 'pc-other'].forEach(function (id) { $(id).addEventListener('input', upd); });
+    upd();
+  }
   function renderTax() {
     var p = pack();
     $('meta').textContent = p.name + ' · ' + p.taxYear + ' tax rules';
@@ -282,7 +374,9 @@
     p.tax.forEach(function (t) {
       html += '<div class="tax"><span class="b">' + esc(t.b) + '</span><div><h4>' + esc(t.t) + '</h4><p>' + esc(t.d) + (t.u ? ' <a href="' + esc(link(t.u)) + '" target="_blank" rel="noopener">Source &#8599;</a>' : '') + '</p></div></div>';
     });
+    if (p.code === 'UK') html = pcBuild() + html;
     $('list').innerHTML = html;
+    if (p.code === 'UK') pcWire();
   }
   function render() {
     setSeg();
