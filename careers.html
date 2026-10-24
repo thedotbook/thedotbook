@@ -295,13 +295,18 @@
   function ngDraw() {
     var th = pack().takeHome(ngs.gross / 1000), m = function (n) { return '£' + Math.round(n).toLocaleString('en-GB'); };
     var inc = th.lines[0].a, ni = th.lines[1].a, erni = th.employer[0].a;
+    var lost = th.gross > 100000 ? Math.min(12570, (th.gross - 100000) / 2) : 0;
+    var t2 = pack().takeHome((ngs.gross + 100) / 1000), mr = Math.max(0, Math.min(1, 1 - (t2.net - th.net) / 100));
     var h = '<div class="kv"><span>Pay before tax</span><span>' + m(th.gross) + '</span></div>'
       + '<div class="kv"><span>Income Tax</span><span>-' + m(inc) + '</span></div>'
+      + (lost > 0 ? '<div class="kv"><span>&nbsp;&nbsp;of which extra tax because you lose £' + Math.round(lost).toLocaleString('en-GB') + ' of personal allowance</span><span>' + m(lost * (th.gross > 125140 ? 0.45 : 0.4)) + '</span></div>' : '')
       + '<div class="kv"><span>National Insurance</span><span>-' + m(ni) + '</span></div>'
       + '<div class="big"><span>Take-home pay a year</span><b>' + m(th.net) + '</b></div>'
       + '<div class="kv"><span>A month</span><span>' + m(th.net / 12) + '</span></div>'
       + '<div class="kv"><span>A week</span><span>' + m(th.net / 52) + '</span></div>'
       + '<div class="kv rule"><span>Taken in tax and NI, as % of pay</span><span>' + (th.gross > 0 ? Math.round((inc + ni) / th.gross * 100) : 0) + '%</span></div>'
+      + (th.gross > 100000 ? '<div class="kv"><span>Personal allowance lost (£1 for every £2 over £100,000)</span><span>' + m(Math.min(12570, (th.gross - 100000) / 2)) + '</span></div>' : '')
+      + '<div class="kv"><span>Tax and NI taken from your next £1 of pay</span><b>' + Math.round(mr * 100) + 'p</b></div>'
       + '<div class="kv"><span>Employer National Insurance on top (15% above £5,000)</span><span>' + m(erni) + '</span></div>'
       + '<p class="note">The employer figure is paid by your employer on top, not taken from your pay.</p>'
       + (th.gross > 100000 ? '<p class="note"><b>Over £100,000:</b> between £100,000 and £125,140 you lose £1 of personal allowance for every £2 earned, so each extra £1 of pay is taxed at an effective 62% (40% tax, 20% on the lost allowance, 2% NI). Above £100,000 you also lose Tax-Free Childcare (worth up to £2,000 a child a year) and the extra funded childcare hours for 3 and 4 year olds (30 drops to 15). This is worked out on adjusted net income, so pension contributions can bring it back under £100,000. Child Benefit is a separate charge, starting at £60,000 and fully repaid by £80,000. Not tax advice.</p>' : '');
