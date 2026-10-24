@@ -303,7 +303,8 @@
       + '<div class="kv"><span>A week</span><span>' + m(th.net / 52) + '</span></div>'
       + '<div class="kv rule"><span>Taken in tax and NI, as % of pay</span><span>' + (th.gross > 0 ? Math.round((inc + ni) / th.gross * 100) : 0) + '%</span></div>'
       + '<div class="kv"><span>Employer National Insurance on top (15% above £5,000)</span><span>' + m(erni) + '</span></div>'
-      + '<p class="note">The employer figure is paid by your employer on top, not taken from your pay.</p>';
+      + '<p class="note">The employer figure is paid by your employer on top, not taken from your pay.</p>'
+      + (th.gross > 100000 ? '<p class="note"><b>Over £100,000:</b> between £100,000 and £125,140 you lose £1 of personal allowance for every £2 earned, so each extra £1 of pay is taxed at an effective 62% (40% tax, 20% on the lost allowance, 2% NI). Above £100,000 you also lose Tax-Free Childcare (worth up to £2,000 a child a year) and the extra funded childcare hours for 3 and 4 year olds (30 drops to 15). This is worked out on adjusted net income, so pension contributions can bring it back under £100,000. Child Benefit is a separate charge, starting at £60,000 and fully repaid by £80,000. Not tax advice.</p>' : '');
     $('ng-out').innerHTML = h;
   }
   function ngBuild() {
