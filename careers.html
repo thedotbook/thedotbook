@@ -290,6 +290,33 @@
     $('list').innerHTML = html;
   }
 
+  // ---------- simple net income calculator (UK, England, Wales and Northern Ireland) ----------
+  var ngs = { gross: 18000 };
+  function ngDraw() {
+    var th = pack().takeHome(ngs.gross / 1000), m = function (n) { return '£' + Math.round(n).toLocaleString('en-GB'); };
+    var inc = th.lines[0].a, ni = th.lines[1].a, erni = th.employer[0].a;
+    var h = '<div class="kv"><span>Pay before tax</span><span>' + m(th.gross) + '</span></div>'
+      + '<div class="kv"><span>Income Tax</span><span>-' + m(inc) + '</span></div>'
+      + '<div class="kv"><span>National Insurance</span><span>-' + m(ni) + '</span></div>'
+      + '<div class="big"><span>Take-home pay a year</span><b>' + m(th.net) + '</b></div>'
+      + '<div class="kv"><span>A month</span><span>' + m(th.net / 12) + '</span></div>'
+      + '<div class="kv"><span>A week</span><span>' + m(th.net / 52) + '</span></div>'
+      + '<div class="kv rule"><span>Taken in tax and NI, as % of pay</span><span>' + (th.gross > 0 ? Math.round((inc + ni) / th.gross * 100) : 0) + '%</span></div>'
+      + '<div class="kv"><span>Employer National Insurance on top (15% above £5,000)</span><span>' + m(erni) + '</span></div>'
+      + '<p class="note">The employer figure is paid by your employer on top, not taken from your pay.</p>';
+    $('ng-out').innerHTML = h;
+  }
+  function ngBuild() {
+    return '<div class="pc"><h4>Net income calculator</h4><p class="sub">What you take home from a salary, with Income Tax and National Insurance taken off.</p>'
+      + '<label for="ng-gross">Salary before tax, a year (£)</label><input type="number" id="ng-gross" min="0" step="100" inputmode="numeric">'
+      + '<div class="out" id="ng-out" aria-live="polite"></div>'
+      + '<p class="note">An illustration, not tax advice. For one job in England, Wales or Northern Ireland, with the standard 1257L tax code. It leaves out pension contributions, student loans, benefits in kind and Scottish rates.</p></div>';
+  }
+  function ngWire() {
+    $('ng-gross').value = ngs.gross;
+    $('ng-gross').addEventListener('input', function () { var v = parseFloat(this.value); ngs.gross = isFinite(v) && v >= 0 ? v : 0; ngDraw(); });
+    ngDraw();
+  }
   // ---------- UK pension & inheritance tax calculator (rules from 6 April 2027) ----------
   var pcs = { type: 'dc', scen: 'none', age: 'over', rate: 0.45, amt: 1000000, sp: 50, yrs: 10, other: 0 };
   function pcCalc() {
@@ -444,13 +471,14 @@
   function renderTax() {
     var p = pack();
     $('meta').textContent = p.name + ' · ' + p.taxYear + ' tax rules';
-    var html = '';
+    var html = '', after = '';
     p.tax.forEach(function (t) {
-      html += '<div class="tax"><span class="b">' + esc(t.b) + '</span><div><h4>' + esc(t.t) + '</h4><p>' + esc(t.d) + (t.u ? ' <a href="' + esc(link(t.u)) + '" target="_blank" rel="noopener">Source &#8599;</a>' : '') + '</p></div></div>';
+      var c = '<div class="tax"><span class="b">' + esc(t.b) + '</span><div><h4>' + esc(t.t) + '</h4><p>' + esc(t.d) + (t.u ? ' <a href="' + esc(link(t.u)) + '" target="_blank" rel="noopener">Source &#8599;</a>' : '') + '</p></div></div>';
+      if (p.code === 'UK' && t.b === 'Couples') after += c; else html += c;
     });
-    if (p.code === 'UK') html = html + pcBuild() + cmBuild() + cpBuild();
+    if (p.code === 'UK') html = html + ngBuild() + pcBuild() + cmBuild() + cpBuild() + after;
     $('list').innerHTML = html;
-    if (p.code === 'UK') { pcWire(); cmWire(); cpWire(); }
+    if (p.code === 'UK') { ngWire(); pcWire(); cmWire(); cpWire(); }
   }
   function render() {
     setSeg();
