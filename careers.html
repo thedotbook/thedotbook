@@ -372,6 +372,38 @@
     upd();
   }
 
+  // ---------- married couple: joint home and savings ----------
+  var cms = { home: 800000, other: 200000 };
+  function cmDraw() {
+    var NRB = 325000, RNRB = 175000, R = 0.4, J = cms.home + cms.other, half = J / 2, hh = cms.home / 2;
+    var ihtOf = function (estate, nrb, homeVal, rnrbMax) { return R * Math.max(0, estate - nrb - Math.min(rnrbMax, homeVal)); };
+    var m = function (n) { return '£' + Math.round(n).toLocaleString('en-GB'); };
+    var a1 = R * Math.max(0, half - NRB), a2 = ihtOf(J - a1, NRB, cms.home, RNRB);
+    var rows = [
+      ['Married: everything passes to the spouse', [0, ihtOf(J, 2 * NRB, cms.home, 2 * RNRB)], ' (the spouse uses both sets of bands)'],
+      ['Married: each leaves their half to the child', [ihtOf(half, NRB, hh, RNRB), ihtOf(half, NRB, hh, RNRB)], ' (the spouse no longer owns that half)'],
+      ['Unmarried, for comparison: everything to the partner', [a1, a2], '']
+    ];
+    var tot = rows.map(function (x) { return x[1][0] + x[1][1]; }), best = Math.min(tot[0], tot[1]), h = '<table class="tbl"><tbody>';
+    rows.forEach(function (x, i) {
+      h += '<tr' + (i < 2 && tot[i] === best ? ' class="best"' : '') + '><td>' + esc(x[0]) + '<br><span style="color:var(--faint);font-size:11px">First death ' + m(x[1][0]) + ' · second death ' + m(x[1][1]) + esc(x[2]) + '</span></td><td><b>' + m(tot[i]) + '</b></td></tr>';
+    });
+    $('cm-out').innerHTML = h + '</tbody></table><p class="note">Total inheritance tax over both deaths. The home goes to the child at the end. Values are assumed not to change, and pensions are not included (use the calculator above).</p>';
+  }
+  function cmBuild() {
+    return '<div class="pc"><h4>Married or civil partners</h4><p class="sub">Joint home and savings, owned half each, with one adult child to inherit. Shows the inheritance tax over both deaths.</p>'
+      + '<div class="two"><div><label for="cm-home">Home value (£)</label><input type="number" id="cm-home" min="0" step="10000" inputmode="numeric"></div>'
+      + '<div><label for="cm-other">Other joint assets (£)</label><input type="number" id="cm-other" min="0" step="10000" inputmode="numeric"></div></div>'
+      + '<div class="out" id="cm-out" aria-live="polite"></div>'
+      + '<p class="note">An illustration, not tax advice. Spouses can leave everything to each other free of inheritance tax, and the survivor can use the first person’s unused bands (a claim must be made to HMRC). Uses £325,000 and £175,000 bands each, at 40%. It leaves out the £2m taper, debts, gifts and trusts.</p></div>';
+  }
+  function cmWire() {
+    var num = function (id, d) { var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : d; };
+    $('cm-home').value = cms.home; $('cm-other').value = cms.other;
+    var upd = function () { cms.home = num('cm-home', 0); cms.other = num('cm-other', 0); cmDraw(); };
+    ['cm-home', 'cm-other'].forEach(function (id) { $(id).addEventListener('input', upd); });
+    upd();
+  }
   // ---------- unmarried couple: joint home and savings ----------
   var cps = { home: 800000, other: 200000 };
   function cpCalc() {
@@ -416,9 +448,9 @@
     p.tax.forEach(function (t) {
       html += '<div class="tax"><span class="b">' + esc(t.b) + '</span><div><h4>' + esc(t.t) + '</h4><p>' + esc(t.d) + (t.u ? ' <a href="' + esc(link(t.u)) + '" target="_blank" rel="noopener">Source &#8599;</a>' : '') + '</p></div></div>';
     });
-    if (p.code === 'UK') html = pcBuild() + cpBuild() + html;
+    if (p.code === 'UK') html = html + pcBuild() + cmBuild() + cpBuild();
     $('list').innerHTML = html;
-    if (p.code === 'UK') { pcWire(); cpWire(); }
+    if (p.code === 'UK') { pcWire(); cmWire(); cpWire(); }
   }
   function render() {
     setSeg();
