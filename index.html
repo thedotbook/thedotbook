@@ -4220,6 +4220,7 @@
 
 
   function toggleSubgroup(sid) {
+    materialiseSub(sid);
     const people = document.querySelectorAll('#table-body tr.db-person[data-sid="' + sid + '"]');
     const lbl = document.querySelector('#table-body tr.subgroup-label[data-sid="' + sid + '"]');
     const arrow = lbl ? lbl.querySelector('.sub-arrow') : null;
@@ -4750,7 +4751,26 @@
       + careerDetailRow;
   }
 
+  // Player rows inside a collapsed club/team subsection are not put in the page until that
+  // subsection is opened (Sport alone has ~5,500 of them, which made opening it take seconds).
+  let lazyRows = {};
+  function materialiseSub(sid) {
+    const pending = lazyRows[sid];
+    if (!pending) return;
+    delete lazyRows[sid];
+    const lbl = document.querySelector('#table-body tr.db-sub[data-sid="' + sid + '"]');
+    if (!lbl) return;
+    let h = '';
+    for (const it of pending) {
+      h += '<tr class="db-person" data-group="' + escHtml(it.g) + '" data-sid="' + sid + '" style="display:none;border-bottom:1px solid #333333">'
+        + (it.p._fixtureList ? renderFixtureRow : renderPersonRow)(it.p, false, it.g).replace(/^<tr[^>]*>/, '');
+    }
+    lbl.insertAdjacentHTML('afterend', h);
+  }
+  function materialiseAll() { for (const sid of Object.keys(lazyRows)) materialiseSub(sid); }
+
   function renderTable() {
+    lazyRows = {};
     const ordered = buildOrderedEntries();
     const tbody = document.getElementById('table-body');
 
@@ -4819,6 +4839,7 @@
       // builds the rows of a group at the moment it is opened.
       const groupBodyStart = html.length;
       let thisSid = -1;
+      let thisSubLazy = false;
       let footballGroupState = null; // null | 'mens' | 'womens' — tracks nesting within Sport
       let rugbyGroupEntered = false; // tracks whether the "— Rugby —" toggle has been inserted yet
       let rugbyLeagueGroupEntered = false; // tracks whether the "— Rugby League —" toggle has been inserted yet
@@ -4846,6 +4867,7 @@
       for (const item of items) {
         if (item.type === 'sub') {
           thisSid = subIdx++;
+          thisSubLazy = false;
           const isIndented = item.label.startsWith('  ');
           const labelTrimmed = item.label.trim();
           const yellowSections = ['Football — Ex-Footballers & Personalities', 'Football — Twenty Wealthiest Players', 'Football — UEFA Champions League 2026-27', 'Football — World Cup Players 2026', 'Football — Current Stars'];
@@ -5319,15 +5341,18 @@
             const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
+              thisSubLazy = !expandedSubgroupLabels.has(labelTrimmed);
             }
           } else {
             const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
+          thisSubLazy = !expandedSubgroupLabels.has(labelTrimmed);
           }
         } else if (thisSid >= 0) {
           const rowFn = item.person._fixtureList ? renderFixtureRow : renderPersonRow;
-          if (!hidden) html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
+          if (!hidden && thisSubLazy) { (lazyRows[thisSid] = lazyRows[thisSid] || []).push({ p: item.person, g: groupName }); }
+          else if (!hidden) html += '<tr class="db-person" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" style="display:none;border-bottom:1px solid #333333">'
                 + rowFn(item.person, false, groupName).replace(/^<tr[^>]*>/, '');
         } else {
           // (rows of a collapsed group are discarded below, so don't spend time building them)
@@ -5364,6 +5389,7 @@
       lbl.addEventListener('click', function(e) {
         e.stopPropagation();
         var sid = this.dataset.sid;
+        materialiseSub(sid);
         var people = document.querySelectorAll('#table-body tr.db-person[data-sid="' + sid + '"]');
         var isHidden = people.length > 0 && people[0].style.display === 'none';
         var arrow = this.querySelector('.sub-arrow');
@@ -6077,6 +6103,7 @@
       // Rows of closed groups aren't in the page, so open the group that holds this person first.
       const holdingGroup = groupHoldingName(name);
       if (holdingGroup && collapsedGroups.has(holdingGroup)) toggleGroup(holdingGroup);
+      materialiseAll();
       const rows = document.querySelectorAll('#table-body tr.group-row, #table-body tr.db-person');
       for (const row of rows) {
         const nameSpan = row.querySelector('[data-name]');
