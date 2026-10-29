@@ -3078,6 +3078,8 @@
   };
 
   const ACRONYM_FIX = {
+    'Astrazeneca': 'AstraZeneca', 'Johnson And Johnson': 'Johnson & Johnson', 'Procter And Gamble': 'Procter & Gamble', 'Exxonmobil': 'ExxonMobil', 'Asml': 'ASML', 'Abbvie': 'AbbVie', 'Cxmt': 'CXMT', 'Icbc': 'ICBC', 'Unitedhealth': 'UnitedHealth Group', 'Hsbc': 'HSBC', 'Bp': 'BP', 'Gsk': 'GSK', 'Palantir': 'Palantir Technologies', 'Dell': 'Dell Technologies', 'Cisco': 'Cisco Systems', 'Merck': 'Merck & Co.', 'Hsbc': 'HSBC', 'Rolls-Royce': 'Rolls-Royce Holdings', 'Samsung Electronics': 'Samsung Electronics',
+    'Tsmc': 'TSMC', 'Spacex': 'SpaceX', 'Sk Hynix': 'SK hynix', 'Amd': 'AMD', 'Jpmorgan Chase': 'JPMorgan Chase', 'Alphabet': 'Alphabet (Google)', 'Meta': 'Meta Platforms', 'Micron': 'Micron Technology',
     'Christianity Catholic': 'Catholic Church', 'Christianity Protestant': 'Protestant', 'Christianity Orthodox': 'Eastern Orthodox Church',
     'Christianity Anglican': 'Anglican Communion', 'Christianity Coe': 'Church of England', 'Islam Sunni': 'Sunni Islam', 'Islam Shia': 'Shia Islam',
     'Hinduism Vaishnavism': 'Vaishnavism', 'Hinduism Shaivism': 'Shaivism', 'Hinduism Shaktism': 'Shaktism',
@@ -4014,6 +4016,7 @@
       const faith = parts[2] || 'Other';
       return 'Religion — ' + faith;
     }
+    if (n.startsWith('corporate ·')) return 'Corporate Wealth';
     if (n.includes('defence ·') || n.includes('· defence') || n.includes('military ·') || n.includes('· military') || n.includes('nuclear ·') || n.includes('· nuclear') || n.includes('weapons ·') || n.includes('munitions ·')) return 'Defence & Military';
     if (n.includes('fashion ·') || n.includes('· fashion') || n.includes('beauty ·') || n.includes('· beauty') || n.includes('perfume ·') || n.includes('· perfume') || n.includes('cosmetics ·') || n.includes('luxury fashion') || n.includes('clothing ·') || n.includes('· clothing')) return 'Fashion & Beauty';
     if (n.startsWith('country ·') || n.includes('· country ·') || n.includes('countries ·')) return 'Countries of the World';
@@ -4107,7 +4110,7 @@
     'Individual Wealth',
     'The Twenty Wealthiest People on Earth', 'Global Billionaires', 'Film & TV', 'Historical', 'Music', 'Sport', 'Womens Super League', 'Tech & Business', 'YouTube & Streaming', 'Artists', 'Scientists', 'Infamous',
     'Global Perspective',
-    'Nations & Natural Wealth', 'Sovereign Wealth Funds', 'Net Zero', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics',
+    'Nations & Natural Wealth', 'Sovereign Wealth Funds', 'Corporate Wealth', 'Net Zero', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics',
     'Career Guide',
     'Career Guide — Healthcare & Medicine', 'Career Guide — Skilled Trades', 'Career Guide — Education', 'Career Guide — Law & Finance', 'Career Guide — Technology', 'Career Guide — Business & Management', 'Career Guide — Design & Construction', 'Career Guide — Creative & Hospitality', 'Career Guide — Transport & Logistics', 'Career Guide — Emergency & Public Services', 'Career Guide — Armed Forces', 'Career Guide — Agriculture & Public Services', 'Career Guide — Realistic Professional Sport', 'Career Guide — Realistic Creative Arts', 'Career Guide — Tax',
     'Politics',
@@ -4594,6 +4597,8 @@
         if (label.startsWith('World Debt')) return 'National Debt — 1 World';
         if (label.startsWith('National Debt — Top 20')) return 'National Debt — 2 Countries';
         if (label.startsWith('National Debt — Per Person')) return 'National Debt — 3 Per Person';
+        if (label.startsWith('Corporate Wealth — World')) return 'Corporate Wealth — 1 World';
+        if (label.startsWith('Corporate Wealth — UK')) return 'Corporate Wealth — 2 UK';
         if (label.startsWith('NFL —')) return 'American Football / NFL — ' + label.slice(6);
         if (label.startsWith('MLB —')) return 'Baseball / MLB — ' + label.slice(6);
         if (label.startsWith('NBA —')) return 'Basketball — ' + label.slice(6);
