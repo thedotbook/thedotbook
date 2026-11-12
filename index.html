@@ -888,7 +888,7 @@
     <div class="form-group">
       <div class="row">
         <div style="flex:1;position:relative;display:flex;align-items:center">
-          <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Apple, Nigeria" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
+          <input type="text" id="name-input" autocomplete="off" placeholder="e.g. Taylor Swift, Apple, Nigeria" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
           <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#555555;line-height:1;user-select:none" title="Clear">✕</span>
         </div>
         <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
@@ -1008,7 +1008,7 @@
     <!-- Login -->
     <div id="admin-login" style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:20px;margin-bottom:16px">
       <div style="font-size:13px;color:#aaaaaa;margin-bottom:12px;letter-spacing:1px">ENTER PASSWORD</div>
-      <input id="admin-password" type="password" placeholder="Password" style="width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
+      <input id="admin-password" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="Password" style="-webkit-text-security:disc;text-security:disc;width:100%;background:#000;border:1px solid #555;color:#ffffff;padding:12px;font-size:15px;border-radius:4px;box-sizing:border-box;margin-bottom:10px">
       <button onclick="adminLogin()" style="width:100%;background:#ffffff;color:#000000;border:none;padding:12px;font-weight:bold;cursor:pointer;border-radius:4px;font-size:14px">LOGIN</button>
       <div id="admin-login-error" style="color:#ff6666;font-size:12px;margin-top:8px;display:none">Incorrect password</div>
     </div>
