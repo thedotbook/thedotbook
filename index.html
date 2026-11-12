@@ -834,8 +834,8 @@
   </div>
 
   <!-- Disclaimer popup -->
-  <div id="disclaimer-popup" onclick="closeDisclaimerPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center">
-    <div onclick="event.stopPropagation()" style="background:#1a1a1a;border:1.5px solid #ffffff;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:20px;text-align:left;position:relative">
+  <div id="disclaimer-popup" onclick="closeDisclaimerPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;padding:20px 0;box-sizing:border-box;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain">
+    <div onclick="event.stopPropagation()" style="background:#1a1a1a;border:1.5px solid #ffffff;border-radius:10px;padding:28px 28px 22px;max-width:420px;margin:auto;box-sizing:border-box;width:calc(100% - 40px);text-align:left;position:relative">
       <div style="font-size:13px;font-weight:bold;letter-spacing:2px;color:#ffffff;text-transform:uppercase;margin-bottom:14px">⚠ About these figures</div>
       <div style="font-size:13px;color:#cccccc;line-height:1.8;margin-bottom:14px">
         All wealth figures are <strong style="color:#ffffff">estimates based on public information</strong> (Forbes, Sunday Times Rich List, press reports) at the time of publication. They have <strong style="color:#ffffff">not been independently verified</strong> and are provided purely for <strong style="color:#ffffff">entertainment and perspective</strong>.<br><br>
@@ -884,11 +884,11 @@
 
   <!-- Calculator -->
   <div class="card">
-    <div class="card-label">Find a Celebrity</div>
+    <div class="card-label">Search the Book</div>
     <div class="form-group">
       <div class="row">
         <div style="flex:1;position:relative;display:flex;align-items:center">
-          <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Rod Stewart, Ronaldo" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
+          <input type="text" id="name-input" placeholder="e.g. Taylor Swift, Apple, Nigeria" style="flex:1;padding-right:36px" oninput="toggleClearBtn()" />
           <span id="clear-search-btn" onclick="clearSearchInput()" style="display:none;position:absolute;right:8px;cursor:pointer;font-size:18px;color:#555555;line-height:1;user-select:none" title="Clear">✕</span>
         </div>
         <button onclick="lookupCelebrity()" title="Search" style="width:auto;padding:12px 14px;letter-spacing:0;font-size:18px;flex-shrink:0">🔍</button>
@@ -961,7 +961,7 @@
       <span style="font-size:11px;color:#555555;cursor:pointer" onclick="document.getElementById('my-entries-help').style.display = document.getElementById('my-entries-help').style.display === 'none' ? 'block' : 'none'">ⓘ what's this?</span>
     </div>
     <div id="my-entries-help" style="display:none;padding:10px 20px;font-size:12px;color:#555555;font-style:italic;border-bottom:1px solid #e8e8e8">
-      Add anyone you like — a friend, a colleague, yourself — using "Find a Celebrity" with a manual wealth amount, then tap "Save as My Own Entry". They'll appear in the main table below, permanently, only on this device.
+      Add anyone you like — a friend, a colleague, yourself — using "Search the Book" with a manual wealth amount, then tap "Save as My Own Entry". They'll appear in the main table below, permanently, only on this device.
     </div>
     <div id="my-entries-list"></div>
   </div>
@@ -6557,7 +6557,7 @@
     isListening = false;
     const btn = document.getElementById('mic-btn');
     if (btn) { btn.classList.remove('listening'); btn.title = 'Speak a name'; }
-    document.getElementById('name-input').placeholder = 'e.g. Taylor Swift, Rod Stewart, Ronaldo';
+    document.getElementById('name-input').placeholder = 'e.g. Taylor Swift, Apple, Nigeria';
     if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
   }
 
