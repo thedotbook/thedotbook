@@ -1148,7 +1148,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=c68b812a"></script>
+<script src="data.js?v=0cb9ce62"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -3391,6 +3391,46 @@
     });
   }
 
+  // Nested Australian Rules collapsible section, within the Sport category:
+  // two children, AFL (men's) and AFLW (women's), each exploding into clubs.
+  let aflCollapsed = true;
+  let aflMensCollapsed = true;
+  let aflWomensCollapsed = true;
+
+  function toggleAFL() {
+    aflCollapsed = !aflCollapsed;
+    document.querySelectorAll('.afl-arrow').forEach(function(a) { a.innerHTML = aflCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="afl"]').forEach(function(row) { row.classList.toggle('g-hidden', aflCollapsed); });
+    updateAFLVisibility();
+  }
+
+  function toggleAFLGroup(which) {
+    if (which === 'mens') {
+      aflMensCollapsed = !aflMensCollapsed;
+      document.querySelectorAll('.afl-arrow-mens').forEach(function(a) { a.innerHTML = aflMensCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      aflWomensCollapsed = !aflWomensCollapsed;
+      document.querySelectorAll('.afl-arrow-womens').forEach(function(a) { a.innerHTML = aflWomensCollapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateAFLVisibility();
+  }
+
+  function updateAFLVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'afl-mens' && cat2 !== 'afl-womens') return;
+      let show = !aflCollapsed;
+      if (show && cat2 === 'afl-mens') show = !aflMensCollapsed;
+      if (show && cat2 === 'afl-womens') show = !aflWomensCollapsed;
+      row.classList.toggle('g-hidden', !show);
+      if (!show) {
+        document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
+        const arrow = row.querySelector('.sub-arrow');
+        if (arrow) arrow.textContent = '▶';
+      }
+    });
+  }
+
   // Nested Rugby collapsible section, within the Sport category —
   // mirrors the Football nesting above, but only needs one level
   // (— Rugby — toggle, then each club), since rugby isn't split by gender here.
@@ -3539,6 +3579,7 @@
   let cricketCountyCollapsed = true;
   let cricketIplCollapsed = true;
   let cricketEnglandCollapsed = true;
+  let cricketAustraliaCollapsed = true;
 
   function toggleCricket() {
     cricketCollapsed = !cricketCollapsed;
@@ -3554,6 +3595,9 @@
     } else if (which === 'ipl') {
       cricketIplCollapsed = !cricketIplCollapsed;
       document.querySelectorAll('.cricket-arrow-ipl').forEach(function(a) { a.innerHTML = cricketIplCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'australia') {
+      cricketAustraliaCollapsed = !cricketAustraliaCollapsed;
+      document.querySelectorAll('.cricket-arrow-australia').forEach(function(a) { a.innerHTML = cricketAustraliaCollapsed ? '&#9658;' : '&#9660;'; });
     } else {
       cricketEnglandCollapsed = !cricketEnglandCollapsed;
       document.querySelectorAll('.cricket-arrow-england').forEach(function(a) { a.innerHTML = cricketEnglandCollapsed ? '&#9658;' : '&#9660;'; });
@@ -3564,11 +3608,12 @@
   function updateCricketVisibility() {
     document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
       const cat2 = row.dataset.supercat2;
-      if (cat2 !== 'cricket-county' && cat2 !== 'cricket-ipl' && cat2 !== 'cricket-england') return;
+      if (cat2 !== 'cricket-county' && cat2 !== 'cricket-ipl' && cat2 !== 'cricket-england' && cat2 !== 'cricket-australia') return;
       let show = !cricketCollapsed;
       if (show && cat2 === 'cricket-county') show = !cricketCountyCollapsed;
       if (show && cat2 === 'cricket-ipl') show = !cricketIplCollapsed;
       if (show && cat2 === 'cricket-england') show = !cricketEnglandCollapsed;
+      if (show && cat2 === 'cricket-australia') show = !cricketAustraliaCollapsed;
       row.classList.toggle('g-hidden', !show);
       if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
@@ -4173,6 +4218,9 @@
       if (footballCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="football"]').forEach(r => r.classList.add('g-hidden'));
       }
+      if (aflCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="afl"]').forEach(r => r.classList.add('g-hidden'));
+      }
       if (cricketCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="cricket"]').forEach(r => r.classList.add('g-hidden'));
       }
@@ -4198,6 +4246,7 @@
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="wrc"]').forEach(r => r.classList.add('g-hidden'));
       }
       updateFootballVisibility();
+      updateAFLVisibility();
       updateRugbyVisibility();
       updateRugbyLeagueVisibility();
       updateNFLVisibility();
@@ -4536,6 +4585,7 @@
       // non-transitive once a 4th family (MLB) shared the same 0/1 key space.
       function sortFamily(label) {
         if (label.startsWith('Football —')) return 'football';
+        if (label.startsWith('AFL —') || label.startsWith('AFLW —')) return 'afl';
         if (label.startsWith('Rugby —')) return 'rugby';
         if (label.startsWith('Rugby League —')) return 'rugbyleague';
         if (label.startsWith('NFL —')) return 'nfl';
@@ -4546,6 +4596,7 @@
         if (label.startsWith('SWF —')) return 'swf';
         if (label.startsWith('IPL —')) return 'ipl';
         if (label.startsWith('England —')) return 'england';
+        if (label.startsWith('Australia —')) return 'australia';
         if (label.startsWith('Road Racing —')) return 'roadracing';
         if (label.startsWith('F1 Teams —')) return 'f1teams';
         if (label.startsWith('World Champions —')) return 'worldchampions';
@@ -4612,6 +4663,9 @@
         if (label.startsWith('NASCAR Teams —')) return 'NASCAR — 1 Teams — ' + label.slice(15);
         if (label.startsWith('WRC Teams —')) return 'WRC Rally — 1 Teams — ' + label.slice(11);
         if (label.startsWith('IPL —')) return 'Cricket — 3 IPL — ' + label.slice(6);
+        if (label.startsWith('AFLW —')) return 'Australian Rules — 2 AFLW — ' + label.slice(7);
+        if (label.startsWith('AFL —')) return 'Australian Rules — 1 AFL — ' + label.slice(6);
+        if (label.startsWith('Australia —')) return 'Cricket — 4 Australia — ' + label.slice(12);
         if (label.startsWith('Road Racing —')) return 'Cycling — 1 Road Racing — ' + label.slice(14);
         if (label.startsWith('F1 Teams —')) return 'F1 & Motorsport — 1 Teams — ' + label.slice(11);
         if (label.startsWith('World Champions —')) {
@@ -4852,6 +4906,8 @@
       let nflGroupEntered = false; // tracks whether the "— NFL —" toggle has been inserted yet
       let mlbGroupEntered = false; // tracks whether the "— MLB —" toggle has been inserted yet
       let nbaGroupEntered = false; // tracks whether the "— NBA —" toggle has been inserted yet
+      let aflOuterEntered = false;
+      let aflGroupState = null;
       let cricketOuterEntered = false; // tracks whether the "— Cricket —" outer toggle has been inserted yet
       let cricketGroupState = null; // null | 'county' | 'ipl' | 'england' — tracks nesting within Cricket
       let nhlGroupEntered = false; // tracks whether the "— NHL —" toggle has been inserted yet
@@ -4894,6 +4950,9 @@
           const isSWF = labelTrimmed.startsWith('SWF —');
           const isIPL = labelTrimmed.startsWith('IPL —');
           const isEngland = labelTrimmed.startsWith('England —');
+          const isAustralia = labelTrimmed.startsWith('Australia —');
+          const isAFLW = labelTrimmed.startsWith('AFLW —');
+          const isAFL = labelTrimmed.startsWith('AFL —');
           const isRoadRacing = labelTrimmed.startsWith('Road Racing —');
           const isCyclingFlat = labelTrimmed === 'Cycling';
           const isF1Teams = labelTrimmed.startsWith('F1 Teams —');
@@ -4922,6 +4981,7 @@
           let mlbRowHidden = false;
           let nbaRowHidden = false;
           let cricketRowHidden = false;
+          let aflRowHidden = false;
           let nhlRowHidden = false;
           let cyclingRowHidden = false;
           let f1RowHidden = false;
@@ -5064,11 +5124,11 @@
             }
             nbaRowHidden = hidden || nbaCollapsed;
             supercatAttr = ' data-supercat="nba"' + (nbaRowHidden ? ' data-nba-hidden="1"' : '');
-          } else if (isCounty || isIPL || isEngland) {
+          } else if (isCounty || isIPL || isEngland || isAustralia) {
             // Cricket has three children — County Championship, IPL, England —
             // same two-level nesting pattern as Football's Men's/Women's split.
             footballGroupState = null;
-            const thisState = isIPL ? 'ipl' : isEngland ? 'england' : 'county';
+            const thisState = isIPL ? 'ipl' : isEngland ? 'england' : isAustralia ? 'australia' : 'county';
             const catHiddenClass = hidden ? ' g-hidden' : '';
             if (!cricketOuterEntered) {
               // Entering Cricket for the first time this render — insert the outer toggle
@@ -5079,17 +5139,42 @@
             }
             if (cricketGroupState !== thisState) {
               // Entering (or switching into) County/IPL/England — insert the nested toggle
-              const collapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : cricketCountyCollapsed;
+              const collapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : thisState === 'australia' ? cricketAustraliaCollapsed : cricketCountyCollapsed;
               const arrow2 = collapsedNow ? '&#9658;' : '&#9660;';
-              const label2 = thisState === 'ipl' ? 'IPL' : thisState === 'england' ? 'England' : 'County Championship';
+              const label2 = thisState === 'ipl' ? 'IPL' : thisState === 'england' ? 'England' : thisState === 'australia' ? 'Australia' : 'County Championship';
               const nestedHiddenClass = (cricketCollapsed || hidden) ? ' g-hidden' : '';
               html += '<tr class="group-row db-supersub2' + nestedHiddenClass + '" data-group="' + escHtml(groupName) + '" data-parentcat="cricket" onclick="toggleCricketGroup(\'' + thisState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
                     + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="cricket-arrow-' + thisState + '">' + arrow2 + '</span> ' + label2 + '</td></tr>';
             }
             cricketGroupState = thisState;
-            const subCollapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : cricketCountyCollapsed;
+            const subCollapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : thisState === 'australia' ? cricketAustraliaCollapsed : cricketCountyCollapsed;
             cricketRowHidden = hidden || cricketCollapsed || subCollapsedNow;
             supercatAttr = ' data-supercat="cricket" data-supercat2="cricket-' + thisState + '"' + (cricketRowHidden ? ' data-cricket-hidden="1"' : '');
+          } else if (isAFL || isAFLW) {
+            footballGroupState = null;
+            cricketGroupState = null;
+            cyclingGroupState = null;
+            f1GroupState = null;
+            boxingGroupState = null;
+            const thisStateA = isAFLW ? 'womens' : 'mens';
+            const catHiddenClassA = hidden ? ' g-hidden' : '';
+            if (!aflOuterEntered) {
+              const arrowA = aflCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassA + '" data-group="' + escHtml(groupName) + '" onclick="toggleAFL()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="afl-arrow sub-arrow">' + arrowA + '</span> — Australian Rules Football —</td></tr>';
+              aflOuterEntered = true;
+            }
+            if (aflGroupState !== thisStateA) {
+              const collapsedNowA = thisStateA === 'womens' ? aflWomensCollapsed : aflMensCollapsed;
+              const arrow2A = collapsedNowA ? '&#9658;' : '&#9660;';
+              const label2A = thisStateA === 'womens' ? 'AFLW (Women\'s)' : 'AFL (Men\'s)';
+              const nestedHiddenClassA = (aflCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassA + '" data-group="' + escHtml(groupName) + '" data-parentcat="afl" onclick="toggleAFLGroup(\'' + thisStateA + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="afl-arrow-' + thisStateA + '">' + arrow2A + '</span> ' + label2A + '</td></tr>';
+            }
+            aflGroupState = thisStateA;
+            aflRowHidden = hidden || aflCollapsed || (thisStateA === 'womens' ? aflWomensCollapsed : aflMensCollapsed);
+            supercatAttr = ' data-supercat="afl" data-supercat2="afl-' + thisStateA + '"' + (aflRowHidden ? ' data-afl-hidden="1"' : '');
           } else if (isNHL) {
             footballGroupState = null;
             cricketGroupState = null;
@@ -5324,7 +5409,7 @@
           }
 
           if (supercatAttr) {
-            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland) ? cricketRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams) ? wrcRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
+            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : (isAFL || isAFLW) ? aflRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams) ? wrcRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
             if (isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
               // The visible, clickable toggle for a flat driver/rider/legends
               // list is the "Top 20 by Net Worth"/"Drivers & Motorsport"/
@@ -5343,13 +5428,13 @@
             // would display as literally repeating the just-shown parent
             // heading — show only the club/country/franchise/county/team/
             // division name itself.
-            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
+            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isAustralia ? labelTrimmed.replace(/^Australia —\s*/, '') : isAFLW ? labelTrimmed.replace(/^AFLW —\s*/, '') : isAFL ? labelTrimmed.replace(/^AFL —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
               thisSubLazy = !expandedSubgroupLabels.has(labelTrimmed);
             }
           } else {
-            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
+            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isAustralia ? labelTrimmed.replace(/^Australia —\s*/, '') : isAFLW ? labelTrimmed.replace(/^AFLW —\s*/, '') : isAFL ? labelTrimmed.replace(/^AFL —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
                   + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           thisSubLazy = !expandedSubgroupLabels.has(labelTrimmed);
