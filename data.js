@@ -3957,7 +3957,7 @@
     'malcolm hill':        { wealth: 1,      note: 'Sport · Basketball · USA · Phoenix Suns · Forward', url: 'https://en.wikipedia.org/wiki/Malcolm_Hill' },
     'drew timme':          { wealth: 1,      note: 'Sport · Basketball · USA · Charlotte Hornets · Forward', url: 'https://en.wikipedia.org/wiki/Drew_Timme' },
 
-    '_sub_basketball_memoriam': { _subgroup: 'Basketball — In Memoriam' },
+    '_sub_basketball_memoriam': { _subgroup: 'NBA — In Memoriam' },
     'kobe bryant':         { wealth: 600,    note: 'Sport · Basketball · USA · 5x NBA champion · Died 2020', url: 'https://en.wikipedia.org/wiki/Kobe_Bryant' },
     'junior bridgeman':    { wealth: 600,    note: 'Sport · Basketball · Business · USA · Restaurant empire · Died 2022', url: 'https://en.wikipedia.org/wiki/Junior_Bridgeman' },
     // ── BOXING ─────────────────────────────────────────

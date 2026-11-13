@@ -1148,7 +1148,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=0cb9ce62"></script>
+<script src="data.js?v=03c39cf7"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -3354,6 +3354,12 @@
   let footballCollapsed = true;
   let footballMensCollapsed = true;
   let footballWomensCollapsed = true;
+  let footballNflCollapsed = true;
+  let footballAflCollapsed = true;
+  let footballAflwCollapsed = true;
+  function footballSubCollapsed(state) {
+    return state === 'womens' ? footballWomensCollapsed : state === 'nfl' ? footballNflCollapsed : state === 'aflm' ? footballAflCollapsed : state === 'aflw' ? footballAflwCollapsed : footballMensCollapsed;
+  }
 
   function toggleFootball() {
     footballCollapsed = !footballCollapsed;
@@ -3366,6 +3372,15 @@
     if (which === 'mens') {
       footballMensCollapsed = !footballMensCollapsed;
       document.querySelectorAll('.football-arrow-mens').forEach(function(a) { a.innerHTML = footballMensCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'nfl') {
+      footballNflCollapsed = !footballNflCollapsed;
+      document.querySelectorAll('.football-arrow-nfl').forEach(function(a) { a.innerHTML = footballNflCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'aflm') {
+      footballAflCollapsed = !footballAflCollapsed;
+      document.querySelectorAll('.football-arrow-aflm').forEach(function(a) { a.innerHTML = footballAflCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'aflw') {
+      footballAflwCollapsed = !footballAflwCollapsed;
+      document.querySelectorAll('.football-arrow-aflw').forEach(function(a) { a.innerHTML = footballAflwCollapsed ? '&#9658;' : '&#9660;'; });
     } else {
       footballWomensCollapsed = !footballWomensCollapsed;
       document.querySelectorAll('.football-arrow-womens').forEach(function(a) { a.innerHTML = footballWomensCollapsed ? '&#9658;' : '&#9660;'; });
@@ -3376,54 +3391,17 @@
   function updateFootballVisibility() {
     document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
       const cat2 = row.dataset.supercat2;
-      if (cat2 !== 'football-mens' && cat2 !== 'football-womens') return;
+      if (['football-mens','football-womens','football-nfl','football-aflm','football-aflw'].indexOf(cat2) === -1) return;
       let show = !footballCollapsed;
       if (show && cat2 === 'football-mens') show = !footballMensCollapsed;
       if (show && cat2 === 'football-womens') show = !footballWomensCollapsed;
+      if (show && cat2 === 'football-nfl') show = !footballNflCollapsed;
+      if (show && cat2 === 'football-aflm') show = !footballAflCollapsed;
+      if (show && cat2 === 'football-aflw') show = !footballAflwCollapsed;
       row.classList.toggle('g-hidden', !show);
       if (!show) {
         // Also re-hide any already-expanded player rows underneath, so they
         // don't confusingly reappear the next time this section is opened
-        document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
-        const arrow = row.querySelector('.sub-arrow');
-        if (arrow) arrow.textContent = '▶';
-      }
-    });
-  }
-
-  // Nested Australian Rules collapsible section, within the Sport category:
-  // two sub-sections, AFL (men's) and AFLW (women's), each exploding into clubs.
-  let aflCollapsed = true;
-  let aflMensCollapsed = true;
-  let aflWomensCollapsed = true;
-
-  function toggleAFL() {
-    aflCollapsed = !aflCollapsed;
-    document.querySelectorAll('.afl-arrow').forEach(function(a) { a.innerHTML = aflCollapsed ? '&#9658;' : '&#9660;'; });
-    document.querySelectorAll('.db-supersub2[data-parentcat="afl"]').forEach(function(row) { row.classList.toggle('g-hidden', aflCollapsed); });
-    updateAFLVisibility();
-  }
-
-  function toggleAFLGroup(which) {
-    if (which === 'mens') {
-      aflMensCollapsed = !aflMensCollapsed;
-      document.querySelectorAll('.afl-arrow-mens').forEach(function(a) { a.innerHTML = aflMensCollapsed ? '&#9658;' : '&#9660;'; });
-    } else {
-      aflWomensCollapsed = !aflWomensCollapsed;
-      document.querySelectorAll('.afl-arrow-womens').forEach(function(a) { a.innerHTML = aflWomensCollapsed ? '&#9658;' : '&#9660;'; });
-    }
-    updateAFLVisibility();
-  }
-
-  function updateAFLVisibility() {
-    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
-      const cat2 = row.dataset.supercat2;
-      if (cat2 !== 'afl-mens' && cat2 !== 'afl-womens') return;
-      let show = !aflCollapsed;
-      if (show && cat2 === 'afl-mens') show = !aflMensCollapsed;
-      if (show && cat2 === 'afl-womens') show = !aflWomensCollapsed;
-      row.classList.toggle('g-hidden', !show);
-      if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
         const arrow = row.querySelector('.sub-arrow');
         if (arrow) arrow.textContent = '▶';
@@ -3701,6 +3679,7 @@
   let f1Collapsed = true;
   let f1TopCollapsed = true;
   let f1TeamsCollapsed = true;
+  let f1MemCollapsed = true;
 
   function toggleF1() {
     f1Collapsed = !f1Collapsed;
@@ -3713,6 +3692,9 @@
     if (which === 'teams') {
       f1TeamsCollapsed = !f1TeamsCollapsed;
       document.querySelectorAll('.f1-arrow-teams').forEach(function(a) { a.innerHTML = f1TeamsCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'memoriam') {
+      f1MemCollapsed = !f1MemCollapsed;
+      document.querySelectorAll('.f1-arrow-memoriam').forEach(function(a) { a.innerHTML = f1MemCollapsed ? '&#9658;' : '&#9660;'; });
     } else {
       f1TopCollapsed = !f1TopCollapsed;
       document.querySelectorAll('.f1-arrow-top').forEach(function(a) { a.innerHTML = f1TopCollapsed ? '&#9658;' : '&#9660;'; });
@@ -3723,12 +3705,13 @@
   function updateF1Visibility() {
     document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
       const cat2 = row.dataset.supercat2;
-      if (cat2 !== 'f1-top' && cat2 !== 'f1-teams') return;
+      if (cat2 !== 'f1-top' && cat2 !== 'f1-teams' && cat2 !== 'f1-memoriam') return;
       let show = !f1Collapsed;
       if (show && cat2 === 'f1-top') show = !f1TopCollapsed;
       if (show && cat2 === 'f1-teams') show = !f1TeamsCollapsed;
+      if (show && cat2 === 'f1-memoriam') show = !f1MemCollapsed;
       row.classList.toggle('g-hidden', !show);
-      if (cat2 === 'f1-top') {
+      if (cat2 === 'f1-top' || cat2 === 'f1-memoriam') {
         // The existing driver list is one flat group, not a further
         // breakdown into teams — its carrier row is permanently invisible
         // (see render loop), so show/hide its people directly, in one step.
@@ -3806,6 +3789,7 @@
   let superbikesCollapsed = true;
   let motocrossCollapsed = true;
   let trialsCollapsed = true;
+  let motoMemCollapsed = true;
 
   function toggleMotorcycling() {
     motorcyclingCollapsed = !motorcyclingCollapsed;
@@ -3827,6 +3811,9 @@
     } else if (which === 'trials') {
       trialsCollapsed = !trialsCollapsed;
       document.querySelectorAll('.motorcycling-arrow-trials').forEach(function(a) { a.innerHTML = trialsCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'memoriam') {
+      motoMemCollapsed = !motoMemCollapsed;
+      document.querySelectorAll('.motorcycling-arrow-memoriam').forEach(function(a) { a.innerHTML = motoMemCollapsed ? '&#9658;' : '&#9660;'; });
     } else {
       motorcyclingTopCollapsed = !motorcyclingTopCollapsed;
       document.querySelectorAll('.motorcycling-arrow-top').forEach(function(a) { a.innerHTML = motorcyclingTopCollapsed ? '&#9658;' : '&#9660;'; });
@@ -3844,8 +3831,9 @@
       if (show && cat2 === 'moto-superbikes') show = !superbikesCollapsed;
       if (show && cat2 === 'moto-motocross') show = !motocrossCollapsed;
       if (show && cat2 === 'moto-trials') show = !trialsCollapsed;
+      if (show && cat2 === 'moto-memoriam') show = !motoMemCollapsed;
       row.classList.toggle('g-hidden', !show);
-      if (cat2 === 'moto-top') {
+      if (cat2 === 'moto-top' || cat2 === 'moto-memoriam') {
         // The flat generic/historical group has a carrier row that's
         // permanently invisible (see render loop), so show/hide its people
         // directly, in one step — same as Boxing's flat groups above.
@@ -3865,6 +3853,7 @@
   let indycarCollapsed = true;
   let indycarTopCollapsed = true;
   let indycarTeamsCollapsed = true;
+  let indycarMemCollapsed = true;
 
   function toggleIndyCar() {
     indycarCollapsed = !indycarCollapsed;
@@ -3877,6 +3866,9 @@
     if (which === 'teams') {
       indycarTeamsCollapsed = !indycarTeamsCollapsed;
       document.querySelectorAll('.indycar-arrow-teams').forEach(function(a) { a.innerHTML = indycarTeamsCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'memoriam') {
+      indycarMemCollapsed = !indycarMemCollapsed;
+      document.querySelectorAll('.indycar-arrow-memoriam').forEach(function(a) { a.innerHTML = indycarMemCollapsed ? '&#9658;' : '&#9660;'; });
     } else {
       indycarTopCollapsed = !indycarTopCollapsed;
       document.querySelectorAll('.indycar-arrow-top').forEach(function(a) { a.innerHTML = indycarTopCollapsed ? '&#9658;' : '&#9660;'; });
@@ -3887,12 +3879,13 @@
   function updateIndyCarVisibility() {
     document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
       const cat2 = row.dataset.supercat2;
-      if (cat2 !== 'indycar-top' && cat2 !== 'indycar-teams') return;
+      if (cat2 !== 'indycar-top' && cat2 !== 'indycar-teams' && cat2 !== 'indycar-memoriam') return;
       let show = !indycarCollapsed;
       if (show && cat2 === 'indycar-top') show = !indycarTopCollapsed;
       if (show && cat2 === 'indycar-teams') show = !indycarTeamsCollapsed;
+      if (show && cat2 === 'indycar-memoriam') show = !indycarMemCollapsed;
       row.classList.toggle('g-hidden', !show);
-      if (cat2 === 'indycar-top') {
+      if (cat2 === 'indycar-top' || cat2 === 'indycar-memoriam') {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
       } else if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
@@ -3955,6 +3948,7 @@
   let wrcCollapsed = true;
   let wrcTopCollapsed = true;
   let wrcTeamsCollapsed = true;
+  let wrcMemCollapsed = true;
 
   function toggleWRC() {
     wrcCollapsed = !wrcCollapsed;
@@ -3967,6 +3961,9 @@
     if (which === 'teams') {
       wrcTeamsCollapsed = !wrcTeamsCollapsed;
       document.querySelectorAll('.wrc-arrow-teams').forEach(function(a) { a.innerHTML = wrcTeamsCollapsed ? '&#9658;' : '&#9660;'; });
+    } else if (which === 'memoriam') {
+      wrcMemCollapsed = !wrcMemCollapsed;
+      document.querySelectorAll('.wrc-arrow-memoriam').forEach(function(a) { a.innerHTML = wrcMemCollapsed ? '&#9658;' : '&#9660;'; });
     } else {
       wrcTopCollapsed = !wrcTopCollapsed;
       document.querySelectorAll('.wrc-arrow-top').forEach(function(a) { a.innerHTML = wrcTopCollapsed ? '&#9658;' : '&#9660;'; });
@@ -3977,12 +3974,13 @@
   function updateWRCVisibility() {
     document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
       const cat2 = row.dataset.supercat2;
-      if (cat2 !== 'wrc-top' && cat2 !== 'wrc-teams') return;
+      if (cat2 !== 'wrc-top' && cat2 !== 'wrc-teams' && cat2 !== 'wrc-memoriam') return;
       let show = !wrcCollapsed;
       if (show && cat2 === 'wrc-top') show = !wrcTopCollapsed;
       if (show && cat2 === 'wrc-teams') show = !wrcTeamsCollapsed;
+      if (show && cat2 === 'wrc-memoriam') show = !wrcMemCollapsed;
       row.classList.toggle('g-hidden', !show);
-      if (cat2 === 'wrc-top') {
+      if (cat2 === 'wrc-top' || cat2 === 'wrc-memoriam') {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
       } else if (!show) {
         document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = 'none'; });
@@ -4218,9 +4216,6 @@
       if (footballCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="football"]').forEach(r => r.classList.add('g-hidden'));
       }
-      if (aflCollapsed) {
-        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="afl"]').forEach(r => r.classList.add('g-hidden'));
-      }
       if (cricketCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="cricket"]').forEach(r => r.classList.add('g-hidden'));
       }
@@ -4246,7 +4241,6 @@
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="wrc"]').forEach(r => r.classList.add('g-hidden'));
       }
       updateFootballVisibility();
-      updateAFLVisibility();
       updateRugbyVisibility();
       updateRugbyLeagueVisibility();
       updateNFLVisibility();
@@ -4533,7 +4527,7 @@
         if (label.startsWith('Rugby —')) {
           // Keep the 10 club subgroups in alphabetical order, but always
           // push the legends/internationals catch-all to the very end.
-          return label.indexOf('International Legends & Retired Stars') !== -1 ? 1 : 0;
+          return (label.indexOf('International Legends & Retired Stars') !== -1 || label.indexOf('In Memoriam') !== -1) ? 1 : 0;
         }
         if (label.startsWith('Rugby League —')) {
           return label.indexOf('Other Clubs & Legends') !== -1 ? 1 : 0;
@@ -4545,7 +4539,7 @@
           return label.indexOf('Legends & Retired') !== -1 ? 1 : 0;
         }
         if (label.startsWith('NBA —')) {
-          return label.indexOf('Legends & Retired') !== -1 ? 1 : 0;
+          return (label.indexOf('Legends & Retired') !== -1 || label.indexOf('In Memoriam') !== -1) ? 1 : 0;
         }
         if (label.startsWith('County —')) {
           return label.indexOf('International & Retired') !== -1 ? 1 : 0;
@@ -4650,7 +4644,7 @@
         if (label.startsWith('National Debt — Per Person')) return 'National Debt — 3 Per Person';
         if (label.startsWith('Corporate Wealth — World')) return 'Corporate Wealth — 1 World';
         if (label.startsWith('Corporate Wealth — UK')) return 'Corporate Wealth — 2 UK';
-        if (label.startsWith('NFL —')) return 'American Football / NFL — ' + label.slice(6);
+        if (label.startsWith('NFL —')) return 'Football — ZZ1 American Football — ' + label.slice(6);
         if (label.startsWith('MLB —')) return 'Baseball / MLB — ' + label.slice(6);
         if (label.startsWith('NBA —')) return 'Basketball — ' + label.slice(6);
         if (label.startsWith('County —')) return 'Cricket — 1 County — ' + label.slice(9);
@@ -4663,8 +4657,8 @@
         if (label.startsWith('NASCAR Teams —')) return 'NASCAR — 1 Teams — ' + label.slice(15);
         if (label.startsWith('WRC Teams —')) return 'WRC Rally — 1 Teams — ' + label.slice(11);
         if (label.startsWith('IPL —')) return 'Cricket — 3 IPL — ' + label.slice(6);
-        if (label.startsWith('AFLW —')) return 'Australian Rules — 2 AFLW — ' + label.slice(7);
-        if (label.startsWith('AFL —')) return 'Australian Rules — 1 AFL — ' + label.slice(6);
+        if (label.startsWith('AFLW —')) return 'Football — ZZ3 Australian Football AFLW — ' + label.slice(7);
+        if (label.startsWith('AFL —')) return 'Football — ZZ2 Australian Football AFL — ' + label.slice(6);
         if (label.startsWith('Australia —')) return 'Cricket — 4 Australia — ' + label.slice(12);
         if (label.startsWith('Road Racing —')) return 'Cycling — 1 Road Racing — ' + label.slice(14);
         if (label.startsWith('F1 Teams —')) return 'F1 & Motorsport — 1 Teams — ' + label.slice(11);
@@ -4906,8 +4900,6 @@
       let nflGroupEntered = false; // tracks whether the "— NFL —" toggle has been inserted yet
       let mlbGroupEntered = false; // tracks whether the "— MLB —" toggle has been inserted yet
       let nbaGroupEntered = false; // tracks whether the "— NBA —" toggle has been inserted yet
-      let aflOuterEntered = false;
-      let aflGroupState = null;
       let cricketOuterEntered = false; // tracks whether the "— Cricket —" outer toggle has been inserted yet
       let cricketGroupState = null; // null | 'county' | 'ipl' | 'england' — tracks nesting within Cricket
       let nhlGroupEntered = false; // tracks whether the "— NHL —" toggle has been inserted yet
@@ -4956,6 +4948,8 @@
           const isRoadRacing = labelTrimmed.startsWith('Road Racing —');
           const isCyclingFlat = labelTrimmed === 'Cycling';
           const isF1Teams = labelTrimmed.startsWith('F1 Teams —');
+          const isMemSub = /^(Darts|Snooker|Comedy|UK TV & Comedy) — In Memoriam$/.test(labelTrimmed);
+          const isF1Mem = labelTrimmed === 'F1 & Motorsport — In Memoriam';
           const isF1Flat = labelTrimmed === 'F1 & Motorsport';
           const isBoxingChamps = labelTrimmed.startsWith('World Champions —');
           const isBoxingFlat = labelTrimmed === 'Boxing';
@@ -4964,12 +4958,15 @@
           const isSuperbikes = labelTrimmed.startsWith('Superbikes —');
           const isMotocross = labelTrimmed.startsWith('Motocross —');
           const isTrials = labelTrimmed.startsWith('Trials —');
+          const isMotoMem = labelTrimmed === 'Motorcycling — In Memoriam';
           const isMotorcyclingFlat = labelTrimmed === 'Motorcycling';
           const isIndyCarTeams = labelTrimmed.startsWith('IndyCar Teams —');
+          const isIndyCarMem = labelTrimmed === 'IndyCar & Indy 500 — In Memoriam';
           const isIndyCarFlat = labelTrimmed === 'IndyCar & Indy 500';
           const isNASCARTeams = labelTrimmed.startsWith('NASCAR Teams —');
           const isNASCARFlat = labelTrimmed === 'NASCAR';
           const isWRCTeams = labelTrimmed.startsWith('WRC Teams —');
+          const isWRCMem = labelTrimmed === 'WRC Rally — In Memoriam';
           const isWRCFlat = labelTrimmed === 'WRC Rally';
           const isHorseRacing = labelTrimmed.startsWith('Horse Racing —');
           const isCareerGuide = labelTrimmed.startsWith('Career Guide —');
@@ -4981,7 +4978,6 @@
           let mlbRowHidden = false;
           let nbaRowHidden = false;
           let cricketRowHidden = false;
-          let aflRowHidden = false;
           let nhlRowHidden = false;
           let cyclingRowHidden = false;
           let f1RowHidden = false;
@@ -4990,13 +4986,13 @@
           let indycarRowHidden = false;
           let nascarRowHidden = false;
           let wrcRowHidden = false;
-          if (isFootball) {
+          if (isFootball || isNFL || isAFL || isAFLW) {
             // London City Lionesses is a genuinely women-only club, but —
             // unlike "Arsenal Women" or "Chelsea Women" — its actual name
             // doesn't contain the word "Women" at all, so the substring
             // check alone was silently sorting it into Men's football.
             const isWomens = labelTrimmed.toLowerCase().indexOf('women') !== -1 || labelTrimmed.indexOf('London City Lionesses') !== -1;
-            const thisState = isWomens ? 'womens' : 'mens';
+            const thisState = isNFL ? 'nfl' : isAFL ? 'aflm' : isAFLW ? 'aflw' : (isWomens ? 'womens' : 'mens');
             const catHiddenClass = hidden ? ' g-hidden' : '';
             if (footballGroupState === null) {
               // Entering football for the first time — insert the top-level toggle
@@ -5006,16 +5002,16 @@
             }
             if (footballGroupState !== thisState) {
               // Entering (or switching into) Men's or Women's Football — insert the nested toggle
-              const which = thisState === 'womens' ? 'womens' : 'mens';
-              const collapsedNow = which === 'womens' ? footballWomensCollapsed : footballMensCollapsed;
+              const which = thisState;
+              const collapsedNow = footballSubCollapsed(which);
               const arrow2 = collapsedNow ? '&#9658;' : '&#9660;';
-              const label2 = which === 'womens' ? "Women's Football" : "Men's Football";
+              const label2 = which === 'womens' ? "Women's Football" : which === 'nfl' ? 'American Football (NFL)' : which === 'aflm' ? "Australian Football (AFL — Men's)" : which === 'aflw' ? "Australian Football (AFLW — Women's)" : "Men's Football";
               const nestedHiddenClass = (footballCollapsed || hidden) ? ' g-hidden' : '';
               html += '<tr class="group-row db-supersub2' + nestedHiddenClass + '" data-group="' + escHtml(groupName) + '" data-parentcat="football" onclick="toggleFootballGroup(\'' + which + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
                     + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="football-arrow-' + which + '">' + arrow2 + '</span> ' + label2 + '</td></tr>';
             }
             footballGroupState = thisState;
-            const rowHidden = hidden || footballCollapsed || (thisState === 'womens' ? footballWomensCollapsed : footballMensCollapsed);
+            const rowHidden = hidden || footballCollapsed || footballSubCollapsed(thisState);
             supercatAttr = ' data-supercat="football" data-supercat2="football-' + thisState + '"' + (rowHidden ? ' data-football-hidden="1"' : '');
           } else if (isRugby) {
             footballGroupState = null;
@@ -5150,31 +5146,6 @@
             const subCollapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : thisState === 'australia' ? cricketAustraliaCollapsed : cricketCountyCollapsed;
             cricketRowHidden = hidden || cricketCollapsed || subCollapsedNow;
             supercatAttr = ' data-supercat="cricket" data-supercat2="cricket-' + thisState + '"' + (cricketRowHidden ? ' data-cricket-hidden="1"' : '');
-          } else if (isAFL || isAFLW) {
-            footballGroupState = null;
-            cricketGroupState = null;
-            cyclingGroupState = null;
-            f1GroupState = null;
-            boxingGroupState = null;
-            const thisStateA = isAFLW ? 'womens' : 'mens';
-            const catHiddenClassA = hidden ? ' g-hidden' : '';
-            if (!aflOuterEntered) {
-              const arrowA = aflCollapsed ? '&#9658;' : '&#9660;';
-              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassA + '" data-group="' + escHtml(groupName) + '" onclick="toggleAFL()" style="cursor:pointer">'
-                    + '<td colspan="3" style="padding-left:20px"><span class="afl-arrow sub-arrow">' + arrowA + '</span> — Australian Rules Football —</td></tr>';
-              aflOuterEntered = true;
-            }
-            if (aflGroupState !== thisStateA) {
-              const collapsedNowA = thisStateA === 'womens' ? aflWomensCollapsed : aflMensCollapsed;
-              const arrow2A = collapsedNowA ? '&#9658;' : '&#9660;';
-              const label2A = thisStateA === 'womens' ? 'AFLW (Women\'s)' : 'AFL (Men\'s)';
-              const nestedHiddenClassA = (aflCollapsed || hidden) ? ' g-hidden' : '';
-              html += '<tr class="group-row db-supersub2' + nestedHiddenClassA + '" data-group="' + escHtml(groupName) + '" data-parentcat="afl" onclick="toggleAFLGroup(\'' + thisStateA + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
-                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="afl-arrow-' + thisStateA + '">' + arrow2A + '</span> ' + label2A + '</td></tr>';
-            }
-            aflGroupState = thisStateA;
-            aflRowHidden = hidden || aflCollapsed || (thisStateA === 'womens' ? aflWomensCollapsed : aflMensCollapsed);
-            supercatAttr = ' data-supercat="afl" data-supercat2="afl-' + thisStateA + '"' + (aflRowHidden ? ' data-afl-hidden="1"' : '');
           } else if (isNHL) {
             footballGroupState = null;
             cricketGroupState = null;
@@ -5219,14 +5190,14 @@
             const subCollapsedNowCY = thisCyclingState === 'roadracing' ? cyclingRoadRacingCollapsed : cyclingTop20Collapsed;
             cyclingRowHidden = hidden || cyclingCollapsed || subCollapsedNowCY;
             supercatAttr = ' data-supercat="cycling" data-supercat2="cycling-' + thisCyclingState + '"' + (cyclingRowHidden ? ' data-cycling-hidden="1"' : '');
-          } else if (isF1Flat || isF1Teams) {
+          } else if (isF1Flat || isF1Teams || isF1Mem) {
             // F1 has two sub-sections — the existing flat driver list and "Teams
             // 2026" (which explodes into team subsections) — same two-level
             // nesting pattern as Cycling's Top 20/Road Racing split above.
             footballGroupState = null;
             cricketGroupState = null;
             cyclingGroupState = null;
-            const thisF1State = isF1Teams ? 'teams' : 'top';
+            const thisF1State = isF1Teams ? 'teams' : isF1Mem ? 'memoriam' : 'top';
             const catHiddenClassF1 = hidden ? ' g-hidden' : '';
             if (!f1OuterEntered) {
               const arrowF1 = f1Collapsed ? '&#9658;' : '&#9660;';
@@ -5235,15 +5206,15 @@
               f1OuterEntered = true;
             }
             if (f1GroupState !== thisF1State) {
-              const collapsedNowF1 = thisF1State === 'teams' ? f1TeamsCollapsed : f1TopCollapsed;
+              const collapsedNowF1 = thisF1State === 'teams' ? f1TeamsCollapsed : thisF1State === 'memoriam' ? f1MemCollapsed : f1TopCollapsed;
               const arrow2F1 = collapsedNowF1 ? '&#9658;' : '&#9660;';
-              const label2F1 = thisF1State === 'teams' ? 'Teams 2026' : 'Drivers & Motorsport';
+              const label2F1 = thisF1State === 'teams' ? 'Teams 2026' : thisF1State === 'memoriam' ? 'In Memoriam' : 'Drivers & Motorsport';
               const nestedHiddenClassF1 = (f1Collapsed || hidden) ? ' g-hidden' : '';
               html += '<tr class="group-row db-supersub2' + nestedHiddenClassF1 + '" data-group="' + escHtml(groupName) + '" data-parentcat="f1" onclick="toggleF1Group(\'' + thisF1State + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
                     + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="f1-arrow-' + thisF1State + '">' + arrow2F1 + '</span> ' + label2F1 + '</td></tr>';
             }
             f1GroupState = thisF1State;
-            const subCollapsedNowF1 = thisF1State === 'teams' ? f1TeamsCollapsed : f1TopCollapsed;
+            const subCollapsedNowF1 = thisF1State === 'teams' ? f1TeamsCollapsed : thisF1State === 'memoriam' ? f1MemCollapsed : f1TopCollapsed;
             f1RowHidden = hidden || f1Collapsed || subCollapsedNowF1;
             supercatAttr = ' data-supercat="f1" data-supercat2="f1-' + thisF1State + '"' + (f1RowHidden ? ' data-f1-hidden="1"' : '');
           } else if (isBoxingFlat || isBoxingChamps || isInMemoriam) {
@@ -5275,7 +5246,7 @@
             const subCollapsedNowBX = thisBoxingState === 'champs' ? boxingChampsCollapsed : thisBoxingState === 'memoriam' ? boxingMemoriamCollapsed : boxingTopCollapsed;
             boxingRowHidden = hidden || boxingCollapsed || subCollapsedNowBX;
             supercatAttr = ' data-supercat="boxing" data-supercat2="boxing-' + thisBoxingState + '"' + (boxingRowHidden ? ' data-boxing-hidden="1"' : '');
-          } else if (isMotorcyclingFlat || isMotoGP || isSuperbikes || isMotocross || isTrials) {
+          } else if (isMotorcyclingFlat || isMotoMem || isMotoGP || isSuperbikes || isMotocross || isTrials) {
             // Motorcycling has five sub-sections — a flat generic/historical
             // list, plus four disciplines that each explode into team
             // subsections — same nesting pattern as Boxing above, extended
@@ -5285,7 +5256,7 @@
             cyclingGroupState = null;
             f1GroupState = null;
             boxingGroupState = null;
-            const thisMotoState = isMotoGP ? 'motogp' : isSuperbikes ? 'superbikes' : isMotocross ? 'motocross' : isTrials ? 'trials' : 'top';
+            const thisMotoState = isMotoGP ? 'motogp' : isSuperbikes ? 'superbikes' : isMotocross ? 'motocross' : isTrials ? 'trials' : isMotoMem ? 'memoriam' : 'top';
             const catHiddenClassMC = hidden ? ' g-hidden' : '';
             if (!motorcyclingOuterEntered) {
               const arrowMC = motorcyclingCollapsed ? '&#9658;' : '&#9660;';
@@ -5294,20 +5265,20 @@
               motorcyclingOuterEntered = true;
             }
             if (motorcyclingGroupState !== thisMotoState) {
-              const collapsedMap = { motogp: motogpCollapsed, superbikes: superbikesCollapsed, motocross: motocrossCollapsed, trials: trialsCollapsed, top: motorcyclingTopCollapsed };
+              const collapsedMap = { motogp: motogpCollapsed, superbikes: superbikesCollapsed, motocross: motocrossCollapsed, trials: trialsCollapsed, memoriam: motoMemCollapsed, top: motorcyclingTopCollapsed };
               const collapsedNowMC = collapsedMap[thisMotoState];
               const arrow2MC = collapsedNowMC ? '&#9658;' : '&#9660;';
-              const labelMap = { motogp: 'MotoGP', superbikes: 'Superbikes', motocross: 'Motocross', trials: 'Trials', top: 'Legends & History' };
+              const labelMap = { motogp: 'MotoGP', superbikes: 'Superbikes', motocross: 'Motocross', trials: 'Trials', memoriam: 'In Memoriam', top: 'Legends & History' };
               const label2MC = labelMap[thisMotoState];
               const nestedHiddenClassMC = (motorcyclingCollapsed || hidden) ? ' g-hidden' : '';
               html += '<tr class="group-row db-supersub2' + nestedHiddenClassMC + '" data-group="' + escHtml(groupName) + '" data-parentcat="motorcycling" onclick="toggleMotorcyclingGroup(\'' + thisMotoState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
                     + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="motorcycling-arrow-' + thisMotoState + '">' + arrow2MC + '</span> ' + label2MC + '</td></tr>';
             }
             motorcyclingGroupState = thisMotoState;
-            const subCollapsedMap2 = { motogp: motogpCollapsed, superbikes: superbikesCollapsed, motocross: motocrossCollapsed, trials: trialsCollapsed, top: motorcyclingTopCollapsed };
+            const subCollapsedMap2 = { motogp: motogpCollapsed, superbikes: superbikesCollapsed, motocross: motocrossCollapsed, trials: trialsCollapsed, memoriam: motoMemCollapsed, top: motorcyclingTopCollapsed };
             motorcyclingRowHidden = hidden || motorcyclingCollapsed || subCollapsedMap2[thisMotoState];
             supercatAttr = ' data-supercat="motorcycling" data-supercat2="moto-' + thisMotoState + '"' + (motorcyclingRowHidden ? ' data-motorcycling-hidden="1"' : '');
-          } else if (isIndyCarFlat || isIndyCarTeams) {
+          } else if (isIndyCarFlat || isIndyCarTeams || isIndyCarMem) {
             // IndyCar has two sub-sections — the existing flat legends list and
             // "Teams" (which explodes into team subsections) — same
             // two-level nesting pattern as F1's Drivers/Teams split above.
@@ -5316,7 +5287,7 @@
             cyclingGroupState = null;
             f1GroupState = null;
             boxingGroupState = null;
-            const thisIndyCarState = isIndyCarTeams ? 'teams' : 'top';
+            const thisIndyCarState = isIndyCarTeams ? 'teams' : isIndyCarMem ? 'memoriam' : 'top';
             const catHiddenClassIC = hidden ? ' g-hidden' : '';
             if (!indycarOuterEntered) {
               const arrowIC = indycarCollapsed ? '&#9658;' : '&#9660;';
@@ -5325,15 +5296,15 @@
               indycarOuterEntered = true;
             }
             if (indycarGroupState !== thisIndyCarState) {
-              const collapsedNowIC = thisIndyCarState === 'teams' ? indycarTeamsCollapsed : indycarTopCollapsed;
+              const collapsedNowIC = thisIndyCarState === 'teams' ? indycarTeamsCollapsed : thisIndyCarState === 'memoriam' ? indycarMemCollapsed : indycarTopCollapsed;
               const arrow2IC = collapsedNowIC ? '&#9658;' : '&#9660;';
-              const label2IC = thisIndyCarState === 'teams' ? 'Teams' : 'Legends & Indy 500';
+              const label2IC = thisIndyCarState === 'teams' ? 'Teams' : thisIndyCarState === 'memoriam' ? 'In Memoriam' : 'Legends & Indy 500';
               const nestedHiddenClassIC = (indycarCollapsed || hidden) ? ' g-hidden' : '';
               html += '<tr class="group-row db-supersub2' + nestedHiddenClassIC + '" data-group="' + escHtml(groupName) + '" data-parentcat="indycar" onclick="toggleIndyCarGroup(\'' + thisIndyCarState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
                     + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="indycar-arrow-' + thisIndyCarState + '">' + arrow2IC + '</span> ' + label2IC + '</td></tr>';
             }
             indycarGroupState = thisIndyCarState;
-            const subCollapsedNowIC = thisIndyCarState === 'teams' ? indycarTeamsCollapsed : indycarTopCollapsed;
+            const subCollapsedNowIC = thisIndyCarState === 'teams' ? indycarTeamsCollapsed : thisIndyCarState === 'memoriam' ? indycarMemCollapsed : indycarTopCollapsed;
             indycarRowHidden = hidden || indycarCollapsed || subCollapsedNowIC;
             supercatAttr = ' data-supercat="indycar" data-supercat2="indycar-' + thisIndyCarState + '"' + (indycarRowHidden ? ' data-indycar-hidden="1"' : '');
           } else if (isNASCARFlat || isNASCARTeams) {
@@ -5366,7 +5337,7 @@
             const subCollapsedNowNS = thisNASCARState === 'teams' ? nascarTeamsCollapsed : nascarTopCollapsed;
             nascarRowHidden = hidden || nascarCollapsed || subCollapsedNowNS;
             supercatAttr = ' data-supercat="nascar" data-supercat2="nascar-' + thisNASCARState + '"' + (nascarRowHidden ? ' data-nascar-hidden="1"' : '');
-          } else if (isWRCFlat || isWRCTeams) {
+          } else if (isWRCFlat || isWRCTeams || isWRCMem) {
             // WRC has two sub-sections — the existing flat legends list and
             // "Teams" (which explodes into team subsections) — same
             // two-level nesting pattern as NASCAR's Legends/Teams split
@@ -5376,7 +5347,7 @@
             cyclingGroupState = null;
             f1GroupState = null;
             boxingGroupState = null;
-            const thisWRCState = isWRCTeams ? 'teams' : 'top';
+            const thisWRCState = isWRCTeams ? 'teams' : isWRCMem ? 'memoriam' : 'top';
             const catHiddenClassWR = hidden ? ' g-hidden' : '';
             if (!wrcOuterEntered) {
               const arrowWR = wrcCollapsed ? '&#9658;' : '&#9660;';
@@ -5385,15 +5356,15 @@
               wrcOuterEntered = true;
             }
             if (wrcGroupState !== thisWRCState) {
-              const collapsedNowWR = thisWRCState === 'teams' ? wrcTeamsCollapsed : wrcTopCollapsed;
+              const collapsedNowWR = thisWRCState === 'teams' ? wrcTeamsCollapsed : thisWRCState === 'memoriam' ? wrcMemCollapsed : wrcTopCollapsed;
               const arrow2WR = collapsedNowWR ? '&#9658;' : '&#9660;';
-              const label2WR = thisWRCState === 'teams' ? 'Teams' : 'Legends';
+              const label2WR = thisWRCState === 'teams' ? 'Teams' : thisWRCState === 'memoriam' ? 'In Memoriam' : 'Legends';
               const nestedHiddenClassWR = (wrcCollapsed || hidden) ? ' g-hidden' : '';
               html += '<tr class="group-row db-supersub2' + nestedHiddenClassWR + '" data-group="' + escHtml(groupName) + '" data-parentcat="wrc" onclick="toggleWRCGroup(\'' + thisWRCState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
                     + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="wrc-arrow-' + thisWRCState + '">' + arrow2WR + '</span> ' + label2WR + '</td></tr>';
             }
             wrcGroupState = thisWRCState;
-            const subCollapsedNowWR = thisWRCState === 'teams' ? wrcTeamsCollapsed : wrcTopCollapsed;
+            const subCollapsedNowWR = thisWRCState === 'teams' ? wrcTeamsCollapsed : thisWRCState === 'memoriam' ? wrcMemCollapsed : wrcTopCollapsed;
             wrcRowHidden = hidden || wrcCollapsed || subCollapsedNowWR;
             supercatAttr = ' data-supercat="wrc" data-supercat2="wrc-' + thisWRCState + '"' + (wrcRowHidden ? ' data-wrc-hidden="1"' : '');
           } else {
@@ -5409,8 +5380,8 @@
           }
 
           if (supercatAttr) {
-            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isNFL ? nflRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : (isAFL || isAFLW) ? aflRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams) ? wrcRowHidden : (hidden || footballCollapsed || (footballGroupState === 'womens' ? footballWomensCollapsed : footballMensCollapsed));
-            if (isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
+            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams || isF1Mem) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoMem || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams || isIndyCarMem) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams || isWRCMem) ? wrcRowHidden : (hidden || footballCollapsed || footballSubCollapsed(footballGroupState));
+            if (isF1Mem || isIndyCarMem || isWRCMem || isMotoMem || isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
               // The visible, clickable toggle for a flat driver/rider/legends
               // list is the "Top 20 by Net Worth"/"Drivers & Motorsport"/
               // "Legends & Personalities"/"Legends & History" db-supersub2
@@ -5428,15 +5399,15 @@
             // would display as literally repeating the just-shown parent
             // heading — show only the club/country/franchise/county/team/
             // division name itself.
-            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isAustralia ? labelTrimmed.replace(/^Australia —\s*/, '') : isAFLW ? labelTrimmed.replace(/^AFLW —\s*/, '') : isAFL ? labelTrimmed.replace(/^AFL —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
+            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isAustralia ? labelTrimmed.replace(/^Australia —\s*/, '') : isAFLW ? labelTrimmed.replace(/^AFLW —\s*/, '') : isAFL ? labelTrimmed.replace(/^AFL —\s*/, '') : isNFL ? labelTrimmed.replace(/^NFL —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : isMemSub ? 'In Memoriam' : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (rowHiddenFinal ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '"' + supercatAttr + '>'
-                  + '<td colspan="3" style="padding-left:' + (isIndented ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
+                  + '<td colspan="3" style="padding-left:' + ((isIndented || isMemSub) ? '52px' : '40px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
               thisSubLazy = !expandedSubgroupLabels.has(labelTrimmed);
             }
           } else {
-            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isAustralia ? labelTrimmed.replace(/^Australia —\s*/, '') : isAFLW ? labelTrimmed.replace(/^AFLW —\s*/, '') : isAFL ? labelTrimmed.replace(/^AFL —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : labelTrimmed;
+            const displayLabel = isFootball ? labelTrimmed.replace(/^Football —\s*/, '') : isRugbyLeague ? labelTrimmed.replace(/^Rugby League —\s*/, '') : isRugby ? labelTrimmed.replace(/^Rugby —\s*/, '') : isSWF ? labelTrimmed.replace(/^SWF —\s*/, '') : isIPL ? labelTrimmed.replace(/^IPL —\s*/, '') : isCounty ? labelTrimmed.replace(/^County —\s*/, '') : isEngland ? labelTrimmed.replace(/^England —\s*/, '') : isAustralia ? labelTrimmed.replace(/^Australia —\s*/, '') : isAFLW ? labelTrimmed.replace(/^AFLW —\s*/, '') : isAFL ? labelTrimmed.replace(/^AFL —\s*/, '') : isNFL ? labelTrimmed.replace(/^NFL —\s*/, '') : isRoadRacing ? labelTrimmed.replace(/^Road Racing —\s*/, '') : isF1Teams ? labelTrimmed.replace(/^F1 Teams —\s*/, '') : isBoxingChamps ? labelTrimmed.replace(/^World Champions —\s*/, '') : isMotoGP ? labelTrimmed.replace(/^MotoGP —\s*/, '') : isSuperbikes ? labelTrimmed.replace(/^Superbikes —\s*/, '') : isMotocross ? labelTrimmed.replace(/^Motocross —\s*/, '') : isTrials ? labelTrimmed.replace(/^Trials —\s*/, '') : isIndyCarTeams ? labelTrimmed.replace(/^IndyCar Teams —\s*/, '') : isNASCARTeams ? labelTrimmed.replace(/^NASCAR Teams —\s*/, '') : isWRCTeams ? labelTrimmed.replace(/^WRC Teams —\s*/, '') : isHorseRacing ? labelTrimmed.replace(/^Horse Racing —\s*/, '') : isCareerGuide ? labelTrimmed.replace(/^Career Guide —\s*/, '') : isMemSub ? 'In Memoriam' : labelTrimmed;
             html += '<tr class="group-row subgroup-label db-sub' + (hidden ? ' g-hidden' : '') + '" data-group="' + escHtml(groupName) + '" data-sid="' + thisSid + '" data-sublabel="' + escHtml(labelTrimmed) + '">'
-                  + '<td colspan="3" style="padding-left:' + (isIndented ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
+                  + '<td colspan="3" style="padding-left:' + ((isIndented || isMemSub) ? '40px' : '20px') + ';' + subHighlightStyle + '"><span class="sub-arrow">&#9658;</span> — ' + escHtml(displayLabel) + ' —</td></tr>';
           thisSubLazy = !expandedSubgroupLabels.has(labelTrimmed);
           }
         } else if (thisSid >= 0) {
