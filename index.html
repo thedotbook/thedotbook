@@ -1148,7 +1148,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=d5326596"></script>
+<script src="data.js?v=da7c92ec"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -3128,7 +3128,7 @@
   // Strip club/team/context suffixes from a raw key before displaying it as a
   // name, so e.g. 'lewis dunk brighton' shows as "Lewis Dunk", not "Lewis Dunk
   // Brighton" — used everywhere a display name gets built from a raw key.
-  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd)$/i;
+  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw)$/i;
   // Strip the internal 'swf ' key prefix (needed only to keep multiple funds
   // per country unique in CELEB_DB, e.g. 'swf usa alaska', 'swf china safe')
   // before displaying/sorting — otherwise every Sovereign Wealth Fund entry
@@ -8012,7 +8012,7 @@
     let bestMatchLength = 0;
     let bestFuzzyMatch = null;
     let bestFuzzyDistance = Infinity;
-    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd)$/i;
+    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw)$/i;
     for (const [key, val] of Object.entries(CELEB_DB)) {
       if (val._subgroup || key.startsWith('_sub') || !val.wealth) continue;
       let bareKey = key;
