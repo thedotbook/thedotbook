@@ -1148,7 +1148,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=03c39cf7"></script>
+<script src="data.js?v=754b5043"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -3409,6 +3409,146 @@
     });
   }
 
+  // Nested Darts collapsible section, within the Sport category: a flat players list and an In Memoriam list.
+  let dartsCollapsed = true;
+  let dartsTopCollapsed = true;
+  let dartsMemCollapsed = true;
+
+  function toggleDarts() {
+    dartsCollapsed = !dartsCollapsed;
+    document.querySelectorAll('.darts-arrow').forEach(function(a) { a.innerHTML = dartsCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="darts"]').forEach(function(row) { row.classList.toggle('g-hidden', dartsCollapsed); });
+    updateDartsVisibility();
+  }
+
+  function toggleDartsGroup(which) {
+    if (which === 'memoriam') {
+      dartsMemCollapsed = !dartsMemCollapsed;
+      document.querySelectorAll('.darts-arrow-memoriam').forEach(function(a) { a.innerHTML = dartsMemCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      dartsTopCollapsed = !dartsTopCollapsed;
+      document.querySelectorAll('.darts-arrow-top').forEach(function(a) { a.innerHTML = dartsTopCollapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateDartsVisibility();
+  }
+
+  function updateDartsVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'darts-top' && cat2 !== 'darts-memoriam') return;
+      let show = !dartsCollapsed;
+      if (show && cat2 === 'darts-top') show = !dartsTopCollapsed;
+      if (show && cat2 === 'darts-memoriam') show = !dartsMemCollapsed;
+      row.classList.toggle('g-hidden', !show);
+      document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
+    });
+  }
+
+  // Nested Snooker collapsible section, within the Sport category: a flat players list and an In Memoriam list.
+  let snookerCollapsed = true;
+  let snookerTopCollapsed = true;
+  let snookerMemCollapsed = true;
+
+  function toggleSnooker() {
+    snookerCollapsed = !snookerCollapsed;
+    document.querySelectorAll('.snooker-arrow').forEach(function(a) { a.innerHTML = snookerCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="snooker"]').forEach(function(row) { row.classList.toggle('g-hidden', snookerCollapsed); });
+    updateSnookerVisibility();
+  }
+
+  function toggleSnookerGroup(which) {
+    if (which === 'memoriam') {
+      snookerMemCollapsed = !snookerMemCollapsed;
+      document.querySelectorAll('.snooker-arrow-memoriam').forEach(function(a) { a.innerHTML = snookerMemCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      snookerTopCollapsed = !snookerTopCollapsed;
+      document.querySelectorAll('.snooker-arrow-top').forEach(function(a) { a.innerHTML = snookerTopCollapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateSnookerVisibility();
+  }
+
+  function updateSnookerVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'snooker-top' && cat2 !== 'snooker-memoriam') return;
+      let show = !snookerCollapsed;
+      if (show && cat2 === 'snooker-top') show = !snookerTopCollapsed;
+      if (show && cat2 === 'snooker-memoriam') show = !snookerMemCollapsed;
+      row.classList.toggle('g-hidden', !show);
+      document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
+    });
+  }
+
+  // Nested UK TV & Comedy collapsible section: a flat list and an In Memoriam list.
+  let uktvCollapsed = true;
+  let uktvTopCollapsed = true;
+  let uktvMemCollapsed = true;
+
+  function toggleUkTv() {
+    uktvCollapsed = !uktvCollapsed;
+    document.querySelectorAll('.uktv-arrow').forEach(function(a) { a.innerHTML = uktvCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="uktv"]').forEach(function(row) { row.classList.toggle('g-hidden', uktvCollapsed); });
+    updateUkTvVisibility();
+  }
+
+  function toggleUkTvGroup(which) {
+    if (which === 'memoriam') {
+      uktvMemCollapsed = !uktvMemCollapsed;
+      document.querySelectorAll('.uktv-arrow-memoriam').forEach(function(a) { a.innerHTML = uktvMemCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      uktvTopCollapsed = !uktvTopCollapsed;
+      document.querySelectorAll('.uktv-arrow-top').forEach(function(a) { a.innerHTML = uktvTopCollapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateUkTvVisibility();
+  }
+
+  function updateUkTvVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'uktv-top' && cat2 !== 'uktv-memoriam') return;
+      let show = !uktvCollapsed;
+      if (show && cat2 === 'uktv-top') show = !uktvTopCollapsed;
+      if (show && cat2 === 'uktv-memoriam') show = !uktvMemCollapsed;
+      row.classList.toggle('g-hidden', !show);
+      document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
+    });
+  }
+
+  // Nested Comedy collapsible section: a flat list and an In Memoriam list.
+  let comedyCollapsed = true;
+  let comedyTopCollapsed = true;
+  let comedyMemCollapsed = true;
+
+  function toggleComedy() {
+    comedyCollapsed = !comedyCollapsed;
+    document.querySelectorAll('.comedy-arrow').forEach(function(a) { a.innerHTML = comedyCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="comedy"]').forEach(function(row) { row.classList.toggle('g-hidden', comedyCollapsed); });
+    updateComedyVisibility();
+  }
+
+  function toggleComedyGroup(which) {
+    if (which === 'memoriam') {
+      comedyMemCollapsed = !comedyMemCollapsed;
+      document.querySelectorAll('.comedy-arrow-memoriam').forEach(function(a) { a.innerHTML = comedyMemCollapsed ? '&#9658;' : '&#9660;'; });
+    } else {
+      comedyTopCollapsed = !comedyTopCollapsed;
+      document.querySelectorAll('.comedy-arrow-top').forEach(function(a) { a.innerHTML = comedyTopCollapsed ? '&#9658;' : '&#9660;'; });
+    }
+    updateComedyVisibility();
+  }
+
+  function updateComedyVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2 !== 'comedy-top' && cat2 !== 'comedy-memoriam') return;
+      let show = !comedyCollapsed;
+      if (show && cat2 === 'comedy-top') show = !comedyTopCollapsed;
+      if (show && cat2 === 'comedy-memoriam') show = !comedyMemCollapsed;
+      row.classList.toggle('g-hidden', !show);
+      document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
+    });
+  }
+
   // Nested Rugby collapsible section, within the Sport category —
   // mirrors the Football nesting above, but only needs one level
   // (— Rugby — toggle, then each club), since rugby isn't split by gender here.
@@ -4222,6 +4362,18 @@
       if (cyclingCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="cycling"]').forEach(r => r.classList.add('g-hidden'));
       }
+      if (uktvCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="uktv"]').forEach(r => r.classList.add('g-hidden'));
+      }
+      if (comedyCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="comedy"]').forEach(r => r.classList.add('g-hidden'));
+      }
+      if (dartsCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="darts"]').forEach(r => r.classList.add('g-hidden'));
+      }
+      if (snookerCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="snooker"]').forEach(r => r.classList.add('g-hidden'));
+      }
       if (f1Collapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="f1"]').forEach(r => r.classList.add('g-hidden'));
       }
@@ -4906,6 +5058,14 @@
       let cyclingOuterEntered = false; // tracks whether the outer "— Cycling —" toggle has been inserted yet
       let cyclingGroupState = null; // null | 'top20' | 'roadracing' — tracks nesting within Cycling
       let f1OuterEntered = false; // tracks whether the outer "— F1 & Motorsport —" toggle has been inserted yet
+      let uktvOuterEntered = false;
+      let uktvGroupState = null;
+      let comedyOuterEntered = false;
+      let comedyGroupState = null;
+      let dartsOuterEntered = false;
+      let dartsGroupState = null;
+      let snookerOuterEntered = false;
+      let snookerGroupState = null;
       let f1GroupState = null; // null | 'top' | 'teams' — tracks nesting within F1
       let boxingOuterEntered = false; // tracks whether the outer "— Boxing —" toggle has been inserted yet
       let boxingGroupState = null; // null | 'top' | 'champs' — tracks nesting within Boxing
@@ -4948,7 +5108,15 @@
           const isRoadRacing = labelTrimmed.startsWith('Road Racing —');
           const isCyclingFlat = labelTrimmed === 'Cycling';
           const isF1Teams = labelTrimmed.startsWith('F1 Teams —');
-          const isMemSub = /^(Darts|Snooker|Comedy|UK TV & Comedy) — In Memoriam$/.test(labelTrimmed);
+          const isMemSub = false;
+          const isUkTvFlat = labelTrimmed === 'UK TV & Comedy';
+          const isUkTvMem = labelTrimmed === 'UK TV & Comedy — In Memoriam';
+          const isComedyFlat = labelTrimmed === 'Comedy';
+          const isComedyMem = labelTrimmed === 'Comedy — In Memoriam';
+          const isDartsFlat = labelTrimmed === 'Darts';
+          const isDartsMem = labelTrimmed === 'Darts — In Memoriam';
+          const isSnookerFlat = labelTrimmed === 'Snooker';
+          const isSnookerMem = labelTrimmed === 'Snooker — In Memoriam';
           const isF1Mem = labelTrimmed === 'F1 & Motorsport — In Memoriam';
           const isF1Flat = labelTrimmed === 'F1 & Motorsport';
           const isBoxingChamps = labelTrimmed.startsWith('World Champions —');
@@ -4978,6 +5146,10 @@
           let mlbRowHidden = false;
           let nbaRowHidden = false;
           let cricketRowHidden = false;
+          let dartsRowHidden = false;
+          let uktvRowHidden = false;
+          let comedyRowHidden = false;
+          let snookerRowHidden = false;
           let nhlRowHidden = false;
           let cyclingRowHidden = false;
           let f1RowHidden = false;
@@ -5146,6 +5318,106 @@
             const subCollapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : thisState === 'australia' ? cricketAustraliaCollapsed : cricketCountyCollapsed;
             cricketRowHidden = hidden || cricketCollapsed || subCollapsedNow;
             supercatAttr = ' data-supercat="cricket" data-supercat2="cricket-' + thisState + '"' + (cricketRowHidden ? ' data-cricket-hidden="1"' : '');
+          } else if (isDartsFlat || isDartsMem) {
+            footballGroupState = null;
+            cricketGroupState = null;
+            cyclingGroupState = null;
+            f1GroupState = null;
+            boxingGroupState = null;
+            const thisDartsState = isDartsMem ? 'memoriam' : 'top';
+            const catHiddenClassDarts = hidden ? ' g-hidden' : '';
+            if (!dartsOuterEntered) {
+              const arrowDarts = dartsCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassDarts + '" data-group="' + escHtml(groupName) + '" onclick="toggleDarts()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="darts-arrow sub-arrow">' + arrowDarts + '</span> — Darts —</td></tr>';
+              dartsOuterEntered = true;
+            }
+            if (dartsGroupState !== thisDartsState) {
+              const collapsedNowDarts = thisDartsState === 'memoriam' ? dartsMemCollapsed : dartsTopCollapsed;
+              const arrow2Darts = collapsedNowDarts ? '&#9658;' : '&#9660;';
+              const label2Darts = thisDartsState === 'memoriam' ? 'In Memoriam' : 'Players';
+              const nestedHiddenClassDarts = (dartsCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassDarts + '" data-group="' + escHtml(groupName) + '" data-parentcat="darts" onclick="toggleDartsGroup(\'' + thisDartsState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="darts-arrow-' + thisDartsState + '">' + arrow2Darts + '</span> ' + label2Darts + '</td></tr>';
+            }
+            dartsGroupState = thisDartsState;
+            dartsRowHidden = hidden || dartsCollapsed || (thisDartsState === 'memoriam' ? dartsMemCollapsed : dartsTopCollapsed);
+            supercatAttr = ' data-supercat="darts" data-supercat2="darts-' + thisDartsState + '"' + (dartsRowHidden ? ' data-darts-hidden="1"' : '');
+          } else if (isSnookerFlat || isSnookerMem) {
+            footballGroupState = null;
+            cricketGroupState = null;
+            cyclingGroupState = null;
+            f1GroupState = null;
+            boxingGroupState = null;
+            const thisSnookerState = isSnookerMem ? 'memoriam' : 'top';
+            const catHiddenClassSnooker = hidden ? ' g-hidden' : '';
+            if (!snookerOuterEntered) {
+              const arrowSnooker = snookerCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassSnooker + '" data-group="' + escHtml(groupName) + '" onclick="toggleSnooker()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="snooker-arrow sub-arrow">' + arrowSnooker + '</span> — Snooker —</td></tr>';
+              snookerOuterEntered = true;
+            }
+            if (snookerGroupState !== thisSnookerState) {
+              const collapsedNowSnooker = thisSnookerState === 'memoriam' ? snookerMemCollapsed : snookerTopCollapsed;
+              const arrow2Snooker = collapsedNowSnooker ? '&#9658;' : '&#9660;';
+              const label2Snooker = thisSnookerState === 'memoriam' ? 'In Memoriam' : 'Players';
+              const nestedHiddenClassSnooker = (snookerCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassSnooker + '" data-group="' + escHtml(groupName) + '" data-parentcat="snooker" onclick="toggleSnookerGroup(\'' + thisSnookerState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="snooker-arrow-' + thisSnookerState + '">' + arrow2Snooker + '</span> ' + label2Snooker + '</td></tr>';
+            }
+            snookerGroupState = thisSnookerState;
+            snookerRowHidden = hidden || snookerCollapsed || (thisSnookerState === 'memoriam' ? snookerMemCollapsed : snookerTopCollapsed);
+            supercatAttr = ' data-supercat="snooker" data-supercat2="snooker-' + thisSnookerState + '"' + (snookerRowHidden ? ' data-snooker-hidden="1"' : '');
+          } else if (isUkTvFlat || isUkTvMem) {
+            footballGroupState = null;
+            cricketGroupState = null;
+            cyclingGroupState = null;
+            f1GroupState = null;
+            boxingGroupState = null;
+            const thisUkTvState = isUkTvMem ? 'memoriam' : 'top';
+            const catHiddenClassUkTv = hidden ? ' g-hidden' : '';
+            if (!uktvOuterEntered) {
+              const arrowUkTv = uktvCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassUkTv + '" data-group="' + escHtml(groupName) + '" onclick="toggleUkTv()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="uktv-arrow sub-arrow">' + arrowUkTv + '</span> — UK TV & Comedy —</td></tr>';
+              uktvOuterEntered = true;
+            }
+            if (uktvGroupState !== thisUkTvState) {
+              const collapsedNowUkTv = thisUkTvState === 'memoriam' ? uktvMemCollapsed : uktvTopCollapsed;
+              const arrow2UkTv = collapsedNowUkTv ? '&#9658;' : '&#9660;';
+              const label2UkTv = thisUkTvState === 'memoriam' ? 'In Memoriam' : 'Presenters & Performers';
+              const nestedHiddenClassUkTv = (uktvCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassUkTv + '" data-group="' + escHtml(groupName) + '" data-parentcat="uktv" onclick="toggleUkTvGroup(\'' + thisUkTvState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="uktv-arrow-' + thisUkTvState + '">' + arrow2UkTv + '</span> ' + label2UkTv + '</td></tr>';
+            }
+            uktvGroupState = thisUkTvState;
+            uktvRowHidden = hidden || uktvCollapsed || (thisUkTvState === 'memoriam' ? uktvMemCollapsed : uktvTopCollapsed);
+            supercatAttr = ' data-supercat="uktv" data-supercat2="uktv-' + thisUkTvState + '"' + (uktvRowHidden ? ' data-uktv-hidden="1"' : '');
+          } else if (isComedyFlat || isComedyMem) {
+            footballGroupState = null;
+            cricketGroupState = null;
+            cyclingGroupState = null;
+            f1GroupState = null;
+            boxingGroupState = null;
+            const thisComedyState = isComedyMem ? 'memoriam' : 'top';
+            const catHiddenClassComedy = hidden ? ' g-hidden' : '';
+            if (!comedyOuterEntered) {
+              const arrowComedy = comedyCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassComedy + '" data-group="' + escHtml(groupName) + '" onclick="toggleComedy()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="comedy-arrow sub-arrow">' + arrowComedy + '</span> — Comedy —</td></tr>';
+              comedyOuterEntered = true;
+            }
+            if (comedyGroupState !== thisComedyState) {
+              const collapsedNowComedy = thisComedyState === 'memoriam' ? comedyMemCollapsed : comedyTopCollapsed;
+              const arrow2Comedy = collapsedNowComedy ? '&#9658;' : '&#9660;';
+              const label2Comedy = thisComedyState === 'memoriam' ? 'In Memoriam' : 'Comedians';
+              const nestedHiddenClassComedy = (comedyCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassComedy + '" data-group="' + escHtml(groupName) + '" data-parentcat="comedy" onclick="toggleComedyGroup(\'' + thisComedyState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="comedy-arrow-' + thisComedyState + '">' + arrow2Comedy + '</span> ' + label2Comedy + '</td></tr>';
+            }
+            comedyGroupState = thisComedyState;
+            comedyRowHidden = hidden || comedyCollapsed || (thisComedyState === 'memoriam' ? comedyMemCollapsed : comedyTopCollapsed);
+            supercatAttr = ' data-supercat="comedy" data-supercat2="comedy-' + thisComedyState + '"' + (comedyRowHidden ? ' data-comedy-hidden="1"' : '');
           } else if (isNHL) {
             footballGroupState = null;
             cricketGroupState = null;
@@ -5380,8 +5652,8 @@
           }
 
           if (supercatAttr) {
-            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams || isF1Mem) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoMem || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams || isIndyCarMem) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams || isWRCMem) ? wrcRowHidden : (hidden || footballCollapsed || footballSubCollapsed(footballGroupState));
-            if (isF1Mem || isIndyCarMem || isWRCMem || isMotoMem || isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
+            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : (isUkTvFlat || isUkTvMem) ? uktvRowHidden : (isComedyFlat || isComedyMem) ? comedyRowHidden : (isDartsFlat || isDartsMem) ? dartsRowHidden : (isSnookerFlat || isSnookerMem) ? snookerRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams || isF1Mem) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoMem || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams || isIndyCarMem) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams || isWRCMem) ? wrcRowHidden : (hidden || footballCollapsed || footballSubCollapsed(footballGroupState));
+            if (isUkTvFlat || isUkTvMem || isComedyFlat || isComedyMem || isDartsFlat || isDartsMem || isSnookerFlat || isSnookerMem || isF1Mem || isIndyCarMem || isWRCMem || isMotoMem || isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
               // The visible, clickable toggle for a flat driver/rider/legends
               // list is the "Top 20 by Net Worth"/"Drivers & Motorsport"/
               // "Legends & Personalities"/"Legends & History" db-supersub2
