@@ -7,7 +7,7 @@
 // strategy would risk showing stale content indefinitely after an update
 // ships, which is a real problem this project hit before.
 
-const CACHE_NAME = 'dollar-book-cache-v4';
+const CACHE_NAME = 'dollar-book-cache-v6';
 const OFFLINE_FALLBACK_URL = 'index.html';
 
 const PRECACHE_ASSETS = [
