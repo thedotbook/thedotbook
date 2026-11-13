@@ -1148,7 +1148,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=754b5043"></script>
+<script src="data.js?v=1567c9b9"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -3128,7 +3128,7 @@
   // Strip club/team/context suffixes from a raw key before displaying it as a
   // name, so e.g. 'lewis dunk brighton' shows as "Lewis Dunk", not "Lewis Dunk
   // Brighton" — used everywhere a display name gets built from a raw key.
-  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl)$/i;
+  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
   // Strip the internal 'swf ' key prefix (needed only to keep multiple funds
   // per country unique in CELEB_DB, e.g. 'swf usa alaska', 'swf china safe')
   // before displaying/sorting — otherwise every Sovereign Wealth Fund entry
@@ -3406,6 +3406,37 @@
         const arrow = row.querySelector('.sub-arrow');
         if (arrow) arrow.textContent = '▶';
       }
+    });
+  }
+
+  // Nested Team Owners collapsible section, within the Sport category: one sub-section per sport (club owners and their wealth).
+  const TOWNER_SECTIONS = { 'Premier League': 'pl', 'Other Football': 'ft', 'NFL': 'nfl', 'NBA': 'nba', 'MLB': 'mlb', 'NHL': 'nhl', 'F1 & Motorsport': 'f1', 'IPL': 'ipl', 'Australian Sport': 'aus', 'MotoGP': 'mgp', 'World Rally': 'wrc', 'IndyCar': 'indy', 'NASCAR': 'nas', 'Cycling': 'cyc' };
+  const TOWNER_ORDER = ['Premier League', 'Other Football', 'NFL', 'NBA', 'MLB', 'NHL', 'F1 & Motorsport', 'IPL', 'Australian Sport', 'MotoGP', 'World Rally', 'IndyCar', 'NASCAR', 'Cycling'];
+  let townersCollapsed = true;
+  const townersSubCollapsed = {};
+  Object.keys(TOWNER_SECTIONS).forEach(function(k) { townersSubCollapsed[TOWNER_SECTIONS[k]] = true; });
+
+  function toggleTowners() {
+    townersCollapsed = !townersCollapsed;
+    document.querySelectorAll('.towners-arrow').forEach(function(a) { a.innerHTML = townersCollapsed ? '&#9658;' : '&#9660;'; });
+    document.querySelectorAll('.db-supersub2[data-parentcat="towners"]').forEach(function(row) { row.classList.toggle('g-hidden', townersCollapsed); });
+    updateTownersVisibility();
+  }
+
+  function toggleTownersGroup(which) {
+    townersSubCollapsed[which] = !townersSubCollapsed[which];
+    document.querySelectorAll('.towners-arrow-' + which).forEach(function(a) { a.innerHTML = townersSubCollapsed[which] ? '&#9658;' : '&#9660;'; });
+    updateTownersVisibility();
+  }
+
+  function updateTownersVisibility() {
+    document.querySelectorAll('.db-sub[data-supercat2]').forEach(function(row) {
+      const cat2 = row.dataset.supercat2;
+      if (cat2.indexOf('towners-') !== 0) return;
+      const which = cat2.slice(8);
+      const show = !townersCollapsed && !townersSubCollapsed[which];
+      row.classList.toggle('g-hidden', !show);
+      document.querySelectorAll('.db-person[data-sid="' + row.dataset.sid + '"]').forEach(function(r) { r.style.display = show ? '' : 'none'; });
     });
   }
 
@@ -4371,6 +4402,9 @@
       if (dartsCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="darts"]').forEach(r => r.classList.add('g-hidden'));
       }
+      if (townersCollapsed) {
+        document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="towners"]').forEach(r => r.classList.add('g-hidden'));
+      }
       if (snookerCollapsed) {
         document.querySelectorAll('#table-body tr.db-supersub2[data-parentcat="snooker"]').forEach(r => r.classList.add('g-hidden'));
       }
@@ -4796,6 +4830,7 @@
         if (label.startsWith('National Debt — Per Person')) return 'National Debt — 3 Per Person';
         if (label.startsWith('Corporate Wealth — World')) return 'Corporate Wealth — 1 World';
         if (label.startsWith('Corporate Wealth — UK')) return 'Corporate Wealth — 2 UK';
+        if (label.startsWith('Team Owners —')) { const tn = label.slice(14); const ti = TOWNER_ORDER.indexOf(tn); return 'Team Owners — ' + String(ti < 0 ? 99 : ti + 1).padStart(2, '0') + ' ' + tn; }
         if (label.startsWith('NFL —')) return 'Football — ZZ1 American Football — ' + label.slice(6);
         if (label.startsWith('MLB —')) return 'Baseball / MLB — ' + label.slice(6);
         if (label.startsWith('NBA —')) return 'Basketball — ' + label.slice(6);
@@ -5064,6 +5099,8 @@
       let comedyGroupState = null;
       let dartsOuterEntered = false;
       let dartsGroupState = null;
+      let townersOuterEntered = false;
+      let townersGroupState = null;
       let snookerOuterEntered = false;
       let snookerGroupState = null;
       let f1GroupState = null; // null | 'top' | 'teams' — tracks nesting within F1
@@ -5113,6 +5150,7 @@
           const isUkTvMem = labelTrimmed === 'UK TV & Comedy — In Memoriam';
           const isComedyFlat = labelTrimmed === 'Comedy';
           const isComedyMem = labelTrimmed === 'Comedy — In Memoriam';
+          const isTowner = labelTrimmed.startsWith('Team Owners —');
           const isDartsFlat = labelTrimmed === 'Darts';
           const isDartsMem = labelTrimmed === 'Darts — In Memoriam';
           const isSnookerFlat = labelTrimmed === 'Snooker';
@@ -5147,6 +5185,7 @@
           let nbaRowHidden = false;
           let cricketRowHidden = false;
           let dartsRowHidden = false;
+          let townersRowHidden = false;
           let uktvRowHidden = false;
           let comedyRowHidden = false;
           let snookerRowHidden = false;
@@ -5318,6 +5357,30 @@
             const subCollapsedNow = thisState === 'ipl' ? cricketIplCollapsed : thisState === 'england' ? cricketEnglandCollapsed : thisState === 'australia' ? cricketAustraliaCollapsed : cricketCountyCollapsed;
             cricketRowHidden = hidden || cricketCollapsed || subCollapsedNow;
             supercatAttr = ' data-supercat="cricket" data-supercat2="cricket-' + thisState + '"' + (cricketRowHidden ? ' data-cricket-hidden="1"' : '');
+          } else if (isTowner) {
+            footballGroupState = null;
+            cricketGroupState = null;
+            cyclingGroupState = null;
+            f1GroupState = null;
+            boxingGroupState = null;
+            const townerName = labelTrimmed.replace(/^Team Owners —\s*/, '');
+            const thisTownerState = TOWNER_SECTIONS[townerName] || 'pl';
+            const catHiddenClassTowner = hidden ? ' g-hidden' : '';
+            if (!townersOuterEntered) {
+              const arrowTowner = townersCollapsed ? '&#9658;' : '&#9660;';
+              html += '<tr class="group-row subgroup-label db-supersub' + catHiddenClassTowner + '" data-group="' + escHtml(groupName) + '" onclick="toggleTowners()" style="cursor:pointer">'
+                    + '<td colspan="3" style="padding-left:20px"><span class="towners-arrow sub-arrow">' + arrowTowner + '</span> — Team Owners —</td></tr>';
+              townersOuterEntered = true;
+            }
+            if (townersGroupState !== thisTownerState) {
+              const arrow2Towner = townersSubCollapsed[thisTownerState] ? '&#9658;' : '&#9660;';
+              const nestedHiddenClassTowner = (townersCollapsed || hidden) ? ' g-hidden' : '';
+              html += '<tr class="group-row db-supersub2' + nestedHiddenClassTowner + '" data-group="' + escHtml(groupName) + '" data-parentcat="towners" onclick="toggleTownersGroup(\'' + thisTownerState + '\')" style="cursor:pointer;-webkit-tap-highlight-color:transparent">'
+                    + '<td colspan="3" style="padding-left:32px;font-weight:bold"><span class="towners-arrow-' + thisTownerState + '">' + arrow2Towner + '</span> ' + escHtml(townerName) + '</td></tr>';
+            }
+            townersGroupState = thisTownerState;
+            townersRowHidden = hidden || townersCollapsed || townersSubCollapsed[thisTownerState];
+            supercatAttr = ' data-supercat="towners" data-supercat2="towners-' + thisTownerState + '"' + (townersRowHidden ? ' data-towners-hidden="1"' : '');
           } else if (isDartsFlat || isDartsMem) {
             footballGroupState = null;
             cricketGroupState = null;
@@ -5652,8 +5715,8 @@
           }
 
           if (supercatAttr) {
-            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : (isUkTvFlat || isUkTvMem) ? uktvRowHidden : (isComedyFlat || isComedyMem) ? comedyRowHidden : (isDartsFlat || isDartsMem) ? dartsRowHidden : (isSnookerFlat || isSnookerMem) ? snookerRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams || isF1Mem) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoMem || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams || isIndyCarMem) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams || isWRCMem) ? wrcRowHidden : (hidden || footballCollapsed || footballSubCollapsed(footballGroupState));
-            if (isUkTvFlat || isUkTvMem || isComedyFlat || isComedyMem || isDartsFlat || isDartsMem || isSnookerFlat || isSnookerMem || isF1Mem || isIndyCarMem || isWRCMem || isMotoMem || isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
+            const rowHiddenFinal = isRugby ? rugbyRowHidden : isRugbyLeague ? rugbyLeagueRowHidden : isHorseRacing ? horseRacingRowHidden : isMLB ? mlbRowHidden : isNBA ? nbaRowHidden : (isCounty || isIPL || isEngland || isAustralia) ? cricketRowHidden : (isUkTvFlat || isUkTvMem) ? uktvRowHidden : (isComedyFlat || isComedyMem) ? comedyRowHidden : isTowner ? townersRowHidden : (isDartsFlat || isDartsMem) ? dartsRowHidden : (isSnookerFlat || isSnookerMem) ? snookerRowHidden : isNHL ? nhlRowHidden : (isRoadRacing || isCyclingFlat) ? cyclingRowHidden : (isF1Flat || isF1Teams || isF1Mem) ? f1RowHidden : (isBoxingFlat || isBoxingChamps || isInMemoriam) ? boxingRowHidden : (isMotorcyclingFlat || isMotoMem || isMotoGP || isSuperbikes || isMotocross || isTrials) ? motorcyclingRowHidden : (isIndyCarFlat || isIndyCarTeams || isIndyCarMem) ? indycarRowHidden : (isNASCARFlat || isNASCARTeams) ? nascarRowHidden : (isWRCFlat || isWRCTeams || isWRCMem) ? wrcRowHidden : (hidden || footballCollapsed || footballSubCollapsed(footballGroupState));
+            if (isTowner || isUkTvFlat || isUkTvMem || isComedyFlat || isComedyMem || isDartsFlat || isDartsMem || isSnookerFlat || isSnookerMem || isF1Mem || isIndyCarMem || isWRCMem || isMotoMem || isCyclingFlat || isF1Flat || isBoxingFlat || isInMemoriam || isMotorcyclingFlat || isIndyCarFlat || isNASCARFlat || isWRCFlat) {
               // The visible, clickable toggle for a flat driver/rider/legends
               // list is the "Top 20 by Net Worth"/"Drivers & Motorsport"/
               // "Legends & Personalities"/"Legends & History" db-supersub2
@@ -7387,7 +7450,7 @@
     'Net Zero': ['Net Zero — Annual Investment Required','Carbon Offset Share — An Illustrative Split'],
     'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
     "Womens Super League": ['Football — Womens Super League 2026-27','Football — Arsenal Women','Football — Chelsea Women','Football — Manchester City Women','Football — Manchester United Women','Football — Liverpool Women','Football — Tottenham Hotspur Women','Football — Aston Villa Women','Football — West Ham United Women','Football — Everton Women','Football — London City Lionesses','Football — Brighton & Hove Albion Women','Football — Birmingham City Women','Football — Crystal Palace Women','Football — Charlton Athletic Women'],
-    'Sport': ['Football — Current Stars','Football — Ex-Footballers & Personalities','Football — UEFA Champions League 2026-27','Football — Premier League 2025-26','Football — Manchester United FC','Football — Manchester City FC','Football — Liverpool FC','Football — Arsenal FC','Football — Chelsea FC','Football — Tottenham Hotspur FC','Football — Aston Villa FC','Football — Newcastle United FC','Football — West Ham United FC','Football — Everton FC','Football — Brighton & Hove Albion','Football — Crystal Palace FC','Football — Fulham FC','Football — AFC Bournemouth','Football — Nottingham Forest FC','Football — Brentford FC','Football — Coventry City FC','Football — Hull City AFC','Football — Ipswich Town FC','Football — Leicester City FC','Football — Sunderland AFC','Football — World Cup Players 2026','American Football / NFL','Athletics','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing — Legends','Horse Racing — Stud Farms','Horse Racing — Trainers (Flat)','Horse Racing — Trainers (National Hunt)','Horse Racing — Jockeys (Flat)','Horse Racing — Jockeys (National Hunt)','Horse Racing — Jockeys (Flat) — Career Winnings','Horse Racing — Jockeys (National Hunt) — Career Winnings','Horse Racing — Horses (Flat) — Highest Purchase Price','Horse Racing — Horses (National Hunt) — Highest Purchase Price','Horse Racing — Horses (Flat) — Highest Winnings','Horse Racing — Horses (National Hunt) — Highest Winnings','Ice Hockey / NHL','NFL / NBA Owners','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
+    'Sport': ['Football — Current Stars','Football — Ex-Footballers & Personalities','Football — UEFA Champions League 2026-27','Football — Premier League 2025-26','Football — Manchester United FC','Football — Manchester City FC','Football — Liverpool FC','Football — Arsenal FC','Football — Chelsea FC','Football — Tottenham Hotspur FC','Football — Aston Villa FC','Football — Newcastle United FC','Football — West Ham United FC','Football — Everton FC','Football — Brighton & Hove Albion','Football — Crystal Palace FC','Football — Fulham FC','Football — AFC Bournemouth','Football — Nottingham Forest FC','Football — Brentford FC','Football — Coventry City FC','Football — Hull City AFC','Football — Ipswich Town FC','Football — Leicester City FC','Football — Sunderland AFC','Football — World Cup Players 2026','American Football / NFL','Athletics','Badminton','Baseball / MLB','Basketball','Boxing','Cricket','Cycling','Darts','F1 & Motorsport','Field Hockey','Golf','Horse Racing — Legends','Horse Racing — Stud Farms','Horse Racing — Trainers (Flat)','Horse Racing — Trainers (National Hunt)','Horse Racing — Jockeys (Flat)','Horse Racing — Jockeys (National Hunt)','Horse Racing — Jockeys (Flat) — Career Winnings','Horse Racing — Jockeys (National Hunt) — Career Winnings','Horse Racing — Horses (Flat) — Highest Purchase Price','Horse Racing — Horses (National Hunt) — Highest Purchase Price','Horse Racing — Horses (Flat) — Highest Winnings','Horse Racing — Horses (National Hunt) — Highest Winnings','Ice Hockey / NHL','Team Owners — Premier League','Team Owners — Other Football','Team Owners — NFL','Team Owners — NBA','Team Owners — MLB','Team Owners — NHL','Team Owners — F1 & Motorsport','Team Owners — IPL','Team Owners — Australian Sport','Team Owners — MotoGP','Team Owners — World Rally','Team Owners — IndyCar','Team Owners — NASCAR','Team Owners — Cycling','Rugby','Snooker','Swimming','Table Tennis','Tennis','Volleyball','WWE & Wrestling'],
     'Tech & Business': ['Tech Founders & CEOs','Dragons & Entrepreneurs','Female Founders','News & Media','Fashion','Automotive','Global Billionaires — Beyond The Top 20','Authors'],
     'YouTube & Streaming': ['Top Earners','Gaming','Comedy','Lifestyle','Cars & Motoring']
   };
@@ -8340,7 +8403,7 @@
     let bestMatchLength = 0;
     let bestFuzzyMatch = null;
     let bestFuzzyDistance = Infinity;
-    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl)$/i;
+    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
     for (const [key, val] of Object.entries(CELEB_DB)) {
       if (val._subgroup || key.startsWith('_sub') || !val.wealth) continue;
       let bareKey = key;
