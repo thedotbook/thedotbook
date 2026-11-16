@@ -1149,7 +1149,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=6ae17f9d"></script>
+<script src="data.js?v=55e30437"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -3129,7 +3129,7 @@
   // Strip club/team/context suffixes from a raw key before displaying it as a
   // name, so e.g. 'lewis dunk brighton' shows as "Lewis Dunk", not "Lewis Dunk
   // Brighton" — used everywhere a display name gets built from a raw key.
-  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
+  const NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|ucl|nlg|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
   // Strip the internal 'swf ' key prefix (needed only to keep multiple funds
   // per country unique in CELEB_DB, e.g. 'swf usa alaska', 'swf china safe')
   // before displaying/sorting — otherwise every Sovereign Wealth Fund entry
@@ -4702,6 +4702,11 @@
         // one.
         if (a._fixtureList && !b._fixtureList) return 1;
         if (b._fixtureList && !a._fixtureList) return -1;
+        // Champions League table: league-phase position order (A-Z mode still sorts by name).
+        if (!(forceAlpha || sortAlpha)) {
+          const ma = /(?:League phase position|Nations League table order) #(\d+)/.exec(a.note || ''), mb = /(?:League phase position|Nations League table order) #(\d+)/.exec(b.note || '');
+          if (ma && mb && ma[1] !== mb[1]) return parseInt(ma[1], 10) - parseInt(mb[1], 10);
+        }
         return (forceAlpha || sortAlpha) ? a.name.localeCompare(b.name) : b.wealth - a.wealth;
       });
       // Sort blocks alphabetically by subgroup name — but keep all Football
@@ -8404,7 +8409,7 @@
     let bestMatchLength = 0;
     let bestFuzzyMatch = null;
     let bestFuzzyDistance = Infinity;
-    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
+    const suffixPattern = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|ucl|nlg|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
     for (const [key, val] of Object.entries(CELEB_DB)) {
       if (val._subgroup || key.startsWith('_sub') || !val.wealth) continue;
       let bareKey = key;
