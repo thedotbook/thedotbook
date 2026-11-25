@@ -1149,7 +1149,7 @@
 
 <div id="toast">Copied to clipboard!</div>
 
-<script src="data.js?v=24322ae1"></script>
+<script src="data.js?v=589b71fe"></script>
 <script>
   // ══════════════════════════════════════════════════════════════════
   //  THE DOLLAR BOOK — CELEBRITY / WEALTH DATABASE
@@ -4192,6 +4192,8 @@
     // sidesteps this whole class of false-positive substring collision for
     // any current or future entry, not just this one team name.
     if (n.startsWith('sport ·')) return 'Sport';
+    if (n.startsWith('author ·')) return 'Authors';
+    if (n.startsWith('property ·')) return 'Property & Land';
     if (n.startsWith('career · healthcare')) return 'Career Guide — Healthcare & Medicine';
     if (n.startsWith('career · trades')) return 'Career Guide — Skilled Trades';
     if (n.startsWith('career · education')) return 'Career Guide — Education';
@@ -4323,9 +4325,9 @@
   let GROUP_ORDER = [
     'My Own Entries',
     'Individual Wealth',
-    'The Twenty Wealthiest People on Earth', 'Global Billionaires', 'Film & TV', 'Historical', 'Music', 'Sport', 'Womens Super League', 'Tech & Business', 'YouTube & Streaming', 'Artists', 'Scientists', 'Infamous',
+    'The Twenty Wealthiest People on Earth', 'Global Billionaires', 'Film & TV', 'Authors', 'Historical', 'Music', 'Sport', 'Womens Super League', 'Tech & Business', 'YouTube & Streaming', 'Artists', 'Scientists', 'Infamous',
     'Global Perspective',
-    'Nations & Natural Wealth', 'Sovereign Wealth Funds', 'Corporate Wealth', 'Net Zero', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics',
+    'Nations & Natural Wealth', 'Sovereign Wealth Funds', 'Corporate Wealth', 'Property & Land', 'Net Zero', 'Countries of the World', 'Science & Innovation', 'National Debt', 'Transport', 'Fashion & Beauty', 'Defence & Military', 'Institutions', 'Royalty & Politics',
     'Career Guide',
     'Career Guide — Healthcare & Medicine', 'Career Guide — Skilled Trades', 'Career Guide — Education', 'Career Guide — Law & Finance', 'Career Guide — Technology', 'Career Guide — Business & Management', 'Career Guide — Design & Construction', 'Career Guide — Creative & Hospitality', 'Career Guide — Transport & Logistics', 'Career Guide — Emergency & Public Services', 'Career Guide — Armed Forces', 'Career Guide — Agriculture & Public Services', 'Career Guide — Realistic Professional Sport', 'Career Guide — Realistic Creative Arts', 'Career Guide — Tax',
     'Politics',
@@ -7450,9 +7452,9 @@
 
   const SUBGROUPS = {
     'Career Guide': ['Career Guide — Healthcare & Medicine','Career Guide — Skilled Trades','Career Guide — Education','Career Guide — Law & Finance','Career Guide — Technology','Career Guide — Business & Management','Career Guide — Design & Construction','Career Guide — Creative & Hospitality','Career Guide — Transport & Logistics','Career Guide — Emergency & Public Services','Career Guide — Armed Forces','Career Guide — Agriculture & Public Services','Career Guide — Realistic Professional Sport','Career Guide — Realistic Creative Arts','Career Guide — Tax'],
-    'Film & TV': ['Hollywood Actors','UK Actors','Bollywood','Directors & Producers','US TV & Comedy','UK TV & Comedy','Presenters & Reality TV','Authors'],
+    'Film & TV': ['Hollywood Actors','UK Actors','Bollywood','Directors & Producers','US TV & Comedy','UK TV & Comedy','Presenters & Reality TV'],
     'Historical': ['Ancient & Medieval Rulers','Royals & Emperors','American Industrialists','British & European Historical','Entertainment & Sport — Historical','Scientists & Inventors','Music Legends — Estate Values','Deceased Celebrities & Estates','Comedy','Authors'],
-    'Music': ['Music Groups — Top 50 by Value','Pop & Rock','Hip-Hop & R&B','Country','Classical & Crossover','Comedy','Authors','K-pop','Jazz — Living Artists'],
+    'Music': ['Music Groups — Top 50 by Value','Pop & Rock','Hip-Hop & R&B','Country','Classical & Crossover','Comedy','K-pop','Jazz — Living Artists'],
     'Net Zero': ['Net Zero — Annual Investment Required','Carbon Offset Share — An Illustrative Split'],
     'Royalty & Politics': ['UK Royal Family','European Royals','Middle East Royals','UK Politics','US Politics','World Leaders'],
     "Womens Super League": ['Football — Womens Super League 2026-27','Football — Arsenal Women','Football — Chelsea Women','Football — Manchester City Women','Football — Manchester United Women','Football — Liverpool Women','Football — Tottenham Hotspur Women','Football — Aston Villa Women','Football — West Ham United Women','Football — Everton Women','Football — London City Lionesses','Football — Brighton & Hove Albion Women','Football — Birmingham City Women','Football — Crystal Palace Women','Football — Charlton Athletic Women'],
