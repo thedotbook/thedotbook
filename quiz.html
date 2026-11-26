@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz — The Dollar Book</title>
+  <meta name="description" content="Test what you know about money, wealth and the world. Fresh multiple-choice questions from every section of The Dollar Book." />
+  <link rel="canonical" href="https://thedollarbook.com/quiz.html" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root { --bg:#000; --panel:#111; --panel2:#1a1a1a; --line:#2e2e2e; --text:#fff; --muted:#a8a8a8; --faint:#6d6d6d; --gold:#f9e74a; --blue:#6bb3f9; --red:#ff9d8a; --green:#8fd694; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { margin:0; background:var(--bg); color:var(--text); }
+    body { font-family:Georgia,'Times New Roman',serif; line-height:1.45; padding:0 16px 48px; }
+    .wrap { max-width:640px; margin:0 auto; }
+    a { color:inherit; }
+    button, select { font-family:inherit; }
+    :focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    header { padding:22px 0 14px; text-align:center; }
+    .back { display:inline-block; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); text-decoration:none; margin-bottom:14px; }
+    .back:hover { color:var(--gold); }
+    h1 { font-size:26px; font-weight:normal; letter-spacing:1px; margin:0 0 4px; }
+    .tag { font-size:13px; color:var(--muted); font-style:italic; margin:0; }
+    label.hint { display:block; font-size:12px; color:var(--muted); margin:14px 0 4px; }
+    select { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 30px 11px 12px; font-size:15px; width:100%; appearance:none; -webkit-appearance:none; background-image:linear-gradient(45deg,transparent 50%,#aaa 50%),linear-gradient(135deg,#aaa 50%,transparent 50%); background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%; background-size:5px 5px,5px 5px; background-repeat:no-repeat; }
+    .primary { display:block; width:100%; margin-top:16px; background:var(--text); color:#000; border:0; border-radius:8px; padding:13px; font-size:13px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; }
+    .primary:hover { background:var(--gold); }
+    .bar { display:flex; justify-content:space-between; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin:6px 0 8px; }
+    .prog { height:4px; background:var(--panel2); border-radius:2px; overflow:hidden; margin-bottom:18px; }
+    .prog i { display:block; height:100%; background:var(--gold); width:0; transition:width .25s; }
+    .sec { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin:0 0 6px; }
+    .q { font-size:20px; line-height:1.35; margin:0 0 16px; }
+    .opts { display:grid; gap:10px; }
+    .opt { text-align:left; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:13px 14px; font-size:16px; cursor:pointer; width:100%; }
+    .opt small { display:block; font-size:12px; color:var(--faint); margin-top:2px; }
+    .opt:hover:not(:disabled) { border-color:var(--gold); }
+    .opt:disabled { cursor:default; }
+    .opt.right { border-color:var(--green); background:#12261a; }
+    .opt.wrong { border-color:var(--red); background:#2a1612; }
+    .opt .val { float:right; font-variant-numeric:tabular-nums; color:var(--muted); font-size:14px; }
+    .fb { margin-top:16px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:14px; }
+    .fb b.ok { color:var(--green); font-weight:normal; letter-spacing:2px; text-transform:uppercase; font-size:12px; }
+    .fb b.no { color:var(--red); font-weight:normal; letter-spacing:2px; text-transform:uppercase; font-size:12px; }
+    .fb p { margin:6px 0 0; color:var(--muted); font-size:13px; }
+    .score { font-size:56px; text-align:center; margin:18px 0 4px; color:var(--gold); }
+    .center { text-align:center; color:var(--muted); }
+    .note { font-size:12px; color:var(--muted); margin-top:26px; border-top:1px solid var(--line); padding-top:12px; }
+    .hidden { display:none; }
+    input[type=text] { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:15px; width:100%; font-family:inherit; }
+    .warn { border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:8px 12px; font-size:12px; margin:0 0 12px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="index.html">&larr; The Dollar Book</a>
+    <h1>Quiz</h1>
+    <p class="tag" id="tag">Ten questions, drawn from the figures in the book.</p>
+    <p class="warn hidden" id="warn">This link was made with a different version of the book, so some questions may differ from other pupils. Ask your teacher for a fresh link.</p>
+  </header>
+
+  <section id="start">
+    <label class="hint" for="sect">Choose a section</label>
+    <select id="sect" aria-label="Section"></select>
+    <label class="hint" for="qtype">Question type</label>
+    <select id="qtype" aria-label="Question type">
+      <option value="mix">Mixed</option>
+      <option value="rank">Which is worth the most?</option>
+      <option value="value">How much is it worth?</option>
+    </select>
+    <button class="primary" id="go">Start quiz</button>
+    <div class="mk">
+      <p class="sec" style="margin-top:26px">For teachers</p>
+      <p class="note" style="border:0;margin:0 0 8px;padding:0">Make one link that gives every pupil the same questions in the same order, on any device. Uses the section and question type chosen above. Nothing is stored or collected.</p>
+      <label class="hint" for="qname">Quiz name (optional)</label>
+      <input id="qname" type="text" maxlength="40" placeholder="e.g. Year 9 Money Quiz" />
+      <button class="primary" id="mk" style="background:var(--panel2);color:var(--text);border:1px solid var(--line)">Make class link</button>
+      <div id="mkout" class="hidden">
+        <input id="lnk" type="text" readonly aria-label="Class quiz link" />
+        <button class="primary" id="cp" style="margin-top:8px">Copy link</button>
+      </div>
+    </div>
+    <p class="note">Questions are made fresh each time from the book&rsquo;s own figures, so the answers are only as good as the book. Many figures are estimates. Money is shown in US dollars.</p>
+  </section>
+
+  <section id="play" class="hidden" aria-live="polite">
+    <div class="bar"><span id="num"></span><span id="sc"></span></div>
+    <div class="prog"><i id="pg"></i></div>
+    <p class="sec" id="qsec"></p>
+    <p class="q" id="qtext"></p>
+    <div class="opts" id="opts"></div>
+    <div class="fb hidden" id="fb"></div>
+    <button class="primary hidden" id="next">Next</button>
+  </section>
+
+  <section id="end" class="hidden">
+    <p class="center" style="margin-top:20px;letter-spacing:3px;text-transform:uppercase;font-size:12px">Your score</p>
+    <div class="score" id="final"></div>
+    <p class="center" id="verdict"></p>
+    <button class="primary" id="again">Play again</button>
+  </section>
+</div>
+<script src="data.js?v=589b71fe"></script>
+<script>
+(function(){
+  'use strict';
+  var NAME_SUFFIX_PATTERN = /\s(top20|estate|infamous|club|artist|billionaire|architect|composer|manager|wrestler|painter|designer|science|economist|engineer|worldcup|mancity|arsenal|chelsea|liverpool|brighton|everton|fulham|forest|villa|palace|spurs|westham|hull|coventry|leicester|sunderland|newcastle|ipswich|bournemouth|brentford|manutd|afl|aflw|aus|bbl|plowner|ftowner|nflowner|nbaowner|mlbowner|nhlowner|f1owner|ucl|nlg|warside|warlife|warwin|iplowner|ausowner|mgpowner|wrcowner|indyowner|nascarowner|cycowner)$/i;
+  var ACRONYM_FIX = {
+    'Astrazeneca': 'AstraZeneca', 'Ge Aerospace': 'GE Aerospace', 'Dr Congo Median Wealth Per Adult': 'DR Congo Median Wealth Per Adult', 'Darity And Mullen Total': 'Darity and Mullen Total', 'Johnson And Johnson': 'Johnson & Johnson', 'Procter And Gamble': 'Procter & Gamble', 'Exxonmobil': 'ExxonMobil', 'Asml': 'ASML', 'Abbvie': 'AbbVie', 'Cxmt': 'CXMT', 'Icbc': 'ICBC', 'Unitedhealth': 'UnitedHealth Group', 'Hsbc': 'HSBC', 'Bp': 'BP', 'Gsk': 'GSK', 'Palantir': 'Palantir Technologies', 'Dell': 'Dell Technologies', 'Cisco': 'Cisco Systems', 'Merck': 'Merck & Co.', 'Hsbc': 'HSBC', 'Rolls-Royce': 'Rolls-Royce Holdings', 'Samsung Electronics': 'Samsung Electronics',
+    'Tsmc': 'TSMC', 'Spacex': 'SpaceX', 'Sk Hynix': 'SK hynix', 'Amd': 'AMD', 'Jpmorgan Chase': 'JPMorgan Chase', 'Alphabet': 'Alphabet (Google)', 'Meta': 'Meta Platforms', 'Micron': 'Micron Technology',
+    'Christianity Catholic': 'Catholic Church', 'Christianity Protestant': 'Protestant', 'Christianity Orthodox': 'Eastern Orthodox Church',
+    'Christianity Anglican': 'Anglican Communion', 'Christianity Coe': 'Church of England', 'Islam Sunni': 'Sunni Islam', 'Islam Shia': 'Shia Islam',
+    'Hinduism Vaishnavism': 'Vaishnavism', 'Hinduism Shaivism': 'Shaivism', 'Hinduism Shaktism': 'Shaktism',
+    'Buddhism Mahayana': 'Mahayana Buddhism', 'Buddhism Theravada': 'Theravada Buddhism', 'Buddhism Vajrayana': 'Vajrayana Buddhism',
+    'Libdem': 'Liberal Democrats', 'Cdu': 'CDU/CSU', 'Spd': 'SPD', 'Afd': 'AfD',
+    'Rn': 'National Rally (RN)', 'Lfi': 'France Unbowed (LFI)', 'Democratic': 'Democratic Party', 'Republican': 'Republican Party',
+    'Reform': 'Reform UK', 'Greens': 'The Greens',
+    'King Carl Xvi': 'King Carl XVI', 'King Haakon Viii': 'King Haakon VIII',
+    'Gp': 'GP', 'Ai Engineer': 'AI Engineer', 'Army Pti': 'Army PTI', 'Cad Technician': 'CAD Technician',
+    'Ceo': 'CEO', 'Charity Ceo': 'Charity CEO', 'Devops Engineer': 'DevOps Engineer', 'Ev Technician': 'EV Technician',
+    'Fe Lecturer': 'FE Lecturer', 'Fx Trader': 'FX Trader', 'Gp Practice Manager': 'GP Practice Manager',
+    'Hgv Driver': 'HGV Driver', 'Hgv Mechanic': 'HGV Mechanic', 'Hr Manager': 'HR Manager', 'Hvac Engineer': 'HVAC Engineer',
+    'It Support': 'IT Support', 'Mot Tester': 'MOT Tester', 'Mp': 'MP', 'Pr Manager': 'PR Manager',
+    'Qa Tester': 'QA Tester', 'Raf Airman': 'RAF Airman', 'Raf Officer': 'RAF Officer', 'Raf Regiment Gunner': 'RAF Regiment Gunner',
+    'Reme Mechanic': 'REME Mechanic', 'Sen Teaching Assistant': 'SEN Teaching Assistant', 'Senco': 'SENCO',
+    'Ux Designer': 'UX Designer', 'Ux Researcher': 'UX Researcher', 'Tv Camera Operator': 'TV Camera Operator',
+    'Usa Gdp': 'USA GDP', 'Usa Mineral': 'USA Mineral', 'Uk Gdp': 'UK GDP',
+    'Uae Gdp': 'UAE GDP', 'Dr Congo Gdp': 'DR Congo GDP', 'Dr Congo Mineral': 'DR Congo Mineral',
+    'World Gdp Total': 'World GDP Total', 'World Mineral Total': 'World Mineral Total',
+    'G7 Usa': 'G7 — USA GDP', 'G7 Uk': 'G7 — UK GDP', 'G7 Japan': 'G7 — Japan GDP', 'G7 Germany': 'G7 — Germany GDP',
+    'G7 France': 'G7 — France GDP', 'G7 Italy': 'G7 — Italy GDP', 'G7 Canada': 'G7 — Canada GDP',
+    'G7 Combined Total': 'G7 — Combined Total GDP',
+    'M7 Usa': 'M7 — USA Minerals', 'M7 Russia': 'M7 — Russia Minerals', 'M7 Saudi Arabia': 'M7 — Saudi Arabia Minerals',
+    'M7 Canada': 'M7 — Canada Minerals', 'M7 Iran': 'M7 — Iran Minerals', 'M7 China': 'M7 — China Minerals',
+    'M7 Dr Congo': 'M7 — DR Congo Minerals', 'M7 Combined Total': 'M7 — Combined Total Minerals',
+    'Antarctica Minerals': 'Antarctica — Minerals', 'Antarctica Gdp': 'Antarctica — GDP',
+    'Antarctica Estimated Minerals': 'Antarctica — Estimated Mineral Wealth',
+    'Sao Tome And Principe Gdp': 'São Tomé and Príncipe GDP',
+    'Bosnia And Herzegovina Gdp': 'Bosnia and Herzegovina GDP', 'Saint Kitts And Nevis Gdp': 'Saint Kitts and Nevis GDP',
+    'Saint Vincent And The Grenadines Gdp': 'Saint Vincent and the Grenadines GDP',
+    'Antigua Barbuda Gdp': 'Antigua and Barbuda GDP', 'Trinidad Tobago Gdp': 'Trinidad and Tobago GDP',
+    'Usa Country': 'USA Country', 'Uk Country': 'UK Country', 'Uae Country': 'UAE Country',
+    'Trinidad Tobago Country': 'Trinidad and Tobago Country', 'Antigua Barbuda Country': 'Antigua and Barbuda Country',
+    'Dr Congo Country': 'DR Congo Country', 'Congo Republic Country': 'Republic of the Congo Country',
+    'Sao Tome And Principe Country': 'São Tomé and Príncipe Country', 'Bosnia And Herzegovina Country': 'Bosnia and Herzegovina Country',
+    'Saint Kitts And Nevis Country': 'Saint Kitts and Nevis Country', 'Saint Vincent And The Grenadines Country': 'Saint Vincent and the Grenadines Country',
+    'Palestine Country': 'Palestine Country', 'Congo Republic Gdp': 'Congo Republic GDP',
+    'Usa Alaska': 'USA — Alaska Permanent Fund', 'Usa Texas School': 'USA — Texas Permanent School Fund',
+    'Usa Newmexico': 'USA — New Mexico Permanent Fund', 'Usa Texas University': 'USA — Texas Permanent University Fund',
+    'Uae Adia': 'UAE — ADIA', 'Uae Mubadala': 'UAE — Mubadala', 'Uae Dubai': 'UAE — Dubai ICD', 'Uae Adq': 'UAE — ADQ',
+  };
+  function clean(key){
+    var b = key.replace(/^(swf|career)\s+|^politics\s+\w+\s+|^religion\s+/i,'');
+    while (NAME_SUFFIX_PATTERN.test(b)) b = b.replace(NAME_SUFFIX_PATTERN,'');
+    b = b.replace(/\s+(country|nation|national debt|debt)$/i,'').trim().replace(/\b\w/g,function(c){return c.toUpperCase();});
+    return (ACRONYM_FIX[b] || b).replace(/\bGdp\b/g,'GDP');
+  }
+  function money(m){
+    function sig(x){ return parseFloat(x.toPrecision(3)); }
+    if (m >= 1e6) return '$' + sig(m/1e6) + ' trillion';
+    if (m >= 1e3) return '$' + sig(m/1e3) + ' billion';
+    return '$' + sig(m) + ' million';
+  }
+  // Map the first word of a note to a quiz section.
+  var MERGE = {'Film':'Film & TV','Film & TV':'Film & TV','TV':'Film & TV','Tech':'Tech & Business','Business':'Tech & Business','Tech & Business':'Tech & Business','Finance':'Tech & Business',
+    'Royalty':'Royalty & Politics','Royalty & Politics':'Royalty & Politics','Real Estate':'Property & Land','Property':'Property & Land','Institution':'Institutions',
+    'Perfume':'Fashion & Beauty','Beauty':'Fashion & Beauty','Fashion':'Fashion & Beauty','Horse':'Horse Racing','Science':'Science & Innovation','Nation':'Nations & Natural Wealth',
+    'Top 20':'Billionaires','Billionaire':'Billionaires','Author':'Authors','Corporate':'Corporate Wealth','Country':'Countries','Sovereign Wealth Fund':'Sovereign Wealth Funds',
+    'Artist':'Artists','Defence':'Defence & Military','Nuclear':'Defence & Military','Transport':'Transport','Politics':'Politics','Religion':'Religion','Music':'Music','YouTube':'YouTube & Streaming','Comedy':'Comedy','Football':'Football','Infamous':'Infamous','Historical':'Historical','Net Zero':'Net Zero','National Debt':'National Debt','Media':'Media'};
+  var VERB = {'Billionaires':'is the richest','Corporate Wealth':'has the biggest market value','Countries':'has the biggest economy (GDP)','National Debt':'owes the most','Sovereign Wealth Funds':'holds the most money','Defence & Military':'is the biggest figure','Net Zero':'is the biggest figure','Transport':'is the biggest figure'};
+  var QUOTE = {'Countries':'What is the GDP of','National Debt':'How much does this owe:','Billionaires':'How rich is'};
+
+  var pool = null; // section -> entries
+  function build(){
+    pool = {};
+    var seen = {};
+    Object.keys(CELEB_DB).forEach(function(k){
+      var v = CELEB_DB[k];
+      if (!v || v._subgroup || k.charAt(0)==='_' || typeof v.wealth !== 'number' || v.wealth < 1 || !v.note) return;
+      var parts = v.note.split(' · ');
+      var first = parts[0];
+      var sec;
+      if (first === 'Sport') { sec = 'Sport: ' + (parts[1] || 'Other'); }
+      else if (MERGE[first]) sec = MERGE[first];
+      else return;
+      var name = clean(k);
+      var id = sec + '|' + name.toLowerCase();
+      if (seen[id]) return; seen[id] = 1;
+      var hint = parts[1] && parts[1].length < 32 && first !== 'Sport' ? parts[1] : (first === 'Sport' && parts[2] && parts[2].length < 32 ? parts[2] : '');
+      (pool[sec] = pool[sec] || []).push({name:name, w:v.wealth, hint:hint, note:v.note, sec:sec});
+    });
+    // fold small sports into one section; drop sections that are too small
+    var other = [];
+    Object.keys(pool).forEach(function(s){
+      if (s.indexOf('Sport: ') === 0 && pool[s].length < 25) { other = other.concat(pool[s]); delete pool[s]; }
+    });
+    if (other.length >= 8) { other.forEach(function(e){ e.sec = 'Sport: Other'; }); pool['Sport: Other'] = other; }
+    Object.keys(pool).forEach(function(s){ if (pool[s].length < 8) delete pool[s]; });
+  }
+
+  var rng = Math.random;
+  function seeded(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function rnd(n){ return Math.floor(rng()*n); }
+  function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=rnd(i+1); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function pick(a){ return a[rnd(a.length)]; }
+
+  function rankQ(sec){
+    var arr = pool[sec];
+    for (var tries=0; tries<60; tries++){
+      var c = pick(arr);
+      var lower = arr.filter(function(e){ return e.w <= c.w/1.3 && e.name !== c.name; });
+      if (lower.length < 2) continue;
+      var n = Math.min(lower.length, rng()<0.5 ? 3 : 2);
+      var chosen = [];
+      shuffle(lower.slice()).forEach(function(e){
+        if (chosen.length < n && chosen.every(function(x){ return x.name !== e.name; })) chosen.push(e);
+      });
+      if (chosen.length < 2) continue;
+      var opts = shuffle([c].concat(chosen));
+      var verb = VERB[sec.replace(/^Sport: .*/,'Sport')] || 'is worth the most';
+      return {sec:sec, text:'Which of these ' + verb + ', according to the book?', opts:opts.map(function(e){ return {label:e.name, sub:e.hint, val:money(e.w), right:e===c}; }), entry:c, kind:'rank'};
+    }
+    return null;
+  }
+  function valueQ(sec){
+    var c = pick(pool[sec]);
+    var mult = shuffle([0.1,0.25,0.5,2,4,10]);
+    var vals = [c.w], labels = [money(c.w)];
+    for (var i=0; i<mult.length && vals.length<4; i++){
+      var v = c.w * mult[i];
+      if (v < 1) continue;
+      var l = money(v);
+      if (labels.indexOf(l) === -1) { vals.push(v); labels.push(l); }
+    }
+    if (vals.length < 3) return null;
+    var opts = shuffle(vals.map(function(v,i){ return {label:labels[i], sub:'', val:'', right:i===0}; }));
+    var qt = QUOTE[sec];
+    var text = qt ? qt + ' ' + c.name + '?' : 'About how much is ' + c.name + ' worth, according to the book?';
+    if (sec === 'National Debt') text = 'How big is the national debt of ' + c.name + '?';
+    return {sec:sec, text:text, opts:opts, entry:c, kind:'value', hint:c.hint};
+  }
+
+  var state = {i:0, score:0, qs:[], total:10, used:{}};
+  function $(id){ return document.getElementById(id); }
+  function makeQuiz(sec, type){
+    var secs = Object.keys(pool);
+    var qs = [], guard = 0;
+    while (qs.length < state.total && guard++ < 400){
+      var s = sec === 'all' ? pick(secs) : sec;
+      var t = type === 'mix' ? (rng()<0.6 ? 'rank' : 'value') : type;
+      var q = t === 'rank' ? rankQ(s) : valueQ(s);
+      if (!q || state.used[q.entry.sec + q.entry.name]) continue;
+      state.used[q.entry.sec + q.entry.name] = 1;
+      qs.push(q);
+    }
+    return qs;
+  }
+  function show(){
+    var q = state.qs[state.i];
+    $('num').textContent = 'Question ' + (state.i+1) + ' of ' + state.qs.length;
+    $('sc').textContent = 'Score ' + state.score;
+    $('pg').style.width = (state.i/state.qs.length*100) + '%';
+    $('qsec').textContent = q.sec;
+    $('qtext').textContent = q.text;
+    var box = $('opts'); box.innerHTML = '';
+    q.opts.forEach(function(o){
+      var b = document.createElement('button');
+      b.className = 'opt'; b.type = 'button';
+      b.appendChild(document.createTextNode(o.label));
+      if (o.sub) { var sm = document.createElement('small'); sm.textContent = o.sub; b.appendChild(sm); }
+      b.onclick = function(){ answer(o, b); };
+      box.appendChild(b);
+    });
+    $('fb').className = 'fb hidden'; $('next').className = 'primary hidden';
+    $('next').textContent = state.i === state.qs.length-1 ? 'See score' : 'Next';
+  }
+  function answer(o, btn){
+    var q = state.qs[state.i];
+    var btns = $('opts').children;
+    for (var i=0;i<btns.length;i++){
+      btns[i].disabled = true;
+      if (q.opts[i].right) btns[i].classList.add('right');
+      if (q.opts[i].val){ var sp = document.createElement('span'); sp.className='val'; sp.textContent=q.opts[i].val; btns[i].insertBefore(sp, btns[i].firstChild); }
+    }
+    if (!o.right) btn.classList.add('wrong'); else state.score++;
+    var e = q.entry;
+    var fb = $('fb');
+    fb.innerHTML = '';
+    var b = document.createElement('b'); b.className = o.right ? 'ok' : 'no'; b.textContent = o.right ? 'Correct' : 'Not quite';
+    fb.appendChild(b);
+    var p = document.createElement('p');
+    p.textContent = q.kind === 'rank' ? 'Figures are shown on each answer. ' + e.name + ': ' + money(e.w) + '.' : e.name + ' is ' + money(e.w) + ' in the book.';
+    fb.appendChild(p);
+    var p2 = document.createElement('p'); p2.textContent = e.note.split(' · ').slice(0,4).join(' · ');
+    fb.appendChild(p2);
+    fb.className = 'fb';
+    $('sc').textContent = 'Score ' + state.score;
+    $('next').className = 'primary';
+    $('next').focus();
+  }
+  function finish(){
+    $('play').className = 'hidden'; $('end').className = '';
+    $('final').textContent = state.score + ' / ' + state.qs.length;
+    var r = state.score / state.qs.length;
+    $('verdict').textContent = r >= 0.9 ? 'Outstanding. You know your money.' : r >= 0.7 ? 'Very good.' : r >= 0.4 ? 'A fair start. Try another round.' : 'Have a read of the book and try again.';
+  }
+  function start(){
+    state.i = 0; state.score = 0; state.used = {};
+    rng = state.seed ? seeded(state.seed) : Math.random;
+    state.qs = makeQuiz($('sect').value, $('qtype').value);
+    if (state.qs.length < 3) { alert('Not enough questions in that section yet. Try Everything.'); return; }
+    $('start').className = 'hidden'; $('end').className = 'hidden'; $('play').className = '';
+    show();
+  }
+  $('go').onclick = function(){ state.seed = 0; start(); };
+  var dv = (function(){ var sc = document.querySelector('script[src^="data.js"]'); var m = sc && /v=([0-9a-f]+)/.exec(sc.getAttribute('src')); return m ? m[1] : ''; })();
+  $('mk').onclick = function(){
+    var seed = 1 + Math.floor(Math.random()*2147483000);
+    var u = location.origin + location.pathname + '?s=' + encodeURIComponent($('sect').value) + '&t=' + $('qtype').value + '&seed=' + seed + '&v=' + dv;
+    var nm = $('qname').value.trim(); if (nm) u += '&name=' + encodeURIComponent(nm);
+    $('lnk').value = u; $('mkout').className = ''; $('lnk').select();
+  };
+  $('cp').onclick = function(){
+    var l = $('lnk'); l.select();
+    try { navigator.clipboard.writeText(l.value).then(function(){ $('cp').textContent = 'Copied'; }, function(){ document.execCommand('copy'); $('cp').textContent = 'Copied'; }); }
+    catch(e){ try { document.execCommand('copy'); $('cp').textContent = 'Copied'; } catch(e2){} }
+  };
+  $('again').onclick = function(){ $('end').className = 'hidden'; $('start').className = ''; };
+  $('next').onclick = function(){
+    state.i++;
+    if (state.i >= state.qs.length) finish(); else show();
+  };
+  build();
+  var sel = $('sect');
+  var o = document.createElement('option'); o.value = 'all'; o.textContent = 'Everything (a mix of every section)'; sel.appendChild(o);
+  Object.keys(pool).sort().forEach(function(s){ var op = document.createElement('option'); op.value = s; op.textContent = s; sel.appendChild(op); });
+  // Shared class link
+  var P = new URLSearchParams(location.search);
+  var sd = parseInt(P.get('seed'), 10);
+  if (sd > 0) {
+    var ps = P.get('s') || 'all', pt = P.get('t') || 'mix';
+    if (ps !== 'all' && !pool[ps]) ps = 'all';
+    if (['mix','rank','value'].indexOf(pt) < 0) pt = 'mix';
+    sel.value = ps; $('qtype').value = pt; state.seed = sd;
+    var nm = (P.get('name') || '').slice(0,40);
+    if (nm) { $('tag').textContent = nm; document.title = nm + ' \u2014 The Dollar Book'; }
+    else $('tag').textContent = 'Class quiz: same ten questions for everyone.';
+    if (P.get('v') && dv && P.get('v') !== dv) $('warn').className = 'warn';
+    $('again').textContent = 'Try the same questions again';
+    $('again').onclick = function(){ start(); };
+    start();
+  }
+})();
+</script>
+</body>
+</html>
