@@ -49,6 +49,18 @@
     .center { text-align:center; color:var(--muted); }
     .note { font-size:12px; color:var(--muted); margin-top:26px; border-top:1px solid var(--line); padding-top:12px; }
     .hidden { display:none; }
+    .clue { font-size:13px; color:var(--muted); font-style:italic; margin:-8px 0 16px; min-height:1em; }
+    .hlcard { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; text-align:center; }
+    .hlcard .nm { font-size:22px; margin:2px 0; }
+    .hlcard .cl { font-size:12px; color:var(--muted); font-style:italic; min-height:1.2em; }
+    .hlcard .vl { font-size:30px; color:var(--gold); margin-top:8px; font-variant-numeric:tabular-nums; }
+    .hlcard.right { border-color:var(--green); } .hlcard.wrong { border-color:var(--red); }
+    .vs { text-align:center; color:var(--faint); font-size:11px; letter-spacing:4px; margin:10px 0; }
+    .ask { text-align:center; margin:14px 0 10px; color:var(--muted); font-size:14px; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .two .opt { text-align:center; font-size:15px; letter-spacing:3px; text-transform:uppercase; padding:15px 8px; }
+    .newcat { text-align:center; color:var(--gold); font-size:11px; letter-spacing:3px; text-transform:uppercase; margin:0 0 8px; }
+    .streak { color:var(--gold); }
     input[type=text] { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:15px; width:100%; font-family:inherit; }
     .warn { border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:8px 12px; font-size:12px; margin:0 0 12px; }
   </style>
@@ -58,21 +70,34 @@
   <header>
     <a class="back" href="index.html">&larr; The Dollar Book</a>
     <h1>Quiz</h1>
-    <p class="tag" id="tag">Ten questions, drawn from the figures in the book.</p>
+    <p class="tag" id="tag">Higher or lower? Build the longest streak you can.</p>
     <p class="warn hidden" id="warn">This link was made with a different version of the book, so some questions may differ from other pupils. Ask your teacher for a fresh link.</p>
   </header>
 
   <section id="start">
+    <label class="hint" for="mode">Game</label>
+    <select id="mode" aria-label="Game">
+      <option value="hl">Higher or Lower (streak game)</option>
+      <option value="quiz">Quiz (10 questions)</option>
+    </select>
     <label class="hint" for="sect">Choose a section</label>
     <select id="sect" aria-label="Section"></select>
+    <label class="hint" for="level">Who is included</label>
+    <select id="level" aria-label="Difficulty">
+      <option value="famous">Famous names (easier)</option>
+      <option value="wider">Well known</option>
+      <option value="all">Everything in the book (hardest)</option>
+    </select>
+    <div id="qtwrap">
     <label class="hint" for="qtype">Question type</label>
     <select id="qtype" aria-label="Question type">
       <option value="mix">Mixed</option>
       <option value="rank">Which is worth the most?</option>
       <option value="value">How much is it worth?</option>
     </select>
-    <button class="primary" id="go">Start quiz</button>
-    <div class="mk">
+    </div>
+    <button class="primary" id="go">Start</button>
+    <div class="mk" id="mkwrap">
       <p class="sec" style="margin-top:26px">For teachers</p>
       <p class="note" style="border:0;margin:0 0 8px;padding:0">Make one link that gives every pupil the same questions in the same order, on any device. Uses the section and question type chosen above. Nothing is stored or collected.</p>
       <label class="hint" for="qname">Quiz name (optional)</label>
@@ -91,9 +116,29 @@
     <div class="prog"><i id="pg"></i></div>
     <p class="sec" id="qsec"></p>
     <p class="q" id="qtext"></p>
+    <p class="clue" id="qclue"></p>
     <div class="opts" id="opts"></div>
     <div class="fb hidden" id="fb"></div>
     <button class="primary hidden" id="next">Next</button>
+  </section>
+
+  <section id="hl" class="hidden" aria-live="polite">
+    <div class="bar"><span>Streak <b class="streak" id="hstreak">0</b></span><span id="hbest"></span></div>
+    <p class="newcat hidden" id="hnew"></p>
+    <div class="hlcard" id="ca"><div class="sec" id="hsec"></div><div class="nm" id="an"></div><div class="cl" id="ac"></div><div class="vl" id="av"></div></div>
+    <div class="vs">VS</div>
+    <div class="hlcard" id="cb"><div class="nm" id="bn"></div><div class="cl" id="bc"></div><div class="vl" id="bv">?</div></div>
+    <p class="ask" id="hask"></p>
+    <div class="two" id="hbtns"><button class="opt" id="hhi" type="button">Higher &#9650;</button><button class="opt" id="hlo" type="button">Lower &#9660;</button></div>
+    <div class="fb hidden" id="hfb"></div>
+    <button class="primary hidden" id="hnext">Next</button>
+    <div id="hover" class="hidden">
+      <div class="score" id="hfinal"></div>
+      <p class="center" id="hverdict"></p>
+      <button class="primary" id="hshare">Share my streak</button>
+      <button class="primary" id="hagain" style="background:var(--panel2);color:var(--text);border:1px solid var(--line)">Play again</button>
+      <button class="primary" id="hback" style="background:none;color:var(--muted)">Change settings</button>
+    </div>
   </section>
 
   <section id="end" class="hidden">
@@ -173,6 +218,23 @@
   var VERB = {'Billionaires':'is the richest','Corporate Wealth':'has the biggest market value','Countries':'has the biggest economy (GDP)','National Debt':'owes the most','Sovereign Wealth Funds':'holds the most money','Defence & Military':'is the biggest figure','Net Zero':'is the biggest figure','Transport':'is the biggest figure'};
   var QUOTE = {'Countries':'What is the GDP of','National Debt':'How much does this owe:','Billionaires':'How rich is'};
 
+  var BAD = /[$\u00a3\u20ac%]|\d{3,}|\b(billion|trillion|million|worth|market value|gdp|forbes|estimate|updated|was|wealth|net worth|income|salary|valued|club value|per person|total|debt|assets|signed|appointed|ranked)\b|\d[bmk]\b/i;
+  function makeClue(parts, name){
+    var out = [], ln = name.toLowerCase();
+    for (var i=1; i<parts.length && out.length<3; i++){
+      var p = parts[i].trim(), lp = p.toLowerCase();
+      if (!p || p.length > 60 || BAD.test(p) || /^(business|owner|investor|net worth)$/i.test(p)) continue;
+      if (lp === ln || ln.indexOf(lp) >= 0 || lp.indexOf(ln) >= 0) continue;
+      out.push(p);
+    }
+    return out.join(' \u00b7 ').slice(0,90);
+  }
+  var LV = {famous:30, wider:120, all:1e9};
+  function poolFor(sec){
+    var a = pool[sec];
+    var n = Math.max(10, Math.min(LV[state.level] || 1e9, a.length));
+    return a.slice(0, n);
+  }
   var pool = null; // section -> entries
   function build(){
     pool = {};
@@ -181,6 +243,7 @@
       var v = CELEB_DB[k];
       if (!v || v._subgroup || k.charAt(0)==='_' || typeof v.wealth !== 'number' || v.wealth < 1 || !v.note) return;
       var parts = v.note.split(' · ');
+      if (parts[0] === 'Country' && !/GDP/.test(v.note)) return; // e.g. World Population has no GDP
       var first = parts[0];
       var sec;
       if (first === 'Sport') { sec = 'Sport: ' + (parts[1] || 'Other'); }
@@ -189,8 +252,9 @@
       var name = clean(k);
       var id = sec + '|' + name.toLowerCase();
       if (seen[id]) return; seen[id] = 1;
+      var clue = makeClue(parts, name);
       var hint = parts[1] && parts[1].length < 32 && first !== 'Sport' ? parts[1] : (first === 'Sport' && parts[2] && parts[2].length < 32 ? parts[2] : '');
-      (pool[sec] = pool[sec] || []).push({name:name, w:v.wealth, hint:hint, note:v.note, sec:sec});
+      (pool[sec] = pool[sec] || []).push({name:name, w:v.wealth, hint:hint, clue:clue, note:v.note, sec:sec});
     });
     // fold small sports into one section; drop sections that are too small
     var other = [];
@@ -198,7 +262,7 @@
       if (s.indexOf('Sport: ') === 0 && pool[s].length < 25) { other = other.concat(pool[s]); delete pool[s]; }
     });
     if (other.length >= 8) { other.forEach(function(e){ e.sec = 'Sport: Other'; }); pool['Sport: Other'] = other; }
-    Object.keys(pool).forEach(function(s){ if (pool[s].length < 8) delete pool[s]; });
+    Object.keys(pool).forEach(function(s){ if (pool[s].length < 8) delete pool[s]; else pool[s].sort(function(x,y){ return y.w - x.w; }); });
   }
 
   var rng = Math.random;
@@ -206,9 +270,16 @@
   function rnd(n){ return Math.floor(rng()*n); }
   function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=rnd(i+1); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   function pick(a){ return a[rnd(a.length)]; }
+  var SKIP_ALL = {'Net Zero':1,'Religion':1,'Politics':1,'Transport':1,'Defence & Military':1,'Institutions':1,'National Debt':1,'Historical':1,'Nations & Natural Wealth':1};
+  function pickSec(secs){
+    var main = secs.filter(function(x){ return x.indexOf('Sport:') !== 0 && !SKIP_ALL[x]; });
+    var sport = secs.filter(function(x){ return x.indexOf('Sport:') === 0; });
+    if (secs.length === 1 || !main.length) return pick(secs);
+    return (sport.length && Math.random() < 0.18) ? pick(sport) : pick(main);
+  }
 
   function rankQ(sec){
-    var arr = pool[sec];
+    var arr = poolFor(sec);
     for (var tries=0; tries<60; tries++){
       var c = pick(arr);
       var lower = arr.filter(function(e){ return e.w <= c.w/1.3 && e.name !== c.name; });
@@ -221,12 +292,12 @@
       if (chosen.length < 2) continue;
       var opts = shuffle([c].concat(chosen));
       var verb = VERB[sec.replace(/^Sport: .*/,'Sport')] || 'is worth the most';
-      return {sec:sec, text:'Which of these ' + verb + ', according to the book?', opts:opts.map(function(e){ return {label:e.name, sub:e.hint, val:money(e.w), right:e===c}; }), entry:c, kind:'rank'};
+      return {sec:sec, text:'Which of these ' + verb + ', according to the book?', opts:opts.map(function(e){ return {label:e.name, sub:e.clue, val:money(e.w), right:e===c}; }), entry:c, kind:'rank'};
     }
     return null;
   }
   function valueQ(sec){
-    var c = pick(pool[sec]);
+    var c = pick(poolFor(sec));
     var mult = shuffle([0.1,0.25,0.5,2,4,10]);
     var vals = [c.w], labels = [money(c.w)];
     for (var i=0; i<mult.length && vals.length<4; i++){
@@ -240,16 +311,16 @@
     var qt = QUOTE[sec];
     var text = qt ? qt + ' ' + c.name + '?' : 'About how much is ' + c.name + ' worth, according to the book?';
     if (sec === 'National Debt') text = 'How big is the national debt of ' + c.name + '?';
-    return {sec:sec, text:text, opts:opts, entry:c, kind:'value', hint:c.hint};
+    return {sec:sec, text:text, opts:opts, entry:c, kind:'value', clue:c.clue};
   }
 
-  var state = {i:0, score:0, qs:[], total:10, used:{}};
+  var state = {i:0, score:0, qs:[], total:10, used:{}, level:'famous', seed:0};
   function $(id){ return document.getElementById(id); }
   function makeQuiz(sec, type){
     var secs = Object.keys(pool);
     var qs = [], guard = 0;
     while (qs.length < state.total && guard++ < 400){
-      var s = sec === 'all' ? pick(secs) : sec;
+      var s = sec === 'all' ? pickSec(secs) : sec;
       var t = type === 'mix' ? (rng()<0.6 ? 'rank' : 'value') : type;
       var q = t === 'rank' ? rankQ(s) : valueQ(s);
       if (!q || state.used[q.entry.sec + q.entry.name]) continue;
@@ -265,6 +336,7 @@
     $('pg').style.width = (state.i/state.qs.length*100) + '%';
     $('qsec').textContent = q.sec;
     $('qtext').textContent = q.text;
+    $('qclue').textContent = q.clue || '';
     var box = $('opts'); box.innerHTML = '';
     q.opts.forEach(function(o){
       var b = document.createElement('button');
@@ -312,14 +384,105 @@
     rng = state.seed ? seeded(state.seed) : Math.random;
     state.qs = makeQuiz($('sect').value, $('qtype').value);
     if (state.qs.length < 3) { alert('Not enough questions in that section yet. Try Everything.'); return; }
-    $('start').className = 'hidden'; $('end').className = 'hidden'; $('play').className = '';
+    $('start').className = 'hidden'; $('end').className = 'hidden'; $('hl').className = 'hidden'; $('play').className = '';
     show();
   }
-  $('go').onclick = function(){ state.seed = 0; start(); };
+  function getBest(k){ try { return parseInt(localStorage.getItem('dbq_best_' + k), 10) || 0; } catch(e){ return 0; } }
+  function setBest(k, v){ try { localStorage.setItem('dbq_best_' + k, String(v)); } catch(e){} }
+  $('mode').onchange = function(){
+    var hl = $('mode').value === 'hl';
+    if (!state.seed) $('tag').textContent = hl ? 'Higher or lower? Build the longest streak you can.' : 'Ten questions, drawn from the figures in the book.';
+    $('qtwrap').className = hl ? 'hidden' : ''; $('mkwrap').className = hl ? 'mk hidden' : 'mk';
+  };
+  $('go').onclick = function(){
+    state.level = $('level').value;
+    if ($('mode').value === 'hl') { startHL(); return; }
+    state.seed = 0; start();
+  };
+
+  // ---------- Higher or Lower
+  var HL = {sec:'', cur:null, nxt:null, streak:0, used:{}, best:0, key:'', locked:false, secs:[]};
+  var WORD = {'Countries':'GDP','National Debt':'debt','Corporate Wealth':'market value','Sovereign Wealth Funds':'fund size','Property & Land':'value','Institutions':'value','Transport':'cost','Defence & Military':'value','Net Zero':'cost'};
+  function wordFor(sec){ if (WORD[sec]) return WORD[sec]; return sec.indexOf('Sport:') === 0 ? 'value' : 'wealth'; }
+  function hlSecs(){ var all = $('sect').value; return all === 'all' ? Object.keys(pool) : [all]; }
+  function hlNewAnchor(sec){
+    var arr = poolFor(sec); var c = pick(arr);
+    HL.sec = sec; HL.cur = c; HL.used = {}; HL.used[c.name] = 1;
+  }
+  function hlNext(){
+    var arr = poolFor(HL.sec);
+    var thr = Math.max(1.15, 3 - HL.streak * 0.12);
+    var c;
+    for (var relax = 0; relax < 3 && !c; relax++){
+      var t = relax === 0 ? thr : relax === 1 ? 1.1 : 1.0001;
+      var cand = arr.filter(function(e){ return !HL.used[e.name] && Math.max(e.w, HL.cur.w) / Math.min(e.w, HL.cur.w) >= t; });
+      if (cand.length) c = pick(cand);
+    }
+    if (!c) { HL.used = {}; HL.used[HL.cur.name] = 1; var cand2 = arr.filter(function(e){ return e.name !== HL.cur.name && e.w !== HL.cur.w; }); c = cand2.length ? pick(cand2) : null; }
+    HL.nxt = c; if (c) HL.used[c.name] = 1;
+  }
+  function hlShow(newcat){
+    $('hstreak').textContent = HL.streak;
+    $('hbest').textContent = 'Best ' + HL.best;
+    $('hsec').textContent = HL.sec;
+    $('an').textContent = HL.cur.name; $('ac').textContent = HL.cur.clue; $('av').textContent = money(HL.cur.w);
+    $('bn').textContent = HL.nxt.name; $('bc').textContent = HL.nxt.clue; $('bv').textContent = '?';
+    $('ca').className = 'hlcard'; $('cb').className = 'hlcard';
+    $('hask').textContent = 'Is ' + HL.nxt.name + ' higher or lower than ' + HL.cur.name + '? (' + wordFor(HL.sec) + ')';
+    $('hnew').className = newcat ? 'newcat' : 'newcat hidden'; $('hnew').textContent = newcat ? 'New category: ' + HL.sec : '';
+    $('hbtns').className = 'two'; $('hask').className = 'ask';
+    $('hfb').className = 'fb hidden'; $('hnext').className = 'primary hidden'; $('hover').className = 'hidden';
+    HL.locked = false;
+  }
+  function startHL(){
+    HL.secs = hlSecs(); HL.streak = 0;
+    HL.key = state.level + '_' + $('sect').value; HL.best = getBest(HL.key);
+    hlNewAnchor(pickSec(HL.secs)); hlNext();
+    $('start').className = 'hidden'; $('end').className = 'hidden'; $('play').className = 'hidden'; $('hl').className = '';
+    hlShow(false);
+  }
+  function hlGuess(higher){
+    if (HL.locked) return; HL.locked = true;
+    var up = HL.nxt.w > HL.cur.w, ok = (higher === up);
+    $('bv').textContent = money(HL.nxt.w);
+    $('cb').className = 'hlcard ' + (ok ? 'right' : 'wrong');
+    $('hbtns').className = 'two hidden'; $('hask').className = 'ask hidden';
+    var fb = $('hfb'); fb.innerHTML = '';
+    var b = document.createElement('b'); b.className = ok ? 'ok' : 'no'; b.textContent = ok ? 'Correct' : 'Game over'; fb.appendChild(b);
+    var p = document.createElement('p'); p.textContent = HL.nxt.name + ': ' + money(HL.nxt.w) + ' vs ' + HL.cur.name + ': ' + money(HL.cur.w) + '.'; fb.appendChild(p);
+    var p2 = document.createElement('p'); p2.textContent = HL.nxt.note.split(' \u00b7 ').slice(0,4).join(' \u00b7 '); fb.appendChild(p2);
+    fb.className = 'fb';
+    if (ok) {
+      HL.streak++; $('hstreak').textContent = HL.streak;
+      if (HL.streak > HL.best) { HL.best = HL.streak; setBest(HL.key, HL.best); $('hbest').textContent = 'Best ' + HL.best; }
+      $('hnext').className = 'primary'; $('hnext').focus();
+    } else {
+      $('hnext').className = 'primary hidden';
+      $('hfinal').textContent = HL.streak; 
+      $('hverdict').textContent = (HL.streak === 0 ? 'Not this time.' : HL.streak >= 15 ? 'Incredible run!' : HL.streak >= 8 ? 'Great run.' : 'Good start.') + ' Your best here: ' + HL.best + '.';
+      $('hover').className = '';
+    }
+  }
+  $('hhi').onclick = function(){ hlGuess(true); };
+  $('hlo').onclick = function(){ hlGuess(false); };
+  $('hnext').onclick = function(){
+    var newcat = false;
+    if (HL.secs.length > 1 && HL.streak > 0 && HL.streak % 5 === 0) {
+      var others = HL.secs.filter(function(x){ return x !== HL.sec; }); hlNewAnchor(pickSec(others)); newcat = true;
+    } else { HL.cur = HL.nxt; }
+    hlNext(); hlShow(newcat);
+  };
+  $('hagain').onclick = startHL;
+  $('hback').onclick = function(){ $('hl').className = 'hidden'; $('start').className = ''; };
+  $('hshare').onclick = function(){
+    var t = 'I got a streak of ' + HL.streak + ' on Higher or Lower at The Dollar Book. Can you beat it? https://thedollarbook.com/quiz.html';
+    try { if (navigator.share) { navigator.share({text:t}); return; } } catch(e){}
+    try { navigator.clipboard.writeText(t); $('hshare').textContent = 'Copied to clipboard'; } catch(e){ $('hshare').textContent = t; }
+  };
   var dv = (function(){ var sc = document.querySelector('script[src^="data.js"]'); var m = sc && /v=([0-9a-f]+)/.exec(sc.getAttribute('src')); return m ? m[1] : ''; })();
   $('mk').onclick = function(){
     var seed = 1 + Math.floor(Math.random()*2147483000);
-    var u = location.origin + location.pathname + '?s=' + encodeURIComponent($('sect').value) + '&t=' + $('qtype').value + '&seed=' + seed + '&v=' + dv;
+    var u = location.origin + location.pathname + '?s=' + encodeURIComponent($('sect').value) + '&t=' + $('qtype').value + '&l=' + $('level').value + '&seed=' + seed + '&v=' + dv;
     var nm = $('qname').value.trim(); if (nm) u += '&name=' + encodeURIComponent(nm);
     $('lnk').value = u; $('mkout').className = ''; $('lnk').select();
   };
@@ -337,6 +500,7 @@
   var sel = $('sect');
   var o = document.createElement('option'); o.value = 'all'; o.textContent = 'Everything (a mix of every section)'; sel.appendChild(o);
   Object.keys(pool).sort().forEach(function(s){ var op = document.createElement('option'); op.value = s; op.textContent = s; sel.appendChild(op); });
+  $('mode').onchange();
   // Shared class link
   var P = new URLSearchParams(location.search);
   var sd = parseInt(P.get('seed'), 10);
@@ -344,7 +508,8 @@
     var ps = P.get('s') || 'all', pt = P.get('t') || 'mix';
     if (ps !== 'all' && !pool[ps]) ps = 'all';
     if (['mix','rank','value'].indexOf(pt) < 0) pt = 'mix';
-    sel.value = ps; $('qtype').value = pt; state.seed = sd;
+    var pl = P.get('l'); if (['famous','wider','all'].indexOf(pl) < 0) pl = 'all';
+    sel.value = ps; $('qtype').value = pt; $('level').value = pl; state.level = pl; state.seed = sd; $('mode').value = 'quiz'; $('mode').onchange();
     var nm = (P.get('name') || '').slice(0,40);
     if (nm) { $('tag').textContent = nm; document.title = nm + ' \u2014 The Dollar Book'; }
     else $('tag').textContent = 'Class quiz: same ten questions for everyone.';
