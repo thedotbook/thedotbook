@@ -77,9 +77,11 @@
   <section id="start">
     <label class="hint" for="mode">Game</label>
     <select id="mode" aria-label="Game">
+      <option value="daily">Today&rsquo;s Quiz (one question a day)</option>
       <option value="hl">Higher or Lower (streak game)</option>
       <option value="quiz">Quiz (10 questions)</option>
     </select>
+    <div id="sectwrap">
     <label class="hint" for="sect">Choose a section</label>
     <select id="sect" aria-label="Section"></select>
     <label class="hint" for="level">Who is included</label>
@@ -88,10 +90,12 @@
       <option value="wider">Well known</option>
       <option value="all">Everything in the book (hardest)</option>
     </select>
+    </div>
     <div id="qtwrap">
     <label class="hint" for="qtype">Question type</label>
     <select id="qtype" aria-label="Question type">
       <option value="mix">Mixed</option>
+      <option value="clue">Who is it? (from clues)</option>
       <option value="rank">Which is worth the most?</option>
       <option value="value">How much is it worth?</option>
     </select>
@@ -200,7 +204,7 @@
   function clean(key){
     var b = key.replace(/^(swf|career)\s+|^politics\s+\w+\s+|^religion\s+/i,'');
     while (NAME_SUFFIX_PATTERN.test(b)) b = b.replace(NAME_SUFFIX_PATTERN,'');
-    b = b.replace(/\s+(country|nation|national debt|debt)$/i,'').trim().replace(/\b\w/g,function(c){return c.toUpperCase();});
+    b = b.replace(/\s+(country|nation|national debt|debt|fashion|band|brand)$/i,'').trim().replace(/\b\w/g,function(c){return c.toUpperCase();});
     return (ACRONYM_FIX[b] || b).replace(/\bGdp\b/g,'GDP');
   }
   function money(m){
@@ -275,7 +279,7 @@
     var main = secs.filter(function(x){ return x.indexOf('Sport:') !== 0 && !SKIP_ALL[x]; });
     var sport = secs.filter(function(x){ return x.indexOf('Sport:') === 0; });
     if (secs.length === 1 || !main.length) return pick(secs);
-    return (sport.length && Math.random() < 0.18) ? pick(sport) : pick(main);
+    return (sport.length && rng() < 0.18) ? pick(sport) : pick(main);
   }
 
   function rankQ(sec){
@@ -293,6 +297,23 @@
       var opts = shuffle([c].concat(chosen));
       var verb = VERB[sec.replace(/^Sport: .*/,'Sport')] || 'is worth the most';
       return {sec:sec, text:'Which of these ' + verb + ', according to the book?', opts:opts.map(function(e){ return {label:e.name, sub:e.clue, val:money(e.w), right:e===c}; }), entry:c, kind:'rank'};
+    }
+    return null;
+  }
+  function clueQ(sec){
+    var arr = poolFor(sec);
+    for (var tries=0; tries<80; tries++){
+      var c = pick(arr);
+      if (!c.clue || c.clue.length < 14) continue;
+      if (c.sec === 'Football' || c.sec.indexOf('Sport:') === 0) continue; // owner/club clues are confusing
+      var lc = c.clue.toLowerCase();
+      var toks = c.name.toLowerCase().split(/[^a-z0-9]+/).filter(function(t){ return t.length >= 4; });
+      if (toks.some(function(t){ return lc.indexOf(t) >= 0; })) continue;
+      if (/\bvs\b/i.test(c.name) || c.clue.length < 18) continue;
+      var others = shuffle(arr.filter(function(e){ return e.name !== c.name && e.clue !== c.clue && !/\bvs\b/i.test(e.name); }));
+      if (others.length < 3) continue;
+      var opts = shuffle([c].concat(others.slice(0, rng() < 0.5 ? 3 : 2)));
+      return {sec:sec, text:'Which of these is described as: \u201c' + c.clue + '\u201d?', opts:opts.map(function(e){ return {label:e.name, sub:'', val:'', right:e===c}; }), entry:c, kind:'clue'};
     }
     return null;
   }
@@ -321,8 +342,8 @@
     var qs = [], guard = 0;
     while (qs.length < state.total && guard++ < 400){
       var s = sec === 'all' ? pickSec(secs) : sec;
-      var t = type === 'mix' ? (rng()<0.6 ? 'rank' : 'value') : type;
-      var q = t === 'rank' ? rankQ(s) : valueQ(s);
+      var r = rng(); var t = type === 'mix' ? (r<0.4 ? 'clue' : r<0.75 ? 'rank' : 'value') : type;
+      var q = t === 'clue' ? clueQ(s) : t === 'rank' ? rankQ(s) : valueQ(s);
       if (!q || state.used[q.entry.sec + q.entry.name]) continue;
       state.used[q.entry.sec + q.entry.name] = 1;
       qs.push(q);
@@ -331,7 +352,7 @@
   }
   function show(){
     var q = state.qs[state.i];
-    $('num').textContent = 'Question ' + (state.i+1) + ' of ' + state.qs.length;
+    $('num').textContent = state.daily ? 'Today\u2019s Quiz' : 'Question ' + (state.i+1) + ' of ' + state.qs.length;
     $('sc').textContent = 'Score ' + state.score;
     $('pg').style.width = (state.i/state.qs.length*100) + '%';
     $('qsec').textContent = q.sec;
@@ -341,7 +362,7 @@
     q.opts.forEach(function(o){
       var b = document.createElement('button');
       b.className = 'opt'; b.type = 'button';
-      b.appendChild(document.createTextNode(o.label));
+      b.appendChild(document.createTextNode('ABCD'.charAt(q.opts.indexOf(o)) + '. ' + o.label));
       if (o.sub) { var sm = document.createElement('small'); sm.textContent = o.sub; b.appendChild(sm); }
       b.onclick = function(){ answer(o, b); };
       box.appendChild(b);
@@ -364,9 +385,9 @@
     var b = document.createElement('b'); b.className = o.right ? 'ok' : 'no'; b.textContent = o.right ? 'Correct' : 'Not quite';
     fb.appendChild(b);
     var p = document.createElement('p');
-    p.textContent = q.kind === 'rank' ? 'Figures are shown on each answer. ' + e.name + ': ' + money(e.w) + '.' : e.name + ' is ' + money(e.w) + ' in the book.';
+    p.textContent = q.kind === 'rank' ? 'Figures are shown on each answer. ' + e.name + ': ' + money(e.w) + '.' : q.kind === 'bank' ? 'The answer is ' + e.name + '.' : q.kind === 'clue' ? 'The answer is ' + e.name + ' (' + money(e.w) + ' in the book).' : e.name + ' is ' + money(e.w) + ' in the book.';
     fb.appendChild(p);
-    var p2 = document.createElement('p'); p2.textContent = e.note.split(' · ').slice(0,4).join(' · ');
+    var p2 = document.createElement('p'); p2.textContent = q.kind === 'bank' ? e.note : e.note.split(' \u00b7 ').slice(0,4).join(' \u00b7 ');
     fb.appendChild(p2);
     fb.className = 'fb';
     $('sc').textContent = 'Score ' + state.score;
@@ -376,11 +397,17 @@
   function finish(){
     $('play').className = 'hidden'; $('end').className = '';
     $('final').textContent = state.score + ' / ' + state.qs.length;
+    if (state.daily) {
+      $('final').textContent = state.score ? '\u2714' : '\u2718';
+      $('verdict').textContent = (state.score ? 'Well done! ' : 'Not this time. ') + 'Come back tomorrow for a new question, or try a game below.';
+      $('again').textContent = 'More games'; return;
+    }
+    $('again').textContent = 'Play again';
     var r = state.score / state.qs.length;
     $('verdict').textContent = r >= 0.9 ? 'Outstanding. You know your money.' : r >= 0.7 ? 'Very good.' : r >= 0.4 ? 'A fair start. Try another round.' : 'Have a read of the book and try again.';
   }
   function start(){
-    state.i = 0; state.score = 0; state.used = {};
+    state.i = 0; state.score = 0; state.used = {}; state.total = 10; state.daily = false;
     rng = state.seed ? seeded(state.seed) : Math.random;
     state.qs = makeQuiz($('sect').value, $('qtype').value);
     if (state.qs.length < 3) { alert('Not enough questions in that section yet. Try Everything.'); return; }
@@ -390,16 +417,42 @@
   function getBest(k){ try { return parseInt(localStorage.getItem('dbq_best_' + k), 10) || 0; } catch(e){ return 0; } }
   function setBest(k, v){ try { localStorage.setItem('dbq_best_' + k, String(v)); } catch(e){} }
   $('mode').onchange = function(){
-    var hl = $('mode').value === 'hl';
-    if (!state.seed) $('tag').textContent = hl ? 'Higher or lower? Build the longest streak you can.' : 'Ten questions, drawn from the figures in the book.';
-    $('qtwrap').className = hl ? 'hidden' : ''; $('mkwrap').className = hl ? 'mk hidden' : 'mk';
+    var m = $('mode').value, hl = m === 'hl', dl = m === 'daily';
+    if (!state.seed) $('tag').textContent = dl ? 'One new question every day, the same for everyone.' : hl ? 'Higher or lower? Build the longest streak you can.' : 'Ten questions, drawn from the figures in the book.';
+    $('qtwrap').className = (hl || dl) ? 'hidden' : ''; $('mkwrap').className = (hl || dl) ? 'mk hidden' : 'mk';
+    $('sectwrap').className = dl ? 'hidden' : ''; $('go').textContent = dl ? 'Show today\u2019s question' : 'Start';
   };
   $('go').onclick = function(){
     state.level = $('level').value;
     if ($('mode').value === 'hl') { startHL(); return; }
+    if ($('mode').value === 'daily') { startDaily(); return; }
     state.seed = 0; start();
   };
 
+  var BANK = [["Business", "Which company was the first in history to reach a stock market value of $1 trillion, in August 2018?", ["Apple", "Amazon", "Microsoft", "Alphabet (Google)"], "Apple passed $1 trillion in August 2018. Amazon, Microsoft and Alphabet followed in later years."], ["Wealth funds", "Which country runs the world's largest sovereign wealth fund, built on North Sea oil and gas income?", ["Norway", "Saudi Arabia", "Kuwait", "Singapore"], "Norway's Government Pension Fund Global is the largest sovereign wealth fund in the world."], ["Authors", "Which author is the best-selling novelist of all time, with an estimated two billion books sold?", ["Agatha Christie", "Stephen King", "J.K. Rowling", "Barbara Cartland"], "Agatha Christie, creator of Hercule Poirot and Miss Marple, is the best-selling novelist of all time."], ["Business", "Which furniture retailer was founded in Sweden in 1943 by a 17-year-old Ingvar Kamprad?", ["IKEA", "H&M", "Volvo", "Electrolux"], "Ingvar Kamprad started IKEA at 17 and built it into the world's biggest furniture retailer."], ["Business", "What did Jeff Bezos first sell when he started Amazon from his garage in 1994?", ["Books", "Music CDs", "Toys", "Groceries"], "Amazon began as an online bookshop before it sold everything else."], ["Property", "Where do most of the Crown Estate's profits go?", ["The UK Treasury", "Straight to the King", "The Church of England", "The Duchy of Lancaster"], "The Crown Estate's profits go to the Treasury. The monarch receives a Sovereign Grant, which is a share of them."], ["Property", "Who receives the income from the Duchy of Cornwall?", ["The heir to the throne", "The reigning monarch", "The Prime Minister", "The Treasury"], "The Duchy of Cornwall's income goes to the heir to the throne."], ["Property", "The Church Commissioners manage a large investment fund. Which church does it support?", ["The Church of England", "The Catholic Church in England", "The Methodist Church", "The Church of Scotland"], "The Church Commissioners manage assets that help fund the Church of England."], ["Property", "In which city is Antilia, the 27-storey home of Mukesh Ambani?", ["Mumbai", "Delhi", "Dubai", "Singapore"], "Antilia in Mumbai is often called the world's most expensive private home."], ["National debt", "Which country has the largest national debt in total dollars?", ["United States", "Japan", "China", "United Kingdom"], "The United States owes more in total than any other country."], ["National debt", "Which major economy has the highest debt compared with the size of its economy, at over 200% of GDP?", ["Japan", "United States", "Germany", "Canada"], "Japan has the highest debt-to-GDP ratio among the major economies."], ["Wealth funds", "Temasek Holdings, a huge state-owned investment company, is based in which country?", ["Singapore", "Malaysia", "Hong Kong", "Taiwan"], "Temasek is owned by the government of Singapore."], ["Billionaires", "Which company did Elon Musk join in 2004 as an early investor and chairman, rather than founding it?", ["Tesla", "SpaceX", "PayPal", "Neuralink"], "Tesla was founded in 2003 by Martin Eberhard and Marc Tarpenning. Musk joined a year later and later became CEO."], ["Business", "Which entrepreneur started the Virgin empire as a mail-order record business?", ["Richard Branson", "Alan Sugar", "Philip Green", "Peter Jones"], "Richard Branson began Virgin selling records by post in the early 1970s."], ["Inventors", "Which British inventor made 5,127 prototypes before his bagless vacuum cleaner worked?", ["James Dyson", "Clive Sinclair", "Richard Branson", "Trevor Baylis"], "James Dyson's persistence turned a vacuum cleaner into a multi-billion pound business."], ["Property", "Which is the most expensive square on the standard UK Monopoly board?", ["Mayfair", "Park Lane", "Bond Street", "Regent Street"], "Mayfair is the dearest square, just after Park Lane."], ["Billionaires", "Warren Buffett is the boss of which company?", ["Berkshire Hathaway", "BlackRock", "Goldman Sachs", "Vanguard"], "Buffett has run Berkshire Hathaway from Omaha since the 1960s."], ["Tech", "Who co-founded Microsoft with Bill Gates in 1975?", ["Paul Allen", "Steve Ballmer", "Steve Jobs", "Larry Ellison"], "Paul Allen and Bill Gates started Microsoft in 1975."], ["Film", "Steve Jobs bought a computer graphics division from which film company in 1986, creating Pixar?", ["Lucasfilm", "Walt Disney", "Universal", "Paramount"], "The division came from George Lucas's Lucasfilm and became Pixar. Disney bought Lucasfilm itself in 2012."], ["History", "Which company, founded in 1602, is usually credited as the first publicly traded company?", ["Dutch East India Company", "British East India Company", "Hudson's Bay Company", "Royal Dutch Shell"], "The Dutch East India Company (VOC) issued shares to the public, and its shares traded on the Amsterdam exchange."], ["Money", "In which year were UK Premium Bonds launched?", ["1956", "1946", "1966", "1976"], "Premium Bonds began in 1956. Winners are picked at random by ERNIE."], ["Natural wealth", "Which country has the largest proven oil reserves in the world?", ["Venezuela", "Saudi Arabia", "Iran", "Canada"], "Venezuela holds the largest proven oil reserves, though much of the oil is hard to extract."], ["Natural wealth", "Which continent's mineral wealth is locked away by international treaty?", ["Antarctica", "Africa", "South America", "Asia"], "The Antarctic Treaty system bans mining in Antarctica."], ["Infamous", "Which financier ran the biggest Ponzi scheme in history, exposed in 2008?", ["Bernie Madoff", "Allen Stanford", "Jordan Belfort", "Sam Bankman-Fried"], "Bernie Madoff's scheme defrauded investors of tens of billions of dollars."], ["Infamous", "Sam Bankman-Fried founded which crypto exchange, which collapsed in November 2022?", ["FTX", "Binance", "Coinbase", "Kraken"], "FTX filed for bankruptcy in November 2022."], ["Royalty", "Sultan Hassanal Bolkiah is among the richest monarchs in the world. Which country does he rule?", ["Brunei", "Bahrain", "Oman", "Qatar"], "Brunei's wealth comes from oil and gas."], ["Sport", "Which golfer was the first athlete to earn more than $1 billion in his career, according to Forbes in 2009?", ["Tiger Woods", "Michael Jordan", "Phil Mickelson", "Arnold Palmer"], "Forbes reported in 2009 that Tiger Woods had passed $1 billion in career earnings."], ["Music", "Which singer built much of her billionaire fortune on a make-up brand called Fenty Beauty?", ["Rihanna", "Beyoncé", "Taylor Swift", "Madonna"], "Rihanna's wealth comes mostly from Fenty Beauty, rather than from her music."], ["Film", "Which company bought Lucasfilm, the home of Star Wars, from George Lucas in 2012?", ["Disney", "Warner Bros.", "Universal", "Paramount"], "Disney paid about four billion dollars for Lucasfilm."], ["Tech", "Which company's search engine began life under the name BackRub?", ["Google", "Yahoo", "Microsoft", "AltaVista"], "Larry Page and Sergey Brin first called their search engine BackRub."], ["Authors", "In which year was Charles Dickens's A Christmas Carol first published?", ["1843", "1823", "1863", "1883"], "A Christmas Carol came out in December 1843 and was an instant hit."], ["Authors", "Which author created the detective Sherlock Holmes?", ["Arthur Conan Doyle", "Agatha Christie", "Charles Dickens", "Wilkie Collins"], "Arthur Conan Doyle introduced Sherlock Holmes in 1887."], ["Tech", "Which Taiwanese company makes most of the world's most advanced computer chips?", ["TSMC", "Samsung", "Intel", "SK hynix"], "TSMC makes chips for Apple, Nvidia and many others."], ["Countries", "Which country has the largest economy in the world by GDP?", ["United States", "China", "Germany", "India"], "The United States is the largest economy in dollar terms."], ["Countries", "Which is the smallest country in the world by area?", ["Vatican City", "Monaco", "San Marino", "Nauru"], "Vatican City covers less than half a square kilometre."], ["Money", "Which currency has the highest value per unit in the world?", ["Kuwaiti dinar", "US dollar", "Euro", "Swiss franc"], "The Kuwaiti dinar is worth more than three US dollars."], ["Property", "Which English region usually has the cheapest average house prices?", ["North East", "North West", "East Midlands", "Yorkshire and the Humber"], "The North East has the lowest average house prices in England."], ["Business", "Which Chinese company did Jack Ma found in 1999 in his apartment in Hangzhou?", ["Alibaba", "Tencent", "Baidu", "Huawei"], "Jack Ma started Alibaba as an online marketplace for businesses."], ["Billionaires", "Which Indian conglomerate, covering oil, telecoms and retail, is run by Mukesh Ambani?", ["Reliance Industries", "Tata Group", "Infosys", "Adani Group"], "Reliance Industries is one of India's largest companies."]];
+  function bankQ(item){
+    var correct = item[2][0];
+    var opts = shuffle(item[2].slice()).map(function(t){ return {label:t, sub:'', val:'', right:t === correct}; });
+    return {sec:item[0], text:item[1], opts:opts, entry:{name:correct, w:0, note:item[3], sec:item[0]}, kind:'bank'};
+  }
+  function startDaily(){
+    var d = new Date(), key = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+    state.level = 'famous'; state.seed = 0; state.daily = true; state.i = 0; state.score = 0; state.used = {};
+    rng = seeded(key * 7 + 13);
+    var dn = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+    var secs = Object.keys(pool), q = null, g = 0;
+    if (dn % 3 !== 2) {
+      var order = BANK.map(function(_, i){ return i; });
+      var r0 = rng; rng = seeded(20261); shuffle(order); rng = r0;
+      var bi = Math.floor(dn / 3) * 2 + (dn % 3);
+      q = bankQ(BANK[order[bi % BANK.length]]);
+    }
+    while (!q && g++ < 60){ var s = pickSec(secs); q = rng() < 0.7 ? clueQ(s) : rankQ(s); }
+    state.qs = [q];
+    $('start').className = 'hidden'; $('end').className = 'hidden'; $('hl').className = 'hidden'; $('play').className = '';
+    show();
+    $('next').textContent = 'See result';
+  }
   // ---------- Higher or Lower
   var HL = {sec:'', cur:null, nxt:null, streak:0, used:{}, best:0, key:'', locked:false, secs:[]};
   var WORD = {'Countries':'GDP','National Debt':'debt','Corporate Wealth':'market value','Sovereign Wealth Funds':'fund size','Property & Land':'value','Institutions':'value','Transport':'cost','Defence & Military':'value','Net Zero':'cost'};
@@ -435,7 +488,7 @@
     HL.locked = false;
   }
   function startHL(){
-    HL.secs = hlSecs(); HL.streak = 0;
+    rng = Math.random; HL.secs = hlSecs(); HL.streak = 0;
     HL.key = state.level + '_' + $('sect').value; HL.best = getBest(HL.key);
     hlNewAnchor(pickSec(HL.secs)); hlNext();
     $('start').className = 'hidden'; $('end').className = 'hidden'; $('play').className = 'hidden'; $('hl').className = '';
