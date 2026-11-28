@@ -61,6 +61,7 @@
     .two .opt { text-align:center; font-size:15px; letter-spacing:3px; text-transform:uppercase; padding:15px 8px; }
     .newcat { text-align:center; color:var(--gold); font-size:11px; letter-spacing:3px; text-transform:uppercase; margin:0 0 8px; }
     .streak { color:var(--gold); }
+    .hl { color:#000; background:#f9e74a; padding:1px 6px; border-radius:4px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
     input[type=text] { background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:15px; width:100%; font-family:inherit; }
     .warn { border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:8px 12px; font-size:12px; margin:0 0 12px; }
   </style>
@@ -313,7 +314,7 @@
       var others = shuffle(arr.filter(function(e){ return e.name !== c.name && e.clue !== c.clue && !/\bvs\b/i.test(e.name); }));
       if (others.length < 3) continue;
       var opts = shuffle([c].concat(others.slice(0, rng() < 0.5 ? 3 : 2)));
-      return {sec:sec, text:'Which of these is described as: \u201c' + c.clue + '\u201d?', opts:opts.map(function(e){ return {label:e.name, sub:'', val:'', right:e===c}; }), entry:c, kind:'clue'};
+      return {sec:sec, text:'Which of these is described as: \u201c' + c.clue + '\u201d?', opts:opts.map(function(e){ return {label:e.name, sub:'', val:'', right:e===c}; }), entry:c, kind:'clue', pre:'Which of these is described as: ', hl:c.clue};
     }
     return null;
   }
@@ -356,7 +357,14 @@
     $('sc').textContent = 'Score ' + state.score;
     $('pg').style.width = (state.i/state.qs.length*100) + '%';
     $('qsec').textContent = q.sec;
-    $('qtext').textContent = q.text;
+    var qt = $('qtext'); qt.textContent = '';
+    if (q.hl) {
+      var cut = q.hl.lastIndexOf(' \u00b7 ');
+      var head = cut >= 0 ? q.hl.slice(0, cut + 3) : '', tail = cut >= 0 ? q.hl.slice(cut + 3) : q.hl;
+      qt.appendChild(document.createTextNode(q.pre + '\u201c' + head));
+      var hs = document.createElement('span'); hs.className = 'hl'; hs.textContent = tail; qt.appendChild(hs);
+      qt.appendChild(document.createTextNode('\u201d?'));
+    } else qt.textContent = q.text;
     $('qclue').textContent = q.clue || '';
     var box = $('opts'); box.innerHTML = '';
     q.opts.forEach(function(o){
